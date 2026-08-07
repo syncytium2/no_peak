@@ -76,6 +76,15 @@ Source material copied from `gitlab.com/um-mip/coding-project`
 - `cluster td- just data.pxp` — Igor experiment containing sample cluster
   data (from `~/Documents/coding-projectx/sample data in pxp/`), for
   validating the web port against the Igor/Fortran results.
+- `data/extracted/` — every wave from the pxp exported to CSV
+  (`tools/pxp_extract.py`, igor2 library): three complete sets with errors
+  (`set1.csv` time/value/SD, `LHInfused.csv` value/SD, `gnrh.csv` value/SEM —
+  index time base for the latter two), six manual test series (`man2`–`man6`,
+  `null1`), two scratch waves, and `igor_panel_settings.txt` — the Cluster
+  panel globals stored in the experiment (last Igor run: nPeak=1, nNadir=1,
+  tUp=tDn=2, minPeak=0, error model = user error wave).
+- `scripts/run_csv.ts` — CLI runner for validation
+  (`npx vite-node scripts/run_csv.ts data/extracted/set1.csv 2 2 2 2 0 "Error Wave"`).
 
 ## Port plan (sketch)
 

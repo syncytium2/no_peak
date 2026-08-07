@@ -201,7 +201,7 @@ export function ClusterChart({
               fill={FIG.inkSecondary}
               textAnchor="end"
             >
-              t = −{params.tScoreDn}
+              t = -{params.tScoreDn}
             </text>
             <path d={tPath} fill="none" stroke={FIG.inkSecondary} strokeWidth="1.5" strokeLinejoin="round" strokeLinecap="round" />
             <text

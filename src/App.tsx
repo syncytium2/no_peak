@@ -260,6 +260,20 @@ export function App() {
                 <button onClick={() => downloadText(resultToCSV(result), `${loaded!.name}_cluster.csv`)}>
                   Results CSV
                 </button>
+                <button
+                  onClick={async () => {
+                    if (!svgRef.current) return;
+                    // jsPDF + svg2pdf are heavy; loaded on first use only
+                    const { generatePDFReport } = await import("./report/pdf");
+                    await generatePDFReport(svgRef.current, result, {
+                      datasetName: loaded!.name,
+                      xLabel,
+                      yLabel,
+                    });
+                  }}
+                >
+                  PDF report
+                </button>
               </div>
             </>
           )}
