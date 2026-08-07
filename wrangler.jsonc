@@ -1,0 +1,14 @@
+{
+  // Cloudflare Workers config — serves the Vite build in dist/ as static assets.
+  // Same deploy model as colonel-kernel: assets-only Worker, no server script,
+  // wrangler authenticates via the machine's cached Cloudflare OAuth token.
+  // Custom domain (e.g. nopeak.tonydefazio.com) is added in the Cloudflare
+  // dashboard: Workers & Pages -> no-peak -> Settings -> Domains & Routes.
+  "name": "no-peak",
+  "compatibility_date": "2026-08-01",
+  "workers_dev": true,
+  "preview_urls": true,
+  "assets": {
+    "directory": "./dist"
+  }
+}

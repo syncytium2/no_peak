@@ -1,8 +1,35 @@
-# cluster-webapp
+# no_peak
 
 Port of the CLUSTER pulse-detection algorithm (Michael L. Johnson / Veldhuis-Johnson
-CLUSTER analysis for hormone pulsatility) to a web app, validated against existing
-datasets.
+CLUSTER analysis for hormone pulsatility) to a client-side web app, validated
+against existing datasets.
+
+**Everything runs in the browser — no backend, uploaded data never leaves the
+user's machine.** Figures are publication-grade SVG (vector) with 4× PNG export.
+
+## App
+
+- `npm run dev` — local dev server
+- `npm test` — core algorithm tests (vitest)
+- `npm run build` — static bundle in `dist/`
+- `npm run deploy` — test + build + `wrangler deploy` (Cloudflare Workers,
+  assets-only, same model as colonel-kernel; wrangler uses the machine's cached
+  Cloudflare OAuth). Custom domain is added in the Cloudflare dashboard —
+  DNS for tonydefazio.com is Cloudflare-managed, nothing to do at Porkbun.
+
+Code layout: `src/core/` is the algorithm (pure functions — `cluster.ts`,
+`mscore.ts`, `errorModel.ts`, `peaks.ts`), `src/chart/` the publication figure
+(custom SVG, palette validated with the dataviz six-checks validator),
+`src/App.tsx` the UI. `?demo` in the URL auto-loads the demo dataset.
+
+Port fidelity notes:
+- The port follows the **Igor implementation** (the validation oracle),
+  including its quirks: pooled S sums `NDF*STDEV` unsquared (the original
+  Fortran squares it — switchable via the "Fortran pooled-variance form"
+  option), and each up-flag opens a pulse of nPeak−1 points (Fortran: nPeak).
+- Peak/valley tables follow the Fortran reporting passes, including their
+  inclusive-boundary loops and the edge rule (a run touching the record edge
+  is shaded but not tabulated).
 
 Source material copied from `gitlab.com/um-mip/coding-project`
 (local: `~/Documents/coding-project`).
