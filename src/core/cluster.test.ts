@@ -1,6 +1,6 @@
 import { describe, it, expect } from "vitest";
 import { mScore } from "./mscore";
-import { buildErrorArray } from "./errorModel";
+import { buildErrorArray, resolveErrorModel } from "./errorModel";
 import { upOrDn, pulseTest, clusterMain } from "./cluster";
 import { extractPeaks, extractValleys } from "./peaks";
 import { parseSeries, resultToCSV } from "./csv";
@@ -81,6 +81,16 @@ describe("buildErrorArray", () => {
     expect(err[7]).toBe(err[8 - 2 - 1]);
     // interior windows of a linear ramp all have identical SD
     expect(err[3]).toBeCloseTo(err[2], 10);
+  });
+
+  it("resolveErrorModel switches with the loaded file's shape", () => {
+    // file with an error column adopts it
+    expect(resolveErrorModel("Local SD", true)).toBe("Error Wave");
+    expect(resolveErrorModel("Error Wave", true)).toBe("Error Wave");
+    // file without one cannot stay on Error Wave (the stale-state bug)
+    expect(resolveErrorModel("Error Wave", false)).toBe("Local SD");
+    // other models are untouched
+    expect(resolveErrorModel("Fixed", false)).toBe("Fixed");
   });
 
   it("Error Wave validates length", () => {

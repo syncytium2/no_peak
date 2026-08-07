@@ -1,5 +1,6 @@
 import { useEffect, useMemo, useRef, useState } from "react";
 import { clusterMain } from "./core/cluster";
+import { resolveErrorModel } from "./core/errorModel";
 import { parseSeries, resultToCSV, type ParsedSeries } from "./core/csv";
 import { DEFAULT_PARAMS, type ClusterParams, type ErrorModelType, type MeanSD } from "./core/types";
 import { ClusterChart } from "./chart/ClusterChart";
@@ -45,8 +46,13 @@ export function App() {
     const { series } = loaded;
     const times = series.times ?? series.values.map((_, i) => (i + 1) * deltaT);
     try {
+      // belt-and-suspenders: never run "Error Wave" against a file without one
+      const effective =
+        params.errorModel === "Error Wave" && !series.error
+          ? { ...params, errorModel: "Local SD" as const }
+          : params;
       return {
-        result: clusterMain(times, series.values, params, series.error ?? undefined),
+        result: clusterMain(times, series.values, effective, series.error ?? undefined),
         error: null as string | null,
       };
     } catch (e) {
@@ -62,9 +68,10 @@ export function App() {
       const text = await file.text();
       const series = parseSeries(text);
       setLoaded({ name: file.name.replace(/\.[^.]+$/, ""), series });
-      if (series.error && params.errorModel !== "Error Wave") {
-        setParams((p) => ({ ...p, errorModel: "Error Wave" }));
-      }
+      setParams((p) => {
+        const next = resolveErrorModel(p.errorModel, series.error !== null);
+        return next === p.errorModel ? p : { ...p, errorModel: next };
+      });
     } catch (e) {
       setLoadError(e instanceof Error ? e.message : String(e));
     }
@@ -74,6 +81,10 @@ export function App() {
     setLoadError(null);
     const { times, values } = demoSeries();
     setLoaded({ name: "demo", series: { times, values, error: null, labels: null } });
+    setParams((p) => {
+      const next = resolveErrorModel(p.errorModel, false);
+      return next === p.errorModel ? p : { ...p, errorModel: next };
+    });
   }
 
   // ?demo auto-loads the demo dataset (shareable example link)

@@ -4,6 +4,20 @@
 import type { ErrorModelType } from "./types";
 import { sampleSD, sem } from "./stats";
 
+/**
+ * Keep the selected error model consistent with the loaded file: a file with
+ * an error column switches to "Error Wave"; a file without one cannot stay on
+ * "Error Wave" and falls back to the default.
+ */
+export function resolveErrorModel(
+  current: ErrorModelType,
+  hasErrorColumn: boolean,
+  fallback: ErrorModelType = "Local SD",
+): ErrorModelType {
+  if (hasErrorColumn) return "Error Wave";
+  return current === "Error Wave" ? fallback : current;
+}
+
 export function buildErrorArray(
   w: number[],
   errorModel: ErrorModelType,
