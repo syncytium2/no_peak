@@ -57,6 +57,44 @@ header h1 {
   margin: 20px 0 12px;
 }
 
+/* Implementation picker: a mode switch, not a detection parameter — it lives
+   in the top bar, ahead of the load buttons, and is never inside the fold. */
+.implpick {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  font-size: 13px;
+  font-weight: 600;
+  color: var(--ink-2);
+  background: var(--surface);
+  border: 1px solid var(--axis);
+  border-radius: 6px;
+  padding: 4px 6px 4px 10px;
+}
+
+.implpick select {
+  font: inherit;
+  font-weight: 600;
+  padding: 4px 6px;
+  border: 1px solid var(--axis);
+  border-radius: 5px;
+  background: #fff;
+  color: var(--ink);
+  max-width: 100%;
+}
+
+/* phones: give the picker its own full-width row so it reads first */
+@media (max-width: 880px) {
+  .implpick {
+    flex: 1 0 100%;
+    justify-content: space-between;
+  }
+  .implpick select {
+    flex: 1 1 auto;
+    min-width: 0;
+  }
+}
+
 .hint {
   color: var(--muted);
   font-size: 13px;
@@ -438,6 +476,14 @@ body.dos .hint code {
   font-family: inherit;
 }
 
+body.dos .implpick {
+  border-color: var(--ink);
+  background: #000;
+  color: var(--ink);
+  border-radius: 0;
+}
+
+body.dos .implpick select,
 body.dos .grid input,
 body.dos .grid select,
 body.dos .checks label.inline input {

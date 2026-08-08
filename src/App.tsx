@@ -133,6 +133,18 @@ export function App() {
             e.target.value = "";
           }}
         />
+        <label className="implpick">
+          Implementation
+          <select
+            value={params.variant}
+            onChange={(e) =>
+              setParams((p) => ({ ...p, variant: e.target.value as "igor" | "fortran" }))
+            }
+          >
+            <option value="igor">Igor port (validated)</option>
+            <option value="fortran">Original Fortran (CLUST5)</option>
+          </select>
+        </label>
         <button className="primary" onClick={() => fileRef.current?.click()}>
           Load data file
         </button>
@@ -200,18 +212,6 @@ export function App() {
                 <input type="number" step={0.1} {...num("errorValue")} />
               </label>
             )}
-            <label>
-              Implementation
-              <select
-                value={params.variant}
-                onChange={(e) =>
-                  setParams((p) => ({ ...p, variant: e.target.value as "igor" | "fortran" }))
-                }
-              >
-                <option value="igor">Igor port (validated)</option>
-                <option value="fortran">Original Fortran (CLUST5)</option>
-              </select>
-            </label>
             {!loaded?.series.times && (
               <label>
                 Sampling interval
