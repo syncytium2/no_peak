@@ -8,8 +8,7 @@ import { ClusterChart } from "./chart/ClusterChart";
 import { FIG, FIG_DOS } from "./chart/palette";
 import { BORN, BUILT, VERSION, longDate } from "./version";
 import { downloadPNG, downloadSVG, downloadText } from "./chart/export";
-import { demoSeries } from "./demo";
-import gnrhCsv from "../data/extracted/gnrh.csv?raw";
+import { SAMPLES, SAMPLE_GROUPS, sampleCounts } from "./samples";
 
 const ERROR_MODELS: ErrorModelType[] = [
   "Local SD",
@@ -84,16 +83,20 @@ export function App() {
     });
   }
 
-  function loadDemo() {
-    const { times, values } = demoSeries();
-    loadSeries("demo", { times, values, error: null, labels: null });
+  function loadSample(key: string) {
+    const sample = SAMPLES.find((s) => s.key === key);
+    if (!sample) return;
+    try {
+      loadSeries(sample.key, sample.load());
+    } catch (e) {
+      setLoadError(e instanceof Error ? e.message : String(e));
+    }
   }
 
   // ?demo auto-loads the synthetic demo; otherwise the bundled GnRH dataset
   // loads by default so the page never opens blank.
   useEffect(() => {
-    if (new URLSearchParams(window.location.search).has("demo")) loadDemo();
-    else loadSeries("gnrh", parseSeries(gnrhCsv));
+    loadSample(new URLSearchParams(window.location.search).has("demo") ? "demo" : "gnrh");
   }, []);
 
   // Original Fortran mode gets the MS-DOS terminal chrome it ran under
@@ -148,7 +151,28 @@ export function App() {
         <button className="primary" onClick={() => fileRef.current?.click()}>
           Load data file
         </button>
-        <button onClick={loadDemo}>Demo dataset</button>
+        <label className="samplepick">
+          Sample data
+          <select
+            value={SAMPLES.some((s) => s.key === loaded?.name) ? loaded!.name : ""}
+            onChange={(e) => loadSample(e.target.value)}
+          >
+            {/* placeholder shown only while a user-supplied file is loaded */}
+            <option value="" disabled>
+              choose a dataset…
+            </option>
+            {SAMPLE_GROUPS.map((g) => (
+              <optgroup key={g} label={g}>
+                {SAMPLES.filter((s) => s.group === g).map((s) => (
+                  <option key={s.key} value={s.key}>
+                    {s.label}
+                    {sampleCounts[s.key] ? ` — ${sampleCounts[s.key]} pts` : ""}
+                  </option>
+                ))}
+              </optgroup>
+            ))}
+          </select>
+        </label>
         <span className="hint">
           CSV/TSV: <code>value</code> · <code>time,value</code> · <code>time,value,error</code>
           {" "}(header row optional)

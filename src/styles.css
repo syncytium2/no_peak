@@ -83,16 +83,43 @@ header h1 {
   max-width: 100%;
 }
 
-/* phones: give the picker its own full-width row so it reads first */
+/* phones: give the pickers their own full-width rows so they read first */
 @media (max-width: 880px) {
-  .implpick {
+  .implpick,
+  .samplepick {
     flex: 1 0 100%;
     justify-content: space-between;
   }
-  .implpick select {
+  .implpick select,
+  .samplepick select {
     flex: 1 1 auto;
     min-width: 0;
   }
+}
+
+.samplepick {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  font-size: 13px;
+  color: var(--ink-2);
+}
+
+.samplepick select {
+  font: inherit;
+  padding: 6px 8px;
+  border: 1px solid var(--axis);
+  border-radius: 6px;
+  background: var(--surface);
+  color: var(--ink);
+  max-width: 100%;
+}
+
+body.dos .samplepick select {
+  background: #000;
+  color: var(--ink);
+  border-color: var(--ink-2);
+  border-radius: 0;
 }
 
 .hint {

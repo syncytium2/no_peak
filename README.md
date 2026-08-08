@@ -25,8 +25,11 @@ validator), `src/App.tsx` the UI, `src/About.tsx` the about/citations page
 `__BUILD_DATE__` are injected in `vite.config.ts`; bump `package.json` version
 to change what the app reports).
 
-The bundled `data/extracted/gnrh.csv` loads by default via a `?raw` import so
-the app never opens blank; `?demo` in the URL loads the synthetic demo instead.
+`src/samples.ts` bundles every extracted Igor wave plus the synthetic demo via
+`?raw` imports (~9 KB total) and drives the "Sample data" picker in the top bar;
+gnrh loads by default so the app never opens blank, and `?demo` loads the
+synthetic series instead. Adding a dataset = drop the CSV in `data/extracted/`
+and add one entry to `SAMPLES`.
 
 Port fidelity notes:
 - The **Implementation** selector switches the whole algorithm between the
