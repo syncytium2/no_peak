@@ -7,6 +7,7 @@ import { DEFAULT_PARAMS, type ClusterParams, type ErrorModelType, type MeanSD } 
 import { ClusterChart } from "./chart/ClusterChart";
 import { FIG, FIG_DOS } from "./chart/palette";
 import { BORN, BUILT, VERSION, longDate } from "./version";
+import { MailLink } from "./Contact";
 import { downloadPNG, downloadSVG, downloadText } from "./chart/export";
 import { SAMPLES, SAMPLE_GROUPS, sampleCounts } from "./samples";
 
@@ -512,8 +513,7 @@ export function App() {
           <a href="#about">About, citations &amp; other tools</a>
         </p>
         <p>
-          v{VERSION} · built {BUILT} · first commit {longDate(BORN)} ·{" "}
-          <a href="mailto:tony@tonydefazio.com">tony@tonydefazio.com</a>
+          v{VERSION} · built {BUILT} · first commit {longDate(BORN)} · <MailLink />
         </p>
       </footer>
     </div>
