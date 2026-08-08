@@ -334,6 +334,80 @@ footer {
   padding-top: 12px;
 }
 
+/* ---- About page ---- */
+
+.about {
+  max-width: 760px;
+  margin: 0 auto;
+  padding: 24px 20px 64px;
+}
+
+.about h1 {
+  font-size: 26px;
+  margin: 20px 0 4px;
+}
+
+.about h2 {
+  font-size: 15px;
+  text-transform: uppercase;
+  letter-spacing: 0.06em;
+  color: var(--ink-2);
+  margin: 32px 0 10px;
+  padding-top: 14px;
+  border-top: 1px solid var(--grid);
+}
+
+.about h3 {
+  font-size: 14px;
+  margin: 20px 0 6px;
+}
+
+.about p,
+.about li {
+  color: var(--ink-2);
+}
+
+.about .lede {
+  font-size: 16px;
+  color: var(--ink);
+}
+
+.about a {
+  color: var(--accent);
+}
+
+.about ul {
+  padding-left: 20px;
+}
+
+.about li {
+  margin-bottom: 10px;
+}
+
+/* a reference entry: title line then a muted citation line */
+.about .cite {
+  display: block;
+  color: var(--muted);
+  font-size: 13px;
+}
+
+.about code {
+  background: var(--grid);
+  padding: 1px 4px;
+  border-radius: 3px;
+  font-size: 13px;
+}
+
+.about .note {
+  background: var(--surface);
+  border: 1px solid var(--grid);
+  border-left: 3px solid var(--axis);
+  border-radius: 6px;
+  padding: 12px 14px;
+  margin: 16px 0;
+  font-size: 13px;
+}
+
 /* ---- MS-DOS chrome for Original Fortran (CLUST5) mode ----
    Green-phosphor terminal: the vars carry most of it; the rest strips the
    modern styling (radii, shadows) and squares everything off. */

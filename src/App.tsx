@@ -6,6 +6,7 @@ import { fmt } from "./core/format";
 import { DEFAULT_PARAMS, type ClusterParams, type ErrorModelType, type MeanSD } from "./core/types";
 import { ClusterChart } from "./chart/ClusterChart";
 import { FIG, FIG_DOS } from "./chart/palette";
+import { BORN, BUILT, VERSION, longDate } from "./version";
 import { downloadPNG, downloadSVG, downloadText } from "./chart/export";
 import { demoSeries } from "./demo";
 import gnrhCsv from "../data/extracted/gnrh.csv?raw";
@@ -116,7 +117,7 @@ export function App() {
         </h1>
         <p className="privacy">
           Runs entirely in your browser. Uploaded data is processed on your machine and never sent
-          anywhere.
+          anywhere. <a href="#about">About &amp; references</a>
         </p>
       </header>
 
@@ -483,7 +484,11 @@ export function App() {
       <footer>
         <p>
           CLUSTER algorithm: Veldhuis &amp; Johnson; original Fortran by Michael L. Johnson.
-          TypeScript port validated against the Igor Pro implementation (ClusterMasterV4-1).
+          TypeScript port validated against the Igor Pro implementation (ClusterMasterV4-1).{" "}
+          <a href="#about">About, citations &amp; other tools</a>
+        </p>
+        <p>
+          v{VERSION} · built {BUILT} · first commit {longDate(BORN)}
         </p>
       </footer>
     </div>

@@ -18,18 +18,36 @@ user's machine.** Figures are publication-grade SVG (vector) with 4× PNG export
   DNS for tonydefazio.com is Cloudflare-managed, nothing to do at Porkbun.
 
 Code layout: `src/core/` is the algorithm (pure functions — `cluster.ts`,
-`mscore.ts`, `errorModel.ts`, `peaks.ts`), `src/chart/` the publication figure
-(custom SVG, palette validated with the dataviz six-checks validator),
-`src/App.tsx` the UI. `?demo` in the URL auto-loads the demo dataset.
+`mscore.ts`, `errorModel.ts`, `peaks.ts`, `format.ts`), `src/chart/` the
+publication figure (custom SVG, palette validated with the dataviz six-checks
+validator), `src/App.tsx` the UI, `src/About.tsx` the about/citations page
+(hash route `#about`), `src/version.ts` the build stamp (`__APP_VERSION__` and
+`__BUILD_DATE__` are injected in `vite.config.ts`; bump `package.json` version
+to change what the app reports).
+
+The bundled `data/extracted/gnrh.csv` loads by default via a `?raw` import so
+the app never opens blank; `?demo` in the URL loads the synthetic demo instead.
 
 Port fidelity notes:
-- The port follows the **Igor implementation** (the validation oracle),
-  including its quirks: pooled S sums `NDF*STDEV` unsquared (the original
-  Fortran squares it — switchable via the "Fortran pooled-variance form"
-  option), and each up-flag opens a pulse of nPeak−1 points (Fortran: nPeak).
+- The **Implementation** selector switches the whole algorithm between the
+  Igor port (`variant: "igor"`, the default and the validation oracle) and the
+  original Fortran (`variant: "fortran"`). Fortran mode squares the error term
+  in the pooled S (Igor sums `NDF*STDEV` unsquared), and uses a separate
+  verbatim port of the CLUST5 pass-four assembly (`pulseAssemblyFortran`):
+  NPEAK-wide loop-1200 marking (Igor marks nPeak−1), `PULSE(1)`-only initial
+  state, loop 1300 from the second point, backward zap down to index 1.
+  In practice the zap canonicalizes both to the same runs for ordinary
+  bounded pulses, so the visible difference comes from the variance form.
+  Fortran mode also switches the UI and figure to a green-phosphor MS-DOS
+  theme (`body.dos` in `styles.css`, `FIG_DOS` in `chart/palette.ts`).
 - Peak/valley tables follow the Fortran reporting passes, including their
-  inclusive-boundary loops and the edge rule (a run touching the record edge
-  is shaded but not tabulated).
+  inclusive-boundary loops. **Exception:** the Fortran drops a final pulse
+  whose trailing nadir window doesn't fit in the record; `includeTruncated`
+  (default on, UI checkbox) reports it instead, with after-nadir-dependent
+  stats (mean %, area) null. A pulse already in progress at the start has no
+  detected onset and is never tabulated in either mode.
+- Displayed numbers go through `core/format.ts`: anything needing more than 3
+  significant digits is clamped to one decimal. Exports keep full precision.
 
 Source material copied from `gitlab.com/um-mip/coding-project`
 (local: `~/Documents/coding-project`).
