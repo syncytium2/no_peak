@@ -6,7 +6,7 @@
 import { useMemo, useRef, useState } from "react";
 import type { ClusterResult } from "../core/types";
 import { fmt } from "../core/format";
-import { FIG, PULSE_WASH_OPACITY, ERROR_BAR_OPACITY } from "./palette";
+import { FIG, ERROR_BAR_OPACITY, type FigPalette } from "./palette";
 import { linearScale, niceTicks, padDomain, formatTick } from "./scale";
 
 export interface ClusterChartProps {
@@ -16,6 +16,7 @@ export interface ClusterChartProps {
   xLabel: string;
   yLabel: string;
   svgRef: React.MutableRefObject<SVGSVGElement | null>;
+  palette?: FigPalette;
 }
 
 const W = 900;
@@ -52,6 +53,7 @@ export function ClusterChart({
   xLabel,
   yLabel,
   svgRef,
+  palette: P = FIG,
 }: ClusterChartProps) {
   const { times, values, error, ups, downs, mscoreUp, pulse, peaks, params } = result;
   const n = values.length;
@@ -140,20 +142,20 @@ export function ClusterChart({
         role="img"
         aria-label="Concentration time series with CLUSTER pulse detection overlay"
       >
-        <rect x="0" y="0" width={W} height={H} fill={FIG.surface} />
+        <rect x="0" y="0" width={W} height={H} fill={P.surface} />
 
         {/* ---- t-score panel ---- */}
         {showMscore && (
           <g>
             {tTicks.map((t) => (
               <g key={`tt${t}`}>
-                <line x1={M.left} x2={W - M.right} y1={yT(t)} y2={yT(t)} stroke={FIG.grid} strokeWidth="1" />
+                <line x1={M.left} x2={W - M.right} y1={yT(t)} y2={yT(t)} stroke={P.grid} strokeWidth="1" />
                 <text
                   x={M.left - 8}
                   y={yT(t)}
                   fontSize="11"
-                  fontFamily={FIG.font}
-                  fill={FIG.inkMuted}
+                  fontFamily={P.font}
+                  fill={P.inkMuted}
                   textAnchor="end"
                   dominantBaseline="middle"
                   style={{ fontVariantNumeric: "tabular-nums" }}
@@ -168,7 +170,7 @@ export function ClusterChart({
               x2={W - M.right}
               y1={yT(params.tScoreUp)}
               y2={yT(params.tScoreUp)}
-              stroke={FIG.inkMuted}
+              stroke={P.inkMuted}
               strokeWidth="1"
               strokeDasharray="4 3"
             />
@@ -177,7 +179,7 @@ export function ClusterChart({
               x2={W - M.right}
               y1={yT(-params.tScoreDn)}
               y2={yT(-params.tScoreDn)}
-              stroke={FIG.inkMuted}
+              stroke={P.inkMuted}
               strokeWidth="1"
               strokeDasharray="4 3"
             />
@@ -185,8 +187,8 @@ export function ClusterChart({
               x={W - M.right - 4}
               y={yT(params.tScoreUp) - 4}
               fontSize="10"
-              fontFamily={FIG.font}
-              fill={FIG.inkSecondary}
+              fontFamily={P.font}
+              fill={P.inkSecondary}
               textAnchor="end"
             >
               t = {params.tScoreUp}
@@ -195,38 +197,38 @@ export function ClusterChart({
               x={W - M.right - 4}
               y={yT(-params.tScoreDn) + 12}
               fontSize="10"
-              fontFamily={FIG.font}
-              fill={FIG.inkSecondary}
+              fontFamily={P.font}
+              fill={P.inkSecondary}
               textAnchor="end"
             >
               t = -{params.tScoreDn}
             </text>
-            <path d={tPath} fill="none" stroke={FIG.inkSecondary} strokeWidth="1.5" strokeLinejoin="round" strokeLinecap="round" />
+            <path d={tPath} fill="none" stroke={P.inkSecondary} strokeWidth="1.5" strokeLinejoin="round" strokeLinecap="round" />
             <text
               x={M.left - 48}
               y={mscoreTop + MSCORE_H / 2}
               fontSize="12"
-              fontFamily={FIG.font}
-              fill={FIG.inkSecondary}
+              fontFamily={P.font}
+              fill={P.inkSecondary}
               textAnchor="middle"
               transform={`rotate(-90 ${M.left - 48} ${mscoreTop + MSCORE_H / 2})`}
             >
               t-score
             </text>
-            <line x1={M.left} x2={W - M.right} y1={mscoreTop + MSCORE_H} y2={mscoreTop + MSCORE_H} stroke={FIG.axis} strokeWidth="1" />
+            <line x1={M.left} x2={W - M.right} y1={mscoreTop + MSCORE_H} y2={mscoreTop + MSCORE_H} stroke={P.axis} strokeWidth="1" />
           </g>
         )}
 
         {/* ---- main panel: grid ---- */}
         {yTicks.map((t) => (
           <g key={`y${t}`}>
-            <line x1={M.left} x2={W - M.right} y1={y(t)} y2={y(t)} stroke={FIG.grid} strokeWidth="1" />
+            <line x1={M.left} x2={W - M.right} y1={y(t)} y2={y(t)} stroke={P.grid} strokeWidth="1" />
             <text
               x={M.left - 8}
               y={y(t)}
               fontSize="11"
-              fontFamily={FIG.font}
-              fill={FIG.inkMuted}
+              fontFamily={P.font}
+              fill={P.inkMuted}
               textAnchor="end"
               dominantBaseline="middle"
               style={{ fontVariantNumeric: "tabular-nums" }}
@@ -247,8 +249,8 @@ export function ClusterChart({
               y={mainTop}
               width={Math.max(x1 - x0, 1)}
               height={MAIN_H}
-              fill={FIG.pulse}
-              opacity={PULSE_WASH_OPACITY}
+              fill={P.pulse}
+              opacity={P.washOpacity}
             />
           );
         })}
@@ -257,7 +259,7 @@ export function ClusterChart({
         {showError &&
           values.map((v, i) =>
             error[i] > 0 ? (
-              <g key={`e${i}`} stroke={FIG.series} strokeWidth="1" opacity={ERROR_BAR_OPACITY}>
+              <g key={`e${i}`} stroke={P.series} strokeWidth="1" opacity={ERROR_BAR_OPACITY}>
                 <line x1={x(times[i])} x2={x(times[i])} y1={y(v - error[i])} y2={y(v + error[i])} />
                 <line x1={x(times[i]) - 3} x2={x(times[i]) + 3} y1={y(v - error[i])} y2={y(v - error[i])} />
                 <line x1={x(times[i]) - 3} x2={x(times[i]) + 3} y1={y(v + error[i])} y2={y(v + error[i])} />
@@ -266,7 +268,7 @@ export function ClusterChart({
           )}
 
         {/* the series */}
-        <path d={linePath} fill="none" stroke={FIG.series} strokeWidth="2" strokeLinejoin="round" strokeLinecap="round" />
+        <path d={linePath} fill="none" stroke={P.series} strokeWidth="2" strokeLinejoin="round" strokeLinecap="round" />
         {showDots &&
           values.map((v, i) => (
             <circle
@@ -274,8 +276,8 @@ export function ClusterChart({
               cx={x(times[i])}
               cy={y(v)}
               r="3"
-              fill={FIG.series}
-              stroke={FIG.surface}
+              fill={P.series}
+              stroke={P.surface}
               strokeWidth="2"
             />
           ))}
@@ -287,8 +289,8 @@ export function ClusterChart({
             x={x(times[p.iMax])}
             y={y(values[p.iMax]) - (showDots ? 10 : 7)}
             fontSize="11"
-            fontFamily={FIG.font}
-            fill={FIG.inkPrimary}
+            fontFamily={P.font}
+            fill={P.inkPrimary}
             textAnchor="middle"
           >
             {i + 1}
@@ -296,13 +298,13 @@ export function ClusterChart({
         ))}
 
         {/* main panel baseline + y label */}
-        <line x1={M.left} x2={W - M.right} y1={mainTop + MAIN_H} y2={mainTop + MAIN_H} stroke={FIG.axis} strokeWidth="1" />
+        <line x1={M.left} x2={W - M.right} y1={mainTop + MAIN_H} y2={mainTop + MAIN_H} stroke={P.axis} strokeWidth="1" />
         <text
           x={M.left - 48}
           y={mainTop + MAIN_H / 2}
           fontSize="13"
-          fontFamily={FIG.font}
-          fill={FIG.inkPrimary}
+          fontFamily={P.font}
+          fill={P.inkPrimary}
           textAnchor="middle"
           transform={`rotate(-90 ${M.left - 48} ${mainTop + MAIN_H / 2})`}
         >
@@ -315,8 +317,8 @@ export function ClusterChart({
             x={M.left - 8}
             y={stripTop + STRIP_H / 2}
             fontSize="10"
-            fontFamily={FIG.font}
-            fill={FIG.inkSecondary}
+            fontFamily={P.font}
+            fill={P.inkSecondary}
             textAnchor="end"
             dominantBaseline="middle"
           >
@@ -327,8 +329,8 @@ export function ClusterChart({
               <path
                 key={`u${i}`}
                 d={`M${x(times[i])},${stripTop + 3} l5,${STRIP_H - 8} l-10,0 Z`}
-                fill={FIG.flag}
-                stroke={FIG.surface}
+                fill={P.flag}
+                stroke={P.surface}
                 strokeWidth="1"
               />
             ) : null,
@@ -337,8 +339,8 @@ export function ClusterChart({
             x={M.left - 8}
             y={stripTop + STRIP_H + STRIP_H / 2}
             fontSize="10"
-            fontFamily={FIG.font}
-            fill={FIG.inkSecondary}
+            fontFamily={P.font}
+            fill={P.inkSecondary}
             textAnchor="end"
             dominantBaseline="middle"
           >
@@ -349,8 +351,8 @@ export function ClusterChart({
               <path
                 key={`dn${i}`}
                 d={`M${x(times[i])},${stripTop + STRIP_H + STRIP_H - 3} l5,${-(STRIP_H - 8)} l-10,0 Z`}
-                fill={FIG.flag}
-                stroke={FIG.surface}
+                fill={P.flag}
+                stroke={P.surface}
                 strokeWidth="1"
               />
             ) : null,
@@ -358,16 +360,16 @@ export function ClusterChart({
         </g>
 
         {/* ---- x axis ---- */}
-        <line x1={M.left} x2={W - M.right} y1={axisTop} y2={axisTop} stroke={FIG.axis} strokeWidth="1" />
+        <line x1={M.left} x2={W - M.right} y1={axisTop} y2={axisTop} stroke={P.axis} strokeWidth="1" />
         {xTicks.map((t) => (
           <g key={`x${t}`}>
-            <line x1={x(t)} x2={x(t)} y1={axisTop} y2={axisTop + 5} stroke={FIG.axis} strokeWidth="1" />
+            <line x1={x(t)} x2={x(t)} y1={axisTop} y2={axisTop + 5} stroke={P.axis} strokeWidth="1" />
             <text
               x={x(t)}
               y={axisTop + 18}
               fontSize="11"
-              fontFamily={FIG.font}
-              fill={FIG.inkMuted}
+              fontFamily={P.font}
+              fill={P.inkMuted}
               textAnchor="middle"
               style={{ fontVariantNumeric: "tabular-nums" }}
             >
@@ -379,8 +381,8 @@ export function ClusterChart({
           x={(M.left + W - M.right) / 2}
           y={axisTop + 38}
           fontSize="13"
-          fontFamily={FIG.font}
-          fill={FIG.inkPrimary}
+          fontFamily={P.font}
+          fill={P.inkPrimary}
           textAnchor="middle"
         >
           {xLabel}
@@ -394,15 +396,15 @@ export function ClusterChart({
               x2={x(times[hover])}
               y1={M.top}
               y2={axisTop}
-              stroke={FIG.inkMuted}
+              stroke={P.inkMuted}
               strokeWidth="1"
             />
             <circle
               cx={x(times[hover])}
               cy={y(values[hover])}
               r="5"
-              fill={FIG.series}
-              stroke={FIG.surface}
+              fill={P.series}
+              stroke={P.surface}
               strokeWidth="2"
             />
           </g>
@@ -426,20 +428,20 @@ export function ClusterChart({
             left: `${tooltipLeftPct}%`,
             top: `${((mainTop + 16) / H) * 100}%`,
             transform: flipTooltip ? "translateX(calc(-100% - 12px))" : "translateX(12px)",
-            background: "#ffffff",
-            border: `1px solid ${FIG.grid}`,
+            background: P.surface,
+            border: `1px solid ${P.grid}`,
             borderRadius: 6,
             boxShadow: "0 2px 8px rgba(11,11,11,0.10)",
             padding: "8px 10px",
             pointerEvents: "none",
             fontSize: 12,
-            fontFamily: FIG.font,
-            color: FIG.inkSecondary,
+            fontFamily: P.font,
+            color: P.inkSecondary,
             whiteSpace: "nowrap",
             lineHeight: 1.5,
           }}
         >
-          <div style={{ color: FIG.inkPrimary, fontWeight: 600 }}>
+          <div style={{ color: P.inkPrimary, fontWeight: 600 }}>
             {fmt(values[hover])}
             {showError && error[hover] > 0 ? ` ± ${fmt(error[hover], 2)}` : ""}
           </div>
@@ -449,7 +451,7 @@ export function ClusterChart({
           <div>t-score: {fmt(mscoreUp[hover], 2)}</div>
           <div>
             pulse:{" "}
-            <span style={{ color: pulse[hover] === 1 ? FIG.pulse : FIG.inkMuted, fontWeight: 600 }}>
+            <span style={{ color: pulse[hover] === 1 ? P.pulse : P.inkMuted, fontWeight: 600 }}>
               {pulse[hover] === 1 ? "yes" : "no"}
             </span>
           </div>

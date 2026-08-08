@@ -333,3 +333,83 @@ footer {
   border-top: 1px solid var(--grid);
   padding-top: 12px;
 }
+
+/* ---- MS-DOS chrome for Original Fortran (CLUST5) mode ----
+   Green-phosphor terminal: the vars carry most of it; the rest strips the
+   modern styling (radii, shadows) and squares everything off. */
+
+body.dos {
+  --surface: #000000;
+  --page: #000000;
+  --ink: #33ff33;
+  --ink-2: #22cc22;
+  --muted: #12a112;
+  --grid: #0c3a0c;
+  --axis: #1c7a1c;
+  --accent: #55ff55;
+  --pulse: #33ff33;
+  --flag: #ffff55;
+  font-family: "Courier New", Courier, ui-monospace, monospace;
+}
+
+body.dos button,
+body.dos input,
+body.dos select,
+body.dos .panel,
+body.dos .stat,
+body.dos .tablewrap,
+body.dos .empty,
+body.dos .hint code {
+  border-radius: 0;
+  font-family: inherit;
+}
+
+body.dos .grid input,
+body.dos .grid select,
+body.dos .checks label.inline input {
+  background: #000;
+  color: var(--ink);
+  border-color: var(--ink-2);
+}
+
+body.dos button {
+  background: #000;
+  color: var(--ink);
+  border: 1px solid var(--ink-2);
+}
+
+body.dos button:hover {
+  background: var(--ink);
+  color: #000;
+}
+
+body.dos button.primary {
+  background: var(--ink);
+  border-color: var(--ink);
+  color: #000;
+}
+
+body.dos input[type="checkbox"] {
+  accent-color: #33ff33;
+}
+
+body.dos .error {
+  color: #ff5555;
+}
+
+body.dos header h1::before {
+  content: "C:\\> ";
+  color: var(--ink-2);
+}
+
+body.dos header h1::after {
+  content: "_";
+  color: var(--ink);
+  animation: dos-blink 1s steps(1) infinite;
+}
+
+@keyframes dos-blink {
+  50% {
+    opacity: 0;
+  }
+}

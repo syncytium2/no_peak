@@ -5,6 +5,7 @@ import { parseSeries, resultToCSV, type ParsedSeries } from "./core/csv";
 import { fmt } from "./core/format";
 import { DEFAULT_PARAMS, type ClusterParams, type ErrorModelType, type MeanSD } from "./core/types";
 import { ClusterChart } from "./chart/ClusterChart";
+import { FIG, FIG_DOS } from "./chart/palette";
 import { downloadPNG, downloadSVG, downloadText } from "./chart/export";
 import { demoSeries } from "./demo";
 import gnrhCsv from "../data/extracted/gnrh.csv?raw";
@@ -93,6 +94,13 @@ export function App() {
     if (new URLSearchParams(window.location.search).has("demo")) loadDemo();
     else loadSeries("gnrh", parseSeries(gnrhCsv));
   }, []);
+
+  // Original Fortran mode gets the MS-DOS terminal chrome it ran under
+  const dos = params.variant === "fortran";
+  useEffect(() => {
+    document.body.classList.toggle("dos", dos);
+    return () => document.body.classList.remove("dos");
+  }, [dos]);
 
   const num = (key: keyof ClusterParams) => ({
     value: String(params[key] as number),
@@ -336,6 +344,7 @@ export function App() {
                 xLabel={xLabel}
                 yLabel={yLabel}
                 svgRef={svgRef}
+                palette={dos ? FIG_DOS : FIG}
               />
 
               <div className="statrow">
