@@ -441,7 +441,12 @@ export function About({ onBack }: { onBack: () => void }) {
           GitHub
         </a>
         . If you find a case where no_peak disagrees with Igor or the Fortran, that is a bug worth
-        reporting — please open an issue with the data and parameters.
+        reporting — please open an issue with the data and parameters, or email{" "}
+        <a href="mailto:tony@tonydefazio.com">tony@tonydefazio.com</a>.
+      </p>
+      <p>
+        Questions about the algorithm, requests for a dataset or feature, and corrections to
+        anything on this page are all welcome at the same address.
       </p>
 
       <p style={{ marginTop: 32 }}>

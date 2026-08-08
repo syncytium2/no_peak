@@ -399,6 +399,17 @@ footer {
   padding-top: 12px;
 }
 
+footer a,
+.privacy a {
+  color: var(--accent);
+}
+
+body.dos footer a,
+body.dos .privacy a,
+body.dos .about a {
+  color: var(--ink);
+}
+
 /* ---- About page ---- */
 
 .about {

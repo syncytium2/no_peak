@@ -512,7 +512,8 @@ export function App() {
           <a href="#about">About, citations &amp; other tools</a>
         </p>
         <p>
-          v{VERSION} · built {BUILT} · first commit {longDate(BORN)}
+          v{VERSION} · built {BUILT} · first commit {longDate(BORN)} ·{" "}
+          <a href="mailto:tony@tonydefazio.com">tony@tonydefazio.com</a>
         </p>
       </footer>
     </div>
