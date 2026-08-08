@@ -67,8 +67,8 @@ export async function generatePDFReport(
   paramRows.push([
     "Zero-terminate",
     p.zeroTerminate ? `yes (≤ ${p.zero})` : "no",
-    "Pooled-variance form",
-    p.fortranVariance ? "Fortran (squared)" : "Igor",
+    "Implementation",
+    p.variant === "fortran" ? "Original Fortran (CLUST5)" : "Igor port (validated)",
   ]);
   autoTable(doc, {
     startY: y,

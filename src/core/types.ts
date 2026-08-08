@@ -29,12 +29,16 @@ export interface ClusterParams {
   zeroTerminate: boolean;
   zero: number;
   /**
-   * Pooled-variance form. false (default) reproduces Igor mScore, which sums
-   * NDF[i]*STDEV[i]; true reproduces the original Fortran, which sums
-   * NDF(I)*STDEV(I)**2. Kept switchable because validation targets the Igor
-   * output while the Fortran form is the published algorithm.
+   * Which reference implementation to reproduce. "igor" (default) matches
+   * ClusterMasterV4-1.ipf, the validation oracle. "fortran" matches the
+   * original CLUST5.MPF: pooled S sums NDF(I)*STDEV(I)**2 (Igor sums
+   * NDF[i]*STDEV[i]), and the pulse-assembly pass differs — loop 1200 marks
+   * NPEAK points per up-flag (Igor marks nPeak-1), the initial down-run sets
+   * only PULSE(1) (Igor fills and terminates the whole leading run), loop
+   * 1300 starts at the second point, and the backward zap runs to index 1
+   * (Igor stops at 3).
    */
-  fortranVariance: boolean;
+  variant: "igor" | "fortran";
   /**
    * Report a pulse whose onset was detected but whose termination is censored
    * by the end of the record (the Fortran drops it because the trailing nadir
@@ -53,7 +57,7 @@ export const DEFAULT_PARAMS: ClusterParams = {
   errorValue: 1,
   zeroTerminate: false,
   zero: 0,
-  fortranVariance: false,
+  variant: "igor",
   includeTruncated: true,
 };
 

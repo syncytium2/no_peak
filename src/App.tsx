@@ -191,6 +191,18 @@ export function App() {
                 <input type="number" step={0.1} {...num("errorValue")} />
               </label>
             )}
+            <label>
+              Implementation
+              <select
+                value={params.variant}
+                onChange={(e) =>
+                  setParams((p) => ({ ...p, variant: e.target.value as "igor" | "fortran" }))
+                }
+              >
+                <option value="igor">Igor port (validated)</option>
+                <option value="fortran">Original Fortran (CLUST5)</option>
+              </select>
+            </label>
             {!loaded?.series.times && (
               <label>
                 Sampling interval
@@ -226,14 +238,6 @@ export function App() {
                 onChange={(e) => setParams((p) => ({ ...p, includeTruncated: e.target.checked }))}
               />
               Count a final pulse cut off by the end of the record
-            </label>
-            <label>
-              <input
-                type="checkbox"
-                checked={params.fortranVariance}
-                onChange={(e) => setParams((p) => ({ ...p, fortranVariance: e.target.checked }))}
-              />
-              Fortran pooled-variance form (squares the error term)
             </label>
           </div>
 

@@ -185,6 +185,33 @@ describe("peaks and valleys", () => {
     expect(peaks[0].iFirst).toBe(5);
   });
 
+  it("fortran pulse assembly agrees with Igor on a plain bounded pulse", () => {
+    // The two assemblies differ only in edge cases (marking width, initial
+    // state, zap bounds); on an interior up→down pulse the backward zap
+    // canonicalizes both to the same run.
+    const w = new Array(12).fill(1);
+    const ups = new Array(12).fill(0);
+    const downs = new Array(12).fill(0);
+    ups[4] = 1;
+    downs[8] = -1;
+    const igor = pulseTest(w, ups, downs, 3, 2, false, 0, "igor");
+    const fortran = pulseTest(w, ups, downs, 3, 2, false, 0, "fortran");
+    expect(fortran).toEqual(igor);
+    expect(igor.slice(3, 10)).toEqual([0, 1, 1, 1, 1, 1, 0]);
+  });
+
+  it("fortran variant applies the squared pooled-variance form end to end", () => {
+    const times = Array.from({ length: 12 }, (_, i) => i + 1);
+    const values = [1, 1, 1, 1, 8, 8, 1, 1, 1, 1, 1, 1];
+    const error = new Array(12).fill(0.5);
+    const base = { ...DEFAULT_PARAMS, errorModel: "Error Wave" as const };
+    const igor = clusterMain(times, values, { ...base, variant: "igor" }, error);
+    const fortran = clusterMain(times, values, { ...base, variant: "fortran" }, error);
+    // stdev 0.5 everywhere: S_igor = sqrt(sum 0.5/df), S_fortran = sqrt(sum 0.25/df)
+    // so every Fortran t-score is the Igor t-score times sqrt(2)
+    expect(fortran.mscoreUp[4]).toBeCloseTo(igor.mscoreUp[4] * Math.SQRT2, 8);
+  });
+
   it("extractPeaks with includeTruncated reports an end-censored pulse", () => {
     const pulse = [1, 1, 0, 0, 0, 1, 1, 0, 0, 1, 1, 1];
     const w = [5, 5, 1, 1, 1, 5, 5, 1, 1, 2, 9, 3];

@@ -54,6 +54,61 @@ export function upOrDn(
   return { flags, tTrace };
 }
 
+/**
+ * Pass-four pulse assembly exactly as CLUST5.MPF wrote it (labels 1100-1310),
+ * translated to 0-based indexing. Differs from the Igor path in pulseTest:
+ * loop 1200 marks NPEAK points per up-flag, the initial down state sets only
+ * PULSE(1), loop 1300 always starts at the second point, and the backward
+ * zap runs down to index 1.
+ */
+function pulseAssemblyFortran(
+  ups: number[],
+  downs: number[],
+  nPeak: number,
+  nNadir: number,
+  n: number,
+): number[] {
+  const pulse = new Array<number>(n).fill(0);
+
+  // 1100/1102: PULSE(1) is true iff the first flagged change is a down
+  let j = 0;
+  for (let i = 0; i < n; i++) {
+    if (ups[i] === 1) j = 1;
+    if (downs[i] === -1) j = -1;
+    if (j !== 0) break;
+  }
+  if (j === -1) pulse[0] = 1;
+
+  // 1200: DO I=2,NPTS-NPEAK+1 — each up-flag marks NPEAK points
+  for (let i = 1; i <= n - nPeak; i++) {
+    if (ups[i] === 1) {
+      for (let k = 0; k < nPeak; k++) pulse[i + k] = 1;
+    }
+  }
+
+  // 1300: DO I=2,NPTS — carry the pulse state forward past non-down points
+  for (let i = 1; i < n; i++) {
+    if (pulse[i] !== 1 && downs[i] !== -1) pulse[i] = pulse[i - 1];
+  }
+
+  // 1301/1310: backward zap, ICUR = NPTS-1 down to 2 (1-based)
+  let icur = n - 2;
+  let izap = 1;
+  while (icur >= 1) {
+    if (pulse[icur] === 1) izap = 0;
+    if (izap === 1) {
+      pulse[icur] = pulse[icur + 1];
+      if (downs[icur] === -1) pulse[icur] = 1;
+    } else if (pulse[icur] === 1 && pulse[icur - 1] === 0) {
+      izap = 1;
+      icur -= nNadir;
+    }
+    icur -= 1;
+  }
+
+  return pulse;
+}
+
 /** Port of pulseTest: combine up/down flags into the 0/1 pulse array. */
 export function pulseTest(
   w: number[],
@@ -63,8 +118,18 @@ export function pulseTest(
   nNadir: number,
   zeroTerminate = false,
   zero = 0,
+  variant: "igor" | "fortran" = "igor",
 ): number[] {
   const n = w.length;
+  if (variant === "fortran") {
+    const pulse = pulseAssemblyFortran(ups, downs, nPeak, nNadir, n);
+    if (zeroTerminate) {
+      for (let i = 0; i < n; i++) {
+        if (w[i] <= zero && pulse[i] === 1) pulse[i] = 0;
+      }
+    }
+    return pulse;
+  }
   const pulse = new Array<number>(n).fill(0);
 
   // Loop 1100/1102: find the first flagged change. If it is a down, a pulse
@@ -164,8 +229,9 @@ export function clusterMain(
     userError,
   );
 
-  const up = upOrDn(values, error, nPeak, nNadir, params.tScoreUp, 1, params.minPeak, params.fortranVariance);
-  const dn = upOrDn(values, error, nPeak, nNadir, params.tScoreDn, -1, params.minPeak, params.fortranVariance);
+  const fortran = params.variant === "fortran";
+  const up = upOrDn(values, error, nPeak, nNadir, params.tScoreUp, 1, params.minPeak, fortran);
+  const dn = upOrDn(values, error, nPeak, nNadir, params.tScoreDn, -1, params.minPeak, fortran);
 
   const pulse = pulseTest(
     values,
@@ -175,6 +241,7 @@ export function clusterMain(
     nNadir,
     params.zeroTerminate,
     params.zero,
+    params.variant,
   );
 
   const deltaT = times[1] - times[0];

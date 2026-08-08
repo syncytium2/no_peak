@@ -76,7 +76,7 @@ export function resultToCSV(r: ClusterResult): string {
         ? ` errorValue=${r.params.errorValue}`
         : "") +
       (r.params.zeroTerminate ? ` zeroTerminate<=${r.params.zero}` : "") +
-      (r.params.fortranVariance ? " fortranVariance" : ""),
+      ` impl=${r.params.variant}`,
   );
   out.push("");
   out.push("time,value,error,up,down,mscore_up,mscore_dn,pulse");
