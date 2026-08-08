@@ -185,6 +185,21 @@ describe("peaks and valleys", () => {
     expect(peaks[0].iFirst).toBe(5);
   });
 
+  it("extractPeaks with includeTruncated reports an end-censored pulse", () => {
+    const pulse = [1, 1, 0, 0, 0, 1, 1, 0, 0, 1, 1, 1];
+    const w = [5, 5, 1, 1, 1, 5, 5, 1, 1, 2, 9, 3];
+    const peaks = extractPeaks(pulse, w, 1, 2, true);
+    // the leading in-progress run still has no detected onset and stays out
+    expect(peaks.length).toBe(2);
+    const last = peaks[1];
+    expect(last.iFirst).toBe(9);
+    expect(last.height).toBe(9);
+    expect(last.increase).toBeCloseTo(9 - 1); // preceding nadir mean = (1+1)/2
+    // no trailing baseline inside the record: after-dependent stats are null
+    expect(last.meanPct).toBeNull();
+    expect(last.area).toBeNull();
+  });
+
   it("extractValleys requires pulses on both sides", () => {
     const pulse = [0, 0, 1, 1, 0, 0, 0, 1, 0, 0];
     const w = [1, 1, 5, 5, 1, 0.5, 1, 5, 1, 1];

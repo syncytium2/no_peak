@@ -178,7 +178,7 @@ export function clusterMain(
   );
 
   const deltaT = times[1] - times[0];
-  const peaks = extractPeaks(pulse, values, deltaT, nNadir);
+  const peaks = extractPeaks(pulse, values, deltaT, nNadir, params.includeTruncated);
   const valleys = extractValleys(pulse, values, deltaT);
   const summary = summarize(values, deltaT, peaks, valleys);
 

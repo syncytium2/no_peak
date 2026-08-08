@@ -16,22 +16,29 @@ export function extractPeaks(
   w: number[],
   deltaT: number,
   nNadir: number,
+  includeTruncated = false,
 ): Peak[] {
   const n = pulse.length;
   const peaks: Peak[] = [];
 
   // Fortran: first candidate start is index NNADIR+1 (1-based) = nNadir (0-based);
   // scanning stops when the window no longer leaves room for a trailing nadir.
+  // includeTruncated relaxes only the trailing bound: a pulse whose onset was
+  // detected but whose termination is censored by the end of the record is
+  // still reported, with the after-nadir statistics left null. A pulse already
+  // in progress at the start has no detected onset and is never reported.
+  const scanEnd = includeTruncated ? n : n - nNadir - 1;
   let iFirst = nNadir;
-  while (iFirst < n - nNadir - 1) {
+  while (iFirst < scanEnd) {
     if (!(pulse[iFirst] === 1 && pulse[iFirst - 1] !== 1)) {
       iFirst += 1;
       continue;
     }
     // find iLast: first non-pulse point after the run
     let iLast = iFirst + 1;
-    while (iLast < n - nNadir - 1 && pulse[iLast] === 1) iLast += 1;
-    if (pulse[iLast] === 1) break; // ran out of room before the run ended
+    while (iLast < scanEnd && pulse[iLast] === 1) iLast += 1;
+    if (!includeTruncated && pulse[iLast] === 1) break; // ran out of room before the run ended
+    if (iLast >= n) iLast = n - 1; // run reaches the final point: cap in-bounds
 
     // largest value over [iFirst, iLast] inclusive (Fortran DO 4350)
     let height = -Infinity;
@@ -47,7 +54,8 @@ export function extractPeaks(
 
     // preceding and following nadir means (Fortran DO 4360 / DO 4380)
     const before = mean(w, iFirst - nNadir, iFirst);
-    const after = iLast + nNadir <= n ? mean(w, iLast, iLast + nNadir) : null;
+    const after =
+      iLast + nNadir <= n && pulse[iLast] !== 1 ? mean(w, iLast, iLast + nNadir) : null;
 
     const peakMean = mean(w, iFirst, iLast + 1);
 

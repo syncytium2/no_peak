@@ -213,6 +213,14 @@ export function App() {
             <label>
               <input
                 type="checkbox"
+                checked={params.includeTruncated}
+                onChange={(e) => setParams((p) => ({ ...p, includeTruncated: e.target.checked }))}
+              />
+              Count a final pulse cut off by the end of the record
+            </label>
+            <label>
+              <input
+                type="checkbox"
                 checked={params.fortranVariance}
                 onChange={(e) => setParams((p) => ({ ...p, fortranVariance: e.target.checked }))}
               />

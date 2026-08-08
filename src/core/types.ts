@@ -35,6 +35,12 @@ export interface ClusterParams {
    * output while the Fortran form is the published algorithm.
    */
   fortranVariance: boolean;
+  /**
+   * Report a pulse whose onset was detected but whose termination is censored
+   * by the end of the record (the Fortran drops it because the trailing nadir
+   * window does not fit). Statistics needing the following baseline are null.
+   */
+  includeTruncated: boolean;
 }
 
 export const DEFAULT_PARAMS: ClusterParams = {
@@ -48,6 +54,7 @@ export const DEFAULT_PARAMS: ClusterParams = {
   zeroTerminate: false,
   zero: 0,
   fortranVariance: false,
+  includeTruncated: true,
 };
 
 export interface Peak {
