@@ -5,6 +5,7 @@
 
 import { useMemo, useRef, useState } from "react";
 import type { ClusterResult } from "../core/types";
+import { fmt } from "../core/format";
 import { FIG, PULSE_WASH_OPACITY, ERROR_BAR_OPACITY } from "./palette";
 import { linearScale, niceTicks, padDomain, formatTick } from "./scale";
 
@@ -125,9 +126,6 @@ export function ClusterChart({
     }
     setHover(best);
   }
-
-  const fmt = (v: number, digits = 3) =>
-    Number.isFinite(v) ? Number(v.toPrecision(digits + 2)).toLocaleString("en-US", { maximumFractionDigits: digits }) : "—";
 
   // tooltip placement in % of container so it tracks responsive scaling
   const tooltipLeftPct = hover !== null ? (x(times[hover]) / W) * 100 : 0;

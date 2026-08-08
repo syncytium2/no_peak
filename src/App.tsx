@@ -2,10 +2,12 @@ import { useEffect, useMemo, useRef, useState } from "react";
 import { clusterMain } from "./core/cluster";
 import { resolveErrorModel } from "./core/errorModel";
 import { parseSeries, resultToCSV, type ParsedSeries } from "./core/csv";
+import { fmt } from "./core/format";
 import { DEFAULT_PARAMS, type ClusterParams, type ErrorModelType, type MeanSD } from "./core/types";
 import { ClusterChart } from "./chart/ClusterChart";
 import { downloadPNG, downloadSVG, downloadText } from "./chart/export";
 import { demoSeries } from "./demo";
+import gnrhCsv from "../data/extracted/gnrh.csv?raw";
 
 const ERROR_MODELS: ErrorModelType[] = [
   "Local SD",
@@ -21,11 +23,6 @@ interface Loaded {
   name: string;
   series: ParsedSeries;
 }
-
-const fmt = (v: number | null | undefined, d = 3) =>
-  v === null || v === undefined || !Number.isFinite(v)
-    ? "—"
-    : Number(v.toPrecision(d + 2)).toLocaleString("en-US", { maximumFractionDigits: d });
 
 const fmtMS = (m: MeanSD | null) => (m ? `${fmt(m.mean)} ± ${fmt(m.sd)}` : "—");
 
@@ -66,30 +63,31 @@ export function App() {
     setLoadError(null);
     try {
       const text = await file.text();
-      const series = parseSeries(text);
-      setLoaded({ name: file.name.replace(/\.[^.]+$/, ""), series });
-      setParams((p) => {
-        const next = resolveErrorModel(p.errorModel, series.error !== null);
-        return next === p.errorModel ? p : { ...p, errorModel: next };
-      });
+      loadSeries(file.name.replace(/\.[^.]+$/, ""), parseSeries(text));
     } catch (e) {
       setLoadError(e instanceof Error ? e.message : String(e));
     }
   }
 
-  function loadDemo() {
+  function loadSeries(name: string, series: ParsedSeries) {
     setLoadError(null);
-    const { times, values } = demoSeries();
-    setLoaded({ name: "demo", series: { times, values, error: null, labels: null } });
+    setLoaded({ name, series });
     setParams((p) => {
-      const next = resolveErrorModel(p.errorModel, false);
+      const next = resolveErrorModel(p.errorModel, series.error !== null);
       return next === p.errorModel ? p : { ...p, errorModel: next };
     });
   }
 
-  // ?demo auto-loads the demo dataset (shareable example link)
+  function loadDemo() {
+    const { times, values } = demoSeries();
+    loadSeries("demo", { times, values, error: null, labels: null });
+  }
+
+  // ?demo auto-loads the synthetic demo; otherwise the bundled GnRH dataset
+  // loads by default so the page never opens blank.
   useEffect(() => {
     if (new URLSearchParams(window.location.search).has("demo")) loadDemo();
+    else loadSeries("gnrh", parseSeries(gnrhCsv));
   }, []);
 
   const num = (key: keyof ClusterParams) => ({

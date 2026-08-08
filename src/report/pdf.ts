@@ -6,6 +6,7 @@ import { jsPDF } from "jspdf";
 import "svg2pdf.js";
 import autoTable from "jspdf-autotable";
 import type { ClusterResult, MeanSD } from "../core/types";
+import { fmt } from "../core/format";
 
 const INK = "#0b0b0b";
 const INK2 = "#52514e";
@@ -15,11 +16,6 @@ const GRID = "#e1e0d9";
 const PAGE_W = 595.28; // A4 portrait, pt
 const MARGIN = 48;
 const CONTENT_W = PAGE_W - 2 * MARGIN;
-
-const fmt = (v: number | null | undefined, d = 3) =>
-  v === null || v === undefined || !Number.isFinite(v)
-    ? "—"
-    : Number(v.toPrecision(d + 2)).toLocaleString("en-US", { maximumFractionDigits: d });
 
 const fmtMS = (m: MeanSD | null) => (m ? `${fmt(m.mean)} ± ${fmt(m.sd)} (n=${m.n})` : "—");
 
