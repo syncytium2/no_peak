@@ -11,10 +11,33 @@ You need Igor Pro, `data/cluster td- just data.pxp`, and
 1. Open the experiment; make sure `ClusterMasterV4-1.ipf` is compiled.
 2. Open `tools/igor/no_peak_validate.ipf` (File ▸ Open File ▸ Procedure) and
    compile.
-3. In the command line, run `np_ValidateAll()`.
-4. Pick an empty output folder when prompted. It writes 15 CSVs.
-5. Copy that folder into the repo as `data/oracle_igor/`.
+3. In Igor's **Command Window** (the pane at the bottom of the main window —
+   Igor has no shell-level batch mode, see below), run either:
+   - `np_ValidateAll()` — asks for an output folder, or
+   - `np_ValidateAllTo("/Users/you/Developer/no_peak/data/oracle_igor")` —
+     no dialog, writes straight into the repo.
+4. It writes 15 CSVs.
+5. If you used `np_ValidateAll()`, copy the folder to `data/oracle_igor/`.
 6. `npm test` — the Igor oracle suite goes from skipped to real.
+
+## Igor has no batch mode
+
+There is no `igor -batch` equivalent to `matlab -batch` or `Rscript`: Igor is
+GUI-only, and "command line" above means Igor's own Command Window.
+
+Igor64.app *is* AppleScript-enabled (`NSAppleScriptEnabled = true`), so it can
+be driven with `osascript` sending the standard do-script event
+(`«event miscdosc»`). Two traps, both hit while trying it here:
+
+- Igor ships classic terminology, not a modern `.sdef`, so `do script` fails to
+  compile under that name — the raw event code is required.
+- **Any dialog blocks the Apple Event until it is dismissed**, and the reply
+  then fails with `AppleEvent timed out (-1712)`. That is why
+  `np_ValidateAllTo()` exists and uses `NewPath/O/Q/Z`: an interactive
+  `NewPath` will pop a folder picker and hang the automation.
+
+For a one-off validation, typing one line into the Command Window is simply
+faster than fighting this.
 
 Each CSV records its own parameters in a header comment, so the test harness
 reads the settings from the file. You do not need to tell the tests anything.

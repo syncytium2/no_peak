@@ -55,19 +55,47 @@ Function np_Run(String tag, String wn, Variable nPeak, Variable nNadir, Variable
 	Print "wrote " + tag + ".csv"
 End
 
+// Interactive entry point: asks for a folder.
 Function np_ValidateAll()
-
 	NewPath/O/Q/M="Choose an EMPTY folder for the no_peak oracle CSVs" npOut
 	if (V_flag != 0)
 		Print "np_ValidateAll: cancelled"
 		return -1
 	endif
+	return np_RunMatrix()
+End
 
-	// Liberal wave names (parentheses) are awkward to pass around; work on copies.
-	Duplicate/O $"set1C1(RD)", np_set1
-	Duplicate/O $"set1C2(STDEV)", np_set1_sd
-	Duplicate/O $"LHInfusedC1(RD)", np_lhinf
-	Duplicate/O $"LHInfusedC2(STDEV)", np_lhinf_sd
+// Non-interactive entry point. Takes a folder path and NEVER shows a dialog,
+// so it is safe to drive over AppleScript — a dialog would block Igor and the
+// Apple Event would time out. Accepts a POSIX path ("/Users/you/out") or an
+// HFS path ("Macintosh HD:Users:you:out").
+Function np_ValidateAllTo(String outDir)
+	// /Z suppresses the folder-picker if the path does not parse
+	NewPath/O/Q/Z npOut, outDir
+	if (V_flag != 0)
+		// try converting POSIX -> HFS, which older path handling requires
+		String hfs = ParseFilePath(5, outDir, ":", 0, 0)
+		NewPath/O/Q/Z npOut, hfs
+		if (V_flag != 0)
+			Print "np_ValidateAllTo: could not open folder: " + outDir
+			return -1
+		endif
+	endif
+	return np_RunMatrix()
+End
+
+Static Function np_RunMatrix()
+
+	// Liberal wave names (parentheses) are awkward to pass around; work on
+	// copies. WaveExists guards keep a missing wave from aborting the run.
+	if (WaveExists($"set1C1(RD)"))
+		Duplicate/O $"set1C1(RD)", np_set1
+		Duplicate/O $"set1C2(STDEV)", np_set1_sd
+	endif
+	if (WaveExists($"LHInfusedC1(RD)"))
+		Duplicate/O $"LHInfusedC1(RD)", np_lhinf
+		Duplicate/O $"LHInfusedC2(STDEV)", np_lhinf_sd
+	endif
 
 	// ---- the defaults the app ships with, and the panel's recorded settings ----
 	np_Run("A_gnrh_p2n2_errwave",  "gnrh", 2, 2, 2, 2, 0, "Error Wave", 0, 0, 0, "sem")
