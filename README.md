@@ -52,6 +52,13 @@ Port fidelity notes:
 Source material copied from `gitlab.com/um-mip/coding-project`
 (local: `~/Documents/coding-project`).
 
+## docs
+
+- `docs/deep-learning-handoff.md` — proposal (nothing built) for a learned
+  pulse detector, framed as amortized simulation-based inference so it trains
+  on the accepted generative model and emits calibrated posteriors instead of
+  point estimates. Includes kill criteria and the client-side constraint.
+
 ## reference/fortran — the original algorithm
 
 - `CLUST5.MPF` — CLUSTER v6.01, standalone Fortran 77 console program
