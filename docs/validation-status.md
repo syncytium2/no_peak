@@ -90,21 +90,24 @@ changes numbers.
 
 ## Pipeline
 
-### 1. Capture the Igor oracle — BLOCKED (needs Igor Pro + a human)
+### 1. Capture the Igor oracle — READY TO RUN (needs Igor Pro + a human)
 
-The highest-value item. Requires someone with the Igor experiment open.
+The highest-value remaining item, and the only thing standing between the repo
+and its own validation claim. Everything except the Igor session is built:
 
-1. Open `data/cluster td- just data.pxp` in Igor with `ClusterMasterV4-1.ipf`.
-2. For each of `gnrh`, `set1`, `LHInfused`, run `ClusterMain` at the documented
-   defaults (nPeak 2, nNadir 2, tUp 2, tDn 2, minPeak 0, error = user error
-   wave) — and ideally also at the settings recorded in
-   `data/extracted/igor_panel_settings.txt` (nPeak 1, nNadir 1).
-3. Save the **output** waves to CSV: `pulse`, `ups`, `downs`, `Mscore_ups`,
-   `Mscore_dns`, `err`, plus the peak/valley tables.
-4. Drop them in `data/oracle/<dataset>_<params>/` and add a test that diffs
-   no_peak's arrays point-by-point against them.
+- `tools/igor/no_peak_validate.ipf` — run `np_ValidateAll()`, pick a folder,
+  get 15 CSVs covering a matrix designed so each run reaches a branch nothing
+  else does.
+- `src/core/igor-oracle.test.ts` — auto-discovers `data/oracle_igor/*.csv`,
+  reads each file's parameters from its own header, and diffs the error array,
+  up/down flags, pulse array, and t-score trace. Currently reports one skipped
+  test so the gap stays visible instead of passing silently.
+- `docs/igor-validation.md` — the walkthrough, the settings table, and what to
+  do when something disagrees.
 
-Only after this does "validated against the Igor implementation" become true.
+The two rows that matter most are the asymmetric ones (nPeak 3 / nNadir 1 and
+its mirror): they settle whether Igor swaps its windows on the downs pass the
+way the Fortran does. Every other row is symmetric and therefore blind to it.
 
 ### 2. Compile the original Fortran — DONE (2026-08-08)
 
