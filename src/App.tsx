@@ -35,6 +35,10 @@ export function App() {
   const [showError, setShowError] = useState(true);
   const [showMscore, setShowMscore] = useState(true);
   const [loadError, setLoadError] = useState<string | null>(null);
+  // settings fold: open on desktop, collapsed on phones so the figure leads
+  const [settingsOpen, setSettingsOpen] = useState(
+    () => window.matchMedia("(min-width: 881px)").matches,
+  );
   const svgRef = useRef<SVGSVGElement | null>(null);
   const fileRef = useRef<HTMLInputElement | null>(null);
 
@@ -138,7 +142,12 @@ export function App() {
       {loadError && <p className="error">{loadError}</p>}
 
       <div className="cols">
-        <aside className="panel">
+        <details
+          className="panel"
+          open={settingsOpen}
+          onToggle={(e) => setSettingsOpen((e.target as HTMLDetailsElement).open)}
+        >
+          <summary>Settings</summary>
           <h2>Detection parameters</h2>
           <div className="grid">
             <label>
@@ -294,7 +303,7 @@ export function App() {
               </div>
             </>
           )}
-        </aside>
+        </details>
 
         <main className="content">
           {!loaded && (

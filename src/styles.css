@@ -113,13 +113,17 @@ button.primary:hover {
   .cols {
     grid-template-columns: 1fr;
   }
-  /* single column: an unstuck panel would pin and let the chart scroll over it */
+  /* single column: a stuck panel would pin and let the chart scroll over it */
   .panel {
     position: static;
   }
-  /* figure first on small screens; the settings panel follows */
-  .content {
-    order: -1;
+  /* condensed settings: two inputs per row, tighter fields */
+  .panel .grid {
+    grid-template-columns: 1fr 1fr;
+  }
+  .panel .grid input,
+  .panel .grid select {
+    padding: 4px 8px;
   }
 }
 
@@ -130,6 +134,15 @@ button.primary:hover {
   padding: 16px;
   position: sticky;
   top: 16px;
+}
+
+.panel > summary {
+  cursor: pointer;
+  font-size: 13px;
+  text-transform: uppercase;
+  letter-spacing: 0.06em;
+  font-weight: 600;
+  color: var(--ink-2);
 }
 
 .panel h2,
