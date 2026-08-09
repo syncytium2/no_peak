@@ -4,6 +4,8 @@
 
 import { BORN, BUILT, VERSION, longDate } from "./version";
 import { ContactForm } from "./Contact";
+import { downloadText } from "./chart/export";
+import { TEMPLATE_CSV, TEMPLATE_NAME } from "./template";
 
 export function About({ onBack }: { onBack: () => void }) {
   return (
@@ -24,6 +26,79 @@ export function About({ onBack }: { onBack: () => void }) {
         Everything runs on your machine. There is no server, no upload, and no analytics — the data
         you load never leaves the browser tab.
       </p>
+
+      <h2 id="prepare">Preparing a file to upload</h2>
+      <p>
+        The quickest way to see the expected shape is to open the example:{" "}
+        <button className="linkish" onClick={() => downloadText(TEMPLATE_CSV, TEMPLATE_NAME)}>
+          download a sample CSV
+        </button>
+        . Every bundled dataset in the <strong>Sample data</strong> menu is a real file in the same
+        format, so loading one and exporting the results is another way to see it.
+      </p>
+      <p>
+        A file is plain text with one sample per line. Commas, tabs, semicolons, or spaces all
+        work, and a header row is optional — it is detected and skipped automatically. Three
+        layouts are accepted:
+      </p>
+      <ul>
+        <li>
+          <strong>One column — <code>value</code>.</strong> Just concentrations, in order. Times
+          are generated from the <em>Sampling interval</em> field, which appears in the settings
+          when a file has no time column.
+          <span className="cite">0.42 ⏎ 0.38 ⏎ 0.45 ⏎ …</span>
+        </li>
+        <li>
+          <strong>Two columns — <code>time,value</code>.</strong> Use this when you have real
+          sample times. Times should be evenly spaced: the algorithm compares fixed-width windows
+          of <em>points</em>, and widths and areas are computed from the first interval.
+          <span className="cite">10,0.42 ⏎ 20,0.38 ⏎ 30,0.45 ⏎ …</span>
+        </li>
+        <li>
+          <strong>Three columns — <code>time,value,error</code>.</strong> The best option if your
+          assay reports per-sample precision. The third column is the measurement error (SD or SEM)
+          for that sample, and selecting the &quot;Error Wave&quot; model uses it directly instead
+          of estimating error from the data.
+          <span className="cite">10,0.42,0.03 ⏎ 20,0.38,0.03 ⏎ …</span>
+        </li>
+      </ul>
+      <p>
+        You can also select <strong>two files at once</strong> — a data file and a separate error
+        file — and they will be paired, provided they have the same number of rows. The error file
+        is recognised by its name containing <code>err</code>, <code>sd</code>, <code>sem</code>,
+        or <code>stdev</code>. Either way, the app asks before switching to your errors, because
+        scaling the test by measurement error changes which pulses are detected.
+      </p>
+      <h3>Things that will trip you up</h3>
+      <ul>
+        <li>
+          <strong>Every row must be numeric.</strong> There is no support for blanks, gaps, or
+          missing-value markers like <code>NA</code>, <code>ND</code>, or <code>-</code>; loading
+          stops with the offending line number. Interpolate or trim before uploading, and say which
+          you did in your methods.
+        </li>
+        <li>
+          <strong>Rows must all have the same number of columns.</strong> A stray trailing comma on
+          one line is the usual culprit.
+        </li>
+        <li>
+          <strong>Export as CSV, not .xlsx.</strong> From Excel: File ▸ Save As ▸ CSV. From Igor:
+          Data ▸ Save Waves ▸ Save Delimited Text.
+        </li>
+        <li>
+          <strong>Decimal commas are not supported.</strong> In locales that write
+          <code>0,42</code>, the comma is read as a column separator. Save with a period.
+        </li>
+        <li>
+          <strong>Errors of zero break the t-test</strong> — a zero-error sample makes the pooled
+          variance vanish. If your assay reports zeros, use one of the estimated error models
+          instead.
+        </li>
+        <li>
+          Lines starting with <code>#</code> or <code>//</code> are ignored, so you can keep notes
+          at the top of the file.
+        </li>
+      </ul>
 
       <h2>How CLUSTER works</h2>
       <p>

@@ -9,6 +9,7 @@ import { FIG, FIG_DOS } from "./chart/palette";
 import { BORN, BUILT, VERSION, longDate } from "./version";
 import { downloadPNG, downloadSVG, downloadText } from "./chart/export";
 import { SAMPLES, SAMPLE_GROUPS, sampleCounts } from "./samples";
+import { TEMPLATE_CSV, TEMPLATE_NAME } from "./template";
 
 const ERROR_MODELS: ErrorModelType[] = [
   "Local SD",
@@ -221,7 +222,15 @@ export function App() {
         </label>
         <span className="hint">
           CSV/TSV: <code>value</code> · <code>time,value</code> · <code>time,value,error</code>
-          {" "}(header row optional). Select two files to pair data with a separate error file.
+          {" "}(header row optional).{" "}
+          <button
+            className="linkish"
+            onClick={() => downloadText(TEMPLATE_CSV, TEMPLATE_NAME)}
+            title="Download a small example file with the expected columns"
+          >
+            Download a sample CSV
+          </button>{" "}
+          · <a href="#about">how to prepare a file</a>
         </span>
         {loaded && (
           <span className="loadedname">
