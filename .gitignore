@@ -3,3 +3,8 @@ dist/
 .DS_Store
 *.local
 .wrangler/
+
+# Third-party reference implementations — CLUST5 / do_cluster (M. L. Johnson)
+# and the Igor Pro Cluster package. We do not have redistribution rights, so
+# these stay on local disk and are never committed. See docs/reference-code.md.
+reference/

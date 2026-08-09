@@ -62,6 +62,12 @@ Source material copied from `gitlab.com/um-mip/coding-project`
   on the accepted generative model and emits calibrated posteriors instead of
   point estimates. Includes kill criteria and the client-side constraint.
 
+## reference/ — NOT in this repository
+
+The original Fortran and the Igor Pro Cluster package are third-party code we
+do not have redistribution rights for. `reference/` is gitignored; see
+`docs/reference-code.md`. Everything below describes files you supply locally.
+
 ## reference/fortran — the original algorithm
 
 - `CLUST5.MPF` — CLUSTER v6.01, standalone Fortran 77 console program

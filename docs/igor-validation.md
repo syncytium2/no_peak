@@ -3,8 +3,9 @@
 The goal: make the claim "validated against the Igor Pro implementation" true by
 diffing this port against Igor's own output, point by point.
 
-You need Igor Pro, `data/cluster td- just data.pxp`, and
-`reference/igor/ClusterMasterV4-1.ipf`. Budget 20 minutes.
+You need Igor Pro, `data/cluster td- just data.pxp`, and the Igor Cluster
+package (`ClusterMasterV4-1.ipf`) — the latter is **not committed here**, see
+`docs/reference-code.md`; load it however you normally do. Budget 20 minutes.
 
 ## The short version
 

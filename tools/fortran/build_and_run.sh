@@ -23,12 +23,25 @@ NNADIR="${2:-2}"; NPEAK="${3:-2}"; TUP="${4:-2}"; TDN="${5:-2}"
 
 ROOT="$(cd "$(dirname "$0")/../.." && pwd)"
 HERE="$ROOT/tools/fortran"
+
+# The Fortran source is third-party and deliberately not committed (see
+# docs/reference-code.md). Point CLUST5_SRC at it, or drop it in reference/.
+CLUST5_SRC="${CLUST5_SRC:-$ROOT/reference/fortran/CLUST5.MPF}"
+if [ ! -f "$CLUST5_SRC" ]; then
+  echo "error: CLUST5.MPF not found at $CLUST5_SRC" >&2
+  echo "The original Fortran is not redistributed with this repository." >&2
+  echo "Supply it locally, or set CLUST5_SRC=/path/to/CLUST5.MPF." >&2
+  echo "See docs/reference-code.md. (data/oracle/ is already committed, so the" >&2
+  echo "oracle tests pass without it — this script only regenerates them.)" >&2
+  exit 1
+fi
+
 BUILD="$(mktemp -d)"
 NAME="$(basename "$CSV" .csv)"
 TAG="${NAME}_nn${NNADIR}_np${NPEAK}"
 
 cp "$HERE/opsys.h" "$HERE/defalt.h" "$HERE/stubs.f" "$BUILD/"
-tr -d '\r' < "$ROOT/reference/fortran/CLUST5.MPF" > "$BUILD/src_clust5.F"
+tr -d '\r' < "$CLUST5_SRC" > "$BUILD/src_clust5.F"
 
 cd "$BUILD"
 cpp -P -traditional-cpp -I. src_clust5.F > pp_clust5.f

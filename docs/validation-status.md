@@ -5,6 +5,10 @@ README and on the site can be matched against reality.
 
 _Last updated: 2026-08-08 (v0.2.0)._
 
+> The reference Fortran and Igor sources are **not committed** — third-party
+> code we cannot redistribute. See `docs/reference-code.md`. The oracle output
+> in `data/oracle/` is committed, so the tests below run without them.
+
 ## What is verified
 
 - **The `fortran` variant is validated against the original Fortran.**
