@@ -10,7 +10,9 @@
 
 import { useState } from "react";
 
-export const WEB3FORMS_KEY = ""; // <-- paste the access key here
+// Public by design: Web3Forms access keys are meant to be embedded client-side
+// and only identify the destination inbox. They cannot read anything back.
+export const WEB3FORMS_KEY = "b8c22a4e-b446-4d81-a4e1-b3ba4aaa3bc4";
 
 const USER = ["to", "ny"].join("");
 const HOST = ["tonydefazio", "com"].join(".");
