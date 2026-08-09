@@ -6,7 +6,7 @@
 // by reading the Fortran, and these tests check that reading against what the
 // program actually computes.
 
-import { readFileSync } from "node:fs";
+import { existsSync, readFileSync } from "node:fs";
 import { describe, expect, it } from "vitest";
 import { clusterMain } from "./cluster";
 import { parseSeries } from "./csv";
@@ -44,7 +44,21 @@ function parsePeaks(file: string) {
     }));
 }
 
-const series = parseSeries(readFileSync("data/extracted/gnrh.csv", "utf8"));
+// The oracle compares against real lab data and the Fortran's output on it —
+// neither is distributed (see docs/reference-code.md). Without them the suite
+// skips loudly rather than passing on nothing.
+const HAVE_ORACLE =
+  existsSync("data/extracted/gnrh.csv") && existsSync("data/oracle/gnrh_nn2_np2.lst");
+
+if (!HAVE_ORACLE) {
+  describe("CLUST5 oracle", () => {
+    it.skip("needs the undistributed data — see docs/reference-code.md", () => {});
+  });
+}
+
+const series = HAVE_ORACLE
+  ? parseSeries(readFileSync("data/extracted/gnrh.csv", "utf8"))
+  : { times: [], values: [], error: [], labels: null };
 
 const run = (nNadir: number, nPeak: number) =>
   clusterMain(
@@ -54,7 +68,7 @@ const run = (nNadir: number, nPeak: number) =>
     series.error!,
   );
 
-describe("CLUST5 oracle — gnrh, nNadir=2 nPeak=2 (the documented defaults)", () => {
+describe.runIf(HAVE_ORACLE)("CLUST5 oracle — gnrh, nNadir=2 nPeak=2 (the documented defaults)", () => {
   const oracle = parseListing("data/oracle/gnrh_nn2_np2.lst");
   const oraclePeaks = parsePeaks("data/oracle/gnrh_nn2_np2.stdout.txt");
   const r = run(2, 2);
@@ -88,7 +102,7 @@ describe("CLUST5 oracle — gnrh, nNadir=2 nPeak=2 (the documented defaults)", (
   });
 });
 
-describe("CLUST5 oracle — asymmetric windows expose a documented divergence", () => {
+describe.runIf(HAVE_ORACLE)("CLUST5 oracle — asymmetric windows expose a documented divergence", () => {
   const oracle = parseListing("data/oracle/gnrh_nn1_np3.lst");
   const r = run(1, 3);
 

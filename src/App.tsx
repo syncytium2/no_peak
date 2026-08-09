@@ -142,7 +142,7 @@ export function App() {
   // ?demo auto-loads the synthetic demo; otherwise the bundled GnRH dataset
   // loads by default so the page never opens blank.
   useEffect(() => {
-    loadSample(new URLSearchParams(window.location.search).has("demo") ? "demo" : "gnrh");
+    loadSample(new URLSearchParams(window.location.search).has("demo") ? "demo" : "sim_gnrh");
   }, []);
 
   // Original Fortran mode gets the MS-DOS terminal chrome it ran under
@@ -235,6 +235,11 @@ export function App() {
         {loaded && (
           <span className="loadedname">
             {loaded.name} — {loaded.series.values.length} points
+            {SAMPLES.some((s) => s.key === loaded.name) && (
+              <span className="simtag" title="Generated data, not a real experiment">
+                simulated
+              </span>
+            )}
           </span>
         )}
       </section>

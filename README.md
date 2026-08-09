@@ -25,11 +25,12 @@ validator), `src/App.tsx` the UI, `src/About.tsx` the about/citations page
 `__BUILD_DATE__` are injected in `vite.config.ts`; bump `package.json` version
 to change what the app reports).
 
-`src/samples.ts` bundles every extracted Igor wave plus the synthetic demo via
-`?raw` imports (~9 KB total) and drives the "Sample data" picker in the top bar;
-gnrh loads by default so the app never opens blank, and `?demo` loads the
-synthetic series instead. Adding a dataset = drop the CSV in `data/extracted/`
-and add one entry to `SAMPLES`.
+`src/samples.ts` bundles the **simulated** datasets (`data/synthetic/`, made by
+`tools/make_synthetic.py`) via `?raw` imports and drives the "Sample data"
+picker; `sim_gnrh` loads by default so the app never opens blank. Real lab
+recordings are NOT bundled and NOT committed — see `docs/reference-code.md`.
+Adding a dataset = generate it into `data/synthetic/` and add one `SAMPLES`
+entry. Anything from that menu is tagged "simulated" in the UI.
 
 Port fidelity notes:
 - The **Implementation** selector switches the whole algorithm between the
@@ -106,6 +107,11 @@ do not have redistribution rights for. `reference/` is gitignored; see
   `burstanalysis v4-0`, `JP_shuffle v0-1`, `tonys_tools`).
 
 ## data
+
+**Not committed** (gitignored): `cluster td- just data.pxp`, `data/extracted/`,
+`data/oracle/`, `data/oracle_igor/` — real lab recordings and output derived
+from them. Keep them locally to run the oracle tests and regenerate oracles;
+without them those suites skip. Committed: `data/synthetic/` only.
 
 - `cluster td- just data.pxp` — Igor experiment containing sample cluster
   data (from `~/Documents/coding-projectx/sample data in pxp/`), for

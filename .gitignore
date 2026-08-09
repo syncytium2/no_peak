@@ -8,3 +8,10 @@ dist/
 # and the Igor Pro Cluster package. We do not have redistribution rights, so
 # these stay on local disk and are never committed. See docs/reference-code.md.
 reference/
+
+# Real lab recordings and anything derived from them. Not ours to distribute:
+# the app ships simulated data instead (data/synthetic/, tools/make_synthetic.py).
+data/extracted/
+data/oracle/
+data/oracle_igor/
+*.pxp

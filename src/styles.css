@@ -138,6 +138,25 @@ body.dos .samplepick select {
   font-weight: 600;
 }
 
+/* makes it impossible to mistake a demo figure for real data */
+.simtag {
+  margin-left: 6px;
+  padding: 1px 6px;
+  border: 1px solid var(--axis);
+  border-radius: 10px;
+  font-size: 11px;
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 0.04em;
+  color: var(--muted);
+}
+
+body.dos .simtag {
+  border-radius: 0;
+  border-color: var(--ink-2);
+  color: var(--ink-2);
+}
+
 button {
   font: inherit;
   padding: 7px 14px;

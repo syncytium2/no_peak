@@ -33,8 +33,16 @@ export function About({ onBack }: { onBack: () => void }) {
         <button className="linkish" onClick={() => downloadText(TEMPLATE_CSV, TEMPLATE_NAME)}>
           download a sample CSV
         </button>
-        . Every bundled dataset in the <strong>Sample data</strong> menu is a real file in the same
-        format, so loading one and exporting the results is another way to see it.
+        . Every dataset in the <strong>Sample data</strong> menu is a file in the same format, so
+        loading one and exporting the results is another way to see it.
+      </p>
+      <p className="note">
+        <strong>The bundled datasets are simulated.</strong> They are generated from a seeded
+        random number generator and resemble real recordings only in sampling rate, baseline level,
+        pulse amplitude range, and assay CV — they correspond to no animal, experiment, or
+        measurement. Real laboratory recordings are not distributed with this app. Anything loaded
+        from the Sample data menu is tagged <em>simulated</em> next to its name, and the flat
+        control is included deliberately: a detector should find nothing in it.
       </p>
       <p>
         A file is plain text with one sample per line. Commas, tabs, semicolons, or spaces all
