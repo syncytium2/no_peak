@@ -3,7 +3,7 @@
 // PubMed/DOI at the time of writing — do not add one you have not checked.
 
 import { BORN, BUILT, VERSION, longDate } from "./version";
-import { MailLink } from "./Contact";
+import { ContactForm } from "./Contact";
 
 export function About({ onBack }: { onBack: () => void }) {
   return (
@@ -442,12 +442,15 @@ export function About({ onBack }: { onBack: () => void }) {
           GitHub
         </a>
         . If you find a case where no_peak disagrees with Igor or the Fortran, that is a bug worth
-        reporting — please open an issue with the data and parameters, or email <MailLink />.
+        reporting — please open an issue with the data and parameters.
       </p>
+
+      <h2>Get in touch</h2>
       <p>
-        Questions about the algorithm, requests for a dataset or feature, and corrections to
-        anything on this page are all welcome at the same address.
+        Questions about the algorithm, bug reports, requests for a dataset or feature, and
+        corrections to anything on this page are all welcome.
       </p>
+      <ContactForm />
 
       <p style={{ marginTop: 32 }}>
         <button onClick={onBack}>← Back to the app</button>

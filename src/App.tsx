@@ -7,7 +7,6 @@ import { DEFAULT_PARAMS, type ClusterParams, type ErrorModelType, type MeanSD } 
 import { ClusterChart } from "./chart/ClusterChart";
 import { FIG, FIG_DOS } from "./chart/palette";
 import { BORN, BUILT, VERSION, longDate } from "./version";
-import { MailLink } from "./Contact";
 import { downloadPNG, downloadSVG, downloadText } from "./chart/export";
 import { SAMPLES, SAMPLE_GROUPS, sampleCounts } from "./samples";
 
@@ -37,6 +36,8 @@ export function App() {
   const [showError, setShowError] = useState(true);
   const [showMscore, setShowMscore] = useState(true);
   const [loadError, setLoadError] = useState<string | null>(null);
+  // set when a user-loaded file brings its own errors and we should ask first
+  const [errorOffer, setErrorOffer] = useState<{ from: string; n: number } | null>(null);
   // settings fold: open on desktop, collapsed on phones so the figure leads
   const [settingsOpen, setSettingsOpen] = useState(
     () => window.matchMedia("(min-width: 881px)").matches,
@@ -65,19 +66,62 @@ export function App() {
 
   const result = computed?.result ?? null;
 
-  async function onFile(file: File) {
+  /** Filenames that look like the error half of a pair: gnrh_sd, set1 SEM, … */
+  const looksLikeError = (name: string) =>
+    /(^|[^a-z])(err|error|errors|sd|stdev|std|sem|se)([^a-z]|$)/i.test(
+      name.replace(/\.[^.]+$/, ""),
+    );
+
+  async function onFiles(files: File[]) {
     setLoadError(null);
     try {
-      const text = await file.text();
-      loadSeries(file.name.replace(/\.[^.]+$/, ""), parseSeries(text));
+      const parsed = await Promise.all(
+        files.map(async (f) => ({
+          name: f.name.replace(/\.[^.]+$/, ""),
+          series: parseSeries(await f.text()),
+        })),
+      );
+
+      if (parsed.length === 1) {
+        loadSeries(parsed[0].name, parsed[0].series, true);
+        return;
+      }
+      if (parsed.length !== 2) {
+        throw new Error(`Select one data file, or two (data + errors) — got ${parsed.length}.`);
+      }
+
+      // Pair them: prefer the filename hint, else assume the second is errors.
+      const errIdx = parsed.findIndex((p) => looksLikeError(p.name));
+      const ei = errIdx === -1 ? 1 : errIdx;
+      const di = ei === 0 ? 1 : 0;
+      const data = parsed[di];
+      const errs = parsed[ei];
+
+      if (errs.series.values.length !== data.series.values.length) {
+        throw new Error(
+          `"${errs.name}" has ${errs.series.values.length} values but "${data.name}" has ` +
+            `${data.series.values.length}. A paired error file must be the same length.`,
+        );
+      }
+      loadSeries(data.name, { ...data.series, error: errs.series.values }, true, errs.name);
     } catch (e) {
       setLoadError(e instanceof Error ? e.message : String(e));
     }
   }
 
-  function loadSeries(name: string, series: ParsedSeries) {
+  /**
+   * `ask` is set for user-supplied files: rather than silently switching the
+   * error model, offer the choice. Bundled samples are curated, so they just
+   * apply the right model.
+   */
+  function loadSeries(name: string, series: ParsedSeries, ask = false, errorFrom?: string) {
     setLoadError(null);
     setLoaded({ name, series });
+    if (ask && series.error) {
+      setErrorOffer({ from: errorFrom ?? `a column in ${name}`, n: series.error.length });
+      return; // leave the model alone until the user decides
+    }
+    setErrorOffer(null);
     setParams((p) => {
       const next = resolveErrorModel(p.errorModel, series.error !== null);
       return next === p.errorModel ? p : { ...p, errorModel: next };
@@ -129,11 +173,12 @@ export function App() {
         <input
           ref={fileRef}
           type="file"
+          multiple
           accept=".csv,.txt,.tsv,.dat"
           style={{ display: "none" }}
           onChange={(e) => {
-            const f = e.target.files?.[0];
-            if (f) void onFile(f);
+            const fs = Array.from(e.target.files ?? []);
+            if (fs.length) void onFiles(fs);
             e.target.value = "";
           }}
         />
@@ -176,7 +221,7 @@ export function App() {
         </label>
         <span className="hint">
           CSV/TSV: <code>value</code> · <code>time,value</code> · <code>time,value,error</code>
-          {" "}(header row optional)
+          {" "}(header row optional). Select two files to pair data with a separate error file.
         </span>
         {loaded && (
           <span className="loadedname">
@@ -186,6 +231,38 @@ export function App() {
       </section>
 
       {loadError && <p className="error">{loadError}</p>}
+
+      {errorOffer && (
+        <div className="offer">
+          <span>
+            Found {errorOffer.n} per-sample error values in <strong>{errorOffer.from}</strong>. Use
+            them as the measurement error (the &quot;Error Wave&quot; model)? Detection is scaled by
+            this error, so it changes which pulses are found.
+          </span>
+          <span className="offerbtns">
+            <button
+              className="primary"
+              onClick={() => {
+                setParams((p) => ({ ...p, errorModel: "Error Wave" }));
+                setErrorOffer(null);
+              }}
+            >
+              Use these errors
+            </button>
+            <button
+              onClick={() => {
+                setParams((p) => ({
+                  ...p,
+                  errorModel: p.errorModel === "Error Wave" ? "Local SD" : p.errorModel,
+                }));
+                setErrorOffer(null);
+              }}
+            >
+              Ignore, estimate from the data
+            </button>
+          </span>
+        </div>
+      )}
 
       <div className="cols">
         <details
@@ -513,7 +590,8 @@ export function App() {
           <a href="#about">About, citations &amp; other tools</a>
         </p>
         <p>
-          v{VERSION} · built {BUILT} · first commit {longDate(BORN)} · <MailLink />
+          v{VERSION} · built {BUILT} · first commit {longDate(BORN)} ·{" "}
+          <a href="#about">contact</a>
         </p>
       </footer>
     </div>
