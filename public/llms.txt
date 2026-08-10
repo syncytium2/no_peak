@@ -94,8 +94,6 @@ Reported plainly because the point of the tool is trustworthy numbers:
 - No expert-annotated pulse lists exist for these datasets, so "correct" means
   "matches the reference implementations and the simulator's ground truth", not
   "matches what an endocrinologist would mark".
-- There is a written proposal, and no implementation, for a learned detector
-  framed as amortized simulation-based inference. Nothing about it is built.
 
 ## Architecture
 
