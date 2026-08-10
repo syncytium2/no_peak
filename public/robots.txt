@@ -1,81 +1,20 @@
 # no_peak — https://nopeak.tonydefazio.com
 #
-# The distinction this file draws is *training* vs *reading*.
+# All crawlers are welcome, explicitly including AI/LLM crawlers (GPTBot,
+# ClaudeBot, PerplexityBot, Google-Extended, CCBot, and peers): this is a free
+# public scientific tool and we want it discoverable and described accurately.
+# The same decision, for the same reasons, as its sibling Colonel Kernel.
 #
-# Bulk crawlers that harvest pages to train models are not welcome. Agents that
-# fetch this page because a person asked them to — "look at this tool for me",
-# an AI search result, a reviewer pointing an assistant at the URL — are, and
-# blocking them costs the site the exact audience it wants. Anthropic, OpenAI
-# and Perplexity all publish separate user agents for these two purposes; this
-# file allows the user-initiated ones by name and blocks the training ones.
+# A curated summary for language models is at /llms.txt; the citable methods
+# reference is at /methods, which is real HTML and needs no JavaScript. The app
+# itself sends no data anywhere — no backend, no analytics — so crawling it
+# cannot expose any user's data.
 #
-# Note: Cloudflare prepends its own managed block above this content, and the
-# dashboard toggle Security > Bots > "Block AI Scrapers and Crawlers" acts at
-# the edge before robots.txt is ever read. Leave that toggle OFF, or it will
-# block user-initiated agents too, and no rule here can undo it.
-#
-# There is a plain-text summary of the app at /llms.txt for anything that reads
-# rather than executes the page.
+# Note for whoever maintains this: Cloudflare's Security > Bots > "Block AI
+# Scrapers and Crawlers" toggle acts at the edge, before robots.txt is ever
+# read. Leave it OFF, or it overrides everything in this file.
 
 User-agent: *
 Allow: /
 
-# --- User-initiated AI agents: allowed (a person asked for this page) ---
-User-agent: Claude-User
-Allow: /
-
-User-agent: ChatGPT-User
-Allow: /
-
-User-agent: Perplexity-User
-Allow: /
-
-# --- AI search indexes: allowed (they return links and excerpts) ---
-User-agent: Claude-SearchBot
-Allow: /
-
-User-agent: OAI-SearchBot
-Allow: /
-
-User-agent: PerplexityBot
-Allow: /
-
-# --- Model-training and bulk content-scraping crawlers: not allowed ---
-User-agent: ClaudeBot
-Disallow: /
-
-User-agent: anthropic-ai
-Disallow: /
-
-User-agent: GPTBot
-Disallow: /
-
-User-agent: Google-Extended
-Disallow: /
-
-User-agent: Applebot-Extended
-Disallow: /
-
-User-agent: CCBot
-Disallow: /
-
-User-agent: Bytespider
-Disallow: /
-
-User-agent: Amazonbot
-Disallow: /
-
-User-agent: meta-externalagent
-Disallow: /
-
-User-agent: FacebookBot
-Disallow: /
-
-User-agent: Diffbot
-Disallow: /
-
-User-agent: omgili
-Disallow: /
-
-User-agent: ImagesiftBot
-Disallow: /
+Sitemap: https://nopeak.tonydefazio.com/sitemap.xml

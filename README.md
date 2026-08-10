@@ -27,18 +27,35 @@ need to stay accurate:
   `textContent = ''`), so it is replaced by the app and doubles as the loading
   state. It also carries canonical/OpenGraph tags and a `SoftwareApplication`
   JSON-LD block.
+- `public/methods.html` + `public/methods.css` — the standalone **Methods &
+  Algorithm Reference**, served at `/methods`. Plain static HTML, no framework,
+  no JavaScript, no external requests. This is the citable page and the one an
+  agent can actually read. Same pattern as colonel-kernel's `/methods`.
 - `public/llms.txt` is the long-form machine-readable description: scope,
   validation numbers, and the honest limitations from
   `docs/validation-status.md`.
+- `public/sitemap.xml` lists `/` and `/methods`.
 
-`public/robots.txt` blocks model-training crawlers but explicitly allows the
-user-initiated agents (`Claude-User`, `ChatGPT-User`, `Perplexity-User`) and AI
-search indexes — blocking those blocks the people who were sent here. Cloudflare's
-Security > Bots > "Block AI Scrapers and Crawlers" toggle acts before robots.txt
-and must stay off, or it blocks them regardless.
+All of these repeat numbers that live in `docs/validation-status.md`; change
+them together.
 
-Both files repeat numbers that live in `docs/validation-status.md`; change them
-together.
+`public/robots.txt` welcomes every crawler including the AI ones, matching
+colonel-kernel's stated policy and for the same reason: this is a free public
+scientific tool that should be discoverable and described accurately, and the
+app holds no user data to expose.
+
+> ⚠ **That policy is currently NOT in effect, and the override is invisible from
+> this repo.** Cloudflare's AI Crawl Control injects a *managed* robots.txt at
+> the edge that prepends `Disallow: /` groups for ClaudeBot, GPTBot, CCBot,
+> Google-Extended, Bytespider, Amazonbot, Applebot-Extended and
+> meta-externalagent. Those named groups are more specific than our
+> `User-agent: *`, so they win. On kernel.tonydefazio.com it is worse: the
+> managed file *replaces* the site's own robots.txt outright, so colonel-kernel's
+> "all crawlers welcome" text and its `Sitemap:` line never reach the wire at
+> all. Fixing it means turning the managed robots.txt off in the Cloudflare
+> dashboard for the `tonydefazio.com` zone (and leaving Security > Bots >
+> "Block AI Scrapers and Crawlers" off too). Nothing in this repo can override
+> it. Verify with `curl -s https://nopeak.tonydefazio.com/robots.txt`.
 
 Code layout: `src/core/` is the algorithm (pure functions — `cluster.ts`,
 `mscore.ts`, `errorModel.ts`, `peaks.ts`, `format.ts`), `src/chart/` the

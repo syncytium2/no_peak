@@ -24,21 +24,26 @@
     <script type="application/ld+json">
       {
         "@context": "https://schema.org",
-        "@type": "SoftwareApplication",
+        "@type": "WebApplication",
         "name": "no_peak",
         "url": "https://nopeak.tonydefazio.com/",
+        "description": "A browser implementation of the CLUSTER pulse-detection algorithm for endocrine time-series data (LH, GnRH, GH). A faithful port of the Igor Pro implementation, validated point-by-point against Igor Pro output and against the original Fortran program, and scored against simulated data with known pulse times. All computation runs in the browser; no data is ever transmitted.",
         "applicationCategory": "Scientific analysis software",
         "applicationSubCategory": "Endocrine time-series pulse detection",
-        "operatingSystem": "Any (runs in a web browser)",
+        "operatingSystem": "Any (runs entirely in the web browser)",
+        "browserRequirements": "Requires JavaScript",
+        "isAccessibleForFree": true,
         "offers": { "@type": "Offer", "price": "0", "priceCurrency": "USD" },
+        "license": "https://opensource.org/license/mit/",
+        "author": { "@type": "Person", "name": "Richard Anthony DeFazio" },
+        "keywords": "CLUSTER algorithm, pulse detection, hormone pulsatility, luteinizing hormone, LH, GnRH, endocrine time series, Veldhuis, Johnson, neuroendocrinology",
         "featureList": [
           "CLUSTER pulse detection (Veldhuis–Johnson) on hormone time series",
           "Switchable Igor Pro and original Fortran (CLUST5 v6.01) implementations",
-          "Publication-grade SVG figures with 4x PNG and PDF export",
+          "Peak and valley tables: position, width, height, percent increase, area",
+          "Publication-grade SVG figures with 4x PNG and vector PDF export",
           "Runs entirely in the browser: no server, no upload, no analytics"
-        ],
-        "description": "A browser implementation of the CLUSTER pulse-detection algorithm for endocrine time-series data (LH, GnRH, GH). A faithful port of the Igor Pro implementation, validated point-by-point against Igor Pro output and against the original Fortran program.",
-        "author": { "@type": "Person", "name": "Tony DeFazio" }
+        ]
       }
     </script>
   </head>
@@ -117,9 +122,11 @@
         </p>
 
         <p>
-          The full account — how the algorithm works, provenance of the port, the caveats above in
-          detail, and the key references with DOIs — is on the
-          <a href="/#about">About page</a>. A plain-text summary lives at
+          The full account — how the algorithm works, the provenance of the port, the caveats above
+          in detail, and the references with DOIs — is on the
+          <a href="/methods">Methods &amp; Algorithm Reference</a>, a standalone page that needs no
+          JavaScript. The same material, plus the file-format guide and a contact form, is on the
+          in-app <a href="/#about">About page</a>. A plain-text summary lives at
           <a href="/llms.txt">/llms.txt</a>.
         </p>
 

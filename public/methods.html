@@ -1,0 +1,405 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <!--
+    Standalone, citable methods reference. It is a public/ asset copied to the
+    site root verbatim and served at /methods, so unlike the app it is real HTML
+    that needs no JavaScript to read. Same content for every reader, human or
+    machine — nothing here is conditioned on user agent.
+  -->
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <meta name="description" content="Methods and algorithm reference for no_peak: CLUSTER pulse detection for endocrine time series, the two shipped implementations, and how each was validated against Igor Pro, the original Fortran, and simulated data with known pulse times." />
+  <link rel="stylesheet" href="methods.css" />
+  <title>no_peak — Methods &amp; Algorithm Reference</title>
+  <link rel="canonical" href="https://nopeak.tonydefazio.com/methods" />
+  <meta property="og:type" content="article" />
+  <meta property="og:site_name" content="no_peak" />
+  <meta property="og:title" content="no_peak — Methods &amp; Algorithm Reference" />
+  <meta property="og:description" content="How CLUSTER detects hormone pulses, the two implementations no_peak ships, and the measured performance of each against known ground truth." />
+  <meta property="og:url" content="https://nopeak.tonydefazio.com/methods" />
+  <script type="application/ld+json">
+  {
+    "@context": "https://schema.org",
+    "@type": "TechArticle",
+    "headline": "Detecting hormone pulses with CLUSTER: algorithm, implementations, and measured performance",
+    "name": "no_peak — Methods & Algorithm Reference",
+    "url": "https://nopeak.tonydefazio.com/methods",
+    "dateModified": "2026-08-10",
+    "author": { "@type": "Person", "name": "Richard Anthony DeFazio" },
+    "about": {
+      "@type": "WebApplication",
+      "name": "no_peak",
+      "url": "https://nopeak.tonydefazio.com/"
+    },
+    "keywords": "CLUSTER algorithm, pulse detection, hormone pulsatility, luteinizing hormone, GnRH, endocrine time series, Veldhuis, Johnson, pooled t-test, deconvolution"
+  }
+  </script>
+</head>
+<body>
+<div class="wrap">
+
+  <a class="backlink" href="/">&larr; Back to the no_peak app</a>
+
+  <header class="masthead">
+    <p class="eyebrow">Methods &amp; Algorithm Reference</p>
+    <h1>Detecting hormone pulses with CLUSTER: algorithm, implementations, and measured performance</h1>
+    <p class="lede">
+      What the algorithm behind <a href="/">no_peak</a> does, which two
+      implementations of it ship, how each was checked against its reference, and
+      how well it actually recovers pulses that are known to be there.
+    </p>
+  </header>
+
+  <h2>The problem</h2>
+  <p>
+    Many hormones are secreted in bursts rather than continuously. Sample an
+    animal's blood every few minutes and you get a jagged concentration series;
+    the scientific question is which of those excursions are genuine secretory
+    events and which are assay noise. Get that wrong and every downstream number
+    — pulse frequency, amplitude, inter-pulse interval — is wrong with it.
+  </p>
+  <p>
+    <strong>CLUSTER</strong> is the algorithm Johannes D. Veldhuis and Michael L.
+    Johnson published in 1986 to answer that question, and it remains in routine
+    use forty years later. no_peak is a reimplementation of it that runs in a web
+    browser.
+  </p>
+
+  <h2>How CLUSTER works</h2>
+  <p>
+    CLUSTER asks one local question, repeatedly. At every sample it compares the
+    mean of the next <em>n</em><sub>peak</sub> points against the mean of the
+    preceding <em>n</em><sub>nadir</sub> points using a pooled t-test, scaled by
+    the measurement error at each point. When that t-statistic exceeds the user's
+    threshold, the sample is flagged as a significant increase (an <em>up</em>)
+    or, scanning for the opposite sign, a significant decrease (a <em>down</em>).
+    A second pass assembles those flags into pulse regions, and a third tabulates
+    the resulting peaks and valleys.
+  </p>
+  <p>
+    What makes the approach durable is what it does <em>not</em> assume. There is
+    no pulse shape, no secretion-and-clearance kinetic model, no baseline
+    function, and no assumption that pulses are regularly spaced. The only model
+    is the measurement error: because the test is scaled by each point's error, a
+    large jump in a noisy stretch of the record may not register, while a modest,
+    well-measured rise can. That is deliberate — it keeps the detector honest
+    about assay precision rather than about biology.
+  </p>
+
+  <h3>The error model</h3>
+  <p>
+    The per-point error can be estimated from the spread of the data values
+    themselves — over a sliding window, or across the whole record, as an SD or a
+    standard error; from a square-root model for count-like data; from a fixed
+    value; or from a user-supplied error column, which is what you want when your
+    assay reports its own per-sample precision.
+  </p>
+
+  <h3>The parameters are the model</h3>
+  <p>
+    The price of CLUSTER's simplicity is that the detection parameters — the two
+    window widths, the two t-score thresholds, and the minimum value a pulse must
+    reach — <em>are</em> the model. Different settings give different answers, so
+    publications using CLUSTER should report all five along with the error model,
+    and it is worth checking that conclusions survive a sweep of nearby values.
+  </p>
+  <p>
+    CLUSTER also identifies <em>when</em> pulses occur. It does not estimate
+    secretion rates, hormone half-life, or pulse mass; those are the province of
+    deconvolution methods, which are listed at the end of this page.
+  </p>
+
+  <h2>Which implementation you are running</h2>
+  <p>
+    Three implementations sit behind this app, and the differences between them
+    are documented rather than smoothed over:
+  </p>
+  <ul>
+    <li>
+      <strong>CLUST5.MPF</strong> — the original Fortran 77 console program
+      (v6.01), built for VAX, PC, Macintosh and Unix from a single source with
+      preprocessor switches. It printed line-printer reports and drew its plots
+      as columns of asterisks.
+    </li>
+    <li>
+      <strong>do_cluster.mpf</strong> — a later Fortran 90 rewrite
+      ("CLUSTER8" v8.00) wrapped in a Winteracter GUI, adding outlier detection,
+      residual runs tests, and secretion summary statistics.
+    </li>
+    <li>
+      <strong>ClusterMasterV4-1.ipf</strong> — the Igor Pro port, and the
+      validation oracle for this project.
+    </li>
+  </ul>
+  <p>
+    The Igor port and the original Fortran genuinely disagree in places, so
+    no_peak's <strong>Implementation</strong> selector switches between them
+    rather than picking a winner. The pooled variance term differs (Igor sums the
+    standard deviations, the Fortran squares them first), and the pulse-assembly
+    pass marks a different number of points per up-flag. Selecting Fortran mode
+    also switches the interface to the green-phosphor terminal look the program
+    originally ran under.
+  </p>
+  <p>
+    One deliberate departure from both: when a pulse is still in progress at the
+    end of the record, the original code silently dropped it, because the
+    statistics that need a following baseline cannot be computed. no_peak counts
+    that pulse by default and marks the affected statistics as unavailable, since
+    a detected pulse that vanishes from the table is more confusing than one with
+    missing columns. The original behavior is one checkbox away.
+  </p>
+
+  <h3>Two discrepancies found by validating rather than reading</h3>
+  <p>
+    Both were invisible to careful source reading and only appeared when the
+    reference programs were actually run:
+  </p>
+  <ul>
+    <li>
+      <strong>Igor's pulse-marking loop is a do-while</strong>, so it always
+      executes once. A straightforward <code>for</code> loop bounded at
+      <code>nPeak - 1</code> executes zero times when <code>nPeak = 1</code>,
+      marking no pulse point where Igor marks one. Invisible at the default of
+      <code>nPeak = 2</code>, but the parameters stored in the lab's Igor panel
+      were <code>nPeak = 1</code>, so it would have bitten the first person to
+      reproduce that session.
+    </li>
+    <li>
+      <strong>The original Fortran declares its shared COMMON block in two
+      different orders.</strong> Because COMMON matches by position and not by
+      name, the downward pass reads the two window sizes swapped. The two
+      implementations therefore agree whenever the windows are equal — which
+      covers the defaults — and diverge for asymmetric windows. CLUSTER8 carries
+      the identical asymmetry, so it is long-lived behavior in the Fortran
+      lineage rather than a slip in one version.
+    </li>
+  </ul>
+
+  <h2>Validation</h2>
+  <p>
+    Three independent checks, in increasing order of what they actually prove:
+  </p>
+
+  <h3>1. Against Igor Pro</h3>
+  <p>
+    Fifteen runs spanning every error model, asymmetric window sizes, threshold
+    combinations and three datasets were executed in Igor and diffed point by
+    point — error array, up flags, down flags, pulse array, t-score trace.
+    <strong>75 of 75 checks pass.</strong>
+  </p>
+
+  <h3>2. Against the original Fortran</h3>
+  <p>
+    CLUST5 v6.01 was compiled with gfortran and run on the same input. At the
+    documented defaults the port reproduces it <strong>exactly</strong>: all 96
+    up flags, all 96 down flags, the full 96-point pulse array, and all 17 peaks
+    including position, width, height, largest and mean percent increase, area,
+    and increase above basal.
+  </p>
+
+  <h3>3. Against known ground truth</h3>
+  <p>
+    The first check that asks "does it find the pulses that are really there?"
+    rather than "does it match the reference implementations?". Johnson's
+    Pulse_XP distribution ships simulated series together with their generating
+    pulse times. Across 130 true pulses in six datasets, at default settings:
+  </p>
+  <div class="scroll">
+    <table>
+      <thead>
+        <tr><th>Detector</th><th>Sensitivity</th><th>False positives</th></tr>
+      </thead>
+      <tbody>
+        <tr><td>no_peak, <code>fortran</code> variant</td><td class="num">60.8%</td><td class="num">0</td></tr>
+        <tr><td>Johnson's published Cluster figure</td><td class="num">~58%</td><td class="num">—</td></tr>
+        <tr><td>PULSAR Otago, best of a threshold sweep</td><td class="num">56.2%</td><td class="num">6</td></tr>
+        <tr><td>no_peak, <code>igor</code> variant</td><td class="num">51.5%</td><td class="num">0</td></tr>
+        <tr><td>AutoDecon, published, same data</td><td class="num">~98%</td><td class="num">—</td></tr>
+      </tbody>
+    </table>
+  </div>
+  <p>
+    Read that as a description, not a scoreboard. PULSAR Otago reports a peak
+    <em>time</em> while CLUSTER reports a pulse <em>span</em>, so PULSAR was
+    credited a hit within ±2 sampling intervals of a true onset while CLUSTER had
+    to contain the onset within its span ±1 — a matching rule generous to PULSAR,
+    which still produced the only false positives in the comparison. Against
+    that, PULSAR's parameters here are our estimates: its paper derives values for
+    mouse LH, not for Johnson's simulated series, so a specialist could very
+    likely do better.
+  </p>
+  <p>
+    The honest summary is that all three CLUSTER-family detectors land in the
+    50–60% band, distinguished by never producing a false positive, while
+    deconvolution is in a different class entirely. <strong>If you need to count
+    pulses, use deconvolution. If you need to defend every pulse you report, the
+    specificity is the argument.</strong>
+  </p>
+
+  <h2>A caveat on CLUSTER's false-positive rate</h2>
+  <div class="callout">
+    <p>
+      <strong>CLUSTER's celebrated near-zero false-positive rate is partly a
+      property of the benchmark it is usually measured on.</strong>
+    </p>
+    <p>
+      Scored on Johnson's simulated datasets, this port produces zero false
+      positives. Scored on a broad simulated corpus spanning realistic ranges of
+      sampling interval, half-life, pulse mass and inter-pulse interval, the same
+      code produces a 16–22% false-discovery rate. Both numbers are correct.
+    </p>
+    <p>
+      The difference is <strong>pulse density</strong>. Johnson's datasets carry
+      17–30 pulses in 145 samples — roughly one per five points, so almost any
+      detection lands near a true pulse and can hardly be counted wrong. A broad
+      corpus averages 6.5 pulses per record. Tested directly, a density-matched
+      corpus reproduces the published behavior (59.0% sensitivity, 0.4%
+      false-discovery rate against Johnson's published ~58%), which localises the
+      discrepancy to the benchmark rather than to the port.
+    </p>
+    <p>
+      So the "≈1% false positives" CLUSTER is credited with in the AutoDecon
+      comparison should be read as <em>conditional on dense pulse trains</em>.
+      For sparse records — short sampling windows, or genuinely infrequent pulses
+      — expect a materially higher false-positive rate and set thresholds
+      accordingly. Both variants reproduce their references exactly; this is a
+      property of the algorithm that the standard benchmarks do not expose.
+    </p>
+  </div>
+  <p>
+    A related calibration point, measured against the residuals of Johnson's own
+    files: assays report standard deviations about 10–20% larger than the actual
+    noise. Because CLUSTER's t-test is calibrated on the reported error, that
+    conservatism is precisely what holds its false-positive rate down.
+  </p>
+
+  <h2>Using the tool</h2>
+  <p>
+    Input is plain text, one sample per line. Commas, tabs, semicolons or spaces
+    all work, and a header row is detected and skipped. Three layouts are
+    accepted: a single <code>value</code> column, with times generated from a
+    sampling interval you supply; <code>time,value</code>; or
+    <code>time,value,SD</code> when your assay reports per-sample precision.
+    A downloadable example is linked from the app's About page.
+  </p>
+  <p>
+    Every dataset in the app's <strong>Sample data</strong> menu is
+    <strong>simulated</strong> and tagged as such, generated from a seeded random
+    number generator to resemble real recordings only in sampling rate, baseline
+    level, pulse amplitude range and assay CV. They correspond to no animal,
+    experiment or measurement. A flat negative control is included deliberately:
+    a detector should find nothing in it.
+  </p>
+
+  <h2>Privacy is architectural, not a promise</h2>
+  <p>
+    no_peak is a static bundle served from object storage. There is no
+    server-side script, no database, no account, and no analytics. The algorithm
+    is compiled into the page and runs on your own device, so there is no code
+    path along which a loaded recording could be transmitted anywhere — the
+    guarantee is a property of the architecture rather than of a policy document.
+    That is the relevant property if your recordings are human-subject data.
+  </p>
+
+  <h2>Credit</h2>
+  <p>
+    CLUSTER is the work of <strong>Michael L. Johnson</strong> and
+    <strong>Johannes D. Veldhuis</strong>. Johnson, a biophysicist and Professor
+    Emeritus of Pharmacology at the University of Virginia, spent a career
+    building the numerical methods and freely distributed software that much of
+    the endocrine pulsatility literature rests on. There was never a separate
+    software paper for CLUSTER; the program was distributed directly by the
+    authors, and the field cites the 1986 paper below as the citation for the
+    program itself. This port exists because that software was shared openly and
+    kept working for four decades. Any errors in the translation are ours, not
+    theirs.
+  </p>
+  <p>
+    The original Fortran and the Igor Pro package are third-party code that is
+    not redistributable and is not included in this project. Real laboratory
+    recordings are not distributed either.
+  </p>
+
+  <h2>References</h2>
+  <p>Every citation here was checked against PubMed or publisher records.</p>
+
+  <h3>The algorithm</h3>
+  <ul class="refs">
+    <li>
+      <a href="https://doi.org/10.1152/ajpendo.1986.250.4.E486">Cluster analysis: a simple, versatile, and robust algorithm for endocrine pulse detection</a>
+      — the original CLUSTER paper, and the correct citation for this software.
+      <span class="cite">Veldhuis JD, Johnson ML. Am J Physiol. 1986 Apr;250(4 Pt 1):E486–93. PMID 3008572.</span>
+    </li>
+    <li>
+      <a href="https://doi.org/10.1203/00006450-198607000-00011">Appraising endocrine pulse signals at low circulating hormone concentrations</a>
+      — the regional coefficient-of-variation approach behind the error models.
+      <span class="cite">Veldhuis JD, Weiss J, Mauras N, Rogol AD, Evans WS, Johnson ML. Pediatr Res. 1986 Jul;20(7):632–7. PMID 3725460.</span>
+    </li>
+    <li>
+      <a href="https://doi.org/10.1210/endo-124-5-2541">In vivo biological validation and biophysical modeling of the sensitivity and positive accuracy of endocrine peak detection. I. The LH pulse signal</a>
+      — how well the detector recovers known pulses.
+      <span class="cite">Urban RJ, Johnson ML, Veldhuis JD. Endocrinology. 1989 May;124(5):2541–7. PMID 2707166.</span>
+    </li>
+    <li>
+      <a href="https://doi.org/10.1016/S0076-6879(94)40056-3">Testing pulse detection algorithms with simulations of episodically pulsatile substrate, metabolite, or hormone release</a>
+      — the simulation methodology for characterizing false-positive and false-negative rates.
+      <span class="cite">Veldhuis JD, Johnson ML. Methods Enzymol. 1994;240:377–415. PMID 7823840.</span>
+    </li>
+  </ul>
+
+  <h3>Other detectors, and when to prefer them</h3>
+  <ul class="refs">
+    <li>
+      <a href="https://doi.org/10.1210/endocr/bqab165">PULSAR Otago</a> — an actively
+      maintained reimplementation of the PULSAR algorithm, and the closest
+      alternative to CLUSTER. GPL-3, source at
+      <a href="https://github.com/phadenz/PulsarOtago">github.com/phadenz/PulsarOtago</a>.
+      <span class="cite">Porteous R, et al. Endocrinology. 2021;162(11):bqab165.</span>
+    </li>
+    <li>
+      <a href="https://doi.org/10.1016/j.ab.2008.07.001">AutoDecon</a> — deconvolution
+      rather than detection. Recovers far more pulses, at the cost of assuming a
+      secretion-and-clearance model. Prefer it when you need secretion rates,
+      pulse mass, or half-life.
+    </li>
+    <li>
+      <a href="https://doi.org/10.1371/journal.pcbi.1011928">hormoneBayes</a> — Bayesian
+      inference giving calibrated posterior uncertainty rather than point
+      estimates.
+    </li>
+  </ul>
+
+  <h3>Applied to firing rate</h3>
+  <ul class="refs">
+    <li>
+      <a href="https://doi.org/10.1098/rsos.201040">Neuroendocrine control of reproduction</a>
+      — applies CLUSTER to firing rate rather than hormone concentration, and
+      usefully reports a parameter-sensitivity check: cluster sizes of 1–5,
+      t-scores of 1–3, and local versus global error models did not change the
+      conclusions.
+      <span class="cite">Penix J, DeFazio RA, Dulka EA, Schnell S, Moenter SM. R Soc Open Sci. 2020;7(8):201040. PMID 32968535.</span>
+    </li>
+    <li>
+      <a href="https://doi.org/10.1210/en.2013-1502">Development of a methodology for and assessment of pulsatile luteinizing hormone secretion in juvenile and adult male mice</a>
+      — the serial tail-tip sampling protocol and ultrasensitive LH ELISA that
+      make pulse-resolved sampling in mice practical.
+      <span class="cite">Steyn FJ, Wan Y, Clarkson J, Veldhuis JD, Herbison AE, Chen C. Endocrinology. 2013 Dec;154(12):4939–45. PMID 24092638.</span>
+    </li>
+  </ul>
+
+  <footer>
+    <p>
+      <a href="/">no_peak</a> · a browser tool for CLUSTER pulse detection, by
+      Tony DeFazio. Its sibling,
+      <a href="https://kernel.tonydefazio.com/">Colonel Kernel</a>, recovers
+      calcium-indicator kernels from ground-truth spike trains by regularized
+      deconvolution — built on the same principle that the computation belongs on
+      your machine, not on someone's server.
+    </p>
+    <p>A plain-text summary of this tool is at <a href="/llms.txt">/llms.txt</a>.</p>
+  </footer>
+
+</div>
+</body>
+</html>

@@ -107,9 +107,14 @@ the relevant property for anyone whose data is human-subject or HIPAA-regulated.
 ## Pages
 
 - https://nopeak.tonydefazio.com/ — the app.
-- https://nopeak.tonydefazio.com/#about — provenance, how CLUSTER works, the
-  caveats above in full, comparison with other pulse detectors, and the key
-  references with DOIs. Client-rendered, like the app.
+- https://nopeak.tonydefazio.com/methods — the Methods & Algorithm Reference:
+  how CLUSTER works, the two implementations, the validation in full, the
+  false-positive caveat, and the references with DOIs. Plain static HTML, no
+  JavaScript required — if you are reading a page rather than running one, read
+  this one.
+- https://nopeak.tonydefazio.com/#about — the same material inside the app,
+  plus the file-format guide, a downloadable example CSV, and a contact form.
+  Client-rendered, like the app.
 
 ## Reuse
 
