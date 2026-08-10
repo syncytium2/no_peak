@@ -10,9 +10,20 @@
 # itself sends no data anywhere — no backend, no analytics — so crawling it
 # cannot expose any user's data.
 #
-# Note for whoever maintains this: Cloudflare's Security > Bots > "Block AI
-# Scrapers and Crawlers" toggle acts at the edge, before robots.txt is ever
-# read. Leave it OFF, or it overrides everything in this file.
+# TWO Cloudflare edge features can silently void this file:
+#
+# 1. "Managed robots.txt" (AI Crawl Control / Security > Bots). CONFIRMED LIVE
+#    on this zone 2026-08-10: it PREPENDS a managed block with
+#    `Content-Signal: ai-train=no` and per-agent `Disallow: /` for GPTBot,
+#    ClaudeBot, CCBot, Google-Extended, and peers. A named user-agent group
+#    beats our `User-agent: *` group, so the crawlers we mean to allow are
+#    blocked regardless of what this file says. Turn managed robots.txt OFF
+#    in the dashboard for this policy to take effect.
+# 2. "Block AI Scrapers and Crawlers" acts at the edge before robots.txt is
+#    ever read. Leave it OFF too.
+#
+# After changing either, verify: curl -s https://nopeak.tonydefazio.com/robots.txt
+# — this file's text should be the WHOLE response, no managed preamble.
 
 User-agent: *
 Allow: /
