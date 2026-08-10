@@ -17,6 +17,29 @@ user's machine.** Figures are publication-grade SVG (vector) with 4× PNG export
   Cloudflare OAuth). Custom domain is added in the Cloudflare dashboard —
   DNS for tonydefazio.com is Cloudflare-managed, nothing to do at Porkbun.
 
+Readable without JavaScript: the app is client-rendered, so anything that fetches
+the URL without running a browser — a crawler, a reviewer's AI assistant, a text
+browser — used to get an empty `<div id="root">`. Two things fix that and both
+need to stay accurate:
+
+- `index.html` ships a static summary **inside** `#root`. React's
+  `createRoot().render()` clears the container on mount (`clearContainer` sets
+  `textContent = ''`), so it is replaced by the app and doubles as the loading
+  state. It also carries canonical/OpenGraph tags and a `SoftwareApplication`
+  JSON-LD block.
+- `public/llms.txt` is the long-form machine-readable description: scope,
+  validation numbers, and the honest limitations from
+  `docs/validation-status.md`.
+
+`public/robots.txt` blocks model-training crawlers but explicitly allows the
+user-initiated agents (`Claude-User`, `ChatGPT-User`, `Perplexity-User`) and AI
+search indexes — blocking those blocks the people who were sent here. Cloudflare's
+Security > Bots > "Block AI Scrapers and Crawlers" toggle acts before robots.txt
+and must stay off, or it blocks them regardless.
+
+Both files repeat numbers that live in `docs/validation-status.md`; change them
+together.
+
 Code layout: `src/core/` is the algorithm (pure functions — `cluster.ts`,
 `mscore.ts`, `errorModel.ts`, `peaks.ts`, `format.ts`), `src/chart/` the
 publication figure (custom SVG, palette validated with the dataviz six-checks

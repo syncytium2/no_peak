@@ -8,9 +8,143 @@
       name="description"
       content="Client-side CLUSTER pulse detection for time-series hormone sampling data. Your data never leaves your machine."
     />
+    <link rel="canonical" href="https://nopeak.tonydefazio.com/" />
+    <!-- Machine-readable summary for agents that read a page rather than run it. -->
+    <link rel="alternate" type="text/plain" href="/llms.txt" title="Plain-text summary" />
+
+    <meta property="og:type" content="website" />
+    <meta property="og:url" content="https://nopeak.tonydefazio.com/" />
+    <meta property="og:title" content="no_peak — CLUSTER pulse detection" />
+    <meta
+      property="og:description"
+      content="A browser implementation of the Veldhuis–Johnson CLUSTER pulse-detection algorithm for endocrine time series. No install, no upload — the data never leaves your machine."
+    />
+    <meta name="twitter:card" content="summary" />
+
+    <script type="application/ld+json">
+      {
+        "@context": "https://schema.org",
+        "@type": "SoftwareApplication",
+        "name": "no_peak",
+        "url": "https://nopeak.tonydefazio.com/",
+        "applicationCategory": "Scientific analysis software",
+        "applicationSubCategory": "Endocrine time-series pulse detection",
+        "operatingSystem": "Any (runs in a web browser)",
+        "offers": { "@type": "Offer", "price": "0", "priceCurrency": "USD" },
+        "featureList": [
+          "CLUSTER pulse detection (Veldhuis–Johnson) on hormone time series",
+          "Switchable Igor Pro and original Fortran (CLUST5 v6.01) implementations",
+          "Publication-grade SVG figures with 4x PNG and PDF export",
+          "Runs entirely in the browser: no server, no upload, no analytics"
+        ],
+        "description": "A browser implementation of the CLUSTER pulse-detection algorithm for endocrine time-series data (LH, GnRH, GH). A faithful port of the Igor Pro implementation, validated point-by-point against Igor Pro output and against the original Fortran program.",
+        "author": { "@type": "Person", "name": "Tony DeFazio" }
+      }
+    </script>
   </head>
   <body>
-    <div id="root"></div>
+    <!--
+      The contents of #root are a static summary of the app, replaced by React
+      on mount (createRoot().render() clears the container). It exists so that
+      readers who do not execute JavaScript — crawlers, AI agents, text
+      browsers, anyone with JS disabled — get the substance of the tool rather
+      than an empty shell, and so the page says something during bundle load.
+      Keep it factually in step with docs/validation-status.md and About.tsx.
+    -->
+    <div id="root">
+      <main class="page prerender">
+        <h1>no_peak</h1>
+        <p>
+          <strong>CLUSTER pulse detection for endocrine time-series data, in the browser.</strong>
+          Load a series of hormone concentrations (LH, GnRH, GH, or any pulsatile analyte), set the
+          window sizes and t-score thresholds, and get the detected pulses, the peak and valley
+          tables, and a publication-grade figure.
+        </p>
+        <p>
+          <strong>The data never leaves your machine.</strong> There is no backend and no upload
+          step: the algorithm is compiled into the page and runs on your own device, so a recording
+          you analyse here is never transmitted anywhere. No analytics, no accounts, no cookies.
+        </p>
+
+        <h2>What it is</h2>
+        <p>
+          A faithful port of <strong>CLUSTER</strong>, the pulse-detection algorithm for endocrine
+          time series developed by Johannes D. Veldhuis and Michael L. Johnson (Am J Physiol 1986;
+          250:E486–93). CLUSTER slides a pooled t-test across the record, comparing a trailing
+          nadir window against a leading peak window, and assembles the significant increases and
+          decreases into pulses. It is not a new algorithm and not a variant: the aim is that this
+          page returns exactly what the reference implementations return.
+        </p>
+        <p>
+          Two implementations ship side by side, selectable in the UI: <strong>Igor</strong>, a port
+          of the Igor Pro <code>ClusterMaster</code> package used in the Moenter lab, and
+          <strong>Fortran</strong>, a port of Johnson's original CLUST5 v6.01 console program. They
+          differ in the form of the pooled variance and in the pulse-assembly loop bounds, and the
+          switch exists so results from either lineage can be reproduced.
+        </p>
+
+        <h2>How it was validated</h2>
+        <ul>
+          <li>
+            <strong>Against Igor Pro:</strong> 15 runs spanning every error model, asymmetric
+            windows, and threshold combination were executed in Igor and diffed point by point —
+            error array, up flags, down flags, pulse array, t-score trace. 75 of 75 checks pass.
+          </li>
+          <li>
+            <strong>Against the original Fortran:</strong> CLUST5 v6.01 was compiled with gfortran
+            and run on the same input. At the documented defaults the port reproduces it exactly:
+            all 96 up flags, all 96 down flags, the full pulse array, and all 17 peaks including
+            position, width, height, area, and percent increase.
+          </li>
+          <li>
+            <strong>Against known ground truth:</strong> scored on Johnson's own simulated datasets,
+            which ship with their generating pulse times, the Fortran variant recovers 60.8% of 130
+            true pulses with zero false positives — closely matching the ~58% Johnson published for
+            Cluster on the same data.
+          </li>
+          <li><strong>124 unit tests</strong>, including t-statistics worked out by hand.</li>
+        </ul>
+
+        <h2>What it does not do</h2>
+        <p>
+          CLUSTER is a specific, conservative detector, and this page reports it honestly rather
+          than flattering it. On dense pulse trains it produces almost no false positives, but it
+          misses roughly 40% of true pulses; deconvolution methods such as AutoDecon recover ~98% on
+          the same data. Measurement against a purpose-built simulator also showed that CLUSTER's
+          celebrated near-zero false-positive rate is partly a property of the benchmark: on sparse
+          records the same code produces a 16–22% false-discovery rate. Use CLUSTER when you need to
+          defend every pulse you report; use deconvolution when you need to count them.
+        </p>
+
+        <p>
+          The full account — how the algorithm works, provenance of the port, the caveats above in
+          detail, and the key references with DOIs — is on the
+          <a href="/#about">About page</a>. A plain-text summary lives at
+          <a href="/llms.txt">/llms.txt</a>.
+        </p>
+
+        <p><em>Loading the interactive app… it requires JavaScript.</em></p>
+      </main>
+    </div>
+    <style>
+      /* Only styles the pre-render fallback; React removes the markup on mount. */
+      .prerender {
+        max-width: 46rem;
+        margin: 0 auto;
+        padding: 2rem 1.25rem 3rem;
+        font-family: system-ui, -apple-system, "Segoe UI", sans-serif;
+        line-height: 1.55;
+        color: #0b0b0b;
+      }
+      .prerender h1 {
+        font-size: 1.6rem;
+        margin: 0 0 0.75rem;
+      }
+      .prerender h2 {
+        font-size: 1.05rem;
+        margin: 1.75rem 0 0.4rem;
+      }
+    </style>
     <script type="module" src="/src/main.tsx"></script>
   </body>
 </html>
