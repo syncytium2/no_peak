@@ -159,3 +159,17 @@ without them those suites skip. Committed: `data/synthetic/` only.
 3. Validation: export waves from the .pxp (and/or run parameter sets recorded
    in the panel settings tables), compare pulse flags and peak tables against
    Igor output; optionally compile CLUST5.MPF with gfortran as a second oracle.
+
+## Document review (murderboard)
+
+`docs/doc_review_process.md`, `tools/murderboard_*.sh` and
+`.claude/skills/murderboard/SKILL.md` are **vendored** from
+`syncytium2/murderboard` (stamped `@ 249a488`). Run `/murderboard <artifact>`
+before handing over any document deliverable — a figure, an explainer, a
+methods section, a report. Run records live in `docs/reviews/`.
+
+- `bash tools/murderboard_freshness.sh --verbose` — is the vendored copy current?
+- `bash tools/murderboard_roster.sh check <report>` — did every role actually run?
+
+Re-vendor by copying the files from upstream and updating the `@ <sha>` stamp in
+the first lines of each.
