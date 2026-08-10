@@ -70,16 +70,27 @@ End
 // Apple Event would time out. Accepts a POSIX path ("/Users/you/out") or an
 // HFS path ("Macintosh HD:Users:you:out").
 Function np_ValidateAllTo(String outDir)
-	// /Z suppresses the folder-picker if the path does not parse
+	// Igor on Macintosh wants an HFS path ("Macintosh HD:Users:…"); a POSIX
+	// path may or may not be accepted depending on version. Try, in order:
+	// as given, ParseFilePath's conversion, and the conversion with the
+	// startup volume name prefixed (which is what actually works on Igor 9).
+	// /Z keeps a failure silent instead of popping a picker that would block
+	// AppleScript automation.
 	NewPath/O/Q/Z npOut, outDir
 	if (V_flag != 0)
-		// try converting POSIX -> HFS, which older path handling requires
 		String hfs = ParseFilePath(5, outDir, ":", 0, 0)
 		NewPath/O/Q/Z npOut, hfs
-		if (V_flag != 0)
-			Print "np_ValidateAllTo: could not open folder: " + outDir
-			return -1
-		endif
+	endif
+	if (V_flag != 0)
+		// SpecialDirPath returns an HFS path; its first element is the volume
+		String vol = StringFromList(0, SpecialDirPath("Igor Pro User Files", 0, 0, 0), ":")
+		NewPath/O/Q/Z npOut, vol + ":" + ReplaceString("/", outDir, ":")
+	endif
+	if (V_flag != 0)
+		Print "np_ValidateAllTo: could not open folder: " + outDir
+		Print "  Tried POSIX, converted HFS, and volume-prefixed HFS."
+		Print "  Use np_ValidateAll() and pick the folder from the dialog instead."
+		return -1
 	endif
 	return np_RunMatrix()
 End

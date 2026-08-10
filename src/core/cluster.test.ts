@@ -177,6 +177,18 @@ describe("peaks and valleys", () => {
     expect(r.valleys[0].iLast).toBeLessThanOrEqual(41);
   });
 
+  it("nPeak=1 still marks a point (Igor's loop 1200 is a do-while)", () => {
+    // A for-loop over nPeak-1 marks nothing at nPeak=1; Igor's do-while marks
+    // one. Caught by diffing against Igor itself — see data/oracle_igor/B,D.
+    const w = new Array(10).fill(1);
+    const ups = new Array(10).fill(0);
+    const downs = new Array(10).fill(0);
+    ups[4] = 1;
+    downs[6] = -1;
+    const pulse = pulseTest(w, ups, downs, 1, 1, false, 0, "igor");
+    expect(pulse[4]).toBe(1);
+  });
+
   it("extractPeaks ignores runs that touch the edges", () => {
     const pulse = [1, 1, 0, 0, 0, 1, 1, 0, 0, 0];
     const w = [5, 5, 1, 1, 1, 5, 5, 1, 1, 1];

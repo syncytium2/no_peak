@@ -3,7 +3,7 @@
 Honest accounting of what has and has not been checked, so the claim in the
 README and on the site can be matched against reality.
 
-_Last updated: 2026-08-08 (v0.2.0)._
+_Last updated: 2026-08-10 (v0.2.0)._
 
 > The reference Fortran and Igor sources are **not committed** — third-party
 > code we cannot redistribute. See `docs/reference-code.md`. The oracle output
@@ -11,6 +11,12 @@ _Last updated: 2026-08-08 (v0.2.0)._
 
 ## What is verified
 
+- **The `igor` variant is validated against Igor Pro.** All 15 runs of the
+  matrix in `docs/igor-validation.md` were executed in Igor on 2026-08-10 and
+  diffed point by point: error array, up flags, down flags, pulse array and
+  t-score trace, across every error model, asymmetric windows and thresholds,
+  the dvmp gate, zero-termination, and all three datasets. **75/75 checks pass.**
+  Oracle CSVs live in `data/oracle_igor/` (gitignored — they contain real data).
 - **The `fortran` variant is validated against the original Fortran.**
   `CLUST5.MPF` v6.01 was compiled with gfortran and run on `gnrh`; its output
   is committed under `data/oracle/` and checked by `src/core/oracle.test.ts`.
@@ -45,17 +51,31 @@ _Last updated: 2026-08-08 (v0.2.0)._
   not "matches what an endocrinologist would mark".
 - **Only `gnrh` has been diffed against the Fortran**, at two parameter
   settings. The other ten datasets have not.
-- **The `igor` variant — the default — is still unvalidated against Igor.**
-  The Fortran oracle does not cover it: the two implementations genuinely
-  differ (variance form, marking width), so agreeing with the Fortran says
-  nothing about agreeing with Igor.
+- **Only `gnrh`, `man3` and `null1` were covered by the Igor matrix**, plus
+  `set1` and `LHInfused` at defaults. Not every dataset at every setting.
+- **No expert-annotated pulses.** "Correct" still means "matches the reference
+  implementations", not "matches what an endocrinologist would mark".
 
-So the accurate claim today is: *the Fortran variant is numerically validated
-against the original Fortran on one dataset; the Igor variant, which is the
-default, is a careful translation that has never been diffed against Igor.*
-The README and the About page say "validated against the Igor Pro
-implementation", which is still the one thing not yet true — either the wording
-or the evidence should change.
+So the claim "validated against the Igor Pro implementation" is now **true**,
+and independently the `fortran` variant reproduces CLUST5 exactly at its
+defaults.
+
+## Finding: Igor's loop 1200 is a do-while, so nPeak=1 marks a point
+
+The Igor diff caught a real bug in this port. Igor writes loop 1200 as a
+`do … while(j < nPeak - 1)`, which always executes once; the port used
+`for (k = 0; k < nPeak - 1; k++)`, which executes **zero** times when
+nPeak = 1. So at nPeak = 1 Igor marked a pulse point and the port marked none.
+
+Invisible at nPeak ≥ 2, where both mark `nPeak - 1` points — and the app's
+default is 2, so no shipped analysis was affected. But **the parameters stored
+in the Igor panel are nPeak = 1, nNadir = 1**, so it would have bitten the
+first person to reproduce that session. Fixed by transcribing the do-while
+literally; pinned by a unit test and by oracle runs B and D.
+
+This is the case for oracle testing in one paragraph: reading the source
+carefully got the loop bound right in spirit and wrong at the boundary, and
+only running the real thing exposed it.
 
 ## Finding: the Fortran swaps its windows on the downs pass
 
@@ -94,7 +114,18 @@ changes numbers.
 
 ## Pipeline
 
-### 1. Capture the Igor oracle — READY TO RUN (needs Igor Pro + a human)
+### 1. Capture the Igor oracle — DONE (2026-08-10)
+
+Run in Igor; 15 CSVs in `data/oracle_igor/`; 75/75 checks pass after fixing the
+do-while bug above. `np_ValidateAllTo` needed an HFS path
+("Macintosh HD:Users:…"), not POSIX — the function now tries three forms.
+
+**Answered: Igor does not swap its windows on the downs pass.** Runs C
+(nPeak 3 / nNadir 1) and D (the mirror) both match this port, so the swap seen
+in `CLUST5.MPF`'s `COMMON /MISC/` really is specific to the Fortran lineage.
+The port's behaviour was correct.
+
+### 1b. Extend the Igor oracle — OPTIONAL
 
 The highest-value remaining item, and the only thing standing between the repo
 and its own validation claim. Everything except the Igor session is built:

@@ -158,12 +158,18 @@ export function pulseTest(
     downIndex = index;
   }
 
-  // Loop 1200: each up-flag opens a pulse nPeak-1 points long.
+  // Loop 1200: each up-flag opens a pulse. Igor writes this as a do-while, so
+  // the body always runs once and the run is max(1, nPeak-1) points — not
+  // nPeak-1. The distinction only shows at nPeak = 1, where Igor still marks a
+  // point and a for-loop would mark none. Confirmed against Igor's own output
+  // (data/oracle_igor/B and D); transcribed as a do-while to keep it obvious.
   for (; index < n; index++) {
     if (ups[index] === 1) {
-      for (let k = 0; k < nPeak - 1; k++) {
+      let k = 0;
+      do {
         if (index + k < n) pulse[index + k] = 1;
-      }
+        k += 1;
+      } while (k < nPeak - 1);
     }
   }
 
