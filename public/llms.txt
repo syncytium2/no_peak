@@ -117,3 +117,12 @@ The original Fortran and the Igor Pro package are third-party code that is not
 redistributable, and are not included in this project. Real laboratory
 recordings are not distributed either; every bundled dataset is simulated and
 labelled as such.
+
+## Related tools by the same author
+
+- https://kernel.tonydefazio.com/ — Colonel Kernel: a client-side 1D
+  convolution / deconvolution tool for calcium imaging. Given ground-truth
+  spike times and a measured dF/F0 trace it recovers the calcium-indicator
+  kernel relating them, and reports honestly whether a clean kernel exists at
+  all. Same no-backend, data-never-leaves-your-machine posture as no_peak;
+  its own summary lives at https://kernel.tonydefazio.com/llms.txt.
