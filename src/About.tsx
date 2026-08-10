@@ -211,9 +211,9 @@ export function About({ onBack }: { onBack: () => void }) {
         of the <em>Numerical Computer Methods</em> volumes of{" "}
         <em>Methods in Enzymology</em>. There was never a separate software paper for CLUSTER; the
         program was distributed directly by the authors, and the field cites the 1986 paper below
-        as the citation for the program itself. This port exists because that software was shared
-        openly and kept working for four decades. Any errors in the translation are ours, not
-        theirs.
+        as the citation for the program itself. This port is made with Michael Johnson&apos;s
+        approval, and exists because that software was shared openly and kept working for four
+        decades. Any errors in the translation are ours, not theirs.
       </p>
 
       <h2>Key references</h2>

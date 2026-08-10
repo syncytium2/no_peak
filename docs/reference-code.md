@@ -41,6 +41,23 @@ rather than source, and containing no algorithm code, but derived from data that
 is itself not ours to publish. They stay local; the tests that consume them skip
 without them.
 
+## Permission for the port — 2026-08-10
+
+**Michael L. Johnson has approved use of his Fortran code for this port.**
+Reported by R.A. DeFazio, 2026-08-10.
+
+What that settles: the port itself. This project reads `CLUST5.MPF`,
+reimplements its algorithm in TypeScript, and ships that — with the author's
+approval, not merely on the argument that algorithms are uncopyrightable.
+
+⚠ **What it does not yet settle: redistribution of the source.** Permission to
+*use* the code to build a port is not the same as permission to *publish*
+`CLUST5.MPF` itself, and the licence below forbids passing it to third parties
+unless permitted in writing. Until the scope is confirmed, `reference/` stays
+gitignored and out of history. If the approval does extend to redistribution,
+that decision can be reversed — the files are still on local disk, and the
+About page wording would need updating too.
+
 ## The license, found 2026-08-10
 
 Johnson's `HYPERGEO.PDF` (inside `hypergeo.zip`, kept at
