@@ -1,6 +1,6 @@
 # Handoff: a learned pulse detector for no_peak
 
-**Status:** proposal, nothing built yet.
+**Status:** Phases 1-2 built (`tools/simulate_benchmark.py`, `tools/score_benchmark.ts`, `data/benchmark/`). Phases 3-5 not started.
 **Written:** 2026-08-08, against no_peak v0.2.0.
 **Audience:** whoever picks this up next — a person, or an agent with this repo.
 
@@ -91,9 +91,9 @@ conservative, that is a bonus to measure, not the headline to promise.
   labeler for sanity checks. Both variants available.
 - [`scripts/run_csv.ts`](../scripts/run_csv.ts) — batch runner; extend it to
   score a whole synthetic corpus.
-- [`data/extracted/`](../data/extracted/) — real GnRH/LH series with genuine
-  per-sample error columns. Small, but the right shape for the sim-to-real
-  check and for calibrating the noise model.
+- `data/extracted/` — real GnRH/LH series; three of the eleven carry per-sample
+  error columns. **Gitignored**, so it is absent from any clone: this asset is
+  only available on a machine that already has the lab data.
 - The Igor panel settings in `data/extracted/igor_panel_settings.txt` record
   parameters from a real analysis session — useful priors for what humans
   actually choose.
@@ -116,8 +116,9 @@ half-life, basal secretion, pulse mass and shape, inter-pulse interval
 distribution (including non-stationary drive), sampling interval and duration,
 assay CV as a function of concentration (low-concentration CV blow-up is where
 detectors actually fail), missing samples and outliers, and a slowly varying
-baseline — Carlson 2013 found that ignoring a circadian baseline biases every
-method's parameters, so it must be in the training distribution.
+baseline — Carlson NE, Horton KW, Grunwald GK (Stat Med 2013;32:4624-38, doi 10.1002/sim.5882) found
+that ignoring a circadian baseline biases the deconvolution methods they compared (CLUSTER was
+not among them), so it must be in the training distribution.
 
 **Validation gate:** a domain expert should be unable to reliably distinguish
 simulated series from real ones, and CLUSTER's sensitivity and false-positive
@@ -195,7 +196,7 @@ demonstrably plateaus.
   this whole plan; measure it directly rather than hoping.
 
 ### Phase 5 — ship it, carefully
-Fourth Implementation option. Show the probability trace as a panel beside the
+Third Implementation option, alongside `igor` and `fortran`. Show the probability trace as a panel beside the
 t-score panel — the honest UI is "here is the model's confidence over time,"
 not a binary overlay that looks as authoritative as the statistics. Record the
 model version in the CSV header and PDF report exactly as `impl=` is recorded
@@ -207,11 +208,15 @@ not usable science.
 
 Stop and write up the negative result if any of these hold:
 
-- The simulator cannot reproduce CLUSTER's published operating characteristics
-  (Phase 1 gate). Everything downstream would be built on sand.
-- On the benchmark, the model cannot beat CLUSTER on *both* axes at any
-  operating point, **and** its probabilities are not well calibrated. Then it
-  offers nothing CLUSTER does not.
+- The simulator cannot reproduce CLUSTER's behaviour **on a density-matched
+  corpus** (Phase 1 gate). Note the amendment above: failing to reproduce the
+  published ~1% false-positive rate on a *broad* corpus is the expected,
+  correct outcome, not a kill.
+- Its probabilities are not well calibrated. This is the load-bearing
+  criterion: calibrated uncertainty is the entire value proposition, so a
+  miscalibrated model fails even if it matches CLUSTER's accuracy. (Accuracy
+  alone cannot kill the project, because §3 disclaims accuracy as the goal —
+  do not pretend otherwise.)
 - Sim-to-real disagreement is large and unexplainable. A detector that works on
   synthetic data and disagrees mysteriously with forty years of practice on real
   data is not publishable and not shippable.
@@ -223,7 +228,7 @@ way.
 ## 8. Open questions
 
 - Is onset detection even the right target? Alternatives: pulse count posterior,
-  inter-pulse-interval posterior (what DynPeak and hormoneBayes optimize for), or
+  inter-pulse-interval posterior (what hormoneBayes targets; DynPeak estimates IPI but is a deterministic heuristic, not Bayesian), or
   full secretion-rate reconstruction. IPI may be what most users actually want.
 - Should this be trained per-hormone (LH, GnRH, cortisol have different kinetics
   and pulse structure) or conditioned on half-life as an input? Conditioning is

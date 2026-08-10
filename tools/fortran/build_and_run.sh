@@ -31,8 +31,8 @@ if [ ! -f "$CLUST5_SRC" ]; then
   echo "error: CLUST5.MPF not found at $CLUST5_SRC" >&2
   echo "The original Fortran is not redistributed with this repository." >&2
   echo "Supply it locally, or set CLUST5_SRC=/path/to/CLUST5.MPF." >&2
-  echo "See docs/reference-code.md. (data/oracle/ is already committed, so the" >&2
-  echo "oracle tests pass without it — this script only regenerates them.)" >&2
+  echo "See docs/reference-code.md. data/oracle/ is gitignored, so without it" >&2
+  echo "the oracle tests skip rather than fail." >&2
   exit 1
 fi
 

@@ -3,6 +3,14 @@
 The goal: make the claim "validated against the Igor Pro implementation" true by
 diffing this port against Igor's own output, point by point.
 
+> **Done, 2026-08-10.** All 15 runs were executed in Igor and all 75 checks
+> pass; `docs/validation-status.md` records the result. Two things came out of
+> it: **Igor does not swap its windows on the downs pass** (rows C and D both
+> matched, so the swap is specific to the Fortran), and the run exposed a real
+> bug in this port at nPeak=1 (see row B). This document remains the procedure
+> for **re-running** the matrix — on new data, after changes to the core, or to
+> extend it.
+
 You need Igor Pro, `data/cluster td- just data.pxp`, and the Igor Cluster
 package (`ClusterMasterV4-1.ipf`) — the latter is **not committed here**, see
 `docs/reference-code.md`; load it however you normally do. Budget 20 minutes.
@@ -14,12 +22,20 @@ package (`ClusterMasterV4-1.ipf`) — the latter is **not committed here**, see
    compile.
 3. In Igor's **Command Window** (the pane at the bottom of the main window —
    Igor has no shell-level batch mode, see below), run either:
-   - `np_ValidateAll()` — asks for an output folder, or
-   - `np_ValidateAllTo("/Users/you/Developer/no_peak/data/oracle_igor")` —
-     no dialog, writes straight into the repo.
+   - `np_ValidateAllTo("Macintosh HD:Users:you:Developer:no_peak:data:oracle_igor:")`
+     — no dialog, writes straight into the repo. **Igor 9 wants an HFS path
+     (colon-separated, volume first); a POSIX path was tried first and failed.**
+     The function now tries POSIX, a converted HFS path, and a volume-prefixed
+     HFS path in turn, and prints what to do if all three fail.
+   - `np_ValidateAll()` — asks for a folder in a dialog, which sidesteps path
+     parsing entirely. Use this if the above complains.
+
+   **Create the folder first** (`mkdir -p data/oracle_igor`). It is gitignored,
+   so it does not exist on a fresh clone, and `NewPath` cannot create it.
 4. It writes 15 CSVs.
 5. If you used `np_ValidateAll()`, copy the folder to `data/oracle_igor/`.
-6. `npm test` — the Igor oracle suite goes from skipped to real.
+6. `npm test` — the Igor oracle suite goes from skipped to real. (It skips
+   whenever `data/oracle_igor/` is absent, which is the fresh-clone state.)
 
 ## Igor has no batch mode
 
@@ -66,8 +82,8 @@ ClusterMain(wn, nPeak, nNadir, tScoreUp, tScoreDn, minPeak, halfLife,
 ```
 
 `halfLife`, `outScore`, and `minnadir` do not affect detection — `minnadir`
-reaches `pulseTest` but every line that would use it is commented out in
-V4-1 — so the exporter passes 0 for all three. `errwn` is a **wave name**: pass
+reaches `pulseTest` and is assigned to a local (`tmaxnadir`), but that local has
+no consumer anywhere in V4-1 — so the exporter passes 0 for all three. `errwn` is a **wave name**: pass
 a non-empty string and that wave is used directly as the error, bypassing
 `ts_error` entirely (this is the "Error Wave" case).
 
@@ -88,14 +104,14 @@ liberal names are a needless source of trouble.
 
 ## The matrix, and why each row exists
 
-Every row targets a branch in the port that nothing else reaches. If you only
+Most rows target a branch nothing else reaches; N and O re-run row A's path on other datasets, and C/D are near-mirrors of each other. If you only
 have time for a few, do **A, C, and E** — they cover the default path, the
 question the Fortran work left open, and the error-model code.
 
 | # | Wave | nPeak | nNadir | tUp | tDn | minPeak | Error model | errVal | zeroTerm | What it proves |
 |---|---|---|---|---|---|---|---|---|---|---|
 | A | gnrh | 2 | 2 | 2 | 2 | 0 | Error Wave (`sem`) | — | 0 | The defaults the app ships with. If only one run happens, this is it. |
-| B | gnrh | 1 | 1 | 2 | 2 | 0 | Error Wave (`sem`) | — | 0 | The settings actually stored in the panel. nPeak=1 makes loop 1200 mark `nPeak−1 = 0` points — a genuine edge case. |
+| B | gnrh | 1 | 1 | 2 | 2 | 0 | Error Wave (`sem`) | — | 0 | The settings actually stored in the panel, and **the row that caught a real bug**: Igor writes loop 1200 as a do-while, so at nPeak=1 it marks **one** point. This port used a `for` loop over `nPeak−1`, which marks none. Fixed 2026-08-10. |
 | C | gnrh | 3 | 1 | 2 | 2 | 0 | Error Wave (`sem`) | — | 0 | **Asymmetric windows.** Decides whether Igor swaps the two window sizes on the downs pass, as the Fortran does. See below. |
 | D | gnrh | 1 | 3 | 2 | 2 | 0 | Error Wave (`sem`) | — | 0 | The mirror of C, so the answer cannot be a coincidence of which is larger. |
 | E | gnrh | 2 | 2 | 2 | 2 | 0 | Local SD | — | 0 | `ts_error`'s sliding-window path, including how it fills the edges. |
@@ -118,18 +134,17 @@ The compiled Fortran (see `docs/validation-status.md`) turned out to run its
 **downs** pass with the two window sizes exchanged, because `CLUST5.MPF`
 declares `COMMON /MISC/` in one order in `UPS` and the opposite order in `DNS`.
 Igor's `ClusterMain` passes `(nPeak, nNadir)` identically for both directions
-and appears not to swap — this port follows Igor — but that has never been
-checked against running Igor.
+and does not swap — this port follows Igor.
 
-Rows C and D settle it. They cannot disagree when `nPeak == nNadir`, which is
+Rows C and D settled it on 2026-08-10: both matched this port, so the swap is
+specific to the Fortran lineage and no change was needed. Re-run them after any
+change to `upOrDn`. They cannot disagree when `nPeak == nNadir`, which is
 why every other row in the matrix is symmetric and why this went unnoticed.
 
-- If C and D **match**, the port is right and the Fortran's swap is a quirk of
-  that lineage. Nothing changes.
-- If C and D **differ**, Igor swaps too, this port is wrong for asymmetric
-  windows, and `upOrDn` needs the exchange in the downs call.
-
-Either answer is worth having. The defaults are unaffected either way.
+- C and D **matched** — the port is right and the Fortran's swap is a quirk of
+  that lineage.
+- Had they **differed**, Igor would swap too and `upOrDn` would need the
+  exchange in its downs call. That is the check to repeat if `upOrDn` changes.
 
 ## What the tests check
 

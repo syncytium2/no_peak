@@ -95,8 +95,9 @@ if (!sweep) {
         `FP ${r.fp} of ${r.detections} detections (${r.fdr.toFixed(1)}% FDR)`,
     );
   }
-  console.log("\nGATE: sensitivity 50-65% with FDR under ~5% means the corpus");
-  console.log("behaves like real data. Far outside that and the simulator is wrong.");
+  console.log("\nGATE  sensitivity: 50-65% on this corpus.");
+  console.log("GATE  FDR:         judge on --profile dense only (target <1%).");
+  console.log("      A 15-25% FDR on the broad corpus is expected, not a bug.");
 } else {
   console.log("nPeak nNadir  t    variant   sens%   FDR%   found/missed");
   for (const variant of ["igor", "fortran"] as const)

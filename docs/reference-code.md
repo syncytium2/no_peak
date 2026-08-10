@@ -12,8 +12,12 @@ unaffected.
 ## What still works without them
 
 - The app and the whole TypeScript core. Nothing at runtime reads `reference/`.
-- `npm test` — including `src/core/oracle.test.ts`, which compares against the
-  Fortran's **output** in `data/oracle/`, not its source.
+- `npm test` — the app and core suites. **Note what does _not_ run:**
+  `src/core/oracle.test.ts` and `src/core/igor-oracle.test.ts` compare against
+  `data/oracle/` and `data/oracle_igor/`, which are **gitignored** (they hold
+  Fortran/Igor output computed from real lab data). On a fresh clone both
+  suites **skip**. A green `npm test` therefore does *not* mean the oracle
+  comparisons ran — check the skip count.
 
 ## What needs them
 
@@ -23,19 +27,24 @@ unaffected.
 | Regenerating `data/oracle/` | the same |
 | `tools/igor/no_peak_validate.ipf` | a working Igor install with the Cluster package loaded |
 
-Both fail with an explanatory message rather than a confusing error.
+`build_and_run.sh` fails with an explanatory message. **`no_peak_validate.ipf`
+does not** — it calls `ClusterMain` unconditionally, so without the Igor Cluster
+package loaded Igor fails at compile time with a generic "unknown function"
+error. It does guard the output folder and missing waves.
 
-## Is the committed oracle output also restricted?
+## The oracle output is not distributed either
 
-`data/oracle/*.lst` are printouts produced by running the Fortran on a dataset —
-results, not source. They contain no algorithm code. That is a different
-category from the program itself, but it is a judgement call rather than a
-settled one, and worth confirming with whoever owns the code before this
-repository is made public.
+`data/oracle/` (`.lst` listings and `.stdout.txt` peak tables) and
+`data/oracle_igor/` are **gitignored and have never been committed**. They are
+printouts produced by running the Fortran and Igor on real lab data — results
+rather than source, and containing no algorithm code, but derived from data that
+is itself not ours to publish. They stay local; the tests that consume them skip
+without them.
 
 ## The license, found 2026-08-10
 
-Johnson's `HYPERGEO.PDF` (in the `hypergeo.zip` distribution) carries an
+Johnson's `HYPERGEO.PDF` (inside `hypergeo.zip`, kept at
+`Dropbox-UniversityofMichigan/Richard DeFazio/nopeak/hypergeo.zip`) carries an
 explicit licence for the **"Hormone Pulse Analysis programs"** family, which is
 the umbrella covering Pulse_XP, AutoDecon, Cluster8 and HyperGeo:
 
@@ -47,9 +56,18 @@ the umbrella covering Pulse_XP, AutoDecon, Cluster8 and HyperGeo:
 > Licensor. … The Licensee further agrees that this software will not be used
 > for profit by anyone.
 
-So redistribution is prohibited in writing, not merely unclear. Keeping these
-files out of the repository was correct, and the history purge was warranted.
-Local use is explicitly allowed, so running them for validation is fine.
+So redistribution of **Johnson's programs** is prohibited in writing, not merely
+unclear, and the history purge was warranted. Local use is explicitly allowed,
+so running them for validation is fine.
+
+⚠ **Two limits on that conclusion.** The licence names the "Hormone Pulse
+Analysis programs" and the distribution lists Pulse_XP, AutoDecon, Cluster8 and
+HyperGeo; the code actually ported here is `CLUST5.MPF` **v6.01**, which is the
+same lineage but not named. And the **Igor Cluster package is a different
+group's work** (Vanacker/Moenter/DeFazio, doi 10.1210/en.2017-00382), not
+Johnson's distribution — its terms are not stated anywhere here. Keeping both
+out of the repository is the conservative reading; confirm the scope with the
+owners before making this repository public.
 
 Note the distinction that makes this port legitimate: the **algorithm** is
 published (Veldhuis & Johnson 1986) and algorithms are not copyrightable. A

@@ -6,8 +6,10 @@ README and on the site can be matched against reality.
 _Last updated: 2026-08-10 (v0.2.0)._
 
 > The reference Fortran and Igor sources are **not committed** — third-party
-> code we cannot redistribute. See `docs/reference-code.md`. The oracle output
-> in `data/oracle/` is committed, so the tests below run without them.
+> code we cannot redistribute. Neither is the oracle output (`data/oracle/`,
+> `data/oracle_igor/`), which is derived from real lab data. See
+> `docs/reference-code.md`. **On a fresh clone the oracle suites skip**, so a
+> green `npm test` does not by itself mean the comparisons below were re-run.
 
 ## What is verified
 
@@ -15,7 +17,7 @@ _Last updated: 2026-08-10 (v0.2.0)._
   matrix in `docs/igor-validation.md` were executed in Igor on 2026-08-10 and
   diffed point by point: error array, up flags, down flags, pulse array and
   t-score trace, across every error model, asymmetric windows and thresholds,
-  the dvmp gate, zero-termination, and all three datasets. **75/75 checks pass.**
+  the dvmp gate, zero-termination, and five waves (gnrh, man3, null1, set1, LHInfused). **75/75 checks pass.**
   Oracle CSVs live in `data/oracle_igor/` (gitignored — they contain real data).
 - **The `fortran` variant is validated against the original Fortran.**
   `CLUST5.MPF` v6.01 was compiled with gfortran and run on `gnrh`; its output
@@ -26,7 +28,7 @@ _Last updated: 2026-08-10 (v0.2.0)._
   height, largest %, mean %, area, and increase. The only difference is the
   extra 18th peak, which is the deliberate `includeTruncated` behavior.
   Regenerate with `tools/fortran/build_and_run.sh`.
-- **36 unit tests** (`npm test`), in three kinds:
+- **Unit tests** (`npm test` — 124 at the time of writing), in three kinds:
   - hand-computed t-statistics on small series, worked out on paper;
   - synthetic series with unambiguous answers (flat baseline of 1s with two
     square pulses of height 10 — any correct implementation finds two peaks
@@ -74,8 +76,12 @@ independent corroboration that the "Cluster" column in his table was produced
 by Cluster8 (the Fortran), and that our Fortran port behaves like it on data
 neither was tuned against.
 
-**Caveats.** The parameters behind his Cluster column are not recorded, so the
-comparison is approximate; a true positive is counted when a generating pulse
+**Caveats.** ⚠ **AutoDecon's figure is a detection count, not a scored
+sensitivity.** It sums the reported counts in Johnson's table; for `ghsim1` he
+reports 19 detections against 18 true pulses, so the total contains unscored
+false positives and cannot be read as ~98% correct. Only the CLUSTER and PULSAR
+rows were scored against the generating pulse times here. The parameters behind
+his Cluster column are not recorded, so the comparison is approximate; a true positive is counted when a generating pulse
 time falls within a detected pulse widened by one sampling interval; and six
 datasets is a small sample.
 
@@ -92,7 +98,7 @@ datasets with the *same* ground truth, using `tools/pulsar/pulsar_run.R`.
 | Johnson's published Cluster | ~58% | — |
 | PULSAR Otago (best of a threshold sweep) | 56.2% | 6 |
 | CLUSTER, `igor` variant | 51.5% | **0** |
-| AutoDecon (published, same data) | ~98% | — |
+| AutoDecon (published, same data) | 128 detections / 130 pulses ⚠ | — |
 
 PULSAR was given its best shot: classic Merriam–Wachter G values scaled by
 0.5–1.25, with its assay-SD model set from each dataset's own mean CV. Its best
@@ -130,13 +136,18 @@ The difference is **pulse density**. Johnson's datasets carry 17-30 pulses in
 true pulse and can hardly be counted wrong. Our general corpus averages 6.5
 pulses per record.
 
-Tested directly: a density-matched corpus (40 records, 145 points, 10-minute
-sampling, ~4% CV, ~30 pulses each — Johnson's shape) gives
+Tested directly with a density-matched corpus — 40 records, 145 points,
+10-minute sampling, ~4% CV, ~30 pulses each, Johnson's shape:
 
-    igor     59.0% sensitivity, 0.4% FDR
-    fortran  59.1% sensitivity, 0.4% FDR
+    python3 tools/simulate_benchmark.py --profile dense --n 40 --seed 7 --out /tmp/dense
+    igor     55.8% sensitivity, 0.3% FDR
+    fortran  58.4% sensitivity, 0.4% FDR
 
-against his published Cluster figure of ~58%. So the simulator reproduces
+against his published Cluster figure of ~58%. (An earlier version of this
+section reported 59.0%/59.1% from a throwaway script that was never persisted;
+those numbers were unreproducible and are superseded by the ones above, which
+the committed `--profile dense` regenerates. The conclusion is unchanged.)
+So the simulator reproduces
 CLUSTER's documented behaviour when the record looks like the records it was
 documented on, and reveals real false positives when it does not.
 
@@ -155,6 +166,28 @@ holds its false-positive rate down; a simulator that sets reported error equal
 to true noise exposes the test's nominal ~2%-per-point rate and fills a long
 corpus with spurious pulses.
 
+## Reproducibility gaps (found by review, 2026-08-10)
+
+Several numbers in this document cannot currently be re-derived from the repo.
+They are reported as measured, but a reader cannot check them:
+
+- **The `fortran` rows in the ground-truth table.** `tools/score_against_truth.ts`
+  hardcodes `variant: "igor"`; the fortran figures came from an edit that was
+  never committed.
+- **The PULSAR head-to-head.** `tools/pulsar/pulsar_run.R` runs one file and
+  prints peak times; the dataset loop, the G-value sweep, the per-dataset CV
+  derivation and the scorer are not in the repo.
+- **The "27-point sweep".** No such sweep exists; `score_benchmark.ts --sweep`
+  runs 72 combinations on a different corpus.
+- **The "assays report SDs 10-20% larger" calibration.** Measured once by hand;
+  no committed code computes it, and the figure disagrees with the generator's
+  own `noise_ratio` range (0.75-0.95, i.e. 5-33%).
+- **Everything that needs `data/extracted/`, `data/oracle/`, `data/oracle_igor/`
+  or `reference/`** — all gitignored. On a clean clone the oracle suites skip.
+
+Fixed since: the density-matched corpus is now reproducible
+(`--profile dense`), and its figures were corrected to the reproducible values.
+
 ## What is NOT verified
 
 - **No numerical diff against Igor.** The Igor experiment in `data/` is input
@@ -167,83 +200,6 @@ corpus with spurious pulses.
   settings. The other ten datasets have not.
 - **Only `gnrh`, `man3` and `null1` were covered by the Igor matrix**, plus
   `set1` and `LHInfused` at defaults. Not every dataset at every setting.
-- **No expert-annotated pulses.** "Correct" still means "matches the reference
-  implementations", not "matches what an endocrinologist would mark".
-
-So the claim "validated against the Igor Pro implementation" is now **true**,
-and independently the `fortran` variant reproduces CLUST5 exactly at its
-defaults.
-
-## Finding: Igor's loop 1200 is a do-while, so nPeak=1 marks a point
-
-The Igor diff caught a real bug in this port. Igor writes loop 1200 as a
-`do … while(j < nPeak - 1)`, which always executes once; the port used
-`for (k = 0; k < nPeak - 1; k++)`, which executes **zero** times when
-nPeak = 1. So at nPeak = 1 Igor marked a pulse point and the port marked none.
-
-Invisible at nPeak ≥ 2, where both mark `nPeak - 1` points — and the app's
-default is 2, so no shipped analysis was affected. But **the parameters stored
-in the Igor panel are nPeak = 1, nNadir = 1**, so it would have bitten the
-first person to reproduce that session. Fixed by transcribing the do-while
-literally; pinned by a unit test and by oracle runs B and D.
-
-This is the case for oracle testing in one paragraph: reading the source
-carefully got the loop bound right in spirit and wrong at the boundary, and
-only running the real thing exposed it.
-
-## Finding: the Fortran swaps its windows on the downs pass
-
-Discovered while building the oracle, and worth recording because it is not in
-any documentation.
-
-`CLUST5.MPF` declares the shared parameter block in **two different orders**:
-
-```
-line  38  main:  COMMON /MISC/ TVAL, NNADIR, NPEAK
-line 539  UPS:   COMMON /MISC/ Z,    NNADIR, NPEAK     <- same order
-line 465  DNS:   COMMON /MISC/ Z,    NPEAK,  NNADIR    <- exchanged
-```
-
-Because a COMMON block matches by position, not by name, `DNS` reads the two
-window sizes swapped: its base window takes `NPEAK` and its test window takes
-`NNADIR`. `do_cluster.mpf` (CLUSTER8 v8.00) carries the identical asymmetry, so
-this is long-lived behavior in the Fortran lineage, not a v6.01 slip.
-
-It may well be deliberate: on a *decrease* the earlier window is the peak and
-the later one is the nadir, so exchanging the sizes is arguably the correct
-thing to do. Igor's `UPorDN` takes the opposite view — `ClusterMain` passes
-`(nPeak, nNadir)` in the same order for both directions, treating the arguments
-as "size of base window" and "size of test window" regardless of direction.
-
-**Consequences.** The two agree whenever `nPeak == nNadir`, which covers the
-app default (2, 2) and the parameters recorded in the Igor panel (1, 1), so no
-shipped analysis is affected. They diverge for asymmetric windows: on `gnrh`
-with nNadir 1 / nPeak 3, 50 of 96 down flags differ, and swapping the windows
-reproduces the Fortran exactly. This port follows Igor in both variants.
-`src/core/oracle.test.ts` pins the divergence so it cannot change silently.
-
-**Open decision:** should `variant: "fortran"` reproduce the swap, given that
-it claims to be the original program? Left as-is pending a call, because it
-changes numbers.
-
-## Pipeline
-
-### 1. Capture the Igor oracle — DONE (2026-08-10)
-
-Run in Igor; 15 CSVs in `data/oracle_igor/`; 75/75 checks pass after fixing the
-do-while bug above. `np_ValidateAllTo` needed an HFS path
-("Macintosh HD:Users:…"), not POSIX — the function now tries three forms.
-
-**Answered: Igor does not swap its windows on the downs pass.** Runs C
-(nPeak 3 / nNadir 1) and D (the mirror) both match this port, so the swap seen
-in `CLUST5.MPF`'s `COMMON /MISC/` really is specific to the Fortran lineage.
-The port's behaviour was correct.
-
-### 1b. Extend the Igor oracle — OPTIONAL
-
-The highest-value remaining item, and the only thing standing between the repo
-and its own validation claim. Everything except the Igor session is built:
-
 - `tools/igor/no_peak_validate.ipf` — run `np_ValidateAll()`, pick a folder,
   get 15 CSVs covering a matrix designed so each run reaches a branch nothing
   else does.
@@ -281,10 +237,11 @@ Gotchas the script handles, recorded because each cost time:
 - Input format for variance option 3: line 1 = replicate count, line 2 =
   sampling interval, then `value SD NDF` per line.
 
-### 3. Run the murderboard over the docs and the About page — NOT DONE
+### 3. Run the murderboard over the docs and the About page — DONE (2026-08-10)
 
-`syncytium2/murderboard` (anti-slop document review: citation validator,
-claim/data verifier, consistency auditor) is **not vendored into this repo**, so
-it never ran. The About page is citation-dense and public; it is exactly the
+`syncytium2/murderboard` is now vendored (`docs/doc_review_process.md`,
+`tools/murderboard_*.sh`, `.claude/skills/murderboard/SKILL.md`, stamped
+@ 249a488; freshness gate reports current). Run records are in `docs/reviews/`.
+The figure and all five documents have been reviewed. The About page was
 kind of deliverable that harness exists for. Vendor it and run it over
 `src/About.tsx`, `docs/deep-learning-handoff.md`, and this file.

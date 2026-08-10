@@ -61,7 +61,7 @@ Port fidelity notes:
   original Fortran (`variant: "fortran"`). Fortran mode squares the error term
   in the pooled S (Igor sums `NDF*STDEV` unsquared), and uses a separate
   verbatim port of the CLUST5 pass-four assembly (`pulseAssemblyFortran`):
-  NPEAK-wide loop-1200 marking (Igor marks nPeak−1), `PULSE(1)`-only initial
+  NPEAK-wide loop-1200 marking (Igor's do-while marks max(1, nPeak−1)), `PULSE(1)`-only initial
   state, loop 1300 from the second point, backward zap down to index 1.
   In practice the zap canonicalizes both to the same runs for ordinary
   bounded pulses, so the visible difference comes from the variance form.
@@ -77,11 +77,11 @@ Port fidelity notes:
   significant digits is clamped to one decimal. Exports keep full precision.
 
 Source material copied from `gitlab.com/um-mip/coding-project`
-(local: `~/Documents/coding-project`).
+(local: `~/Documents/coding-projectx`).
 
 ## docs
 
-- `docs/deep-learning-handoff.md` — proposal (nothing built) for a learned
+- `docs/deep-learning-handoff.md` — plan for a learned
   pulse detector, framed as amortized simulation-based inference so it trains
   on the accepted generative model and emits calibrated posteriors instead of
   point estimates. Includes kill criteria and the client-side constraint.
@@ -134,7 +134,7 @@ do not have redistribution rights for. `reference/` is gitignored; see
 **Not committed** (gitignored): `cluster td- just data.pxp`, `data/extracted/`,
 `data/oracle/`, `data/oracle_igor/` — real lab recordings and output derived
 from them. Keep them locally to run the oracle tests and regenerate oracles;
-without them those suites skip. Committed: `data/synthetic/` only.
+without them those suites skip. Committed: `data/synthetic/` and `data/benchmark/` (both simulated, ours).
 
 - `cluster td- just data.pxp` — Igor experiment containing sample cluster
   data (from `~/Documents/coding-projectx/sample data in pxp/`), for

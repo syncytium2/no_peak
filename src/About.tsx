@@ -23,8 +23,9 @@ export function About({ onBack }: { onBack: () => void }) {
         the original Fortran available as a switchable mode.
       </p>
       <p>
-        Everything runs on your machine. There is no server, no upload, and no analytics — the data
-        you load never leaves the browser tab.
+        Your data runs entirely on your machine. There is no analytics, and no code path that
+        uploads a loaded recording — it never leaves the browser tab. The one exception on this
+        page is the contact form at the bottom, which sends only what you type into it.
       </p>
 
       <h2 id="prepare">Preparing a file to upload</h2>
@@ -128,28 +129,33 @@ export function About({ onBack }: { onBack: () => void }) {
         detector honest about assay precision rather than about biology.
       </p>
       <p>
-        The price of that simplicity is that the four detection parameters — the two window widths
-        and the two t-score thresholds — <em>are</em> the model. Different settings give different
-        answers, so publications using CLUSTER should report all four along with the error model,
+        The price of that simplicity is that the detection parameters — the two window widths, the
+        two t-score thresholds, and the minimum value a pulse must reach — <em>are</em> the model.
+        Different settings give different answers, so publications using CLUSTER should report all
+        five along with the error model,
         and it is worth checking that your conclusions survive a sweep of nearby values. CLUSTER
         also identifies <em>when</em> pulses occur; it does not estimate secretion rates, hormone
         half-life, or pulse mass. Those are the province of deconvolution methods, several of which
         are linked below.
       </p>
       <p>
-        CLUSTER is nearly forty years old, and newer methods do detect more pulses. In the
-        validation of AutoDecon on synthetic LH data, AutoDecon reached about 96% sensitivity
-        against CLUSTER&apos;s 80% — but CLUSTER produced markedly fewer false positives, roughly
-        1% against 6%. That trade is the honest summary of why the algorithm is still in use: it is
+        CLUSTER is forty years old, and newer methods do detect more pulses. In the validation of
+        AutoDecon on synthetic LH data, AutoDecon reached about 96% sensitivity against
+        CLUSTER&apos;s 80% — but CLUSTER produced markedly fewer false positives, roughly 1%
+        against 6%. That trade is the honest summary of why the algorithm is still in use: it is
         conservative, its assumptions are few and inspectable, and it fails in predictable ways.
+        One caveat on that 1%, from testing this port against simulated data with known answers:
+        it holds for records packed with pulses, which is what those benchmarks used. On sparser
+        records the same code produces materially more false positives, so treat the figure as a
+        property of the benchmark as much as of the algorithm.
         Whether that is the right trade depends on whether missing a pulse or inventing one is
         worse for your question.
       </p>
 
       <h3>Error models</h3>
       <p>
-        The per-point error can come from replicate statistics computed locally (a sliding window)
-        or globally across the record, as an SD or an SEM; from a square-root model for
+        The per-point error can be estimated from the spread of the data values themselves —
+        over a sliding window, or across the whole record, as an SD or a standard error; from a square-root model for
         count-like data; from a fixed value; or from a user-supplied error column in your file
         (the &quot;Error Wave&quot; option), which is what you want when your assay reports its own
         per-sample precision.
@@ -520,12 +526,11 @@ export function About({ onBack }: { onBack: () => void }) {
 
       <h2>This implementation</h2>
       <p>
-        Source, test suite, and the reference Fortran and Igor code are on{" "}
-        <a href="https://github.com/syncytium2/no_peak" target="_blank" rel="noreferrer">
-          GitHub
-        </a>
-        . If you find a case where no_peak disagrees with Igor or the Fortran, that is a bug worth
-        reporting — please open an issue with the data and parameters.
+        The source and test suite live in a private repository for now. The reference Fortran and
+        Igor Pro sources are <em>not</em> redistributed with it — they are third-party code under a
+        licence that forbids passing it on. If you find a case where no_peak disagrees with Igor or
+        the original Fortran, that is a bug worth reporting: please get in touch with the data and
+        parameters.
       </p>
 
       <h2>Get in touch</h2>

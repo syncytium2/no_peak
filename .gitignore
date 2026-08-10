@@ -15,3 +15,8 @@ data/extracted/
 data/oracle/
 data/oracle_igor/
 *.pxp
+
+# build/run residue
+param_list.Rdata
+__pycache__/
+tsconfig.tsbuildinfo
