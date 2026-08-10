@@ -68,7 +68,7 @@ const run = (nNadir: number, nPeak: number) =>
     series.error!,
   );
 
-describe.runIf(HAVE_ORACLE)("CLUST5 oracle — gnrh, nNadir=2 nPeak=2 (the documented defaults)", () => {
+if (HAVE_ORACLE) describe("CLUST5 oracle — gnrh, nNadir=2 nPeak=2 (the documented defaults)", () => {
   const oracle = parseListing("data/oracle/gnrh_nn2_np2.lst");
   const oraclePeaks = parsePeaks("data/oracle/gnrh_nn2_np2.stdout.txt");
   const r = run(2, 2);
@@ -102,7 +102,7 @@ describe.runIf(HAVE_ORACLE)("CLUST5 oracle — gnrh, nNadir=2 nPeak=2 (the docum
   });
 });
 
-describe.runIf(HAVE_ORACLE)("CLUST5 oracle — asymmetric windows expose a documented divergence", () => {
+if (HAVE_ORACLE) describe("CLUST5 oracle — asymmetric windows expose a documented divergence", () => {
   const oracle = parseListing("data/oracle/gnrh_nn1_np3.lst");
   const r = run(1, 3);
 
