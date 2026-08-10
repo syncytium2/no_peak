@@ -41,6 +41,44 @@ _Last updated: 2026-08-10 (v0.2.0)._
 - **Every bundled sample dataset parses and runs** through both variants
   without error (11 files, 16–145 points).
 
+## Scored against known truth (2026-08-10)
+
+The first test here that asks "does it find the pulses that are really there?"
+rather than "does it match the reference implementations?". Johnson's Pulse_XP
+distribution ships simulated series with their generating pulse times
+(`lhsim1-3`, `ghsim1-3`, `.dat` + `.ans`), plus `Data/simulated.txt` — his own
+published table of how many pulses each algorithm recovered.
+
+Run it with `tools/score_against_truth.ts` (data not distributed; set
+`PULSEXP_DATA`). Across 130 true pulses in six datasets, at default settings:
+
+| Variant | Pulses found | Sensitivity | False positives |
+|---|---|---|---|
+| `igor` | 67 | 51.5% | **0** |
+| `fortran` | 79 | 60.8% | **0** |
+| Johnson's published Cluster | 75 | 58% | — |
+| Johnson's published AutoDecon | 128 | ~98% | — |
+
+Two things worth keeping:
+
+**Zero false positives, in every configuration tried** — including a 27-point
+sweep of window sizes and thresholds. CLUSTER missed a great many real pulses
+here and invented none. That is the specificity/sensitivity trade the
+literature describes (≈1% vs ≈6% false positives against AutoDecon), seen
+directly.
+
+**The `fortran` variant closely reproduces Johnson's own published Cluster
+counts** — per-dataset 15/15/17/8/12/12 against his 14/14/16/7/13/11, a total
+deviation of 6 across six datasets, versus 14 for the `igor` variant. That is
+independent corroboration that the "Cluster" column in his table was produced
+by Cluster8 (the Fortran), and that our Fortran port behaves like it on data
+neither was tuned against.
+
+**Caveats.** The parameters behind his Cluster column are not recorded, so the
+comparison is approximate; a true positive is counted when a generating pulse
+time falls within a detected pulse widened by one sampling interval; and six
+datasets is a small sample.
+
 ## What is NOT verified
 
 - **No numerical diff against Igor.** The Igor experiment in `data/` is input

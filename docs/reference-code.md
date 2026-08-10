@@ -33,6 +33,29 @@ category from the program itself, but it is a judgement call rather than a
 settled one, and worth confirming with whoever owns the code before this
 repository is made public.
 
+## The license, found 2026-08-10
+
+Johnson's `HYPERGEO.PDF` (in the `hypergeo.zip` distribution) carries an
+explicit licence for the **"Hormone Pulse Analysis programs"** family, which is
+the umbrella covering Pulse_XP, AutoDecon, Cluster8 and HyperGeo:
+
+> Licensor: Michael L. Johnson … Software is furnished to the Licensee free, or
+> for a nominal charge, and may only be copied, in whole or in part, for use by
+> the Licensee and his/her employees. … **Licensee shall not provide or
+> otherwise make available the software or any part or copies thereof in any
+> form to any third party**, except as may be permitted in writing by the
+> Licensor. … The Licensee further agrees that this software will not be used
+> for profit by anyone.
+
+So redistribution is prohibited in writing, not merely unclear. Keeping these
+files out of the repository was correct, and the history purge was warranted.
+Local use is explicitly allowed, so running them for validation is fine.
+
+Note the distinction that makes this port legitimate: the **algorithm** is
+published (Veldhuis & Johnson 1986) and algorithms are not copyrightable. A
+reimplementation written from the paper and from reading the reference code is
+ours to license as we choose; the reference *source* is not ours to ship.
+
 ## Provenance, for the record
 
 Source material came from `gitlab.com/um-mip/coding-project` (local working
