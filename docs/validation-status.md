@@ -115,6 +115,46 @@ while deconvolution (AutoDecon) is in a different class entirely at ~98%. If
 you need to *count* pulses, use deconvolution. If you need to be able to
 defend every pulse you report, the specificity is the argument.
 
+## Finding: CLUSTER's near-zero false-positive rate is partly a property of the benchmark
+
+Building the Phase 1 simulator (`tools/simulate_benchmark.py`) surfaced
+something the existing measurements hide.
+
+Scored on Johnson's simulated datasets, CLUSTER produces **zero** false
+positives. Scored on a broad simulated corpus spanning realistic ranges of
+sampling interval, half-life, pulse mass and inter-pulse interval, the same
+code produces a **16-22% false-discovery rate**. Both numbers are correct.
+
+The difference is **pulse density**. Johnson's datasets carry 17-30 pulses in
+145 samples — roughly one per five points, so almost any detection lands near a
+true pulse and can hardly be counted wrong. Our general corpus averages 6.5
+pulses per record.
+
+Tested directly: a density-matched corpus (40 records, 145 points, 10-minute
+sampling, ~4% CV, ~30 pulses each — Johnson's shape) gives
+
+    igor     59.0% sensitivity, 0.4% FDR
+    fortran  59.1% sensitivity, 0.4% FDR
+
+against his published Cluster figure of ~58%. So the simulator reproduces
+CLUSTER's documented behaviour when the record looks like the records it was
+documented on, and reveals real false positives when it does not.
+
+**What follows.** The "≈1% false positives" that CLUSTER is credited with in
+the AutoDecon comparison should be read as *conditional on dense pulse trains*.
+For sparse records — short sampling windows, or genuinely infrequent pulses —
+expect a materially higher false-positive rate, and set thresholds accordingly.
+This is not a defect in the port: both variants reproduce their references
+exactly. It is a property of the algorithm that the standard benchmarks do not
+expose.
+
+A secondary calibration point, measured against the residuals of Johnson's
+files: assays report SDs about **10-20% larger** than the actual noise. Because
+CLUSTER's t-test is calibrated on the reported error, that conservatism is what
+holds its false-positive rate down; a simulator that sets reported error equal
+to true noise exposes the test's nominal ~2%-per-point rate and fills a long
+corpus with spurious pulses.
+
 ## What is NOT verified
 
 - **No numerical diff against Igor.** The Igor experiment in `data/` is input

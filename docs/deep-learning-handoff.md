@@ -134,10 +134,19 @@ anything.
 > variant) and **60.8%** (fortran), with Johnson's own published Cluster column
 > at **58%** — and **zero** false positives in every configuration tried.
 >
-> Calibrate to roughly **55–60% sensitivity at a near-zero false-positive
-> rate**, not 80%. A simulator tuned to make CLUSTER hit 80% would be
-> systematically too easy — pulses too tall, noise too low, spacing too
-> generous — and a model trained on it would collapse on real records.
+> Calibrate to roughly **55–60% sensitivity**, not 80%. A simulator tuned to
+> make CLUSTER hit 80% would be systematically too easy — pulses too tall,
+> noise too low, spacing too generous — and a model trained on it would
+> collapse on real records.
+>
+> **The false-positive half of the gate must be density-matched.** CLUSTER's
+> near-zero false-positive rate turns out to be conditional on dense pulse
+> trains (see `docs/validation-status.md`). Check it on a corpus shaped like
+> the reference datasets — ~145 points, 10-minute sampling, ~30 pulses, ~4% CV
+> — where the target is <1% FDR at ~59% sensitivity. On a broad corpus a
+> 15-20% FDR is the honest expectation, not a simulator bug. Do not tune the
+> generator until the broad-corpus FDR reaches zero; that would be fitting the
+> simulator to an artefact.
 
 ### Phase 2 — baselines on the benchmark
 Before any model: score CLUSTER (both variants), and PULSAR Otago if you can
