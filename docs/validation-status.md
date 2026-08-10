@@ -79,6 +79,42 @@ comparison is approximate; a true positive is counted when a generating pulse
 time falls within a detected pulse widened by one sampling interval; and six
 datasets is a small sample.
 
+## Head-to-head with PULSAR Otago (2026-08-10)
+
+The Otago group's PULSAR reimplementation (Porteous et al. 2021, *Endocrinology*
+162:bqab165 — the Grattan/Herbison lineage) is the closest actively-maintained
+alternative. It was run headlessly from its GPL-3 source on the *same* simulated
+datasets with the *same* ground truth, using `tools/pulsar/pulsar_run.R`.
+
+| Detector | Sensitivity | False positives |
+|---|---|---|
+| CLUSTER, `fortran` variant | **60.8%** | **0** |
+| Johnson's published Cluster | ~58% | — |
+| PULSAR Otago (best of a threshold sweep) | 56.2% | 6 |
+| CLUSTER, `igor` variant | 51.5% | **0** |
+| AutoDecon (published, same data) | ~98% | — |
+
+PULSAR was given its best shot: classic Merriam–Wachter G values scaled by
+0.5–1.25, with its assay-SD model set from each dataset's own mean CV. Its best
+was 0.5× (73/130 correct, 6 spurious); performance degraded as thresholds rose
+and was flat below 0.75×, which suggests smoothing rather than the G values was
+binding.
+
+**Read this carefully rather than as a scoreboard.** The two report different
+objects — PULSAR emits a peak *time*, CLUSTER a pulse *span* — so PULSAR was
+credited a hit within ±2 sampling intervals of a true onset while CLUSTER had
+to contain the onset within its span ±1. That is generous to PULSAR, and it
+still produced the only false positives in the comparison. Against that,
+PULSAR's parameters here are our guesses: the paper derives values for mouse
+LH, not for Johnson's simulated GH/LH, so a specialist could very likely do
+better than 56%.
+
+The honest summary: on this data all three CLUSTER-family detectors land in the
+50–60% band with CLUSTER distinguished by never producing a false positive,
+while deconvolution (AutoDecon) is in a different class entirely at ~98%. If
+you need to *count* pulses, use deconvolution. If you need to be able to
+defend every pulse you report, the specificity is the argument.
+
 ## What is NOT verified
 
 - **No numerical diff against Igor.** The Igor experiment in `data/` is input
