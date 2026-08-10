@@ -64,8 +64,8 @@ About page states them separately.
 
 ## The license, found 2026-08-10
 
-Johnson's `HYPERGEO.PDF` (inside `hypergeo.zip`, kept at
-`Dropbox-UniversityofMichigan/Richard DeFazio/nopeak/hypergeo.zip`) carries an
+Johnson's `HYPERGEO.PDF` (inside the `hypergeo.zip` distribution, held
+privately — not in this repository) carries an
 explicit licence for the **"Hormone Pulse Analysis programs"** family, which is
 the umbrella covering Pulse_XP, AutoDecon, Cluster8 and HyperGeo:
 
