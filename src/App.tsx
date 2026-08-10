@@ -1,7 +1,7 @@
 import { useEffect, useMemo, useRef, useState } from "react";
 import { clusterMain } from "./core/cluster";
 import { resolveErrorModel } from "./core/errorModel";
-import { parseSeries, resultToCSV, type ParsedSeries } from "./core/csv";
+import { parseLooseNumbers, parseSeries, resultToCSV, type ParsedSeries } from "./core/csv";
 import { fmt } from "./core/format";
 import { DEFAULT_PARAMS, type ClusterParams, type ErrorModelType, type MeanSD } from "./core/types";
 import { ClusterChart } from "./chart/ClusterChart";
@@ -39,6 +39,8 @@ export function App() {
   const [loadError, setLoadError] = useState<string | null>(null);
   // set when a user-loaded file brings its own errors and we should ask first
   const [errorOffer, setErrorOffer] = useState<{ from: string; n: number } | null>(null);
+  const [pasteOpen, setPasteOpen] = useState(false);
+  const [pasteText, setPasteText] = useState("");
   // settings fold: open on desktop, collapsed on phones so the figure leads
   const [settingsOpen, setSettingsOpen] = useState(
     () => window.matchMedia("(min-width: 881px)").matches,
@@ -129,6 +131,51 @@ export function App() {
     });
   }
 
+  /**
+   * Columns first; if that fails, fall back to reading the text as a plain
+   * list of numbers so hand-typed input works.
+   */
+  function parsePasted(text: string): ParsedSeries {
+    try {
+      return parseSeries(text);
+    } catch (e) {
+      const loose = parseLooseNumbers(text);
+      if (!loose) throw e; // not numeric: the column parser's message is better
+      return { times: null, values: loose, error: null, labels: null };
+    }
+  }
+
+  /** Live feedback while typing/pasting, so problems surface before loading. */
+  const pastePreview = useMemo(() => {
+    if (!pasteText.trim()) return null;
+    try {
+      const s = parseSeries(pasteText);
+      const cols = s.error ? 3 : s.times ? 2 : 1;
+      return {
+        ok: true as const,
+        text:
+          `${s.values.length} points, ${cols} column${cols > 1 ? "s" : ""}` +
+          (s.error ? " (time, value, error)" : s.times ? " (time, value)" : " (value only)"),
+      };
+    } catch (e) {
+      const loose = parseLooseNumbers(pasteText);
+      if (loose) {
+        return { ok: true as const, text: `${loose.length} numbers, read as values in order` };
+      }
+      return { ok: false as const, text: e instanceof Error ? e.message : String(e) };
+    }
+  }, [pasteText]);
+
+  function loadPasted() {
+    try {
+      loadSeries("typed", parsePasted(pasteText), true);
+      setPasteOpen(false);
+      setPasteText("");
+    } catch (e) {
+      setLoadError(e instanceof Error ? e.message : String(e));
+    }
+  }
+
   function loadSample(key: string) {
     const sample = SAMPLES.find((s) => s.key === key);
     if (!sample) return;
@@ -198,6 +245,9 @@ export function App() {
         <button className="primary" onClick={() => fileRef.current?.click()}>
           Load data file
         </button>
+        <button onClick={() => setPasteOpen((v) => !v)} aria-expanded={pasteOpen}>
+          {pasteOpen ? "Close" : "Paste or type data"}
+        </button>
         <label className="samplepick">
           Sample data
           <select
@@ -243,6 +293,44 @@ export function App() {
           </span>
         )}
       </section>
+
+      {pasteOpen && (
+        <section className="pastebox">
+          <label>
+            Paste columns copied from Excel, Igor, or a text file — tabs, commas, semicolons, and
+            spaces all work, and a header row is fine. Or just type numbers and see what the
+            detector makes of them: any list of numbers, on one line or many, is read as values in
+            order.
+            <textarea
+              autoFocus
+              rows={8}
+              spellCheck={false}
+              value={pasteText}
+              onChange={(e) => setPasteText(e.target.value)}
+              placeholder={
+                "1 1 1 8 12 6 2 1 1 1 9 14 7 2 1 1\n\n…or paste columns:\n" +
+                "time\tvalue\terror\n10\t0.42\t0.03\n20\t0.38\t0.03"
+              }
+            />
+          </label>
+          <div className="pastefoot">
+            <button className="primary" onClick={loadPasted} disabled={!pastePreview?.ok}>
+              Load pasted data
+            </button>
+            <button
+              onClick={() => {
+                setPasteOpen(false);
+                setPasteText("");
+              }}
+            >
+              Cancel
+            </button>
+            {pastePreview && (
+              <span className={pastePreview.ok ? "hint" : "error"}>{pastePreview.text}</span>
+            )}
+          </div>
+        </section>
+      )}
 
       {loadError && <p className="error">{loadError}</p>}
 

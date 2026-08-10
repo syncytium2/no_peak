@@ -63,6 +63,24 @@ export function parseSeries(text: string): ParsedSeries {
   };
 }
 
+/**
+ * Last-resort parse for hand-typed input: treat the whole blob as a flat list
+ * of numbers, whatever the line breaks. Lets someone type "1 2 3 9 20 4 2 1"
+ * and see what CLUSTER makes of it, which is how the original manual test
+ * series were built. Returns null when the text is not purely numeric, so the
+ * strict column parser keeps ownership of real files and their error messages.
+ */
+export function parseLooseNumbers(text: string): number[] | null {
+  const tokens = text
+    .split(/[\s,;]+/)
+    .map((t) => t.trim())
+    .filter((t) => t.length > 0);
+  if (tokens.length < 3) return null;
+  const values = tokens.map(Number);
+  if (values.some((v) => !Number.isFinite(v))) return null;
+  return values;
+}
+
 const fmt = (v: number | null | undefined) =>
   v === null || v === undefined ? "" : String(v);
 

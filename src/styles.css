@@ -186,6 +186,55 @@ button.primary:hover {
   font-weight: 600;
 }
 
+.pastebox {
+  background: var(--surface);
+  border: 1px solid var(--grid);
+  border-radius: 8px;
+  padding: 14px;
+  margin: 0 0 12px;
+}
+
+.pastebox label {
+  display: grid;
+  gap: 6px;
+  font-size: 13px;
+  color: var(--ink-2);
+}
+
+.pastebox textarea {
+  font-family: ui-monospace, SFMono-Regular, Menlo, monospace;
+  font-size: 13px;
+  padding: 8px;
+  border: 1px solid var(--axis);
+  border-radius: 5px;
+  background: #fff;
+  color: var(--ink);
+  width: 100%;
+  resize: vertical;
+  white-space: pre;
+  overflow-wrap: normal;
+  overflow-x: auto;
+}
+
+.pastefoot {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  flex-wrap: wrap;
+  margin-top: 10px;
+}
+
+body.dos .pastebox {
+  border-radius: 0;
+}
+
+body.dos .pastebox textarea {
+  background: #000;
+  color: var(--ink);
+  border-color: var(--ink-2);
+  border-radius: 0;
+}
+
 /* prompt shown when a loaded file brings its own per-sample errors */
 .offer {
   display: flex;
