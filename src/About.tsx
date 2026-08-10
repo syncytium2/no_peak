@@ -526,11 +526,12 @@ export function About({ onBack }: { onBack: () => void }) {
 
       <h2>This implementation</h2>
       <p>
-        The source and test suite live in a private repository for now. The reference Fortran and
-        Igor Pro sources are <em>not</em> redistributed with it — they are third-party code under a
-        licence that forbids passing it on. If you find a case where no_peak disagrees with Igor or
-        the original Fortran, that is a bug worth reporting: please get in touch with the data and
-        parameters.
+        The source and test suite live in a private repository for now. Neither reference
+        implementation is redistributed with it, for different reasons: Johnson&apos;s Fortran is
+        under a licence that forbids passing it on, and the Igor Pro Cluster package is the
+        laboratory&apos;s own code, which this app is intended to succeed. If you find a case where
+        no_peak disagrees with Igor or the original Fortran, that is a bug worth reporting: please
+        get in touch with the data and parameters.
       </p>
 
       <h2>Get in touch</h2>

@@ -50,13 +50,17 @@ What that settles: the port itself. This project reads `CLUST5.MPF`,
 reimplements its algorithm in TypeScript, and ships that — with the author's
 approval, not merely on the argument that algorithms are uncopyrightable.
 
-⚠ **What it does not yet settle: redistribution of the source.** Permission to
-*use* the code to build a port is not the same as permission to *publish*
-`CLUST5.MPF` itself, and the licence below forbids passing it to third parties
-unless permitted in writing. Until the scope is confirmed, `reference/` stays
-gitignored and out of history. If the approval does extend to redistribution,
-that decision can be reversed — the files are still on local disk, and the
-About page wording would need updating too.
+**Decided 2026-08-10: we are not publishing Johnson's source.** The approval
+covers the port, not redistribution, and the licence below forbids passing the
+code to third parties. `reference/fortran/` stays gitignored and out of history.
+(Fragments of the Fortran do circulate online; that changes nothing about what
+this project chooses to publish.)
+
+**The Igor Cluster package is withheld by choice, not by licence.** It is the
+Moenter lab's own work — the lab is free to publish it — and the decision is
+simply *not at this time*, because this app is intended to succeed it. That is
+a different reason from the Fortran's, and the two should not be conflated: the
+About page states them separately.
 
 ## The license, found 2026-08-10
 
