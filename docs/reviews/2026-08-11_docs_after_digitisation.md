@@ -88,8 +88,10 @@ pattern this repo had already caught itself in once before over a claimed
 27-point sweep that did not exist.
 
 The un-fitted half is the LH arm, whose floor **is** the paper's published assay
-sensitivity (0.45 ng/ml): **35 of 38, zero false positives, stable across CVs
-from 4% to 8%**. That is the number to quote. The GnRH arm, fitted, is 32 of 32
+sensitivity (0.45 ng/ml): **35 of 38, stable across CVs from 4% to 8%**. That is
+the number to quote. (Its zero false-positive count is *not* equally stable —
+the blind pass caught that: zero holds only from about a 7.8% CV upward, so that
+half still leans on the fitted constant.) The GnRH arm, fitted, is 32 of 32
 with 1 false positive.
 
 Also corrected on role 4's evidence:
