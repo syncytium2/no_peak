@@ -3,7 +3,8 @@
 Honest accounting of what has and has not been checked, so the claim in the
 README and on the site can be matched against reality.
 
-_Last updated: 2026-08-11 (v0.2.0)._
+_Last updated: 2026-08-11 (v0.2.0)._ Open work is in
+[`docs/next-steps.md`](next-steps.md).
 
 > The reference Fortran and Igor sources are **not committed** — third-party
 > code we cannot redistribute. Neither is the oracle output (`data/oracle/`,

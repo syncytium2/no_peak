@@ -120,6 +120,9 @@ Source material copied from `gitlab.com/um-mip/coding-project`
 
 ## docs
 
+- **`docs/next-steps.md` — read this first.** Open work, ranked, with what is
+  blocked on a decision rather than on effort.
+
 - `docs/deep-learning-handoff.md` — plan for a learned
   pulse detector, framed as amortized simulation-based inference so it trains
   on the accepted generative model and emits calibrated posteriors instead of
