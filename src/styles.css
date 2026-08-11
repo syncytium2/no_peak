@@ -58,20 +58,23 @@ header h1 {
   gap: 10px;
 }
 
-/* Implementation picker: a mode switch, not a detection parameter — it lives
-   in the top bar, ahead of the load buttons, and is never inside the fold. */
+/* Implementation picker: a mode switch, not a detection parameter — it leads
+   the data panel and is never inside the fold.
+
+   Stacked rather than label-beside-select. Fortran mode swaps the whole app to
+   Courier, which is wider per character, and a side-by-side row sized for the
+   sans font overflowed the column. Nothing here may depend on font metrics. */
 .implpick {
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-  gap: 8px;
+  display: grid;
+  gap: 4px;
+  min-width: 0;
   font-size: 13px;
   font-weight: 600;
   color: var(--ink-2);
   background: var(--surface);
   border: 1px solid var(--axis);
   border-radius: 6px;
-  padding: 4px 6px 4px 10px;
+  padding: 6px 8px;
 }
 
 .implpick select {
@@ -112,15 +115,19 @@ header h1 {
   width: 100%;
 }
 
-/* the two load buttons share a row inside the narrow column */
+/* The two load buttons share a row when they fit and stack when they do not,
+   which is what happens in the wider Fortran-mode font. */
 .datapanel .loadbtns {
   display: flex;
+  flex-wrap: wrap;
   gap: 8px;
 }
 
 .datapanel .loadbtns button {
-  flex: 1 1 auto;
-  white-space: nowrap;
+  flex: 1 1 8em;
+  min-width: 0;
+  padding-left: 10px;
+  padding-right: 10px;
 }
 
 .samplepick select {
@@ -382,6 +389,7 @@ body.dos .offer {
   display: grid;
   gap: 12px;
   align-content: start;
+  min-width: 0;
   position: sticky;
   top: 16px;
   max-height: calc(100vh - 32px);
@@ -420,6 +428,22 @@ body.dos .offer {
   border: 1px solid var(--grid);
   border-radius: 8px;
   padding: 14px;
+  min-width: 0;
+}
+
+/* Nothing in the tooling column may exceed it, whatever the font. */
+.datapanel select,
+.datapanel button,
+.datapanel input,
+.panel select,
+.panel input {
+  max-width: 100%;
+  min-width: 0;
+}
+
+.datapanel code,
+.panel code {
+  overflow-wrap: anywhere;
 }
 
 .panel > summary {
