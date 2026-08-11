@@ -94,7 +94,16 @@ export function ClusterChart({
       yLo = Math.min(yLo, values[i] - e);
       yHi = Math.max(yHi, values[i] + e);
     }
-    const yDom = padDomain([Math.min(yLo, 0), yHi]);
+    // Peak numbers sit in a row along the top of the panel, so the y scale has
+    // to leave a band clear for them. Two rows when the pulses are packed
+    // tightly enough that one row would collide — staggering keeps every pulse
+    // numbered, which matters because the numbers key the figure to the table.
+    const xs = peaks.map((pk) => x(times[pk.iMax])).sort((a, b) => a - b);
+    let minGap = Infinity;
+    for (let i = 1; i < xs.length; i++) minGap = Math.min(minGap, xs[i] - xs[i - 1]);
+    const labelRows = xs.length > 1 && minGap < 16 ? 2 : 1;
+
+    const yDom = padDomain([Math.min(yLo, 0), yHi], 0.05, labelRows === 2 ? 0.2 : 0.14);
     const y = linearScale(yDom, [mainTop + MAIN_H, mainTop]);
 
     let tHi = 1;
@@ -102,10 +111,10 @@ export function ClusterChart({
     const tDom = padDomain([-tHi, tHi], 0.08, 0.08);
     const yT = linearScale(tDom, [mscoreTop + MSCORE_H, mscoreTop]);
 
-    return { x, y, yT, dt };
-  }, [times, values, error, mscoreUp, n, showError, mainTop, mscoreTop]);
+    return { x, y, yT, dt, labelRows };
+  }, [times, values, error, mscoreUp, n, showError, mainTop, mscoreTop, peaks]);
 
-  const { x, y, yT, dt } = layout;
+  const { x, y, yT, dt, labelRows } = layout;
   // A time axis gets clock divisions (…30 s, 1 min, 5 min…) rather than the
   // decimal 1/2/5 ladder, which on a seconds axis reads 100, 200, 300.
   const unitMinutes = timeUnitDef(timeUnit).minutes;
@@ -349,16 +358,20 @@ export function ClusterChart({
             />
           ))}
 
-        {/* selective peak labels at each apex */}
+        {/* Peak numbers, in a row along the top rather than riding each apex.
+            On the apex they collide with the error bars and sit at whatever
+            height the pulse happens to reach; in a row they are a legible index
+            strip that scans straight across and keys to the table below. */}
         {peaks.map((p, i) => (
           <text
             key={`pk${i}`}
             x={x(times[p.iMax])}
-            y={y(values[p.iMax]) - (showDots ? 10 : 7)}
+            y={mainTop + 11 + (labelRows === 2 ? (i % 2) * 12 : 0)}
             fontSize="11"
             fontFamily={P.font}
-            fill={P.inkPrimary}
+            fill={P.inkMuted}
             textAnchor="middle"
+            style={{ fontVariantNumeric: "tabular-nums" }}
           >
             {i + 1}
           </text>
