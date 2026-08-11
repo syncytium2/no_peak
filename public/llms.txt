@@ -81,7 +81,7 @@ downward pass silently reads the two window sizes swapped.
 Reported plainly because the point of the tool is trustworthy numbers:
 
 - CLUSTER is conservative. It misses roughly 40% of true pulses on benchmark
-  data. Deconvolution methods (AutoDecon) recover ~98% on the same data. If you
+  data. Deconvolution methods (AutoDecon) recover ~98% of pulses — but that is a detection count containing unscored false positives, not a scored sensitivity on the same data. If you
   need to *count* pulses, use deconvolution; CLUSTER's argument is that it can
   defend every pulse it does report.
 - **The near-zero false-positive rate is partly an artefact of the standard

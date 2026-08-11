@@ -142,8 +142,11 @@ here. It is not tuned to flatter the detector.
   This is where the burst shape comes from. Its much larger pg/min figures are
   not in conflict with the ~2 above: 30-second fractions resolve the inside of a
   burst, where 5-minute fractions average over it.
-- Clarke IJ, Cummins JT. *Endocrinology* 1985;116(6):2376–83. PMID 3888609. —
-  Ovine portal GnRH interpulse intervals, 27–53 min.
+- Clarke IJ, Cummins JT. The temporal relationship between gonadotropin
+  releasing hormone (GnRH) and luteinizing hormone (LH) secretion in
+  ovariectomized ewes. *Endocrinology* 1985;116(6):2376–83. PMID 3888609. —
+  Ovine portal GnRH interpulse intervals: condition means of 26.8 ± 9.8,
+  49.5 ± 5.7 and 53.4 ± 8.7 min (a bracket over means, not an observed range).
 - Maggi R et al. GnRH and GnRH receptors in the pathophysiology of the human
   female reproductive system. *Hum Reprod Update* 2016;22(3):358–81. — GnRH
   degradation and half-life.
@@ -157,48 +160,18 @@ was every 5 min. Both numbers are in the same Materials and Methods paragraph
 and are easy to transpose. The LH preset carries the 6-min protocol's settings;
 the GnRH preset carries the 5-min one's.
 
-## Wanted: data digitised from published figures
+## The gap this directory used to have, and how it was closed
 
-The gap this directory still has is real traces. Simulation validates that the
-detector does what the algorithm says; it cannot show how the algorithm behaves
-against the messiness of a real assay.
+Simulation shows what a detector does against a known answer; it cannot show how
+it behaves against the messiness of a real assay. That gap was closed on
+2026-08-11: one of the authors of Webster et al. 1991 gave permission, and the
+eight traces from that paper's Figs. 3–4 — including the pulses its own CLUSTER
+run marked — are digitised in [`data/digitized/`](../digitized/README.md).
 
-Webster et al. 1991 Figs. 3–4 are the prize: representative portal-GnRH and
-jugular-LH traces at 400 dpi, every sample marked, **and the pulses CLUSTER
-identified circled on the trace**. That is a published ground-truth pulse call
-next to the data that produced it — the most valuable test case this project
-could hold, because it scores the port against a human-checked answer rather
-than against a simulator we wrote ourselves.
+The reasoning about what that permission does and does not settle, including why
+copyright was never the obstacle and why the contractual question stays open, is
+in [`docs/figure-data-permissions.md`](../../docs/figure-data-permissions.md).
 
-### Permissions
-
-Checked before digitising anything, and nothing has been digitised. The full
-analysis, with sources, is in [`docs/figure-data-permissions.md`](../../docs/figure-data-permissions.md).
-In short: copyright is not the obstacle — facts are not copyrightable, and a CSV
-of values read off a chart takes none of the figure's protected expression. The
-live constraint is contractual (OUP's and the Endocrine Society's site terms, and
-the University of Michigan licence the PDF came through), and whether those reach
-a derived CSV of facts is genuinely unresolved.
-
-### So: the route to take
-
-Not RightsLink. Its categories are built for reusing text and illustrations;
-there is no data-extraction option, the request would go to free-text human
-review with a 15-working-day turnaround, and no fee schedule or precedent exists
-for this kind of ask.
-
-Ask the authors. Karsch and Moenter are both at Michigan, and this project is
-already in contact with that lab. Author blessing is not a copyright licence and
-does not override the publisher's terms, but it changes the only risk that is
-actually live here — the relational one — and the authors may simply still have
-the underlying values, which removes the question entirely. **A copy of the
-original data, given by an author, is worth more than anything digitised from a
-figure and needs no permission analysis at all.**
-
-Worth asking the U-M library (`library.collections@umich.edu`) in parallel
-whether the OUP agreement permits publishing TDM outputs; they can read a
-contract we cannot.
-
-Until one of those comes back, nothing is digitised from these figures. Only the
-axis *ranges* have been used, to scale a simulation — which takes no data at
-all.
+Nothing in *this* directory is digitised from any figure. Only the pulse heights
+and axis ranges printed in Figs. 3–4 were used, to scale a simulation — which
+takes no data point at all.

@@ -5,7 +5,7 @@
 - freshness: current (exit 0, after re-vendoring; the gate blocked at exit 1 first)
 - artifacts: ten documents, hashes before → after in the table below
 - roles:     11 of 11 run
-- rounds:    1 apply round + 1 blind verify (see "Verify" at the end)
+- rounds:    2 apply rounds + 1 blind verify + 1 citation pass (see "Verify")
 
 ## Why the run started by stopping
 
@@ -39,7 +39,7 @@ Also corrected: `tools/make_synthetic.py`, `tools/score_webster1991.ts`,
 | # | Role | Findings | Disposition |
 | --- | --- | --- | --- |
 | 1 | Claim & data verifier | 5 blocking, 4 major, 6 minor; 40-row claim ledger | all blocking + major fixed |
-| 2 | Citation & reference validator | Compendium §§921/707.1/707.2/922 and Carroll PLOS verified verbatim; 1 caveat (§921's "de minimis" antecedent is *blank* charts) | caveat applied |
+| 2 | Citation & reference validator | All 24 PubMed refs and all 20 DOIs exact; no fabricated citation anywhere. 3 major, 8 minor | fixed, except the consent records — see ⚠ 10 |
 | 3 | Consistency auditor | 3 blocking, 5 major, 10 minor; confirmed clean on renamed files, 70/67 counting basis, 72-vs-73 samples | fixed; anchor-routing deferred |
 | 4 | Adversarial reviewer | 6 blocking, 7 high, 8 medium — **the most important role in this run** | see below |
 | 5 | Line editor | ~40 findings across 11 files | factual ones fixed; prose-craft deferred |
@@ -164,6 +164,23 @@ digitised".
 9. **`sim_gnrh_thx_fast` generates 22 bursts, not 21** (role 1). The banner was
    corrected; `presets.test.ts`'s comment and its `< 21` bound still rest on the
    old denominator.
+10. **Two consent claims are recorded second-hand, with no primary artefact.**
+    (role 2) "This port is made with Michael Johnson's approval" rests only on a
+    line in `docs/reference-code.md` ("Reported by R.A. DeFazio, 2026-08-10");
+    "used with the permission of one of the paper's authors, obtained
+    2026-08-11" names no author and cites no record, and now appears in eight
+    dataset notes, three documents, the digitiser, and every exported figure.
+    Both are public statements about identifiable third parties' consent. They
+    need a dated primary record — an email, a note of the conversation — kept
+    wherever the repo keeps such things. **This one is the user's to resolve; it
+    cannot be fixed by editing prose.**
+11. **Webster et al. 1991 is not verifiable from the repo** (role 2). It is not
+    open access, not committed, and not in the lit cache, so a reviewer cannot
+    check the protocol figures, the printed CLUSTER settings, the assay
+    sensitivities, or the per-panel pulse counts that the whole digitised set
+    rests on. The one verbatim quotation attributed to it
+    (`tools/make_synthetic.py`, "In 4 of 5 thyroid-intact ewes…") is unconfirmed.
+    Depositing the PDF in the lit library would close this.
 
 ## Verify
 

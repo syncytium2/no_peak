@@ -131,7 +131,7 @@ chart.
 collection of works, data or other materials, separable from one another without
 the value of their contents being affected, including a method or system of some
 sort for the retrieval of each of its constituent materials", and C-490/14
-(*Verlag Esterbauer*) confirms the legislature intended "broad scope". There is
+(*Verlag Esterbauer*) confirms the legislature intended a "wide scope". There is
 no minimum size. A few dozen tabulated measurements qualify. Being a database is
 the easy part and decides nothing.
 
@@ -232,13 +232,14 @@ routine and peer-reviewed:
 - **GlobTherm** (*Scientific Data* 2018;5:180022, CC BY) — thermal tolerances for
   2,133 species, values "extracted using Plot digitizer software", deposited in
   Dryad.
-- **Cu-Cr-X alloys** (*Scientific Data* 2025;12:2023, dataset CC BY) — 3,018
+- **Cu-Cr-X alloys** (*Scientific Data* 2025;12:2023, dataset licence unverified; the article itself is CC BY-NC-ND) — 3,018
   records auto-extracted from 251 figures in 146 papers published by Elsevier,
   Springer Nature and Wiley, redistributed for "unrestricted access".
 - **AedesTraits** (*Scientific Data* 2025;12:2033) — WebPlotDigitizer v4.8,
   30,969 rows on Zenodo under CC BY.
-- **PANGAEA** — 2,402 datasets matching "digitized from the original
-  publication", CC BY, provenance stated in the record.
+- **PANGAEA** — about 2,400 datasets match the *terms* "digitized from the
+  original publication" (an exact-phrase search returns none), CC BY, with the
+  digitised provenance stated in each record.
 - Kaplan-Meier reconstruction (Guyot et al., *BMC Med Res Methodol* 2012;12:9,
   1,848 citations) is mainstream, and reconstructed patient-level datasets are
   deposited publicly under CC BY.
