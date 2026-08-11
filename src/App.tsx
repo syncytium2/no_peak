@@ -68,6 +68,9 @@ export function App() {
   const [pasteOpen, setPasteOpen] = useState(false);
   const [pasteText, setPasteText] = useState("");
   const [igor, setIgor] = useState<{ file: IgorFile; name: string } | null>(null);
+  // Visible slice of the x axis. A view control only: detection and every
+  // reported number still cover the whole record.
+  const [xRange, setXRange] = useState<[number, number] | undefined>();
   // settings fold: open on desktop, collapsed on phones so the figure leads
   const [settingsOpen, setSettingsOpen] = useState(
     () => window.matchMedia("(min-width: 881px)").matches,
@@ -177,6 +180,7 @@ export function App() {
   function loadSegments(name: string, segments: Segment[], ask = false, errorFrom?: string) {
     setLoadError(null);
     setIgor(null);
+    setXRange(undefined);
     setLoaded({ name, segments });
     const errN = segments.reduce((a, s) => a + (s.error?.length ?? 0), 0);
     if (ask && errN > 0) {
@@ -252,6 +256,7 @@ export function App() {
       setLoadError(null);
       setIgor(null);
       setErrorOffer(null);
+      setXRange(undefined);
       // A bundled sample knows its own scale — adopt it rather than leaving the
       // figure on whatever the last dataset used.
       setTimeUnit(sample.timeUnit);
@@ -830,7 +835,27 @@ export function App() {
                 timeUnit={timeUnit}
                 segments={multi ? run.segments : undefined}
                 credit={loaded?.citation}
+                xRange={xRange}
+                onXRangeChange={setXRange}
               />
+
+              <p className="zoomhint">
+                {xRange ? (
+                  <>
+                    <strong>
+                      Showing {fmt(xRange[0])}–{fmt(xRange[1])} {unitShort}
+                    </strong>{" "}
+                    of {fmt(result.summary.recordDuration)} {unitShort}. Every number below still
+                    covers the whole record.{" "}
+                    <button className="linkish" onClick={() => setXRange(undefined)}>
+                      Show all
+                    </button>{" "}
+                    · hold <kbd>Shift</kbd> and drag to move the window
+                  </>
+                ) : (
+                  <>Drag across the figure to zoom the time axis; double-click to show all again.</>
+                )}
+              </p>
 
               {multi && (
                 <p className="hint">

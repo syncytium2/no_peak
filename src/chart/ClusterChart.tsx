@@ -3,7 +3,7 @@
 // panel, then UP/DOWN flag strips sharing the x axis. All styling is baked as
 // SVG attributes so the exported figure is self-contained.
 
-import { useMemo, useRef, useState } from "react";
+import { useId, useMemo, useRef, useState } from "react";
 import type { ClusterResult } from "../core/types";
 import type { SegmentResult } from "../core/segments";
 import { timeUnitDef, type TimeUnit } from "../core/timeUnits";
@@ -30,6 +30,14 @@ export interface ClusterChartProps {
    * than something the app remembers on its behalf.
    */
   credit?: string;
+  /**
+   * Visible slice of the x axis, in the data's own time units. Undefined shows
+   * the whole record. Zoom is a view control only — detection and every
+   * reported statistic still run over the entire record, because a pulse count
+   * that changed as you looked closer would be a trap.
+   */
+  xRange?: [number, number];
+  onXRangeChange?: (r: [number, number] | undefined) => void;
 }
 
 const W = 900;
@@ -70,10 +78,15 @@ export function ClusterChart({
   timeUnit = "min",
   segments,
   credit,
+  xRange,
+  onXRangeChange,
 }: ClusterChartProps) {
   const { times, values, error, ups, downs, mscoreUp, pulse, peaks, params } = result;
   const n = values.length;
   const [hover, setHover] = useState<number | null>(null);
+  const [drag, setDrag] = useState<
+    { from: number; to: number; pan: boolean; base: [number, number] } | null
+  >(null);
   const wrapRef = useRef<HTMLDivElement>(null);
 
   const mscoreTop = M.top;
@@ -85,7 +98,8 @@ export function ClusterChart({
 
   const layout = useMemo(() => {
     const dt = times.length > 1 ? times[1] - times[0] : 1;
-    const x = linearScale([times[0] - dt / 2, times[n - 1] + dt / 2], [M.left, W - M.right]);
+    const full: [number, number] = [times[0] - dt / 2, times[n - 1] + dt / 2];
+    const x = linearScale(xRange ?? full, [M.left, W - M.right]);
 
     let yLo = Infinity;
     let yHi = -Infinity;
@@ -111,17 +125,23 @@ export function ClusterChart({
     const tDom = padDomain([-tHi, tHi], 0.08, 0.08);
     const yT = linearScale(tDom, [mscoreTop + MSCORE_H, mscoreTop]);
 
-    return { x, y, yT, dt, labelRows };
-  }, [times, values, error, mscoreUp, n, showError, mainTop, mscoreTop, peaks]);
+    return { x, y, yT, dt, labelRows, full };
+  }, [times, values, error, mscoreUp, n, showError, mainTop, mscoreTop, peaks, xRange]);
 
-  const { x, y, yT, dt, labelRows } = layout;
+  const { x, y, yT, dt, labelRows, full } = layout;
+  const zoomed = !!xRange;
+  // Anything data-driven has to be clipped to the panel: once the domain is a
+  // window, samples outside it map outside the axes and would otherwise be
+  // drawn over the labels and the margin.
+  const clip = `plot-${useId().replace(/:/g, "")}`;
+  const clipped = { clipPath: `url(#${clip})` };
   // A time axis gets clock divisions (…30 s, 1 min, 5 min…) rather than the
   // decimal 1/2/5 ladder, which on a seconds axis reads 100, 200, 300.
   const unitMinutes = timeUnitDef(timeUnit).minutes;
   const xTicks =
     unitMinutes === null
-      ? niceTicks(times[0], times[n - 1], 8)
-      : timeTicks(times[0], times[n - 1], 8, unitMinutes * 60);
+      ? niceTicks(x.domain[0], x.domain[1], 8)
+      : timeTicks(x.domain[0], x.domain[1], 8, unitMinutes * 60);
   const yTicks = niceTicks(y.domain[0], y.domain[1], 6);
   const tTicks = niceTicks(yT.domain[0], yT.domain[1], 3);
   const runs = pulseRuns(pulse);
@@ -157,12 +177,39 @@ export function ClusterChart({
     return d;
   }, [x, yT, times, mscoreUp, n]);
 
-  function onMove(ev: React.PointerEvent<SVGRectElement>) {
+  /** Pointer position in viewBox units, which is what every scale speaks. */
+  function atPointer(ev: React.PointerEvent) {
     const svg = svgRef.current;
-    if (!svg) return;
-    const rect = svg.getBoundingClientRect();
-    const px = ((ev.clientX - rect.left) / rect.width) * W;
-    // nearest sample by x
+    if (!svg) return null;
+    const r = svg.getBoundingClientRect();
+    return ((ev.clientX - r.left) / r.width) * W;
+  }
+
+  /** Invert the x scale: viewBox px back to a time. */
+  const timeAt = (px: number) =>
+    x.domain[0] + ((px - x.range[0]) / (x.range[1] - x.range[0])) * (x.domain[1] - x.domain[0]);
+
+  function onMove(ev: React.PointerEvent<SVGRectElement>) {
+    const px = atPointer(ev);
+    if (px === null) return;
+
+    if (drag) {
+      // Shift drags the window along; a plain drag sweeps out a new one.
+      if (drag.pan) {
+        const shift = timeAt(drag.from) - timeAt(px);
+        const [a, b] = drag.base;
+        const width = b - a;
+        let lo = a + shift;
+        if (lo < full[0]) lo = full[0];
+        if (lo + width > full[1]) lo = full[1] - width;
+        onXRangeChange?.([lo, lo + width]);
+      } else {
+        setDrag({ ...drag, to: px });
+      }
+      setHover(null);
+      return;
+    }
+
     let best = 0;
     let bestD = Infinity;
     for (let i = 0; i < n; i++) {
@@ -173,6 +220,27 @@ export function ClusterChart({
       }
     }
     setHover(best);
+  }
+
+  function onDown(ev: React.PointerEvent<SVGRectElement>) {
+    const px = atPointer(ev);
+    if (px === null || !onXRangeChange) return;
+    ev.currentTarget.setPointerCapture(ev.pointerId);
+    setDrag({ from: px, to: px, pan: ev.shiftKey && zoomed, base: xRange ?? full });
+  }
+
+  function onUp(ev: React.PointerEvent<SVGRectElement>) {
+    if (!drag) return;
+    const { from, to, pan } = drag;
+    setDrag(null);
+    ev.currentTarget.releasePointerCapture?.(ev.pointerId);
+    if (pan) return;
+    // Too short a sweep is a click, not a selection — leave the view alone so
+    // the tooltip stays usable.
+    if (Math.abs(to - from) < 8) return;
+    const lo = timeAt(Math.min(from, to));
+    const hi = timeAt(Math.max(from, to));
+    if (hi - lo > 0) onXRangeChange?.([lo, hi]);
   }
 
   // tooltip placement in % of container so it tracks responsive scaling
@@ -191,6 +259,11 @@ export function ClusterChart({
         {/* machine-readable provenance, kept even if the credit line is off */}
         <title>{`${yLabel} vs ${xLabel} — CLUSTER pulse detection`}</title>
         {credit && <desc>{credit}</desc>}
+        <defs>
+          <clipPath id={clip}>
+            <rect x={M.left} y={M.top} width={W - M.left - M.right} height={axisTop - M.top} />
+          </clipPath>
+        </defs>
         <rect x="0" y="0" width={W} height={H} fill={P.surface} />
 
         {/* ---- t-score panel ---- */}
@@ -252,7 +325,7 @@ export function ClusterChart({
             >
               t = -{params.tScoreDn}
             </text>
-            <path d={tPath} fill="none" stroke={P.inkSecondary} strokeWidth="1.5" strokeLinejoin="round" strokeLinecap="round" />
+            <path {...clipped} d={tPath} fill="none" stroke={P.inkSecondary} strokeWidth="1.5" strokeLinejoin="round" strokeLinecap="round" />
             <text
               x={M.left - 48}
               y={mscoreTop + MSCORE_H / 2}
@@ -288,6 +361,7 @@ export function ClusterChart({
         ))}
 
         {/* pulse-region washes spanning the main panel */}
+        <g {...clipped}>
         {runs.map((r, i) => {
           const x0 = x(times[r.start] - dt / 2);
           const x1 = x(Math.min(times[r.end] + dt / 2, x.domain[1]));
@@ -303,8 +377,10 @@ export function ClusterChart({
             />
           );
         })}
+        </g>
 
         {/* error bars */}
+        <g {...clipped}>
         {showError &&
           values.map((v, i) =>
             error[i] > 0 ? (
@@ -315,8 +391,10 @@ export function ClusterChart({
               </g>
             ) : null,
           )}
+        </g>
 
         {/* record boundaries, when several are shown end to end */}
+        <g {...clipped}>
         {joins.lines.map((t, i) => (
           <line
             key={`join${i}`}
@@ -329,6 +407,8 @@ export function ClusterChart({
             strokeDasharray="2 4"
           />
         ))}
+        </g>
+        <g {...clipped}>
         {joins.labels.map((l, i) => (
           <text
             key={`seg${i}`}
@@ -342,9 +422,11 @@ export function ClusterChart({
             {l.name}
           </text>
         ))}
+        </g>
 
         {/* the series */}
-        <path d={linePath} fill="none" stroke={P.series} strokeWidth="2" strokeLinejoin="round" strokeLinecap="round" />
+        <path {...clipped} d={linePath} fill="none" stroke={P.series} strokeWidth="2" strokeLinejoin="round" strokeLinecap="round" />
+        <g {...clipped}>
         {showDots &&
           values.map((v, i) => (
             <circle
@@ -357,11 +439,13 @@ export function ClusterChart({
               strokeWidth="2"
             />
           ))}
+        </g>
 
         {/* Peak numbers, in a row along the top rather than riding each apex.
             On the apex they collide with the error bars and sit at whatever
             height the pulse happens to reach; in a row they are a legible index
             strip that scans straight across and keys to the table below. */}
+        <g {...clipped}>
         {peaks.map((p, i) => (
           <text
             key={`pk${i}`}
@@ -376,6 +460,7 @@ export function ClusterChart({
             {i + 1}
           </text>
         ))}
+        </g>
 
         {/* main panel baseline + y label */}
         <line x1={M.left} x2={W - M.right} y1={mainTop + MAIN_H} y2={mainTop + MAIN_H} stroke={P.axis} strokeWidth="1" />
@@ -404,6 +489,7 @@ export function ClusterChart({
           >
             UP
           </text>
+          <g {...clipped}>
           {ups.map((f, i) =>
             f === 1 ? (
               <path
@@ -437,6 +523,7 @@ export function ClusterChart({
               />
             ) : null,
           )}
+          </g>
         </g>
 
         {/* ---- x axis ---- */}
@@ -483,6 +570,19 @@ export function ClusterChart({
             </text>
           ))}
 
+        {/* the sweep in progress (never exported) */}
+        {drag && !drag.pan && Math.abs(drag.to - drag.from) >= 8 && (
+          <rect
+            data-noexport="true"
+            x={Math.min(drag.from, drag.to)}
+            y={M.top}
+            width={Math.abs(drag.to - drag.from)}
+            height={axisTop - M.top}
+            fill={P.inkMuted}
+            opacity="0.16"
+          />
+        )}
+
         {/* ---- hover layer (stripped from exports) ---- */}
         {hover !== null && (
           <g data-noexport="true">
@@ -511,8 +611,15 @@ export function ClusterChart({
           width={W - M.left - M.right}
           height={axisTop - M.top}
           fill="transparent"
+          style={{ cursor: drag?.pan ? "grabbing" : "crosshair" }}
           onPointerMove={onMove}
-          onPointerLeave={() => setHover(null)}
+          onPointerDown={onDown}
+          onPointerUp={onUp}
+          onDoubleClick={() => onXRangeChange?.(undefined)}
+          onPointerLeave={() => {
+            setHover(null);
+            setDrag(null);
+          }}
         />
       </svg>
 

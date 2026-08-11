@@ -544,6 +544,21 @@ body.dos .presetpick select {
   border-radius: 0;
 }
 
+/* Zoom state and how to drive it, under the figure where the axis is. */
+.zoomhint {
+  margin: 4px 0 0;
+  font-size: 12px;
+  color: var(--muted);
+}
+
+.zoomhint kbd {
+  padding: 0 4px;
+  border: 1px solid var(--axis);
+  border-radius: 3px;
+  font-family: inherit;
+  font-size: 11px;
+}
+
 /* A correctness caveat about the current settings, not an error. */
 .warn {
   margin: 10px 0;
