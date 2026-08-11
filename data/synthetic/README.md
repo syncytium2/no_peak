@@ -156,17 +156,50 @@ Checked 2026-08-11. Not legal advice, and one question below is genuinely
 unresolved.
 
 **Copyright is not the obstacle.** Under *Feist v. Rural Telephone*, 499 U.S.
-340 (1991), facts carry no copyright — "no one may claim originality as to
-facts" — and 17 U.S.C. §103(b) confirms that copyright in a compilation gives no
-exclusive right in the underlying material. A figure has two separable things in
-it: the graphical work (axes, layout, symbols, styling), which is protected, and
-the measurements it plots, which are facts about a ewe's portal blood in 1990
-and are not. Digitising keeps the second and discards the first, so a CSV of
-extracted values contains no protected expression. The EU sui generis database
-right is very unlikely to apply — a single figure is probably not a database,
-*BHB v William Hill* (C-203/02) excludes investment in *creating* data as
-opposed to obtaining it, and the 15-year term on a 1991 publication expired
-around 2007 in any case.
+340 (1991), facts carry no copyright. The Court is explicit that this covers
+science: "The same is true of all facts — scientific, historical, biographical,
+and news of the day" (at 348), and "In no event may copyright extend to the
+facts themselves" (at 350–51). Its creation/discovery distinction fits
+measurement exactly — census takers "do not 'create' the population figures that
+emerge from their efforts; in a sense, they copy these figures from the world
+around them" (at 347). A subsequent user "remains free to use the facts
+contained in another's publication" and "the raw facts may be copied at will"
+(at 349–50). 17 U.S.C. §103(b) says the same in statute.
+
+Encoding a fact in a picture does not protect it: §102(b) withholds protection
+from any "idea, procedure, process, system, method of operation, concept,
+principle, or discovery, **regardless of the form in which it is described,
+explained, illustrated, or embodied**".
+
+The Copyright Office goes further than expected on the figure itself. Compendium
+§921 states that charts and graphs "rarely contain more than a de minimis amount
+of authorship", and its worked example concludes "The pie chart, in and of
+itself, is not copyrightable and cannot be registered." §707.2 adds that
+registering a scientific journal "does not extend to the facts, ideas,
+procedures … described in the work." So a standard two-panel concentration-versus-
+time plot may have thinner protection as a graphic than one would assume — though
+§903.1 does list charts among protectable pictorial works, so this is a spectrum,
+not a rule.
+
+**The one real copyright caveat** is whether *these particular* numbers are
+facts. Raw instrument readings are Feist's census taker. Modelled, fitted or
+estimated values are closer to *CDN v. Kapes* (9th Cir. 1999), which protected
+coin prices because they were "CDN's best estimate of the fair value" rather than
+"mere listings of actual prices paid", and *CCC v. Maclean Hunter* (2d Cir.
+1994). These traces are direct RIA measurements of collected fractions, which
+sits firmly on the Feist side — but no case addresses scientific figures
+specifically, and no US or EU authority was found addressing data extraction
+from a chart at all. Everything here reasons from general fact/expression
+principles.
+
+The EU sui generis database right is very unlikely to apply — a single figure is
+probably not a database under Art. 1(2), *BHB v William Hill* (C-203/02) holds
+that Art. 7(1) "does not cover the resources used for the creation of materials
+which make up the contents of a database" (experimental measurement being
+creation), Art. 8(1) permits extracting insubstantial parts "for any purposes
+whatsoever", Art. 9(b) carries a scientific-research exception, and the 15-year
+term on a 1991 publication expired around 2007 regardless. There is no US
+equivalent.
 
 **Contract is the obstacle, and it is unresolved.** OUP's legal notice forbids
 subscribers to "display or distribute any Restricted Content on any other site,
@@ -182,6 +215,12 @@ not public.
 OUP does permit non-commercial text and data mining without formal permission,
 but scopes it to the institutional subscription agreement and says nothing about
 whether the *outputs* may be redistributed. That silence is exactly the question.
+It is not inevitable silence: Elsevier's TDM policy says outright "We do not
+claim copyright over your TDM output" and "There are no restrictions on where and
+how you can publish your TDM output." OUP simply has not taken a public position.
+(In the EU this would be moot — DSM Directive Art. 3 gives research
+organisations a TDM exception for content they lawfully access, and Art. 7(1)
+makes contrary contract terms unenforceable. No US equivalent exists.)
 
 **Field practice is settled for the analysis, unsettled for the redistribution.**
 The Cochrane Handbook (§5.5.8) tells review authors outright to use digitiser
