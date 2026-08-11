@@ -121,6 +121,57 @@ while deconvolution (AutoDecon) is in a different class entirely at ~98%. If
 you need to *count* pulses, use deconvolution. If you need to be able to
 defend every pulse you report, the specificity is the argument.
 
+## Scored against a published answer on real data (2026-08-11)
+
+The first check in this project where neither the trace nor the answer came from
+us. Eight hormone records were digitised from the figures of Webster et al. 1991
+(Endocrinology 129:1635, PMID 1874193) with an author's permission. Those figures
+mark, with an open circle, every pulse that paper's own CLUSTER run identified —
+70 in total across four animals — so they carry a human-checked ground truth on
+real data. See `data/digitized/README.md`; pinned in `src/core/webster1991.test.ts`.
+
+**Result.** At the paper's own settings (one-point windows, t = 3.2 for GnRH and
+2.32 for LH, original Fortran) and supplied with the assay error the hormones
+actually had — a CV plus a floor at the detection limit — the port recovers **67
+of 70 published pulses with one false positive: 96% sensitivity, 99% precision.**
+Six of the eight panels match exactly, including both records the paper reports
+as pulse-free. The three misses are all in one LH record, the animal whose
+pulses were smallest against its baseline.
+
+That is the strongest evidence yet that the port is faithful: previous checks
+compared it against reference implementations, or against simulated data whose
+answer we had chosen ourselves.
+
+### The more useful finding: reported settings were not enough
+
+The paper reports its window widths and both t-scores. It does not report what it
+supplied as the per-sample measurement error. A reader who has only the paper
+must estimate that from the data, and at those same published settings the answer
+then depends entirely on which estimator they pick:
+
+| Error model | matched of 70 | false positives |
+| --- | --- | --- |
+| Local SD | 0 | 0 |
+| SQRT | 8 | 0 |
+| Global SD | 12 | 1 |
+| Local SE | 28 | 36 |
+| Global SE | 70 | 101 |
+
+From nothing at all to a flood, on one record, from one choice the paper never
+states. So a study can report every detection parameter it is conventionally
+asked for and still not be reproducible.
+
+This project already advised reporting the error model alongside the other five
+parameters. It now has a measurement behind that advice instead of a principle,
+and the About page says so on that basis.
+
+An honest note on what is fitted here: the LH error floor is the assay
+sensitivity the paper itself reports (0.45 ng/ml). The GnRH assay is quoted per
+tube (0.07 pg) rather than per unit of the reported collection rate and cannot be
+converted without the collection volumes, so its floor (0.06 pg/min) was chosen
+to fit. One fitted number, and the result is not sensitive to it — CVs of 6-10%
+and floors of 1-3% of the axis all give 89-96% agreement.
+
 ## Finding: the Igor t-score is not scale-invariant (2026-08-11)
 
 Rescaling the bundled portal GnRH dataset to match its source paper's published

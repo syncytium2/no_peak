@@ -201,6 +201,12 @@ body.dos .formats {
   color: var(--muted);
 }
 
+/* Real data read off a printed figure: neither generated nor a raw record. */
+.digtag {
+  border-color: var(--accent);
+  color: var(--accent);
+}
+
 body.dos .simtag {
   border-radius: 0;
   border-color: var(--ink-2);

@@ -1,0 +1,82 @@
+# DIGITISED FROM A PUBLISHED FIGURE - not a raw laboratory record.
+# Webster JR, Moenter SM, Barrell GK, Lehman MN, Karsch FJ.
+# Endocrinology 1991;129(3):1635-43. PMID 1874193. Fig 4A, ewe #9013
+# (thyroidectomized). GnRH in pg/min, sampled every 5 min for 6 h.
+# Values read off the printed trace by tools/digitize_webster1991.py and
+# are therefore approximate; they carry the figure's line width and the
+# scan's resolution as error. Used with an author's permission.
+# Pulses identified in the paper: 21 (see webster1991_pulses.csv).
+time,value
+0,1.509
+5,0.528
+10,0.086
+15,0.104
+20,0.252
+25,0.860
+30,0.031
+35,0.067
+40,1.918
+45,0.288
+50,0.147
+55,0.172
+60,1.138
+65,0.135
+70,0.098
+75,0.129
+80,0.911
+85,0.245
+90,1.390
+95,0.313
+100,0.049
+105,1.366
+110,0.380
+115,0.117
+120,1.142
+125,0.215
+130,0.601
+135,0.515
+140,0.963
+145,0.589
+150,0.368
+155,2.105
+160,0.491
+165,0.528
+170,1.164
+175,0.282
+180,1.282
+185,0.411
+190,1.910
+195,0.380
+200,0.135
+205,1.472
+210,0.687
+215,0.313
+220,1.758
+225,0.374
+230,0.245
+235,0.221
+240,1.448
+245,0.215
+250,0.985
+255,0.399
+260,0.215
+265,0.491
+270,0.978
+275,0.123
+280,0.380
+285,0.705
+290,0.061
+295,0.141
+300,0.037
+305,0.092
+310,0.037
+315,0.092
+320,0.147
+325,0.795
+330,0.209
+335,0.166
+340,0.838
+345,0.460
+350,0.092
+355,1.090
+360,0.632

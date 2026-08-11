@@ -1,0 +1,70 @@
+# DIGITISED FROM A PUBLISHED FIGURE - not a raw laboratory record.
+# Webster JR, Moenter SM, Barrell GK, Lehman MN, Karsch FJ.
+# Endocrinology 1991;129(3):1635-43. PMID 1874193. Fig 4A, ewe #9013
+# (thyroidectomized). LH in ng/ml, sampled every 6 min for 6 h.
+# Values read off the printed trace by tools/digitize_webster1991.py and
+# are therefore approximate; they carry the figure's line width and the
+# scan's resolution as error. Used with an author's permission.
+# Pulses identified in the paper: 16 (see webster1991_pulses.csv).
+time,value
+0,10.043
+6,8.337
+12,13.049
+18,9.507
+24,7.654
+30,7.118
+36,10.237
+42,10.530
+48,7.215
+54,13.212
+60,8.678
+66,6.923
+72,9.131
+78,8.629
+84,8.727
+90,6.825
+96,11.027
+102,9.214
+108,7.605
+114,5.948
+120,8.837
+126,8.142
+132,5.655
+138,15.913
+144,8.678
+150,7.703
+156,16.797
+162,14.138
+168,9.507
+174,12.188
+180,15.205
+186,8.239
+192,14.949
+198,9.263
+204,9.019
+210,6.143
+216,6.874
+222,9.983
+228,8.142
+234,8.824
+240,8.239
+246,7.800
+252,7.605
+258,9.908
+264,8.629
+270,9.019
+276,8.385
+282,6.045
+288,10.244
+294,8.483
+300,5.070
+306,11.866
+312,7.752
+318,9.263
+324,7.215
+330,13.079
+336,10.774
+342,9.312
+348,12.139
+354,14.736
+360,10.725

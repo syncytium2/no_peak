@@ -71,8 +71,16 @@ to change what the app reports).
 
 `src/samples.ts` bundles the **simulated** datasets (`data/synthetic/`, made by
 `tools/make_synthetic.py`) via `?raw` imports and drives the "Sample data"
-picker; `sim_gnrh_portal` loads by default so the app never opens blank. Real
+picker; `sim_gnrh_thx_ewe` loads by default so the app never opens blank. Real
 lab recordings are NOT bundled and NOT committed — see `docs/reference-code.md`.
+
+`data/digitized/` holds eight REAL hormone records, read off the published
+figures of Webster et al. 1991 with an author's permission
+(`tools/digitize_webster1991.py`). Those figures mark every pulse that paper's
+own CLUSTER run identified, so the set carries a ground truth nobody here
+supplied — the only such data in the project. See `data/digitized/README.md`,
+and `docs/figure-data-permissions.md` for how the permissions question was
+settled. The article itself is NOT redistributed; only the numbers.
 
 **Read `data/synthetic/README.md` before adding a dataset.** Every scale in a
 bundled dataset has to be traceable to a citation, recorded next to the

@@ -36,8 +36,8 @@ const ERROR_MODELS: ErrorModelType[] = [
 interface Loaded {
   name: string;
   segments: Segment[];
-  /** Set for the bundled datasets, which are generated rather than measured. */
-  simulated: boolean;
+  /** Set for bundled datasets: how the numbers were obtained. */
+  provenance?: "simulated" | "digitised";
   /** Provenance line shown under the name. */
   note?: string;
 }
@@ -175,7 +175,7 @@ export function App() {
   function loadSegments(name: string, segments: Segment[], ask = false, errorFrom?: string) {
     setLoadError(null);
     setIgor(null);
-    setLoaded({ name, segments, simulated: false });
+    setLoaded({ name, segments });
     const errN = segments.reduce((a, s) => a + (s.error?.length ?? 0), 0);
     if (ask && errN > 0) {
       setErrorOffer({ from: errorFrom ?? `a column in ${name}`, n: errN });
@@ -257,7 +257,7 @@ export function App() {
       setYLabel(sample.valueLabel);
       setLoaded({
         name: sample.key,
-        simulated: true,
+        provenance: sample.provenance,
         note: sample.note,
         segments: [
           { name: sample.key, values: series.values, times: series.times, error: series.error },
@@ -390,9 +390,17 @@ export function App() {
           <span className="loadedname">
             {loaded.name} — {loaded.segments.length > 1 && `${loaded.segments.length} records, `}
             {loaded.segments.reduce((a, s) => a + s.values.length, 0)} points
-            {loaded.simulated && (
+            {loaded.provenance === "simulated" && (
               <span className="simtag" title="Generated data, not a real experiment">
                 simulated
+              </span>
+            )}
+            {loaded.provenance === "digitised" && (
+              <span
+                className="simtag digtag"
+                title="A real record, read off a published figure — approximate to the width of a printed line"
+              >
+                digitised from a figure
               </span>
             )}
             {loaded.note && <span className="samplenote">{loaded.note}</span>}

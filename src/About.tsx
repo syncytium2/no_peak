@@ -296,6 +296,27 @@ export function About({ onBack }: { onBack: () => void }) {
         what a methods section means by it.
       </p>
 
+      <h3 id="reporting">Report your error model, not just the five parameters</h3>
+      <p>
+        This used to be advice on principle. It is now a measurement. The app bundles eight real
+        hormone records digitised, with an author&apos;s permission, from the figures of a 1991
+        study that used this same algorithm — figures which mark every pulse that study&apos;s own
+        analysis identified, 70 in all.
+      </p>
+      <p>
+        That paper reports its window widths and both t-scores, which is more than most do. Given
+        those settings <em>and</em> the measurement error its assays actually had, this port
+        recovers 67 of the 70 published pulses with one false positive. Given only the settings the
+        paper prints, and estimating the error from the data as any reader would have to, the same
+        record yields anywhere from zero pulses to a hundred and seventy — depending on nothing but
+        which estimator is chosen.
+      </p>
+      <p>
+        So a study can report every detection parameter it is conventionally asked for and still not
+        be reproducible. If you publish a CLUSTER analysis, say which error model you used and,
+        where the error came from your assay rather than from the data, deposit it.
+      </p>
+
       <h3>Error models</h3>
       <p>
         The per-point error can be estimated from the spread of the data values themselves —

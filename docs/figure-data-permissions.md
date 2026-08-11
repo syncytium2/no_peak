@@ -1,5 +1,17 @@
 # Digitising data from a published figure: where the permissions question lands
 
+> **Resolved, 2026-08-11.** One of the paper's authors gave permission, which is
+> the route this document recommends below. The eight traces are digitised and
+> live in [`data/digitized/`](../data/digitized/README.md); the extraction is
+> `tools/digitize_webster1991.py`. The article itself is not redistributed —
+> only the numbers.
+>
+> The analysis below is kept because the question will recur for the next paper,
+> and because what it concluded still holds: copyright was never the obstacle,
+> the contractual position remains unresolved and untested, and asking an author
+> was both the quickest way through and the only one that also produced someone
+> who could confirm the data was being read correctly.
+
 Researched 2026-08-11 across four passes, reading primary sources — the U.S.
 Reports, the Copyright Office's Compendium and regulations, EUR-Lex and CURIA —
 rather than summaries. **Not legal advice.** The genuinely uncertain parts are
