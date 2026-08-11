@@ -3,7 +3,7 @@
 Honest accounting of what has and has not been checked, so the claim in the
 README and on the site can be matched against reality.
 
-_Last updated: 2026-08-10 (v0.2.0)._
+_Last updated: 2026-08-11 (v0.2.0)._
 
 > The reference Fortran and Igor sources are **not committed** — third-party
 > code we cannot redistribute. Neither is the oracle output (`data/oracle/`,
@@ -28,7 +28,7 @@ _Last updated: 2026-08-10 (v0.2.0)._
   height, largest %, mean %, area, and increase. The only difference is the
   extra 18th peak, which is the deliberate `includeTruncated` behavior.
   Regenerate with `tools/fortran/build_and_run.sh`.
-- **Unit tests** (`npm test` — 124 at the time of writing), in three kinds:
+- **Unit tests** (`npm test` — 194 at the time of writing), in three kinds:
   - hand-computed t-statistics on small series, worked out on paper;
   - synthetic series with unambiguous answers (flat baseline of 1s with two
     square pulses of height 10 — any correct implementation finds two peaks
@@ -41,7 +41,7 @@ _Last updated: 2026-08-10 (v0.2.0)._
   `reference/igor/ClusterMasterV4-1.ipf` and `reference/fortran/CLUST5.MPF`,
   matching loop bounds and Fortran line labels; the code comments cite them.
 - **Every bundled sample dataset parses and runs** through both variants
-  without error (11 files, 16–145 points).
+  without error (15 files, 61–145 points).
 
 ## Scored against known truth (2026-08-10)
 
@@ -127,20 +127,40 @@ The first check in this project where neither the trace nor the answer came from
 us. Eight hormone records were digitised from the figures of Webster et al. 1991
 (Endocrinology 129:1635, PMID 1874193) with an author's permission. Those figures
 mark, with an open circle, every pulse that paper's own CLUSTER run identified —
-70 in total across four animals — so they carry a human-checked ground truth on
-real data. See `data/digitized/README.md`; pinned in `src/core/webster1991.test.ts`.
+70 in total across four animals — so they carry that paper's own pulse call for
+real data. It is an answer key, not ground truth about secretion — and since
+that paper used this same algorithm, agreeing with it is a cross-implementation
+consistency check, not independent validation. See `data/digitized/README.md`; pinned in `src/core/webster1991.test.ts`.
 
 **Result.** At the paper's own settings (one-point windows, t = 3.2 for GnRH and
 2.32 for LH, original Fortran) and supplied with the assay error the hormones
 actually had — a CV plus a floor at the detection limit — the port recovers **67
 of 70 published pulses with one false positive: 96% sensitivity, 99% precision.**
 Six of the eight panels match exactly, including both records the paper reports
-as pulse-free. The three misses are all in one LH record, the animal whose
-pulses were smallest against its baseline.
+as pulse-free. The three misses are all in one LH record (#9009), whose pulses are the smallest
+in absolute terms.
 
-That is the strongest evidence yet that the port is faithful: previous checks
-compared it against reference implementations, or against simulated data whose
-answer we had chosen ourselves.
+**Two constants in that error model are fitted, and they buy the precision, not
+the sensitivity.** The CV (8%) and the GnRH floor (0.06 pg/min) are not in the
+paper. Sweeping the floor at cv = 0.08: sensitivity is 96% at every value from 0
+to 0.06, while precision runs 45% (floor 0), 83% (0.03), 99% (0.05–0.06), 100%
+(≥0.07). Both free constants sit at the joint optimum. An earlier draft of this
+section said "the result is not sensitive to it" — true of the number that could
+not move, and silent about the one that could.
+
+The un-fitted half is the LH arm, whose floor is the paper's own published assay
+sensitivity of 0.45 ng/ml: **35 of 38**, stable across CVs from 4% to 8%; its zero
+false-positive count, however, holds only from about 7.8% upward and so still
+leans on the fitted CV. The GnRH arm with its fitted floor is 32 of 32 with 1 false
+positive.
+
+Matching allows one sample of slack; at zero slack the total is 66 of 70 with 2
+false positives (94% / 97%), so the headline does not rest on the tolerance.
+
+What this is evidence *for* is therefore narrower than "the port is faithful":
+the Fortran variant already reproduces CLUST5 exactly at defaults, and the
+1991 analysis was that same Fortran lineage, so the port's fidelity was not the
+free variable here — the reconstructed error input was.
 
 ### The more useful finding: reported settings were not enough
 
@@ -165,12 +185,15 @@ This project already advised reporting the error model alongside the other five
 parameters. It now has a measurement behind that advice instead of a principle,
 and the About page says so on that basis.
 
-An honest note on what is fitted here: the LH error floor is the assay
-sensitivity the paper itself reports (0.45 ng/ml). The GnRH assay is quoted per
-tube (0.07 pg) rather than per unit of the reported collection rate and cannot be
-converted without the collection volumes, so its floor (0.06 pg/min) was chosen
-to fit. One fitted number, and the result is not sensitive to it — CVs of 6-10%
-and floors of 1-3% of the axis all give 89-96% agreement.
+Two further caveats. Both fitted floors are about 9 px on a 400 dpi scan — the
+same order as the digitisation uncertainty itself — so "the assay error the
+hormones actually had" is not established by this experiment, only assumed.
+And the digitiser reads a marked sample's value from the circle centre and
+erases a ±14 px box around it, which is wider than the 10.9 px sample pitch; at
+one-point windows the t-test at a published pulse therefore compares two
+samples that are annotation-derived or reconstructed. That is disclosed in
+`data/digitized/README.md` and is a reason to treat the GnRH arm as the softer
+of the two.
 
 ## Finding: the Igor t-score is not scale-invariant (2026-08-11)
 
@@ -295,7 +318,7 @@ They are reported as measured, but a reader cannot check them:
 Fixed since: the density-matched corpus is now reproducible
 (`--profile dense`), and its figures were corrected to the reproducible values.
 
-## What is NOT verified
+## What is not verified
 
 - **No numerical diff against Igor.** The Igor experiment in `data/` is input
   only — it is literally named "just data.pxp" and contains no `pulse`, `ups`,
@@ -348,7 +371,7 @@ Gotchas the script handles, recorded because each cost time:
 
 `syncytium2/murderboard` is now vendored (`docs/doc_review_process.md`,
 `tools/murderboard_*.sh`, `.claude/skills/murderboard/SKILL.md`, stamped
-@ 249a488; freshness gate reports current). Run records are in `docs/reviews/`.
+@ b2b2ba2; freshness gate reports current). Run records are in `docs/reviews/`.
 The figure and all five documents have been reviewed. The About page was
 kind of deliverable that harness exists for. Vendor it and run it over
 `src/About.tsx`, `docs/deep-learning-handoff.md`, and this file.

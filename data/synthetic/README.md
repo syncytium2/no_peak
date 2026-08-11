@@ -97,10 +97,11 @@ about one pulse, which is what a stated 1% false positive rate predicts over 72
 samples; asserting zero would be claiming the detector is better than its own
 authors claimed. Both are pinned in `src/core/presets.test.ts`.
 
-The amplitude scale is read off the axis range of that paper's Figs. 3–4 (GnRH
-0–2 pg/min over a baseline near 0.1–0.2). Only the axis range is taken from the
-figure — no data point is digitised from it, and none of these values
-corresponds to a real measurement.
+The amplitude scale matches the pulse heights drawn in that paper's Figs. 3–4 —
+GnRH peaks reaching about 2.1 pg/min over a baseline near 0.1–0.2, on an axis
+that runs to 3. Only those ranges are taken from the figure; none of these
+values corresponds to a real measurement. (The real traces, digitised later, are
+in `data/digitized/`.)
 
 One parameter is not tightly pinned and should be treated as an estimate: the
 assay CV, set to 7.8% from the sample-to-error ratio of a real lab wave. The
@@ -125,8 +126,9 @@ here. It is not tuned to flatter the detector.
   concentration, because that is less sensitive to contamination of the sample
   with non-portal blood. Thyroidectomized ewes that failed to enter anestrus:
   **11.2 ± 1.4 pulses/6 h**, and as many as 21 in one ewe. Thyroid-intact
-  anestrous controls: generally no pulses at all. Figures 3–4 put GnRH on a
-  **0–2 pg/min** axis over a baseline near 0.1–0.2, and LH on 0–20 ng/ml. Pulses
+  anestrous controls: generally no pulses at all. Figures 3–4 run GnRH to
+  **3 pg/min** and LH to about 31 ng/ml; the GnRH pulses drawn there reach about
+  2.1 over a baseline near 0.1–0.2. Pulses
   were identified with **this very algorithm**, at settings the paper prints:
   peak and nadir clusters of one point, t = 3.2/3.2 for GnRH and 2.32/2.32 for
   LH, stated to give false positive rates of 1% and 5%. Those two settings ship
@@ -138,7 +140,7 @@ here. It is not tuned to flatter the detector.
   1727719. — GnRH pulse waveform at 30-s resolution: square contour, a rise of up
   to 50-fold within a minute, ~5.5 min sustained, back to baseline within 3 min.
   This is where the burst shape comes from. Its much larger pg/min figures are
-  not in conflict with the 0–2 above: 30-second fractions resolve the inside of a
+  not in conflict with the ~2 above: 30-second fractions resolve the inside of a
   burst, where 5-minute fractions average over it.
 - Clarke IJ, Cummins JT. *Endocrinology* 1985;116(6):2376–83. PMID 3888609. —
   Ovine portal GnRH interpulse intervals, 27–53 min.

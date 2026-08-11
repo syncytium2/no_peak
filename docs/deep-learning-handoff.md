@@ -151,7 +151,7 @@ anything.
 > near-zero false-positive rate turns out to be conditional on dense pulse
 > trains (see `docs/validation-status.md`). Check it on a corpus shaped like
 > the reference datasets — ~145 points, 10-minute sampling, ~30 pulses, ~4% CV
-> — where the target is <1% FDR at ~59% sensitivity. On a broad corpus a
+> — where the target is <1% FDR at ~56-58% sensitivity (the reproducible density-matched figures; the earlier ~59% was retracted, see docs/validation-status.md). On a broad corpus a
 > 15-20% FDR is the honest expectation, not a simulator bug. Do not tune the
 > generator until the broad-corpus FDR reaches zero; that would be fitting the
 > simulator to an artefact.

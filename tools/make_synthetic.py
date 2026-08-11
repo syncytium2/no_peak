@@ -45,8 +45,9 @@ References for the scales used:
     pg/min, not concentration. Thyroidectomized ewes that failed to enter
     anestrus: 11.2 +/- 1.4 pulses/6 h, and as many as 21 in one ewe.
     Thyroid-intact anestrous controls: generally no pulses at all. Figures 3-4
-    put GnRH on a 0-2 pg/min axis over a baseline near 0.1-0.2, and LH on
-    0-20 ng/ml. ONLY those axis ranges are taken from the figures; no data
+    run GnRH to 3 pg/min and LH to about 31 ng/ml, with observed GnRH pulse
+    peaks reaching ~2.1 over a baseline near 0.1-0.2. ONLY those ranges and the
+    observed peak heights are taken from the figures; no data
     point is digitised from them. Pulses in that paper were identified with
     this very algorithm, at settings it prints: peak and nadir clusters of one
     point, t = 3.2/3.2 for GnRH and 2.32/2.32 for LH, stated to give false
@@ -57,7 +58,7 @@ References for the scales used:
   Moenter SM, Brand RM, Midgley AR, Karsch FJ. Dynamics of gonadotropin-
     releasing hormone release during a pulse. Endocrinology 1992;130(1):503-10.
     PMID 1727719. (GnRH pulse waveform: square contour, ~5.5 min sustained.
-    Its much larger pg/min figures are not in conflict with the 0-2 above —
+    Its much larger pg/min figures are not in conflict with the ~2 above —
     that study collected 30-s fractions, so it resolves the inside of a burst
     where this one averages over it.)
   Clarke IJ, Cummins JT. Endocrinology 1985;116(6):2376-83. PMID 3888609.
@@ -176,9 +177,9 @@ def write(name, kind, dt, rows, cols=3, prec=3):
 # --- Portal GnRH, thyroidectomized ewe: Webster 1991's main finding ----------
 # The paper's protocol exactly: 5-min fractions for 6 h, so 72 samples. 11
 # pulses over the 6 h is the reported mean (11.2 +/- 1.4). Amplitudes are set so
-# peak samples land between about 0.6 and 2 pg/min, which is the axis range its
-# Figs. 3-4 are drawn on, over a baseline hugging 0.1-0.2. Only the axis scale
-# is taken from the figure; no data point is read off it.
+# peak samples land between about 0.6 and 2 pg/min, matching the pulse heights
+# its Figs. 3-4 show over a baseline near 0.1-0.2 (the axis runs to 3). Only
+# those ranges are taken from the figure; no data point is read off it.
 write(
     "sim_gnrh_thx_ewe.csv",
     "Resembles portal GnRH in a thyroidectomized ewe: 5-min fractions, 6 h (pg/min).",
@@ -197,7 +198,7 @@ write(
 # It is here to make that limit visible.
 write(
     "sim_gnrh_thx_fast.csv",
-    "Resembles the highest-frequency ewe in that study: 21 pulses in 6 h (pg/min).",
+    "Resembles the highest pulse frequency that study observed; 22 bursts generated (pg/min).",
     5,
     portal_fractions(
         seed=131, n=72, dt=5, baseline=0.18,

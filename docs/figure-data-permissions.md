@@ -21,8 +21,9 @@ recorded below.
 The concrete question: Webster et al. 1991 (*Endocrinology* 129(3):1635–43,
 PMID 1874193) prints portal-GnRH and jugular-LH traces at 400 dpi with every
 sample marked **and the pulses CLUSTER identified circled on the trace**. That
-is a published ground-truth pulse call sitting next to the data that produced
-it — the most valuable test case this project could hold. May we read the values
+is a published pulse call sitting next to the data that produced it — an answer
+key no simulator can supply, though it records what a detector reported rather
+than what the animal secreted. May we read the values
 off it and ship them as a CSV?
 
 **Short answer: copyright is not the obstacle; contract might be, and that part
@@ -44,12 +45,13 @@ copied at will" (349–50). 17 U.S.C. §103(b) says the same in statute.
 Putting a fact in a picture does not protect it. §102(b) withholds protection
 from any "idea, procedure, process, system, method of operation, concept,
 principle, or discovery, **regardless of the form in which it is described,
-explained, illustrated, or embodied**".
+explained, illustrated, or embodied in such work**".
 
 The Copyright Office is more emphatic than expected:
 
-- **Compendium §921** (charts): they "rarely contain more than a de minimis
-  amount of authorship", and the worked example concludes "The pie chart, in and
+- **Compendium §921** (charts): *blank* graphs and charts "rarely contain more
+  than a de minimis amount of authorship" — the sentence is about blank forms,
+  so it should not be read as a statement about populated charts generally, and the worked example concludes "The pie chart, in and
   of itself, is not copyrightable and cannot be registered."
 - **§707.1** (numbers): "**The process of arriving at individual numbers or
   values may require judgment, prediction, valuation, or expertise, but an
@@ -97,17 +99,19 @@ Four things blunt it here:
 
 1. Both cases expressly contrast their facts with measurement. *CDN*: "**If CDN
    merely listed historical facts of actual transactions**, the guides would be
-   long, cumbersome, and of little use." *CCC*: the Red Book figures "**are not
+   long, cumbersome, and of little use to anyone." *CCC*: the Red Book figures "**are not
    historical market prices, quotations, or averages**" but "the Maclean editors'
    predictions". Direct RIA measurements of collected fractions are the thing
    both courts said they were *not* dealing with.
-2. The Second Circuit narrowed *CCC* itself in *NYMEX v. IntercontinentalExchange*,
-   497 F.3d 109 (2d Cir. 2007), holding settlement prices unprotectable because
-   they "can be seen as 'pre-existing facts' about the outside world which are
-   discovered from actual market activity", and that NYMEX, "like the census
-   taker", does not author them.
-3. *CCC* twice limited itself to "**wholesale copying of a compilation rather
-   than some more limited copying from a compilation**".
+2. The Second Circuit backed away from *CCC* in *NYMEX v. IntercontinentalExchange*,
+   497 F.3d 109 (2d Cir. 2007). Be precise about what it held: the court
+   **expressly declined to decide** whether settlement prices are unoriginal and
+   affirmed on merger instead. But it recorded a "strong argument" that NYMEX,
+   "like the census taker", does not author them, and that the prices "can be
+   seen as 'pre-existing facts' about the outside world which are discovered
+   from actual market activity" (footnote 5). Persuasive, not a holding.
+3. *CCC* limited itself to "**wholesale copying of a compilation rather than
+   some more limited copying from a compilation**" (footnote 26).
 4. The Copyright Office rejects the reasoning at the level of individual values
    outright — §707.1 above reads as a deliberate repudiation, echoing the
    opinions' own words ("judgment, prediction, valuation, or expertise").
@@ -138,8 +142,8 @@ up the contents of a database", nor verification "during the stage of creation".
 Running the experiment is creation, not obtaining. The saving clause at BHB
 [35]–[36] leaves only investment in collecting, arranging and presenting that is
 *independent* of creating the data; for one chart in one article there is
-essentially none. Intrinsic scientific value is expressly irrelevant (BHB [72],
-[78]).
+essentially none. The *intrinsic* value of the data is expressly irrelevant (BHB [72], [78]) — so
+"this was hard-won science" cannot convert creation into obtaining.
 
 Supporting: the Commission's own evaluation of the Directive (SWD(2018) 146
 final, §5.4.1) says courts following the 2004 rulings conclude such data was
@@ -306,5 +310,5 @@ Worth asking the U-M library (`library.collections@umich.edu`) in parallel
 whether the OUP agreement permits publishing TDM outputs; they can read a
 contract we cannot.
 
-Until one of those comes back, nothing is digitised. Only the *axis ranges* of
-those figures have been used, to scale a simulation — which takes no data at all.
+That is the route that was taken, on 2026-08-11; the outcome is in the banner at
+the top of this document and the traces are in `data/digitized/`.

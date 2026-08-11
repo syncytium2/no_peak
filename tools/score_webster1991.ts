@@ -32,8 +32,12 @@ const MODELS: ErrorModelType[] = ["Local SD", "Local SE", "Global SD", "Global S
  * The LH floor is the sensitivity the paper reports, 0.45 ng/ml. The GnRH assay
  * is quoted per tube (0.07 pg) rather than per unit of the reported rate, so
  * its floor cannot be converted without knowing the collection volumes; 0.06
- * pg/min is what best matches the published calls. That one number is fitted;
- * everything else here is taken from the paper.
+ * pg/min is what best matches the published calls. The CV of 0.08 is not in the
+ * paper either. BOTH are fitted, and both sit at the joint optimum of the score
+ * — see docs/validation-status.md. Sensitivity is insensitive to them (96% at
+ * every GnRH floor from 0 to 0.06); precision is not (45% -> 99% over the same
+ * range). The LH arm, whose floor IS the paper's published assay sensitivity,
+ * is the un-fitted result: 35/38 with no false positives.
  */
 const ASSAY = {
   gnrh: { cv: 0.08, floor: 0.06 },   // floor inferred
@@ -135,6 +139,6 @@ for (const [model, t] of totals) {
 }
 console.log(
   "\nThe published settings alone do not reproduce the published result: the\n" +
-    "answer swings from 0 to 170 pulses depending only on the error model, which\n" +
+    "answer swings from none at all to 171 detections depending on the error model,\n" +
     "the paper does not report. Supplying the assay's own error recovers it.",
 );

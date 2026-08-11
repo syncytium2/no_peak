@@ -49,8 +49,8 @@ export function About({ onBack }: { onBack: () => void }) {
           al. (1991) with an author&apos;s permission — four ewes, portal GnRH during collection and
           jugular LH from a fortnight earlier. These are measurements from actual sheep. What they
           carry is the pulse call <em>that paper&apos;s own CLUSTER run made</em>, marked on the
-          printed trace. That is a published, human-checked answer, but it is an answer about what a
-          detector reported, not about what the animal secreted. They are approximate to the width
+          printed trace. That is a published answer, but an answer about what a detector
+          reported, not about what the animal secreted. They are approximate to the width
           of a printed line.
         </li>
         <li>
@@ -240,9 +240,9 @@ export function About({ onBack }: { onBack: () => void }) {
         Webster et al. (1991), measuring GnRH in hypophyseal-portal blood of the ewe every 5 minutes
         for 6 hours, used peak and nadir clusters of a single point with t = 3.2 for GnRH and
         t = 2.32 for jugular LH, reporting false positive rates of 1% and 5% respectively. Those are
-        the two presets currently shipped. The bundled portal GnRH datasets are built to that
-        paper&apos;s protocol, and at its settings the simulated thyroidectomized ewe returns the
-        11 pulses per 6 hours it reports.
+        the two presets currently shipped. The simulated portal GnRH datasets are built to that
+        paper&apos;s protocol, and at its settings the simulated record built to that
+        protocol returns the 11 pulses per 6 hours it reports.
         <span className="cite">
           Webster JR, Moenter SM, Barrell GK, Lehman MN, Karsch FJ. Role of the thyroid gland in
           seasonal reproduction. III. Endocrinology 1991;129(3):1635–43.
@@ -323,14 +323,18 @@ export function About({ onBack }: { onBack: () => void }) {
         This used to be advice on principle. It is now a measurement. The app bundles eight real
         hormone records digitised, with an author&apos;s permission, from the figures of a 1991
         study that used this same algorithm — figures which mark every pulse that study&apos;s own
-        analysis identified, 70 in all.
+        analysis identified, 70 in all. That is an answer key, not ground truth about
+        secretion — and because the study used this same algorithm, agreeing with it
+        shows consistency between implementations rather than independent validation.
       </p>
       <p>
         That paper reports its window widths and both t-scores, which is more than most do. Given
-        those settings <em>and</em> the measurement error its assays actually had, this port
-        recovers 67 of the 70 published pulses with one false positive. Given only the settings the
+        those settings <em>and</em> an assay-shaped measurement error, this port recovers
+        67 of the 70 published pulses with one false positive — though two constants in
+        that error model were fitted, and they buy the precision rather than the
+        sensitivity. Given only the settings the
         paper prints, and estimating the error from the data as any reader would have to, the same
-        record yields anywhere from zero pulses to a hundred and seventy — depending on nothing but
+        records yield anywhere from no pulses at all to 171 detections — depending on nothing but
         which estimator is chosen.
       </p>
       <p>
@@ -713,7 +717,7 @@ export function About({ onBack }: { onBack: () => void }) {
 
       <h2>This implementation</h2>
       <p>
-        The source and test suite live in a private repository for now. Neither reference
+        The source and test suite are on GitHub under an MIT licence. Neither reference
         implementation is redistributed with it, for different reasons: Johnson&apos;s Fortran is
         under a licence that forbids passing it on, and the Igor Pro Cluster package is the
         laboratory&apos;s own code, which this app is intended to succeed. If you find a case where

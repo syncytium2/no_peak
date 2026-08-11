@@ -54,7 +54,8 @@ including this project's own first guesses.
 
 The GnRH datasets were rebuilt to that protocol, and the two settings now ship
 as presets. `sim_gnrh_thx_ewe.csv` returns the paper's 11 pulses per 6 h at the
-paper's own settings and `sim_gnrh_intact.csv` returns none, both asserted in
+paper's own settings and `sim_gnrh_intact.csv` returns about one — what a stated
+1% false-positive rate predicts over 72 samples — both asserted in
 `src/core/presets.test.ts` so the tie breaks loudly if either drifts.
 
 Worth noting what this cost to get wrong: before the paper was available, an
@@ -80,7 +81,7 @@ blocking a published parameter set, not an exotic setting.
 | Could not tab through settings quickly | Fields select their contents on focus; ↑/↓ step, Shift for ten steps, Esc reverts |
 | First number field refused the value 1, repeatedly | Real bug, reproduced and fixed — see below |
 | "Fast sampling" is irritating wording | Now "high pulse frequency" / "10-min fractions" throughout |
-| Need for high-quality or digitised test data, labelled | `data/synthetic/README.md` sets the standard; digitising a published figure is recorded as the open gap |
+| Need for high-quality or digitised test data, labelled | `data/synthetic/README.md` sets the standard; the figure data was digitised with an author's permission the same day — see `data/digitized/` |
 
 ## The number-entry bug
 

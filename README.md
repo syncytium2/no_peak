@@ -69,7 +69,7 @@ non-trivial controls; `src/About.tsx` the about/citations page (hash route
 `__BUILD_DATE__` are injected in `vite.config.ts`; bump `package.json` version
 to change what the app reports).
 
-`src/samples.ts` bundles the **simulated** datasets (`data/synthetic/`, made by
+`src/samples.ts` bundles both kinds of dataset — see below. The **simulated** ones (`data/synthetic/`, made by
 `tools/make_synthetic.py`) via `?raw` imports and drives the "Sample data"
 picker; `sim_gnrh_thx_ewe` loads by default so the app never opens blank. Real
 lab recordings are NOT bundled and NOT committed — see `docs/reference-code.md`.
@@ -173,7 +173,8 @@ do not have redistribution rights for. `reference/` is gitignored; see
 **Not committed** (gitignored): `cluster td- just data.pxp`, `data/extracted/`,
 `data/oracle/`, `data/oracle_igor/` — real lab recordings and output derived
 from them. Keep them locally to run the oracle tests and regenerate oracles;
-without them those suites skip. Committed: `data/synthetic/` and `data/benchmark/` (both simulated, ours).
+without them those suites skip. Committed: `data/synthetic/` and `data/benchmark/` (simulated, ours) and
+`data/digitized/` (real, read off a published figure with an author's permission).
 
 - `cluster td- just data.pxp` — Igor experiment containing sample cluster
   data (from `~/Documents/coding-projectx/sample data in pxp/`), for
@@ -203,7 +204,7 @@ without them those suites skip. Committed: `data/synthetic/` and `data/benchmark
 
 `docs/doc_review_process.md`, `tools/murderboard_*.sh` and
 `.claude/skills/murderboard/SKILL.md` are **vendored** from
-`syncytium2/murderboard` (stamped `@ 249a488`). Run `/murderboard <artifact>`
+`syncytium2/murderboard` (stamped `@ b2b2ba2`). Run `/murderboard <artifact>`
 before handing over any document deliverable — a figure, an explainer, a
 methods section, a report. Run records live in `docs/reviews/`.
 
