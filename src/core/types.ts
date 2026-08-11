@@ -9,7 +9,6 @@ export type ErrorModelType =
   | "Local SE"
   | "SQRT"
   | "Fixed"
-  | "Assay CV"
   | "Error Wave";
 
 export interface ClusterParams {
@@ -26,18 +25,6 @@ export interface ClusterParams {
   errorModel: ErrorModelType;
   /** Fixed error value; also the SQRT fallback for non-positive data. */
   errorValue: number;
-  /**
-   * "Assay CV" model: error_i = max(assayFloor, assayCV * value_i).
-   *
-   * The shape a real immunoassay actually has — a proportional term from its
-   * coefficient of variation, and a floor at its detection limit, below which
-   * precision stops improving. Every other model here estimates the error from
-   * the spread of the data, which is a different assumption: at narrow windows
-   * it reads a pulse's own height as noise, so a large clean pulse can raise its
-   * own error enough to hide itself.
-   */
-  assayCV: number;
-  assayFloor: number;
   /** Terminate pulses where the data is at/below `zero` (Igor 20170110 heuristic). */
   zeroTerminate: boolean;
   zero: number;
@@ -68,8 +55,6 @@ export const DEFAULT_PARAMS: ClusterParams = {
   minPeak: 0,
   errorModel: "Local SD",
   errorValue: 1,
-  assayCV: 0.08,
-  assayFloor: 0,
   zeroTerminate: false,
   zero: 0,
   variant: "igor",

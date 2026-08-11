@@ -18,11 +18,6 @@ export function resolveErrorModel(
   return current === "Error Wave" ? fallback : current;
 }
 
-export interface AssayError {
-  cv: number;
-  floor: number;
-}
-
 export function buildErrorArray(
   w: number[],
   errorModel: ErrorModelType,
@@ -30,20 +25,11 @@ export function buildErrorArray(
   nPeak: number,
   nNadir: number,
   userError?: number[],
-  assay: AssayError = { cv: 0.08, floor: 0 },
 ): number[] {
   const n = w.length;
   const err = new Array<number>(n).fill(0);
 
   switch (errorModel) {
-    // An assay's own precision, when the file does not carry it: a proportional
-    // term plus a floor at the detection limit. Unlike the estimated models
-    // this does not read the data's spread, so a pulse cannot inflate its own
-    // error and hide itself — which is what happens to a one-point Local SD.
-    case "Assay CV":
-      for (let i = 0; i < n; i++) err[i] = Math.max(assay.floor, assay.cv * w[i]);
-      return err;
-
     case "SQRT":
       for (let i = 0; i < n; i++) err[i] = w[i] > 0 ? Math.sqrt(w[i]) : errorValue;
       return err;

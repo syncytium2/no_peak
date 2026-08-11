@@ -30,7 +30,6 @@ const ERROR_MODELS: ErrorModelType[] = [
   "Global SE",
   "SQRT",
   "Fixed",
-  "Assay CV",
   "Error Wave",
 ];
 
@@ -622,26 +621,6 @@ export function App() {
                 ))}
               </select>
             </label>
-            {params.errorModel === "Assay CV" && (
-              <>
-                <NumField
-                  label="Assay CV (fraction)"
-                  value={params.assayCV}
-                  onChange={set("assayCV")}
-                  min={0}
-                  step={0.01}
-                  title="Proportional term: error = CV x value"
-                />
-                <NumField
-                  label="Detection floor"
-                  value={params.assayFloor}
-                  onChange={set("assayFloor")}
-                  min={0}
-                  step={0.01}
-                  title="Error cannot fall below this — the assay's detection limit"
-                />
-              </>
-            )}
             {(params.errorModel === "Fixed" || params.errorModel === "SQRT") && (
               <NumField
                 label={params.errorModel === "Fixed" ? "Fixed error value" : "SQRT fallback (value ≤ 0)"}
@@ -651,15 +630,6 @@ export function App() {
               />
             )}
           </div>
-          {params.errorModel === "Assay CV" && (
-            <p className="hint">
-              error = max(floor, CV x value). The shape a real immunoassay has. The estimated
-              models read the error off the data&apos;s own spread, which at narrow windows lets a
-              pulse inflate its own error and hide itself — use this when your assay&apos;s
-              precision is known but not in the file.
-            </p>
-          )}
-
           {hasScaleDependence(params) && (
             <p className="warn">
               <strong>These settings depend on your units.</strong> The Igor implementation pools

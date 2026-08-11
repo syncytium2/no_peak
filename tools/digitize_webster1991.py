@@ -12,8 +12,9 @@ docs/figure-data-permissions.md for the reasoning and its limits.
 
 Why this dataset is worth the trouble: the figures mark, with an open circle,
 every pulse the authors' own CLUSTER run identified. Digitising them therefore
-recovers a trace *and* a published, human-checked answer for it — a ground truth
-this project cannot manufacture, against which the port can be scored.
+recovers a trace *and* that paper's own pulse call for it — an answer key this
+project cannot manufacture, though it records what a detector reported rather
+than what the animal secreted.
 
     python3 tools/digitize_webster1991.py path/to/webster1991.pdf
 
@@ -66,28 +67,28 @@ OUT = Path(__file__).resolve().parent.parent / "data" / "digitized"
 PANELS = [
     dict(key="fig3a_con_8058_gnrh", top=1110, bottom=1584, left=1335.5, right=2120.5,
          minor=0.5, n=73, dt=5, pulses=0, unit="pg/min", hormone="GnRH",
-         animal="8058", group="thyroid-intact control", panel="Fig 3A"),
+         animal="8058", group="thyroid-intact control", panel="Fig 3A", cv=0.08, floor=0.06),
     dict(key="fig3a_con_8058_lh", top=403, bottom=1028, left=1332.0, right=2120.0,
          minor=5.0, n=61, dt=6, pulses=0, unit="ng/ml", hormone="LH",
-         animal="8058", group="thyroid-intact control", panel="Fig 3A"),
+         animal="8058", group="thyroid-intact control", panel="Fig 3A", cv=0.08, floor=0.45),
     dict(key="fig3b_thx_8067_gnrh", top=1113, bottom=1587, left=2340.5, right=3131.5,
          minor=0.5, n=73, dt=5, pulses=11, unit="pg/min", hormone="GnRH",
-         animal="8067", group="thyroidectomized", panel="Fig 3B"),
+         animal="8067", group="thyroidectomized", panel="Fig 3B", cv=0.08, floor=0.06),
     dict(key="fig3b_thx_8067_lh", top=401, bottom=1029, left=2341.0, right=3125.0,
          minor=5.0, n=61, dt=6, pulses=11, unit="ng/ml", hormone="LH",
-         animal="8067", group="thyroidectomized", panel="Fig 3B"),
+         animal="8067", group="thyroidectomized", panel="Fig 3B", cv=0.08, floor=0.45),
     dict(key="fig4a_thx_9013_gnrh", top=2958, bottom=3443, left=1347.0, right=2142.5,
          minor=0.5, n=73, dt=5, pulses=21, unit="pg/min", hormone="GnRH",
-         animal="9013", group="thyroidectomized", panel="Fig 4A"),
+         animal="9013", group="thyroidectomized", panel="Fig 4A", cv=0.08, floor=0.06),
     dict(key="fig4a_thx_9013_lh", top=2243, bottom=2873, left=1349.5, right=2142.0,
          minor=5.0, n=61, dt=6, pulses=16, unit="ng/ml", hormone="LH",
-         animal="9013", group="thyroidectomized", panel="Fig 4A"),
+         animal="9013", group="thyroidectomized", panel="Fig 4A", cv=0.08, floor=0.45),
     dict(key="fig4b_thx_9009_gnrh", top=2957, bottom=3442, left=2355.5, right=3146.5,
          minor=0.5, n=73, dt=5, pulses=0, unit="pg/min", hormone="GnRH",
-         animal="9009", group="thyroidectomized", panel="Fig 4B"),
+         animal="9009", group="thyroidectomized", panel="Fig 4B", cv=0.08, floor=0.06),
     dict(key="fig4b_thx_9009_lh", top=2242, bottom=2870, left=2356.5, right=3144.5,
          minor=5.0, n=61, dt=6, pulses=11, unit="ng/ml", hormone="LH",
-         animal="9009", group="thyroidectomized", panel="Fig 4B"),
+         animal="9009", group="thyroidectomized", panel="Fig 4B", cv=0.08, floor=0.45),
 ]
 
 RING = dict(area=(140, 230), side=(11, 21), fill=0.60)
@@ -335,6 +336,15 @@ def write(series):
         "# are therefore approximate; they carry the figure's line width and the\n"
         "# scan's resolution as error. Used with an author's permission.\n"
         "# Pulses identified in the paper: {pulses} (see webster1991_pulses.csv).\n"
+        "#\n"
+        "# COLUMN 3 (error) IS RECONSTRUCTED, NOT DIGITISED. The figure prints no\n"
+        "# error bars, and the paper does not report what per-sample error it gave\n"
+        "# CLUSTER. This column is max({floor:g}, {cv:g} x value) — an assay-shaped\n"
+        "# error: a proportional term plus a floor at the detection limit. For LH\n"
+        "# that floor is the assay sensitivity the paper reports; for GnRH it was\n"
+        "# chosen to match the paper's own pulse calls, and is therefore fitted.\n"
+        "# It is supplied so the published settings are reproducible in the app,\n"
+        "# which needs a per-sample error the estimated models cannot stand in for.\n"
     )
     truth = ["# Pulses marked with an open circle in the published figures.",
              "# These are the authors' own CLUSTER calls, not ours.",
@@ -342,9 +352,9 @@ def write(series):
     for key, (p, values, pulse_idx) in series.items():
         with (OUT / f"webster1991_{key}.csv").open("w") as f:
             f.write(banner.format(**p))
-            f.write("time,value\n")
+            f.write("time,value,error\n")
             for i, v in enumerate(values):
-                f.write(f"{i * p['dt']},{v:.3f}\n")
+                f.write(f"{i * p['dt']},{v:.3f},{max(p['floor'], p['cv'] * v):.4f}\n")
         for i in pulse_idx:
             truth.append(f"{key},{i},{i * p['dt']},{values[i]:.3f}")
     (OUT / "webster1991_pulses.csv").write_text("\n".join(truth) + "\n")

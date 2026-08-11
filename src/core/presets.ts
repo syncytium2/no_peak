@@ -21,7 +21,7 @@ export interface ParamPreset {
   note: string;
   params: Pick<
     ClusterParams,
-    "nPeak" | "nNadir" | "tScoreUp" | "tScoreDn" | "variant" | "errorModel" | "assayCV" | "assayFloor"
+    "nPeak" | "nNadir" | "tScoreUp" | "tScoreDn" | "variant" | "errorModel"
   >;
 }
 
@@ -33,7 +33,7 @@ export const PRESETS: ParamPreset[] = [
     note: "Two-point windows and t = 2, the settings the Igor package opens with.",
     params: {
       nPeak: 2, nNadir: 2, tScoreUp: 2, tScoreDn: 2, variant: "igor",
-      errorModel: "Local SD", assayCV: 0.08, assayFloor: 0,
+      errorModel: "Local SD",
     },
   },
   {
@@ -45,13 +45,14 @@ export const PRESETS: ParamPreset[] = [
       "paper states a false positive rate of 1% for this combination. It selects the original " +
       "Fortran implementation, which is what existed in 1991 — and which matters more than it " +
       "sounds, because the Igor variant's t-score is not scale-invariant at one-point windows. " +
-      "It also sets the error model, which the paper does NOT report: an assay CV of 8% with a " +
-      "floor of 0.06 pg/min. Both are reconstructed, not published — the floor was chosen to " +
-      "match this paper's own pulse calls. Without an assay-shaped error the estimated models " +
-      "find nothing here, because at one-point windows a pulse inflates its own error.",
+      "It also selects the Error Wave model, which uses the per-sample error column in the file. " +
+      "The paper does not report what error it supplied, so the bundled records carry a " +
+      "RECONSTRUCTED one (CV 8%, floor 0.06 pg/min — the floor chosen to match this paper's own " +
+      "calls). Without a per-sample error the estimated models find nothing here, because at " +
+      "one-point windows a pulse inflates its own error and hides itself.",
     params: {
       nPeak: 1, nNadir: 1, tScoreUp: 3.2, tScoreDn: 3.2, variant: "fortran",
-      errorModel: "Assay CV", assayCV: 0.08, assayFloor: 0.06,
+      errorModel: "Error Wave",
     },
   },
   {
@@ -61,11 +62,11 @@ export const PRESETS: ParamPreset[] = [
     note:
       "Jugular LH in the ewe, 6-min sampling over 6 h, reported in ng/ml. The paper states a " +
       "false positive rate of 5% for this combination. Original Fortran, for the same reason. " +
-      "The error model is an assay CV of 8% with a floor of 0.45 ng/ml — the floor IS the assay " +
+      "Uses the error column in the file: CV 8% with a floor of 0.45 ng/ml. That floor IS the assay " +
       "sensitivity this paper reports; the CV is reconstructed.",
     params: {
       nPeak: 1, nNadir: 1, tScoreUp: 2.32, tScoreDn: 2.32, variant: "fortran",
-      errorModel: "Assay CV", assayCV: 0.08, assayFloor: 0.45,
+      errorModel: "Error Wave",
     },
   },
 ];
@@ -79,9 +80,7 @@ export function matchPreset(p: ClusterParams): ParamPreset | undefined {
       s.params.tScoreUp === p.tScoreUp &&
       s.params.tScoreDn === p.tScoreDn &&
       s.params.variant === p.variant &&
-      s.params.errorModel === p.errorModel &&
-      (p.errorModel !== "Assay CV" ||
-        (s.params.assayCV === p.assayCV && s.params.assayFloor === p.assayFloor)),
+      s.params.errorModel === p.errorModel,
   );
 }
 

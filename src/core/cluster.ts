@@ -233,7 +233,6 @@ export function clusterMain(
     nPeak,
     nNadir,
     userError,
-    { cv: params.assayCV, floor: params.assayFloor },
   );
 
   const fortran = params.variant === "fortran";

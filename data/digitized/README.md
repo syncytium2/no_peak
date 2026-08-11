@@ -28,12 +28,20 @@ why no publisher has ever been recorded objecting to this practice.
 
 Load any record from the **Sample data** menu, pick **Portal GnRH — Webster et
 al. 1991** (or the LH one) under *Start from published settings*, and the counts
-below appear. The preset carries the error model as well as the windows and
-t-scores, because without it the published settings find nothing at all: these
-files have no error column, so the app falls back to an estimated model, and at
-one-point windows an estimated error reads a pulse's own height as noise and
-hides it. That is a property of estimating error from the data, not a defect in
-the data.
+below appear.
+
+That works because each file carries a **third column: a reconstructed
+per-sample error**, and the preset selects the Error Wave model that reads it.
+Both are necessary. The paper does not report what error it fed CLUSTER, and the
+estimated models cannot stand in: at one-point windows the error is computed
+from a window containing the pulse, so a clean tall pulse inflates its own error
+and hides itself. On ewe #8067, published 11 pulses, Local SD finds **0**.
+
+The error column is `max(floor, 0.08 x value)`. For LH the floor is the assay
+sensitivity the paper reports (0.45 ng/ml); for GnRH it is 0.06 pg/min, chosen
+to match this paper's own calls and therefore **fitted**. The file header says
+so. Nothing about that column was read off the figure — the figure prints no
+error bars.
 
 Regenerate with:
 

@@ -140,9 +140,13 @@ digitised".
    preset carried windows and t-scores but not the error model, the digitised
    CSVs have no error column, so the app fell back to `Local SD`, which at
    one-point windows lets a pulse inflate its own error and hide itself (0 of 70).
-   Fixed by adding an `Assay CV` model — `error = max(floor, CV × value)`, the
-   shape a real immunoassay has — to `ErrorModelType`, and by making presets
-   carry `errorModel` and its parameters. Loading a record and picking the preset
+   First fixed by adding a new `Assay CV` model to `ErrorModelType` — which was
+   wrong, and was caught on review: this port's identity is exposing exactly what
+   Igor exposes, two public pages claim the Igor oracle spans *every* error
+   model, and a new model can have no oracle. Reverted. The right fix uses the
+   reference's own machinery: the digitised files carry a third column with a
+   reconstructed per-sample error, labelled as such in the header, and the
+   presets select the existing Error Wave model. Loading a record and picking the preset
    now reproduces the published counts with nothing else touched.
 2. **Deep links into the About page eject the reader.** (role 3) `src/main.tsx`
    routes on `hash === "#about"` exactly, so `#terms`, `#scale`, `#presets` etc.
