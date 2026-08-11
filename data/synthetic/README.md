@@ -192,14 +192,43 @@ specifically, and no US or EU authority was found addressing data extraction
 from a chart at all. Everything here reasons from general fact/expression
 principles.
 
-The EU sui generis database right is very unlikely to apply — a single figure is
-probably not a database under Art. 1(2), *BHB v William Hill* (C-203/02) holds
-that Art. 7(1) "does not cover the resources used for the creation of materials
-which make up the contents of a database" (experimental measurement being
-creation), Art. 8(1) permits extracting insubstantial parts "for any purposes
-whatsoever", Art. 9(b) carries a scientific-research exception, and the 15-year
-term on a 1991 publication expired around 2007 regardless. There is no US
-equivalent.
+The EU sui generis database right is very unlikely to apply, but not for the
+reason first written here. An earlier draft of this file said a single figure is
+"probably not a database" under Art. 1(2). That is wrong: C-444/02 defines a
+database as "any collection of works, data or other materials, separable from one
+another without the value of their contents being affected, including a method or
+system of some sort for the retrieval of each of its constituent materials", and
+C-490/14 (*Verlag Esterbauer*) confirms the legislature intended "broad scope".
+There is no minimum size. A few dozen tabulated measurements qualify. Being a
+database is the easy part and decides nothing.
+
+The right fails at the next step instead. Art. 7(1) requires substantial
+investment in *obtaining, verifying or presenting* the contents, and *BHB v
+William Hill* (C-203/02) holds that this "does not cover the resources used for
+the creation of materials which make up the contents of a database" — nor
+verification "during the stage of creation". Running the experiment is creation,
+not obtaining. What survives is the saving clause at BHB [35]–[36]: a maker who
+also created the data still qualifies if *collecting, arranging, organising
+accessibility and verifying* it required investment **independent** of creating
+it. For the data behind one chart in one article there is essentially none, and
+the intrinsic scientific value of the data is expressly irrelevant (BHB [72],
+[78]).
+
+Supporting this, the Commission's own 2018 evaluation of the Directive
+(SWD(2018) 146 final, §5.4.1) states that following the 2004 rulings, courts will
+conclude such data was "'created' … not 'obtained'", so "most of the investment
+going into generating such databases should not be taken into account". Three
+further layers point the same way: Art. 8(1) lets a lawful user extract
+insubstantial parts "for any purposes whatsoever"; Art. 9(b) carries a
+scientific-research exception; and *CV-Online Latvia* (C-762/19) adds that the
+"main criterion" is "the risk that that investment may not be redeemed" — hard to
+show for data that is not commercially exploited. The 15-year term (Art. 10) on a
+1991 publication expired around 2007 in any case.
+
+Contestable at the edges: the German *Autobahnmaut* decision accepted a sui
+generis right in machine-recorded toll data, and the CJEU has never ruled on
+scientific measurement data specifically. There is no US equivalent to this
+right at all.
 
 **Contract is the obstacle, and it is unresolved.** OUP's legal notice forbids
 subscribers to "display or distribute any Restricted Content on any other site,
