@@ -31,18 +31,42 @@ exponential clearance for peripheral LH, where clearance genuinely applies — w
 every scale traced to a citation. The standard test data now has to meet, and
 the reasoning behind it, is written down in `data/synthetic/README.md`.
 
-A note on provenance: the reviewer cited *Endocrinology* 1991;129(3) —
-thyroidectomized ewes, 6-minute sampling, GnRH pulses every 12 minutes — as the
-source to extract real data from. The paper is Webster et al., PMID 1874193, and
-it is real, but the sampling and pulse-frequency figures could not be confirmed
-from it or from the surrounding literature. The companion study from the same
-lab and preparation (Barrell et al., *Biol Reprod* 1992;46(6):1130–5, PMID
-1391310) used 10-minute portal fractions, and the fastest ovine portal
-interpulse intervals in the literature are around 27 minutes. The recollection
-looks approximate. The scales used here come instead from Moenter et al.,
-*Endocrinology* 1992;130(1):503–10 (PMID 1727719), which measured the pulse
-waveform directly at 30-second resolution. This is flagged rather than resolved:
-the reviewer may be recalling an unpublished detail or a different record.
+### The source paper, once it was actually read
+
+The reviewer cited *Endocrinology* 1991;129(3) — thyroidectomized ewes, 6-minute
+sampling, GnRH pulses every 12 minutes. The paper is Webster JR, Moenter SM,
+Barrell GK, Lehman MN, Karsch FJ, PMID 1874193, and it is not open access; a
+copy was supplied. Reading it settled three things that guesswork had got wrong,
+including this project's own first guesses.
+
+- **Sampling was every 5 min for 6 h**, for the portal GnRH collection. The
+  6-minute interval in the reviewer's recollection is real but belongs to the
+  jugular LH *presampling* — venipuncture every 6 min for 6 h before the portal
+  surgery. Both are in the same Methods paragraph.
+- **Pulse frequency was 11.2 ± 1.4 pulses/6 h** in thyroidectomized ewes — an
+  interpulse interval near 32 min, not 12 — with as many as 21 pulses in 6 h in
+  one ewe. Thyroid-intact controls showed generally no pulses at all. The "every
+  12 minutes" does not appear; the closest is the 21-pulse ewe at ~17 min.
+- **The paper prints its CLUSTER settings**, which had not been anticipated at
+  all: peak and nadir clusters of one point, t = 3.2/3.2 for GnRH and 2.32/2.32
+  for LH, stated to give false positive rates of 1% and 5%. It used this
+  algorithm, so those are directly reusable.
+
+The GnRH datasets were rebuilt to that protocol, and the two settings now ship
+as presets. `sim_gnrh_thx_ewe.csv` returns the paper's 11 pulses per 6 h at the
+paper's own settings and `sim_gnrh_intact.csv` returns none, both asserted in
+`src/core/presets.test.ts` so the tie breaks loudly if either drifts.
+
+Worth noting what this cost to get wrong: before the paper was available, an
+earlier pass had reasoned from the abstract and the surrounding literature to
+10-minute fractions and a ~50-minute interval — defensible, sourced, and still
+not what the paper says. The reviewer's recollection was closer than the
+inference was. The lesson is narrow and practical: for a protocol, read the
+Methods section, and do not substitute a companion paper for it.
+
+An unexpected consequence: the reviewer could not type `1` into the peak-window
+field, and one point is exactly what this paper specifies. The entry bug was
+blocking a published parameter set, not an exotic setting.
 
 ## Everything else, and its disposition
 

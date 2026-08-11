@@ -206,6 +206,27 @@ export function About({ onBack }: { onBack: () => void }) {
         worse for your question.
       </p>
 
+      <h3 id="presets">Published settings</h3>
+      <p>
+        Because the five detection parameters <em>are</em> the model, a published analysis can only
+        be reproduced if the paper reported them. Where one did, its settings are a click away in{" "}
+        <strong>Start from published settings</strong>, with the citation attached — both to
+        reproduce that analysis and as a defensible starting point for the same hormone and
+        protocol.
+      </p>
+      <p>
+        Webster et al. (1991), measuring GnRH in hypophyseal-portal blood of the ewe every 5 minutes
+        for 6 hours, used peak and nadir clusters of a single point with t = 3.2 for GnRH and
+        t = 2.32 for jugular LH, reporting false positive rates of 1% and 5% respectively. Those are
+        the two presets currently shipped. The bundled portal GnRH datasets are built to that
+        paper&apos;s protocol, and at its settings the simulated thyroidectomized ewe returns the
+        11 pulses per 6 hours it reports.
+        <span className="cite">
+          Webster JR, Moenter SM, Barrell GK, Lehman MN, Karsch FJ. Role of the thyroid gland in
+          seasonal reproduction. III. Endocrinology 1991;129(3):1635–43.
+        </span>
+      </p>
+
       <h3 id="terms">What the numbers are called</h3>
       <p>
         Two of the reported quantities get conflated constantly, including by the original

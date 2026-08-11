@@ -62,33 +62,68 @@ reproducible.
 
 | File | Models | Interval | Length | Pulse interval |
 | --- | --- | --- | --- | --- |
-| `sim_gnrh_portal.csv` | Portal GnRH, square bursts, no clearance | 10 min | 16 h | ~50 min |
-| `sim_gnrh_highfreq.csv` | Portal GnRH at high pulse frequency — the hard case | 6 min | 11 h | ~20 min |
+| `sim_gnrh_thx_ewe.csv` | Portal GnRH, thyroidectomized ewe — square bursts, no clearance | 5 min | 6 h | ~32 min |
+| `sim_gnrh_thx_fast.csv` | The fastest ewe in that study, 21 pulses in 6 h | 5 min | 6 h | ~17 min |
+| `sim_gnrh_intact.csv` | Thyroid-intact anestrous control — no pulses at all | 5 min | 6 h | none |
 | `sim_lh.csv` | Peripheral LH, exponential clearance | 10 min | 12 h | ~70 min |
 | `sim_lh_long.csv` | Peripheral LH, full day | 10 min | 24 h | ~190 min |
 | `sim_flat_control.csv` | Assay noise only — every pulse found is a false positive | 10 min | 12 h | none |
 | `sim_values_only.csv` | Peripheral LH with no time column | 10 min | 13 h | ~80 min |
 
-`sim_gnrh_highfreq.csv` is deliberately at the edge of what CLUSTER can resolve:
+The three GnRH files are built to one published protocol (Webster et al. 1991,
+below) and are meant to be read together: a positive record, the same record at
+the fastest frequency observed, and the study's own negative control. At that
+paper's stated CLUSTER settings — peak and nadir clusters of one point, t = 3.2
+— `sim_gnrh_thx_ewe.csv` returns the 11 pulses per 6 h it reports, and
+`sim_gnrh_intact.csv` returns none. Both are asserted in
+`src/core/presets.test.ts`, so if the data or the algorithm drifts, the tie to
+the paper breaks loudly.
+
+`sim_gnrh_thx_fast.csv` is deliberately at the edge of what CLUSTER can resolve:
 roughly three samples per cycle means the peak and nadir windows start to
-overlap neighbouring pulses, and adjacent pulses merge. It is there to make that
-limit visible, not to flatter the detector.
+overlap neighbouring pulses, and adjacent pulses merge — the detector finds
+fewer than were generated. That is the honest result, and the reason the file is
+here. It is not tuned to flatter the detector.
 
 ## Sources for the scales
 
+- **Webster JR, Moenter SM, Barrell GK, Lehman MN, Karsch FJ. Role of the
+  thyroid gland in seasonal reproduction. III. Thyroidectomy blocks seasonal
+  suppression of gonadotropin-releasing hormone secretion in sheep.**
+  *Endocrinology* 1991;129(3):1635–43. PMID 1874193. — The protocol the GnRH
+  datasets are built to. Hypophyseal-portal blood from conscious ovariectomized,
+  estradiol-implanted ewes, collected **every 5 min for 6 h** by an automated
+  remote sampling system. GnRH reported as **rate of collection in pg/min**, not
+  concentration, because that is less sensitive to contamination of the sample
+  with non-portal blood. Thyroidectomized ewes that failed to enter anestrus:
+  **11.2 ± 1.4 pulses/6 h**, and as many as 21 in one ewe. Thyroid-intact
+  anestrous controls: generally no pulses at all. Figures 3–4 put GnRH on a
+  0–4 pg/min axis and LH on 0–20 ng/ml. Pulses were identified with **this very
+  algorithm**, at settings the paper prints: peak and nadir clusters of one
+  point, t = 3.2/3.2 for GnRH and 2.32/2.32 for LH, stated to give false
+  positive rates of 1% and 5%. Those two settings ship as presets in
+  `src/core/presets.ts`.
 - Moenter SM, Brand RM, Midgley AR, Karsch FJ. Dynamics of gonadotropin-releasing
   hormone release during a pulse. *Endocrinology* 1992;130(1):503–10. PMID
-  1727719. — GnRH pulse waveform at 30-s resolution: square contour, ~5.5 min
-  sustained, peak ~24 pg/min (range 2–66) over a 0.2–0.5 pg/min baseline.
-- Barrell GK, Moenter SM, Caraty A, Karsch FJ. Seasonal changes of
-  gonadotropin-releasing hormone secretion in the ewe. *Biol Reprod*
-  1992;46(6):1130–5. PMID 1391310. — 10-min portal fractions over 6–12 h; pulse
-  frequency by season.
+  1727719. — GnRH pulse waveform at 30-s resolution: square contour, a rise of up
+  to 50-fold within a minute, ~5.5 min sustained, back to baseline within 3 min.
+  This is where the burst shape comes from. Its much larger pg/min figures are
+  not in conflict with the 0–4 above: 30-second fractions resolve the inside of a
+  burst, where 5-minute fractions average over it.
 - Clarke IJ, Cummins JT. *Endocrinology* 1985;116(6):2376–83. PMID 3888609. —
   Ovine portal GnRH interpulse intervals, 27–53 min.
 - Maggi R et al. GnRH and GnRH receptors in the pathophysiology of the human
   female reproductive system. *Hum Reprod Update* 2016;22(3):358–81. — GnRH
   degradation and half-life.
+
+## A note on the "6-minute sampling interval"
+
+The Webster paper does use a 6-minute interval, but for the **jugular LH
+presampling** — venipuncture every 6 min for 6 h, before the portal collection
+surgery. The **portal GnRH** collection, which is what the GnRH datasets model,
+was every 5 min. Both numbers are in the same Materials and Methods paragraph
+and are easy to transpose. The LH preset carries the 6-min protocol's settings;
+the GnRH preset carries the 5-min one's.
 
 ## Wanted: data digitised from published figures
 
@@ -97,9 +132,10 @@ detector does what the algorithm says; it cannot show how the algorithm behaves
 against the messiness of a real assay. Digitised figure data would, and is
 distributable in a way lab recordings are not.
 
-The best target found so far is Moenter et al. 1992 (PMID 1727719), whose
-subject is the pulse waveform itself at 30-second resolution. It is not open
-access, so this needs a subscription copy and a check of the reuse terms before
-anything is digitised. Webster JR, Moenter SM, Barrell GK, Lehman MN, Karsch FJ,
-*Endocrinology* 1991;129(3):1635–43 (PMID 1874193), on GnRH secretion in
-thyroidectomized ewes, is also not open access and is half immunohistochemistry.
+Two targets, in order. Webster et al. 1991 Figs. 2–4 print representative
+portal-GnRH and jugular-LH traces with the identified pulses marked, which would
+give both the trace *and* a published ground-truth pulse call to score against —
+the most valuable kind of test case this project could hold. Moenter et al. 1992
+(PMID 1727719) resolves the pulse waveform itself at 30-second resolution.
+Neither is open access, so both need the reuse terms checked before anything is
+digitised.

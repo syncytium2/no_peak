@@ -15,8 +15,9 @@ import { parseSeries, type ParsedSeries } from "./core/csv";
 import type { TimeUnit } from "./core/timeUnits";
 import { demoSeries } from "./demo";
 
-import gnrhCsv from "../data/synthetic/sim_gnrh_portal.csv?raw";
-import gnrhFastCsv from "../data/synthetic/sim_gnrh_highfreq.csv?raw";
+import gnrhCsv from "../data/synthetic/sim_gnrh_thx_ewe.csv?raw";
+import gnrhFastCsv from "../data/synthetic/sim_gnrh_thx_fast.csv?raw";
+import gnrhIntactCsv from "../data/synthetic/sim_gnrh_intact.csv?raw";
 import lhCsv from "../data/synthetic/sim_lh.csv?raw";
 import lhLongCsv from "../data/synthetic/sim_lh_long.csv?raw";
 import valuesOnlyCsv from "../data/synthetic/sim_values_only.csv?raw";
@@ -46,32 +47,47 @@ const PERIPHERAL = "Simulated peripheral LH";
 
 export const SAMPLES: Sample[] = [
   {
-    key: "sim_gnrh_portal",
+    key: "sim_gnrh_thx_ewe",
     group: PORTAL,
-    label: "10-min fractions, ~50-min pulse interval",
+    label: "Thyroidectomized ewe — 11 pulses in 6 h",
     note:
-      "Hypophyseal-portal GnRH as collected in 10-min fractions over 16 h. Secretory bursts are " +
-      "square waves of about 5.5 min on a 0.3 pg/min baseline, so a pulse occupies one or two " +
-      "fractions and returns abruptly — GnRH is cleared far faster than a collection window, and " +
-      "has no decay tail at this resolution.",
+      "Built to the protocol of Webster et al. 1991 (Endocrinology 129:1635): portal blood every " +
+      "5 min for 6 h, GnRH as pg collected per min. Secretory bursts are square waves of about " +
+      "5.5 min, so a pulse occupies one or two fractions and returns abruptly — GnRH is cleared " +
+      "far faster than a collection window and has no decay tail at this resolution. At that " +
+      "paper's own settings (windows of 1 point, t = 3.2) this yields the 11 pulses per 6 h it " +
+      "reports.",
     timeUnit: "min",
-    deltaT: 10,
+    deltaT: 5,
     valueLabel: "GnRH (pg/min)",
     load: csv(gnrhCsv),
   },
   {
-    key: "sim_gnrh_highfreq",
+    key: "sim_gnrh_thx_fast",
     group: PORTAL,
-    label: "6-min fractions, high pulse frequency (hard case)",
+    label: "Fastest ewe in that study — 21 pulses in 6 h",
     note:
-      "The same secretion model driven at roughly a 20-min pulse interval and sampled every 6 min, " +
-      "leaving only about three samples per cycle. Deliberately hard: the peak and nadir windows " +
-      "start to overlap neighbouring pulses, so it is a good test of how far the window settings " +
-      "can be pushed.",
+      "The same protocol driven at the highest frequency the study observed. An interpulse " +
+      "interval near 17 min leaves about three 5-min fractions per cycle, so the peak and nadir " +
+      "windows start to overlap neighbouring pulses and adjacent pulses merge — the detector " +
+      "finds fewer than were generated. It is here to make that limit visible.",
     timeUnit: "min",
-    deltaT: 6,
+    deltaT: 5,
     valueLabel: "GnRH (pg/min)",
     load: csv(gnrhFastCsv),
+  },
+  {
+    key: "sim_gnrh_intact",
+    group: PORTAL,
+    label: "Thyroid-intact anestrous ewe — no pulses",
+    note:
+      "The negative control from the same protocol, where that study found no pulses of GnRH at " +
+      "all. Everything but the pulses matches the record above, which makes it a sharper test of " +
+      "a settings change than a generic flat line: any pulse reported here is a false positive.",
+    timeUnit: "min",
+    deltaT: 5,
+    valueLabel: "GnRH (pg/min)",
+    load: csv(gnrhIntactCsv),
   },
   {
     key: "sim_lh",

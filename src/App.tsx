@@ -3,6 +3,7 @@ import { resolveErrorModel } from "./core/errorModel";
 import { parseLooseNumbers, parseSeries, resultToCSV, type ParsedSeries } from "./core/csv";
 import { fmt } from "./core/format";
 import { readBinaryWave, readPackedExperiment, type IgorFile } from "./core/igor";
+import { PRESETS, matchPreset } from "./core/presets";
 import { runSegments, segmentsToCSV, type Segment } from "./core/segments";
 import {
   TIME_UNITS,
@@ -275,7 +276,7 @@ export function App() {
   // loads by default so the page never opens blank.
   useEffect(() => {
     loadSample(
-      new URLSearchParams(window.location.search).has("demo") ? "demo" : "sim_gnrh_portal",
+      new URLSearchParams(window.location.search).has("demo") ? "demo" : "sim_gnrh_thx_ewe",
     );
   }, []);
 
@@ -503,6 +504,34 @@ export function App() {
           </p>
 
           <h2>Detection parameters</h2>
+          <label className="presetpick">
+            Start from published settings
+            <select
+              value={matchPreset(params)?.key ?? ""}
+              onChange={(e) => {
+                const p = PRESETS.find((s) => s.key === e.target.value);
+                if (p) setParams((prev) => ({ ...prev, ...p.params }));
+              }}
+            >
+              <option value="" disabled>
+                custom — edit the fields below
+              </option>
+              {PRESETS.map((p) => (
+                <option key={p.key} value={p.key}>
+                  {p.label}
+                </option>
+              ))}
+            </select>
+          </label>
+          {(() => {
+            const p = matchPreset(params);
+            if (!p || !p.cite) return null;
+            return (
+              <p className="presetnote">
+                {p.note} <span className="cite">{p.cite}</span>
+              </p>
+            );
+          })()}
           <div className="grid">
             <NumField
               label="Peak window (points)"

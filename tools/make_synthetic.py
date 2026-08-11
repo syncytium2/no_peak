@@ -35,13 +35,26 @@ Two secretion models, because the two hormones do not behave alike:
                       why portal GnRH and jugular LH traces look so unalike.
 
 References for the scales used:
+  Webster JR, Moenter SM, Barrell GK, Lehman MN, Karsch FJ. Role of the thyroid
+    gland in seasonal reproduction. III. Thyroidectomy blocks seasonal
+    suppression of gonadotropin-releasing hormone secretion in sheep.
+    Endocrinology 1991;129(3):1635-43. PMID 1874193. THE PROTOCOL THE GnRH
+    DATASETS BELOW ARE BUILT TO. Hypophyseal-portal blood from conscious
+    ovariectomized, estradiol-implanted ewes, collected every 5 min for 6 h by
+    an automated remote sampling system. GnRH reported as rate of collection in
+    pg/min, not concentration. Thyroidectomized ewes that failed to enter
+    anestrus: 11.2 +/- 1.4 pulses/6 h, and as many as 21 in one ewe.
+    Thyroid-intact anestrous controls: generally no pulses at all. Figures 3-4
+    put GnRH on a 0-4 pg/min axis and LH on 0-20 ng/ml. Pulses in that paper
+    were identified with this very algorithm, at settings it prints: peak and
+    nadir clusters of one point, t = 3.2/3.2 for GnRH and 2.32/2.32 for LH,
+    stated to give false positive rates of 1% and 5% respectively.
   Moenter SM, Brand RM, Midgley AR, Karsch FJ. Dynamics of gonadotropin-
     releasing hormone release during a pulse. Endocrinology 1992;130(1):503-10.
-    PMID 1727719. (GnRH pulse waveform, amplitude, baseline.)
-  Barrell GK, Moenter SM, Caraty A, Karsch FJ. Seasonal changes of
-    gonadotropin-releasing hormone secretion in the ewe. Biol Reprod
-    1992;46(6):1130-5. PMID 1391310. (10-min portal fractions over 6-12 h;
-    pulse frequency by season.)
+    PMID 1727719. (GnRH pulse waveform: square contour, ~5.5 min sustained.
+    Its much larger pg/min figures are not in conflict with the 0-4 above —
+    that study collected 30-s fractions, so it resolves the inside of a burst
+    where this one averages over it.)
   Clarke IJ, Cummins JT. Endocrinology 1985;116(6):2376-83. PMID 3888609.
     (Ovine portal GnRH interpulse intervals, 27-53 min.)
 
@@ -155,31 +168,46 @@ def write(name, kind, dt, rows, cols=3, prec=3):
     print(f"{path.relative_to(OUT.parent.parent)}: {len(rows)} points, dt={dt} min")
 
 
-# --- Portal GnRH, 10-min fractions: the standard pulse-frequency protocol -----
-# 96 fractions = 16 h. Interpulse interval ~50 min sits in the middle of the
-# published ovine range and gives ~5 samples per cycle, so the default window
-# settings have something to work with.
+# --- Portal GnRH, thyroidectomized ewe: Webster 1991's main finding ----------
+# The paper's protocol exactly: 5-min fractions for 6 h, so 72 samples. 11
+# pulses over the 6 h is the reported mean (11.2 +/- 1.4). Amplitudes give peak
+# samples of roughly 1-4 pg/min, the axis those figures are drawn on.
 write(
-    "sim_gnrh_portal.csv",
-    "Resembles hypophyseal-portal GnRH sampled in 10-min fractions (pg/min).",
-    10,
+    "sim_gnrh_thx_ewe.csv",
+    "Resembles portal GnRH in a thyroidectomized ewe: 5-min fractions, 6 h (pg/min).",
+    5,
     portal_fractions(
-        seed=101, n=96, dt=10, baseline=0.3,
-        amp_lo=2.0, amp_hi=60.0, mean_ipi=50.0, burst_min=5.5, cv=0.078,
+        seed=101, n=72, dt=5, baseline=0.22,
+        amp_lo=1.2, amp_hi=6.5, mean_ipi=32.0, burst_min=5.5, cv=0.078,
     ),
 )
 
-# --- Portal GnRH at high pulse frequency, 6-min fractions --------------------
-# The hard case, not a reproduction of any one experiment: pulses roughly every
-# 20 min with 6-min collections leave only ~3 samples per cycle, which is where
-# the peak and nadir windows start to overlap adjacent pulses.
+# --- The fastest ewe in that study: 21 pulses in the same 6 h ----------------
+# Not an invented hard case — an observed one. At an interpulse interval near
+# 17 min, a 5-min fraction leaves about three samples per cycle, which is where
+# the peak and nadir windows begin to overlap neighbouring pulses and adjacent
+# pulses merge. It is here to make that limit visible.
 write(
-    "sim_gnrh_highfreq.csv",
-    "Resembles portal GnRH at high pulse frequency, 6-min fractions (pg/min).",
-    6,
+    "sim_gnrh_thx_fast.csv",
+    "Resembles the highest-frequency ewe in that study: 21 pulses in 6 h (pg/min).",
+    5,
     portal_fractions(
-        seed=131, n=110, dt=6, baseline=0.35,
-        amp_lo=3.0, amp_hi=55.0, mean_ipi=20.0, burst_min=5.5, cv=0.078,
+        seed=131, n=72, dt=5, baseline=0.25,
+        amp_lo=1.0, amp_hi=5.5, mean_ipi=17.0, burst_min=5.5, cv=0.078,
+    ),
+)
+
+# --- Thyroid-intact anestrous control: the paper's own negative control ------
+# "In 4 of 5 thyroid-intact ewes, there were no pulses of either LH or GnRH."
+# A negative control drawn from the same protocol as the positive one is worth
+# more than a generic flat line: everything but the pulses is the same.
+write(
+    "sim_gnrh_intact.csv",
+    "Resembles a thyroid-intact anestrous ewe: same protocol, no GnRH pulses (pg/min).",
+    5,
+    portal_fractions(
+        seed=161, n=72, dt=5, baseline=0.22,
+        amp_lo=0.001, amp_hi=0.002, mean_ipi=1e9, burst_min=5.5, cv=0.078,
     ),
 )
 
