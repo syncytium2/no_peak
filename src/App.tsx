@@ -561,10 +561,15 @@ export function App() {
           {(() => {
             const p = matchPreset(params);
             if (!p || !p.cite) return null;
+            // Folded: the note runs to several lines and would otherwise push
+            // the fields it describes off the screen.
             return (
-              <p className="presetnote">
-                {p.note} <span className="cite">{p.cite}</span>
-              </p>
+              <details className="presetnote">
+                <summary>About these settings</summary>
+                <p>
+                  {p.note} <span className="cite">{p.cite}</span>
+                </p>
+              </details>
             );
           })()}
           <div className="grid">

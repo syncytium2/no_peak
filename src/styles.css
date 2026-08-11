@@ -527,11 +527,22 @@ input.badnum {
   font-size: 13px;
 }
 
+/* Folded by default: the citation and the caveats matter, but not as much as
+   seeing the fields they describe. */
 .presetnote {
   margin: -4px 0 12px;
   font-size: 12px;
-  line-height: 1.5;
   color: var(--muted);
+}
+
+.presetnote > summary {
+  cursor: pointer;
+  padding: 2px 0;
+}
+
+.presetnote p {
+  margin: 4px 0 0;
+  line-height: 1.5;
 }
 
 .presetnote .cite {
