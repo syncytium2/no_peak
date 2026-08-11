@@ -121,6 +121,62 @@ while deconvolution (AutoDecon) is in a different class entirely at ~98%. If
 you need to *count* pulses, use deconvolution. If you need to be able to
 defend every pulse you report, the specificity is the argument.
 
+## Finding: the Igor t-score is not scale-invariant (2026-08-11)
+
+Rescaling the bundled portal GnRH dataset to match its source paper's published
+axis broke a pulse count that had been correct minutes earlier. The cause is not
+in the data.
+
+`mScore` pools the per-point measurement error as
+
+    S = sqrt( sum_i NDF * STDEV[i] / df )      # Igor
+    S = sqrt( sum_i NDF * STDEV[i]**2 / df )   # original Fortran
+
+The Fortran form is a pooled variance: `S` carries the units of the data, so
+`(peakMean - nadirMean) / S` is dimensionless. The Igor form sums the errors
+**unsquared**, so `S` carries units of sqrt(data) and the t-statistic scales as
+`sqrt(k)` when the data is multiplied by `k`.
+
+The divergence itself was already documented — `ClusterParams.variant` describes
+it, and the port reproduces both. What had not been noticed is the consequence:
+**under the Igor implementation the pulse count depends on the units the data is
+expressed in.** Multiplying a record by a constant cannot change where its
+pulses are, but it changes how many are found.
+
+Measured on `data/synthetic/sim_gnrh_thx_ewe.csv` at one-point windows and
+t = 3.2, with the data multiplied by 0.01, 1, 100 and 10,000:
+
+| Implementation | pulses found |
+| --- | --- |
+| Igor | 0, 5, 11, 17 |
+| Original Fortran | 11, 11, 11, 11 |
+
+On the pulse-free control the same rescaling takes Igor from 0 to 22 false
+positives. The effect dilutes as the windows widen, because `S` then averages
+over more points: at the two-point defaults it is mild, at one-point windows it
+is severe. One-point windows are not exotic — they are what Webster et al. 1991
+specifies, and what the shipped presets use.
+
+Consequences applied:
+
+- The published presets select the **original Fortran** implementation, which is
+  also historically right: a 1991 paper cites Veldhuis & Johnson's program, not
+  the much later Igor package.
+- `hasScaleDependence()` drives an in-app warning whenever the Igor variant is
+  combined with windows narrow enough for this to bite.
+- `src/core/scale-invariance.test.ts` pins both behaviours, so neither can
+  regress silently.
+
+Not corrected in the Igor path, deliberately. That path exists to reproduce
+ClusterMasterV4-1 exactly and is the oracle the rest of the port is tested
+against; quietly fixing it would make the port untestable and would silently
+change results for anyone who has been using it. It is documented instead, on
+the About page and here.
+
+Open question worth carrying: any published analysis run through the Igor
+package at narrow windows has a threshold that is only meaningful in the units
+it was run in. That is worth knowing before comparing thresholds across papers.
+
 ## Finding: CLUSTER's near-zero false-positive rate is partly a property of the benchmark
 
 Building the Phase 1 simulator (`tools/simulate_benchmark.py`) surfaced

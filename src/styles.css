@@ -445,6 +445,24 @@ body.dos .presetpick select {
   border-radius: 0;
 }
 
+/* A correctness caveat about the current settings, not an error. */
+.warn {
+  margin: 10px 0;
+  padding: 8px 11px;
+  border: 1px solid var(--pulse);
+  border-left-width: 3px;
+  border-radius: 5px;
+  background: rgba(235, 104, 52, 0.06);
+  font-size: 12px;
+  line-height: 1.5;
+  color: var(--ink-2);
+}
+
+body.dos .warn {
+  border-radius: 0;
+  background: none;
+}
+
 .kbdhint {
   margin: 0 0 12px;
   font-size: 12px;

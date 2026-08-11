@@ -227,6 +227,39 @@ export function About({ onBack }: { onBack: () => void }) {
         </span>
       </p>
 
+      <h3 id="scale">A caveat: the Igor t-score depends on your units</h3>
+      <p className="note">
+        The two implementations differ in how they pool the per-point measurement error, and the
+        difference is not cosmetic. The original Fortran sums the errors <em>squared</em> — a
+        pooled variance, which carries the units of your data, so the t-statistic that divides by
+        it is dimensionless. The Igor implementation sums them <em>unsquared</em>. Its pooled term
+        therefore carries units of the square root of your data, and the resulting t-score is not
+        dimensionless: multiply a record by a constant and every t-score moves by the square root
+        of that constant.
+      </p>
+      <p>
+        The practical consequence is that under the Igor implementation, the same record expressed
+        in ng/ml and in pg/ml gives different pulse counts at the same threshold. On the bundled
+        portal GnRH dataset, rescaling the data over four orders of magnitude — which cannot change
+        anything about where its pulses are — moves the count from zero to more pulses than were
+        generated. The original Fortran returns the same answer at every scale.
+      </p>
+      <p>
+        How much it bites depends on the window widths, because the pooled term averages over
+        <em>n</em><sub>peak</sub> + <em>n</em><sub>nadir</sub> points: the more points, the more the
+        distortion washes out. At the two-point default windows it is usually mild. At one-point
+        windows — which is what several published analyses specify — it is severe, and the app says
+        so when you select them.
+      </p>
+      <p>
+        This is preserved rather than corrected, because the Igor implementation is the validation
+        oracle for this port and silently diverging from it would make the port untestable. If you
+        are reproducing a published threshold, or your values are far from order 1, use the
+        original Fortran implementation. If you are comparing groups within one study whose data
+        is all on the same scale, the Igor behaviour will not mislead you — but report which
+        implementation you used.
+      </p>
+
       <h3 id="terms">What the numbers are called</h3>
       <p>
         Two of the reported quantities get conflated constantly, including by the original

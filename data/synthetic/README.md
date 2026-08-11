@@ -73,11 +73,23 @@ reproducible.
 The three GnRH files are built to one published protocol (Webster et al. 1991,
 below) and are meant to be read together: a positive record, the same record at
 the fastest frequency observed, and the study's own negative control. At that
-paper's stated CLUSTER settings — peak and nadir clusters of one point, t = 3.2
-— `sim_gnrh_thx_ewe.csv` returns the 11 pulses per 6 h it reports, and
-`sim_gnrh_intact.csv` returns none. Both are asserted in
-`src/core/presets.test.ts`, so if the data or the algorithm drifts, the tie to
-the paper breaks loudly.
+paper's stated CLUSTER settings — peak and nadir clusters of one point, t = 3.2,
+original Fortran — `sim_gnrh_thx_ewe.csv` returns the 11 pulses per 6 h it
+reports, and does so at *any* rescaling of the data, which is what makes that a
+property rather than a coincidence of tuning. `sim_gnrh_intact.csv` returns
+about one pulse, which is what a stated 1% false positive rate predicts over 72
+samples; asserting zero would be claiming the detector is better than its own
+authors claimed. Both are pinned in `src/core/presets.test.ts`.
+
+The amplitude scale is read off the axis range of that paper's Figs. 3–4 (GnRH
+0–2 pg/min over a baseline near 0.1–0.2). Only the axis range is taken from the
+figure — no data point is digitised from it, and none of these values
+corresponds to a real measurement.
+
+One parameter is not tightly pinned and should be treated as an estimate: the
+assay CV, set to 7.8% from the sample-to-error ratio of a real lab wave. The
+paper reports its GnRH intra-assay variation as a median variance ratio (0.02 ±
+0.01) rather than as a CV, so this could not be taken from it directly.
 
 `sim_gnrh_thx_fast.csv` is deliberately at the edge of what CLUSTER can resolve:
 roughly three samples per cycle means the peak and nadir windows start to

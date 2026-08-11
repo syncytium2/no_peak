@@ -3,7 +3,7 @@ import { resolveErrorModel } from "./core/errorModel";
 import { parseLooseNumbers, parseSeries, resultToCSV, type ParsedSeries } from "./core/csv";
 import { fmt } from "./core/format";
 import { readBinaryWave, readPackedExperiment, type IgorFile } from "./core/igor";
-import { PRESETS, matchPreset } from "./core/presets";
+import { PRESETS, hasScaleDependence, matchPreset } from "./core/presets";
 import { runSegments, segmentsToCSV, type Segment } from "./core/segments";
 import {
   TIME_UNITS,
@@ -595,6 +595,18 @@ export function App() {
               />
             )}
           </div>
+          {hasScaleDependence(params) && (
+            <p className="warn">
+              <strong>These settings depend on your units.</strong> The Igor implementation pools
+              the per-point errors without squaring them, so its t-score is not dimensionless: the
+              same record expressed in ng/ml and in pg/ml gives different pulse counts at the same
+              threshold. Narrow windows make it worse, and one-point windows make it severe. Switch{" "}
+              <strong>Implementation</strong> to the original Fortran, whose pooled variance is
+              scale-invariant, before reproducing a published threshold.{" "}
+              <a href="#about">Details</a>
+            </p>
+          )}
+
           <div className="checks">
             <label>
               <input

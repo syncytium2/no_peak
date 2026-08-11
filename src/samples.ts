@@ -83,7 +83,10 @@ export const SAMPLES: Sample[] = [
     note:
       "The negative control from the same protocol, where that study found no pulses of GnRH at " +
       "all. Everything but the pulses matches the record above, which makes it a sharper test of " +
-      "a settings change than a generic flat line: any pulse reported here is a false positive.",
+      "a settings change than a generic flat line: no pulse was generated here, so every pulse " +
+      "reported is a false positive. At the published GnRH settings it yields about one — which " +
+      "is what a stated 1% false positive rate predicts over 72 samples, not a defect. Loosen " +
+      "the t-scores and watch that number climb.",
     timeUnit: "min",
     deltaT: 5,
     valueLabel: "GnRH (pg/min)",

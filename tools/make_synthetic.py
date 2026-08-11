@@ -45,14 +45,19 @@ References for the scales used:
     pg/min, not concentration. Thyroidectomized ewes that failed to enter
     anestrus: 11.2 +/- 1.4 pulses/6 h, and as many as 21 in one ewe.
     Thyroid-intact anestrous controls: generally no pulses at all. Figures 3-4
-    put GnRH on a 0-4 pg/min axis and LH on 0-20 ng/ml. Pulses in that paper
-    were identified with this very algorithm, at settings it prints: peak and
-    nadir clusters of one point, t = 3.2/3.2 for GnRH and 2.32/2.32 for LH,
-    stated to give false positive rates of 1% and 5% respectively.
+    put GnRH on a 0-2 pg/min axis over a baseline near 0.1-0.2, and LH on
+    0-20 ng/ml. ONLY those axis ranges are taken from the figures; no data
+    point is digitised from them. Pulses in that paper were identified with
+    this very algorithm, at settings it prints: peak and nadir clusters of one
+    point, t = 3.2/3.2 for GnRH and 2.32/2.32 for LH, stated to give false
+    positive rates of 1% and 5% respectively. Reproducing those counts needs
+    the original Fortran implementation, not the Igor one — see
+    docs/validation-status.md on scale invariance, and note that a 1991 paper
+    predates the Igor package anyway.
   Moenter SM, Brand RM, Midgley AR, Karsch FJ. Dynamics of gonadotropin-
     releasing hormone release during a pulse. Endocrinology 1992;130(1):503-10.
     PMID 1727719. (GnRH pulse waveform: square contour, ~5.5 min sustained.
-    Its much larger pg/min figures are not in conflict with the 0-4 above —
+    Its much larger pg/min figures are not in conflict with the 0-2 above —
     that study collected 30-s fractions, so it resolves the inside of a burst
     where this one averages over it.)
   Clarke IJ, Cummins JT. Endocrinology 1985;116(6):2376-83. PMID 3888609.
@@ -170,30 +175,33 @@ def write(name, kind, dt, rows, cols=3, prec=3):
 
 # --- Portal GnRH, thyroidectomized ewe: Webster 1991's main finding ----------
 # The paper's protocol exactly: 5-min fractions for 6 h, so 72 samples. 11
-# pulses over the 6 h is the reported mean (11.2 +/- 1.4). Amplitudes give peak
-# samples of roughly 1-4 pg/min, the axis those figures are drawn on.
+# pulses over the 6 h is the reported mean (11.2 +/- 1.4). Amplitudes are set so
+# peak samples land between about 0.6 and 2 pg/min, which is the axis range its
+# Figs. 3-4 are drawn on, over a baseline hugging 0.1-0.2. Only the axis scale
+# is taken from the figure; no data point is read off it.
 write(
     "sim_gnrh_thx_ewe.csv",
     "Resembles portal GnRH in a thyroidectomized ewe: 5-min fractions, 6 h (pg/min).",
     5,
     portal_fractions(
-        seed=101, n=72, dt=5, baseline=0.22,
-        amp_lo=1.2, amp_hi=6.5, mean_ipi=32.0, burst_min=5.5, cv=0.078,
+        seed=101, n=72, dt=5, baseline=0.16,
+        amp_lo=0.8, amp_hi=2.8, mean_ipi=32.0, burst_min=5.5, cv=0.078,
     ),
 )
 
 # --- The fastest ewe in that study: 21 pulses in the same 6 h ----------------
-# Not an invented hard case — an observed one. At an interpulse interval near
-# 17 min, a 5-min fraction leaves about three samples per cycle, which is where
-# the peak and nadir windows begin to overlap neighbouring pulses and adjacent
-# pulses merge. It is here to make that limit visible.
+# Not an invented hard case — an observed one (Fig. 4A, and that panel reaches
+# the same ~2 pg/min ceiling). At an interpulse interval near 17 min, a 5-min
+# fraction leaves about three samples per cycle, which is where the peak and
+# nadir windows begin to overlap neighbouring pulses and adjacent pulses merge.
+# It is here to make that limit visible.
 write(
     "sim_gnrh_thx_fast.csv",
     "Resembles the highest-frequency ewe in that study: 21 pulses in 6 h (pg/min).",
     5,
     portal_fractions(
-        seed=131, n=72, dt=5, baseline=0.25,
-        amp_lo=1.0, amp_hi=5.5, mean_ipi=17.0, burst_min=5.5, cv=0.078,
+        seed=131, n=72, dt=5, baseline=0.18,
+        amp_lo=0.7, amp_hi=2.6, mean_ipi=17.0, burst_min=5.5, cv=0.078,
     ),
 )
 
@@ -206,7 +214,7 @@ write(
     "Resembles a thyroid-intact anestrous ewe: same protocol, no GnRH pulses (pg/min).",
     5,
     portal_fractions(
-        seed=161, n=72, dt=5, baseline=0.22,
+        seed=161, n=72, dt=5, baseline=0.16,
         amp_lo=0.001, amp_hi=0.002, mean_ipi=1e9, burst_min=5.5, cv=0.078,
     ),
 )
