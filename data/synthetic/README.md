@@ -141,13 +141,77 @@ the GnRH preset carries the 5-min one's.
 
 The gap this directory still has is real traces. Simulation validates that the
 detector does what the algorithm says; it cannot show how the algorithm behaves
-against the messiness of a real assay. Digitised figure data would, and is
-distributable in a way lab recordings are not.
+against the messiness of a real assay.
 
-Two targets, in order. Webster et al. 1991 Figs. 2–4 print representative
-portal-GnRH and jugular-LH traces with the identified pulses marked, which would
-give both the trace *and* a published ground-truth pulse call to score against —
-the most valuable kind of test case this project could hold. Moenter et al. 1992
-(PMID 1727719) resolves the pulse waveform itself at 30-second resolution.
-Neither is open access, so both need the reuse terms checked before anything is
-digitised.
+Webster et al. 1991 Figs. 3–4 are the prize: representative portal-GnRH and
+jugular-LH traces at 400 dpi, every sample marked, **and the pulses CLUSTER
+identified circled on the trace**. That is a published ground-truth pulse call
+next to the data that produced it — the most valuable test case this project
+could hold, because it scores the port against a human-checked answer rather
+than against a simulator we wrote ourselves.
+
+### Where the permissions question actually lands
+
+Checked 2026-08-11. Not legal advice, and one question below is genuinely
+unresolved.
+
+**Copyright is not the obstacle.** Under *Feist v. Rural Telephone*, 499 U.S.
+340 (1991), facts carry no copyright — "no one may claim originality as to
+facts" — and 17 U.S.C. §103(b) confirms that copyright in a compilation gives no
+exclusive right in the underlying material. A figure has two separable things in
+it: the graphical work (axes, layout, symbols, styling), which is protected, and
+the measurements it plots, which are facts about a ewe's portal blood in 1990
+and are not. Digitising keeps the second and discards the first, so a CSV of
+extracted values contains no protected expression. The EU sui generis database
+right is very unlikely to apply — a single figure is probably not a database,
+*BHB v William Hill* (C-203/02) excludes investment in *creating* data as
+opposed to obtaining it, and the 15-year term on a 1991 publication expired
+around 2007 in any case.
+
+**Contract is the obstacle, and it is unresolved.** OUP's legal notice forbids
+subscribers to "display or distribute any Restricted Content on any other site,
+the internet or any electronic network", and the Endocrine Society's own site
+terms define "Site Materials" to include "data" and prohibit "harvesting,
+scraping, or collection of" them without written consent. Whether those clauses
+reach a derived CSV of facts — which is textually not a copy of anything on the
+site — is arguable both ways and, as far as could be found, untested. The
+University of Michigan licence under which the PDF was obtained adds its own
+prohibition on posting licence-accessed material publicly, and that agreement is
+not public.
+
+OUP does permit non-commercial text and data mining without formal permission,
+but scopes it to the institutional subscription agreement and says nothing about
+whether the *outputs* may be redistributed. That silence is exactly the question.
+
+**Field practice is settled for the analysis, unsettled for the redistribution.**
+The Cochrane Handbook (§5.5.8) tells review authors outright to use digitiser
+software when data are not otherwise available, naming WebPlotDigitizer and
+others, and raises no permissions question at all. Reconstructing patient-level
+data from published Kaplan-Meier curves (Guyot et al., *BMC Med Res Methodol*
+2012;12:9) is an established, peer-reviewed, routinely redistributed practice.
+But that precedent is about *using* digitised values in an analysis. Publishing
+them as the deliverable dataset, from a paywalled source, has no precedent that
+could be found either way.
+
+### So: the route to take
+
+Not RightsLink. Its categories are built for reusing text and illustrations;
+there is no data-extraction option, the request would go to free-text human
+review with a 15-working-day turnaround, and no fee schedule or precedent exists
+for this kind of ask.
+
+Ask the authors. Karsch and Moenter are both at Michigan, and this project is
+already in contact with that lab. Author blessing is not a copyright licence and
+does not override the publisher's terms, but it changes the only risk that is
+actually live here — the relational one — and the authors may simply still have
+the underlying values, which removes the question entirely. **A copy of the
+original data, given by an author, is worth more than anything digitised from a
+figure and needs no permission analysis at all.**
+
+Worth asking the U-M library (`library.collections@umich.edu`) in parallel
+whether the OUP agreement permits publishing TDM outputs; they can read a
+contract we cannot.
+
+Until one of those comes back, nothing is digitised from these figures. Only the
+axis *ranges* have been used, to scale a simulation — which takes no data at
+all.
