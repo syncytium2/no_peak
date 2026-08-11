@@ -138,6 +138,56 @@ body.dos .samplepick select {
   font-weight: 600;
 }
 
+/* Provenance of a bundled dataset, next to its name: what it is meant to
+   resemble and on what basis. */
+.samplenote {
+  display: block;
+  max-width: 68ch;
+  margin-top: 4px;
+  font-weight: 400;
+  font-size: 12px;
+  line-height: 1.45;
+  color: var(--muted);
+}
+
+/* What the Load button accepts, spelled out rather than implied by the file
+   dialog's filter list. */
+.formats {
+  flex-basis: 100%;
+  margin-top: 4px;
+  padding: 10px 14px;
+  border: 1px solid var(--grid);
+  border-radius: 8px;
+  background: var(--surface);
+  font-size: 13px;
+  color: var(--ink-2);
+}
+
+.formats strong:first-child {
+  display: block;
+  margin-bottom: 4px;
+  color: var(--ink);
+}
+
+.formats ul {
+  margin: 0 0 6px;
+  padding-left: 18px;
+}
+
+.formats li {
+  margin-bottom: 3px;
+}
+
+.formats code {
+  background: var(--grid);
+  padding: 1px 4px;
+  border-radius: 3px;
+}
+
+body.dos .formats {
+  border-radius: 0;
+}
+
 /* makes it impossible to mistake a demo figure for real data */
 .simtag {
   margin-left: 6px;
@@ -342,6 +392,112 @@ body.dos .offer {
   width: 100%;
 }
 
+/* A draft that does not parse, or falls outside the field's range, is marked
+   rather than corrected — the entry is still being typed. */
+.grid input.badnum,
+input.badnum {
+  border-color: var(--pulse);
+  outline: 2px solid rgba(235, 104, 52, 0.18);
+}
+
+.fieldhint {
+  font-size: 11px;
+  font-weight: 400;
+  color: var(--muted);
+}
+
+.kbdhint {
+  margin: 0 0 12px;
+  font-size: 12px;
+  color: var(--muted);
+  line-height: 1.7;
+}
+
+.kbdhint kbd {
+  padding: 1px 5px;
+  margin: 0 1px;
+  border: 1px solid var(--axis);
+  border-bottom-width: 2px;
+  border-radius: 4px;
+  background: var(--surface);
+  font-family: inherit;
+  font-size: 11px;
+  color: var(--ink-2);
+}
+
+body.dos .kbdhint kbd {
+  border-radius: 0;
+  border-bottom-width: 1px;
+}
+
+/* ---- Igor wave picker ---- */
+
+.igorpick {
+  margin: 12px 0;
+  padding: 14px 16px;
+  border: 1px solid var(--axis);
+  border-radius: 8px;
+  background: var(--surface);
+}
+
+.igorpick h2 {
+  margin: 0 0 4px;
+  font-size: 15px;
+}
+
+.igorpick > .hint {
+  display: block;
+  max-width: 78ch;
+  margin-bottom: 10px;
+}
+
+.wavelist {
+  max-height: 340px;
+  overflow-y: auto;
+}
+
+.wavelist tr.picked {
+  background: rgba(42, 120, 214, 0.07);
+}
+
+.wavelist td code {
+  font-size: 12px;
+}
+
+.wavelist .tag {
+  margin-left: 6px;
+  padding: 0 5px;
+  border: 1px solid var(--grid);
+  border-radius: 8px;
+  font-size: 10px;
+  text-transform: uppercase;
+  letter-spacing: 0.03em;
+  color: var(--muted);
+}
+
+.muted {
+  color: var(--muted);
+}
+
+.grid.pairing {
+  margin-top: 12px;
+}
+
+.skipped {
+  margin: 10px 0;
+  font-size: 12px;
+  color: var(--muted);
+}
+
+.skipped ul {
+  margin: 6px 0 0;
+  padding-left: 18px;
+}
+
+body.dos .igorpick {
+  border-radius: 0;
+}
+
 .checks {
   display: grid;
   gap: 6px;
@@ -443,6 +599,36 @@ body.dos .offer {
 .statvalue {
   font-size: 20px;
   font-weight: 600;
+}
+
+/* Pulse frequency is the number these analyses are run to obtain, so it leads
+   the row and is set larger than the statistics that qualify it. */
+.stat.headline {
+  border-color: var(--axis);
+  background: linear-gradient(var(--surface), var(--page));
+  min-width: 200px;
+}
+
+.stat.headline .statvalue {
+  font-size: 30px;
+  line-height: 1.15;
+}
+
+.statunit {
+  font-size: 14px;
+  font-weight: 500;
+  color: var(--ink-2);
+}
+
+.statsub {
+  font-size: 12px;
+  color: var(--muted);
+  margin-top: 2px;
+}
+
+body.dos .stat.headline {
+  background: var(--surface);
+  border-radius: 0;
 }
 
 .tablewrap {

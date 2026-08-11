@@ -86,11 +86,11 @@ if (HAVE_ORACLE) describe("CLUST5 oracle — gnrh, nNadir=2 nPeak=2 (the documen
       expect(o.iFirst + 1).toBe(p.iFirst);
       expect(o.iLast + 1).toBe(p.iLast);
       expect(o.width).toBeCloseTo(p.width, 5);
-      expect(o.height).toBeCloseTo(p.height, 3);
+      expect(o.peakValue).toBeCloseTo(p.height, 3);
       expect(o.largestPct!).toBeCloseTo(p.largestPct, 0);
       expect(o.meanPct!).toBeCloseTo(p.meanPct, 0);
       expect(o.area!).toBeCloseTo(p.area, 2);
-      expect(o.increase!).toBeCloseTo(p.increase, 2);
+      expect(o.amplitude!).toBeCloseTo(p.increase, 2);
     });
   });
 

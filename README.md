@@ -58,19 +58,33 @@ app holds no user data to expose.
 > it. Verify with `curl -s https://nopeak.tonydefazio.com/robots.txt`.
 
 Code layout: `src/core/` is the algorithm (pure functions — `cluster.ts`,
-`mscore.ts`, `errorModel.ts`, `peaks.ts`, `format.ts`), `src/chart/` the
-publication figure (custom SVG, palette validated with the dataviz six-checks
-validator), `src/App.tsx` the UI, `src/About.tsx` the about/citations page
-(hash route `#about`), `src/version.ts` the build stamp (`__APP_VERSION__` and
+`mscore.ts`, `errorModel.ts`, `peaks.ts`, `format.ts`) plus the input and
+reporting layers around it (`igor.ts` reads Igor `.pxp`/`.ibw` binaries,
+`segments.ts` runs several records under one set of settings, `timeUnits.ts`
+owns the time base and pulse frequency); `src/chart/` the publication figure
+(custom SVG, palette validated with the dataviz six-checks validator);
+`src/App.tsx` the UI; `src/NumField.tsx` and `src/IgorPicker.tsx` its two
+non-trivial controls; `src/About.tsx` the about/citations page (hash route
+`#about`); `src/version.ts` the build stamp (`__APP_VERSION__` and
 `__BUILD_DATE__` are injected in `vite.config.ts`; bump `package.json` version
 to change what the app reports).
 
 `src/samples.ts` bundles the **simulated** datasets (`data/synthetic/`, made by
 `tools/make_synthetic.py`) via `?raw` imports and drives the "Sample data"
-picker; `sim_gnrh` loads by default so the app never opens blank. Real lab
-recordings are NOT bundled and NOT committed — see `docs/reference-code.md`.
-Adding a dataset = generate it into `data/synthetic/` and add one `SAMPLES`
-entry. Anything from that menu is tagged "simulated" in the UI.
+picker; `sim_gnrh_portal` loads by default so the app never opens blank. Real
+lab recordings are NOT bundled and NOT committed — see `docs/reference-code.md`.
+
+**Read `data/synthetic/README.md` before adding a dataset.** Every scale in a
+bundled dataset has to be traceable to a citation, recorded next to the
+parameter it justifies; test data is either simulated from documented physiology
+or digitised from a publishable figure, and is labelled as such. This is a
+standing constraint, not a style preference — an earlier GnRH dataset here was
+generated with an exponential clearance tail the hormone does not have, on a
+time scale ten times too fast, and that mis-teaches the window settings to every
+user who calibrates against it. Adding a dataset = generate it into
+`data/synthetic/`, cite the scales, add one `SAMPLES` entry with its time unit,
+sampling interval and provenance note. Anything from that menu is tagged
+"simulated" in the UI.
 
 Port fidelity notes:
 - The **Implementation** selector switches the whole algorithm between the

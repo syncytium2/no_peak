@@ -163,8 +163,8 @@ describe("peaks and valleys", () => {
     const [p1, p2] = r.peaks;
     expect(p1.iMax).toBeGreaterThanOrEqual(15);
     expect(p1.iMax).toBeLessThan(20);
-    expect(p1.height).toBe(10);
-    expect(p2.height).toBe(10);
+    expect(p1.peakValue).toBe(10);
+    expect(p2.peakValue).toBe(10);
     expect(r.summary.interPeakInterval?.mean).toBeCloseTo((p2.iMax - p1.iMax) * 10, 10);
   });
 
@@ -232,8 +232,8 @@ describe("peaks and valleys", () => {
     expect(peaks.length).toBe(2);
     const last = peaks[1];
     expect(last.iFirst).toBe(9);
-    expect(last.height).toBe(9);
-    expect(last.increase).toBeCloseTo(9 - 1); // preceding nadir mean = (1+1)/2
+    expect(last.peakValue).toBe(9);
+    expect(last.amplitude).toBeCloseTo(9 - 1); // preceding nadir mean = (1+1)/2
     // no trailing baseline inside the record: after-dependent stats are null
     expect(last.meanPct).toBeNull();
     expect(last.area).toBeNull();

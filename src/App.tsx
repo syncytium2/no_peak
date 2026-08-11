@@ -1,14 +1,25 @@
 import { useEffect, useMemo, useRef, useState } from "react";
-import { clusterMain } from "./core/cluster";
 import { resolveErrorModel } from "./core/errorModel";
 import { parseLooseNumbers, parseSeries, resultToCSV, type ParsedSeries } from "./core/csv";
 import { fmt } from "./core/format";
+import { readBinaryWave, readPackedExperiment, type IgorFile } from "./core/igor";
+import { runSegments, segmentsToCSV, type Segment } from "./core/segments";
+import {
+  TIME_UNITS,
+  defaultAxisLabel,
+  formatDuration,
+  pulseFrequency,
+  timeUnitDef,
+  type TimeUnit,
+} from "./core/timeUnits";
 import { DEFAULT_PARAMS, type ClusterParams, type ErrorModelType, type MeanSD } from "./core/types";
 import { ClusterChart } from "./chart/ClusterChart";
 import { FIG, FIG_DOS } from "./chart/palette";
 import { BORN, BUILT, VERSION, longDate } from "./version";
 import { downloadPNG, downloadSVG, downloadText } from "./chart/export";
-import { SAMPLES, SAMPLE_GROUPS, sampleCounts } from "./samples";
+import { IgorPicker } from "./IgorPicker";
+import { NumField } from "./NumField";
+import { SAMPLES, SAMPLE_GROUPS, sampleByKey, sampleCounts } from "./samples";
 import { TEMPLATE_CSV, TEMPLATE_NAME } from "./template";
 
 const ERROR_MODELS: ErrorModelType[] = [
@@ -23,16 +34,28 @@ const ERROR_MODELS: ErrorModelType[] = [
 
 interface Loaded {
   name: string;
-  series: ParsedSeries;
+  segments: Segment[];
+  /** Set for the bundled datasets, which are generated rather than measured. */
+  simulated: boolean;
+  /** Provenance line shown under the name. */
+  note?: string;
 }
 
 const fmtMS = (m: MeanSD | null) => (m ? `${fmt(m.mean)} ± ${fmt(m.sd)}` : "—");
 
+/** Filenames that look like the error half of a pair: gnrh_sd, set1 SEM, … */
+const looksLikeError = (name: string) =>
+  /(^|[^a-z])(err|error|errors|sd|stdev|std|sem|se)([^a-z]|$)/i.test(name.replace(/\.[^.]+$/, ""));
+
+const isIgor = (name: string) => /\.(pxp|ibw|bwav)$/i.test(name);
+
 export function App() {
   const [loaded, setLoaded] = useState<Loaded | null>(null);
   const [deltaT, setDeltaT] = useState(10);
+  const [timeUnit, setTimeUnit] = useState<TimeUnit>("min");
   const [params, setParams] = useState<ClusterParams>({ ...DEFAULT_PARAMS });
-  const [xLabel, setXLabel] = useState("Time (min)");
+  // null means "follow the time unit"; typing in the field pins a custom label.
+  const [xLabelOverride, setXLabelOverride] = useState<string | null>(null);
   const [yLabel, setYLabel] = useState("Concentration");
   const [showError, setShowError] = useState(true);
   const [showMscore, setShowMscore] = useState(true);
@@ -41,6 +64,7 @@ export function App() {
   const [errorOffer, setErrorOffer] = useState<{ from: string; n: number } | null>(null);
   const [pasteOpen, setPasteOpen] = useState(false);
   const [pasteText, setPasteText] = useState("");
+  const [igor, setIgor] = useState<{ file: IgorFile; name: string } | null>(null);
   // settings fold: open on desktop, collapsed on phones so the figure leads
   const [settingsOpen, setSettingsOpen] = useState(
     () => window.matchMedia("(min-width: 881px)").matches,
@@ -48,36 +72,48 @@ export function App() {
   const svgRef = useRef<SVGSVGElement | null>(null);
   const fileRef = useRef<HTMLInputElement | null>(null);
 
+  const xLabel = xLabelOverride ?? defaultAxisLabel(timeUnit);
+  const unitShort = timeUnitDef(timeUnit).short;
+  /** True when every segment carries its own time column. */
+  const hasTimes = !!loaded && loaded.segments.every((s) => s.times !== null);
+  const hasErrors = !!loaded && loaded.segments.some((s) => s.error !== null);
+
   const computed = useMemo(() => {
     if (!loaded) return null;
-    const { series } = loaded;
-    const times = series.times ?? series.values.map((_, i) => (i + 1) * deltaT);
     try {
-      // belt-and-suspenders: never run "Error Wave" against a file without one
+      // belt-and-suspenders: never run "Error Wave" against data without one
       const effective =
-        params.errorModel === "Error Wave" && !series.error
+        params.errorModel === "Error Wave" && !loaded.segments.some((s) => s.error)
           ? { ...params, errorModel: "Local SD" as const }
           : params;
-      return {
-        result: clusterMain(times, series.values, effective, series.error ?? undefined),
-        error: null as string | null,
-      };
+      return { run: runSegments(loaded.segments, effective, deltaT), error: null as string | null };
     } catch (e) {
-      return { result: null, error: e instanceof Error ? e.message : String(e) };
+      return { run: null, error: e instanceof Error ? e.message : String(e) };
     }
   }, [loaded, deltaT, params]);
 
-  const result = computed?.result ?? null;
+  const run = computed?.run ?? null;
+  const result = run?.combined ?? null;
+  const multi = (run?.segments.length ?? 0) > 1;
 
-  /** Filenames that look like the error half of a pair: gnrh_sd, set1 SEM, … */
-  const looksLikeError = (name: string) =>
-    /(^|[^a-z])(err|error|errors|sd|stdev|std|sem|se)([^a-z]|$)/i.test(
-      name.replace(/\.[^.]+$/, ""),
-    );
+  const frequency = result
+    ? pulseFrequency(result.summary.nPeaks, result.summary.recordDuration, timeUnit)
+    : null;
+
+  // ---- loading ------------------------------------------------------------
 
   async function onFiles(files: File[]) {
     setLoadError(null);
     try {
+      // Igor files open the wave picker instead of being read as columns.
+      if (files.length === 1 && isIgor(files[0].name)) {
+        await openIgor(files[0]);
+        return;
+      }
+      if (files.some((f) => isIgor(f.name))) {
+        throw new Error("Load Igor files one at a time — the wave picker handles the rest.");
+      }
+
       const parsed = await Promise.all(
         files.map(async (f) => ({
           name: f.name.replace(/\.[^.]+$/, ""),
@@ -89,46 +125,75 @@ export function App() {
         loadSeries(parsed[0].name, parsed[0].series, true);
         return;
       }
-      if (parsed.length !== 2) {
-        throw new Error(`Select one data file, or two (data + errors) — got ${parsed.length}.`);
+
+      // Two files where one is named like errors: the classic data+error pair.
+      if (parsed.length === 2 && parsed.some((p) => looksLikeError(p.name))) {
+        const ei = parsed.findIndex((p) => looksLikeError(p.name));
+        const data = parsed[ei === 0 ? 1 : 0];
+        const errs = parsed[ei];
+        if (errs.series.values.length !== data.series.values.length) {
+          throw new Error(
+            `"${errs.name}" has ${errs.series.values.length} values but "${data.name}" has ` +
+              `${data.series.values.length}. A paired error file must be the same length.`,
+          );
+        }
+        loadSeries(data.name, { ...data.series, error: errs.series.values }, true, errs.name);
+        return;
       }
 
-      // Pair them: prefer the filename hint, else assume the second is errors.
-      const errIdx = parsed.findIndex((p) => looksLikeError(p.name));
-      const ei = errIdx === -1 ? 1 : errIdx;
-      const di = ei === 0 ? 1 : 0;
-      const data = parsed[di];
-      const errs = parsed[ei];
-
-      if (errs.series.values.length !== data.series.values.length) {
-        throw new Error(
-          `"${errs.name}" has ${errs.series.values.length} values but "${data.name}" has ` +
-            `${data.series.values.length}. A paired error file must be the same length.`,
-        );
-      }
-      loadSeries(data.name, { ...data.series, error: errs.series.values }, true, errs.name);
+      // Otherwise every file is a record in its own right: analyse them
+      // together under one set of settings.
+      loadSegments(
+        `${parsed.length} records`,
+        parsed.map((p) => ({
+          name: p.name,
+          values: p.series.values,
+          times: p.series.times,
+          error: p.series.error,
+        })),
+        true,
+      );
     } catch (e) {
       setLoadError(e instanceof Error ? e.message : String(e));
     }
   }
 
+  async function openIgor(file: File) {
+    const buf = await file.arrayBuffer();
+    const parsed = /\.pxp$/i.test(file.name)
+      ? readPackedExperiment(buf)
+      : { waves: [readBinaryWave(buf)], skipped: [] };
+    setIgor({ file: parsed, name: file.name });
+  }
+
   /**
-   * `ask` is set for user-supplied files: rather than silently switching the
+   * `ask` is set for user-supplied data: rather than silently switching the
    * error model, offer the choice. Bundled samples are curated, so they just
    * apply the right model.
    */
-  function loadSeries(name: string, series: ParsedSeries, ask = false, errorFrom?: string) {
+  function loadSegments(name: string, segments: Segment[], ask = false, errorFrom?: string) {
     setLoadError(null);
-    setLoaded({ name, series });
-    if (ask && series.error) {
-      setErrorOffer({ from: errorFrom ?? `a column in ${name}`, n: series.error.length });
+    setIgor(null);
+    setLoaded({ name, segments, simulated: false });
+    const errN = segments.reduce((a, s) => a + (s.error?.length ?? 0), 0);
+    if (ask && errN > 0) {
+      setErrorOffer({ from: errorFrom ?? `a column in ${name}`, n: errN });
       return; // leave the model alone until the user decides
     }
     setErrorOffer(null);
     setParams((p) => {
-      const next = resolveErrorModel(p.errorModel, series.error !== null);
+      const next = resolveErrorModel(p.errorModel, errN > 0);
       return next === p.errorModel ? p : { ...p, errorModel: next };
     });
+  }
+
+  function loadSeries(name: string, series: ParsedSeries, ask = false, errorFrom?: string) {
+    loadSegments(
+      name,
+      [{ name, values: series.values, times: series.times, error: series.error }],
+      ask,
+      errorFrom,
+    );
   }
 
   /**
@@ -177,10 +242,30 @@ export function App() {
   }
 
   function loadSample(key: string) {
-    const sample = SAMPLES.find((s) => s.key === key);
+    const sample = sampleByKey(key);
     if (!sample) return;
     try {
-      loadSeries(sample.key, sample.load());
+      const series = sample.load();
+      setLoadError(null);
+      setIgor(null);
+      setErrorOffer(null);
+      // A bundled sample knows its own scale — adopt it rather than leaving the
+      // figure on whatever the last dataset used.
+      setTimeUnit(sample.timeUnit);
+      setDeltaT(sample.deltaT);
+      setYLabel(sample.valueLabel);
+      setLoaded({
+        name: sample.key,
+        simulated: true,
+        note: sample.note,
+        segments: [
+          { name: sample.key, values: series.values, times: series.times, error: series.error },
+        ],
+      });
+      setParams((p) => {
+        const next = resolveErrorModel(p.errorModel, series.error !== null);
+        return next === p.errorModel ? p : { ...p, errorModel: next };
+      });
     } catch (e) {
       setLoadError(e instanceof Error ? e.message : String(e));
     }
@@ -189,7 +274,9 @@ export function App() {
   // ?demo auto-loads the synthetic demo; otherwise the bundled GnRH dataset
   // loads by default so the page never opens blank.
   useEffect(() => {
-    loadSample(new URLSearchParams(window.location.search).has("demo") ? "demo" : "sim_gnrh");
+    loadSample(
+      new URLSearchParams(window.location.search).has("demo") ? "demo" : "sim_gnrh_portal",
+    );
   }, []);
 
   // Original Fortran mode gets the MS-DOS terminal chrome it ran under
@@ -199,11 +286,8 @@ export function App() {
     return () => document.body.classList.remove("dos");
   }, [dos]);
 
-  const num = (key: keyof ClusterParams) => ({
-    value: String(params[key] as number),
-    onChange: (e: React.ChangeEvent<HTMLInputElement>) =>
-      setParams((p) => ({ ...p, [key]: Number(e.target.value) })),
-  });
+  const set = <K extends keyof ClusterParams>(key: K) => (v: ClusterParams[K]) =>
+    setParams((p) => ({ ...p, [key]: v }));
 
   return (
     <div className="page">
@@ -222,7 +306,7 @@ export function App() {
           ref={fileRef}
           type="file"
           multiple
-          accept=".csv,.txt,.tsv,.dat"
+          accept=".csv,.txt,.tsv,.dat,.pxp,.ibw"
           style={{ display: "none" }}
           onChange={(e) => {
             const fs = Array.from(e.target.files ?? []);
@@ -270,29 +354,68 @@ export function App() {
             ))}
           </select>
         </label>
-        <span className="hint">
-          CSV/TSV: <code>value</code> · <code>time,value</code> · <code>time,value,error</code>
-          {" "}(header row optional).{" "}
+
+        <div className="formats">
+          <strong>What the Load button accepts</strong>
+          <ul>
+            <li>
+              <strong>Igor</strong> — a packed experiment (<code>.pxp</code>) or a single binary
+              wave (<code>.ibw</code>). You pick the wave to analyse, and its error and time waves
+              if it has them; the wave&apos;s own x scaling becomes the sampling interval.
+            </li>
+            <li>
+              <strong>Text</strong> — CSV, TSV or plain text with one row per sample and one, two
+              or three columns: <code>value</code>, <code>time,value</code>, or{" "}
+              <code>time,value,error</code>. A header row is optional and lines starting with{" "}
+              <code>#</code> are ignored.
+            </li>
+            <li>
+              <strong>Several files at once</strong> — each becomes one record, analysed together
+              under identical settings. Two files where one is named like errors (
+              <code>…_sd</code>, <code>…SEM</code>) are paired instead.
+            </li>
+          </ul>
           <button
             className="linkish"
             onClick={() => downloadText(TEMPLATE_CSV, TEMPLATE_NAME)}
             title="Download a small example file with the expected columns"
           >
-            Download a sample CSV
+            Download an example CSV
           </button>{" "}
           · <a href="#about">how to prepare a file</a>
-        </span>
+        </div>
+
         {loaded && (
           <span className="loadedname">
-            {loaded.name} — {loaded.series.values.length} points
-            {SAMPLES.some((s) => s.key === loaded.name) && (
+            {loaded.name} — {loaded.segments.length > 1 && `${loaded.segments.length} records, `}
+            {loaded.segments.reduce((a, s) => a + s.values.length, 0)} points
+            {loaded.simulated && (
               <span className="simtag" title="Generated data, not a real experiment">
                 simulated
               </span>
             )}
+            {loaded.note && <span className="samplenote">{loaded.note}</span>}
           </span>
         )}
       </section>
+
+      {igor && (
+        <IgorPicker
+          file={igor.file}
+          fileName={igor.name}
+          onCancel={() => setIgor(null)}
+          onLoad={(segments, meta) => {
+            if (meta.timeUnit) setTimeUnit(meta.timeUnit);
+            if (meta.deltaT && meta.deltaT > 0) setDeltaT(meta.deltaT);
+            if (meta.dataUnits) setYLabel(meta.dataUnits);
+            loadSegments(
+              segments.length > 1 ? `${igor.name} — ${segments.length} waves` : segments[0].name,
+              segments,
+              true,
+            );
+          }}
+        />
+      )}
 
       {pasteOpen && (
         <section className="pastebox">
@@ -373,28 +496,52 @@ export function App() {
           onToggle={(e) => setSettingsOpen((e.target as HTMLDetailsElement).open)}
         >
           <summary>Settings</summary>
+          <p className="kbdhint">
+            <kbd>Tab</kbd> moves between fields and selects what is there, so you can type straight
+            over it. <kbd>↑</kbd> <kbd>↓</kbd> step a value — hold <kbd>Shift</kbd> for ten steps.
+            <kbd>Esc</kbd> undoes an entry.
+          </p>
+
           <h2>Detection parameters</h2>
           <div className="grid">
-            <label>
-              Peak window (points)
-              <input type="number" min={1} step={1} {...num("nPeak")} />
-            </label>
-            <label>
-              Nadir window (points)
-              <input type="number" min={1} step={1} {...num("nNadir")} />
-            </label>
-            <label>
-              t-score, increase
-              <input type="number" step={0.1} {...num("tScoreUp")} />
-            </label>
-            <label>
-              t-score, decrease
-              <input type="number" step={0.1} {...num("tScoreDn")} />
-            </label>
-            <label>
-              Min value for a pulse
-              <input type="number" step={0.1} {...num("minPeak")} />
-            </label>
+            <NumField
+              label="Peak window (points)"
+              value={params.nPeak}
+              onChange={set("nPeak")}
+              min={1}
+              step={1}
+              integer
+              title="Points averaged for the test window (Fortran NPEAK)"
+            />
+            <NumField
+              label="Nadir window (points)"
+              value={params.nNadir}
+              onChange={set("nNadir")}
+              min={1}
+              step={1}
+              integer
+              title="Points averaged for the baseline window (Fortran NNADIR)"
+            />
+            <NumField
+              label="t-score, increase"
+              value={params.tScoreUp}
+              onChange={set("tScoreUp")}
+              step={0.1}
+              min={0}
+            />
+            <NumField
+              label="t-score, decrease"
+              value={params.tScoreDn}
+              onChange={set("tScoreDn")}
+              step={0.1}
+              min={0}
+            />
+            <NumField
+              label="Min value for a pulse"
+              value={params.minPeak}
+              onChange={set("minPeak")}
+              step={0.1}
+            />
             <label>
               Error model
               <select
@@ -404,29 +551,19 @@ export function App() {
                 }
               >
                 {ERROR_MODELS.map((m) => (
-                  <option key={m} value={m} disabled={m === "Error Wave" && !loaded?.series.error}>
+                  <option key={m} value={m} disabled={m === "Error Wave" && !hasErrors}>
                     {m}
                   </option>
                 ))}
               </select>
             </label>
             {(params.errorModel === "Fixed" || params.errorModel === "SQRT") && (
-              <label>
-                {params.errorModel === "Fixed" ? "Fixed error value" : "SQRT fallback (value ≤ 0)"}
-                <input type="number" step={0.1} {...num("errorValue")} />
-              </label>
-            )}
-            {!loaded?.series.times && (
-              <label>
-                Sampling interval
-                <input
-                  type="number"
-                  min={0.001}
-                  step={1}
-                  value={String(deltaT)}
-                  onChange={(e) => setDeltaT(Number(e.target.value))}
-                />
-              </label>
+              <NumField
+                label={params.errorModel === "Fixed" ? "Fixed error value" : "SQRT fallback (value ≤ 0)"}
+                value={params.errorValue}
+                onChange={set("errorValue")}
+                step={0.1}
+              />
             )}
           </div>
           <div className="checks">
@@ -439,10 +576,13 @@ export function App() {
               Terminate pulses at zero-activity bins
             </label>
             {params.zeroTerminate && (
-              <label className="inline">
-                zero level
-                <input type="number" step={0.1} {...num("zero")} />
-              </label>
+              <NumField
+                className="inline"
+                label="zero level"
+                value={params.zero}
+                onChange={set("zero")}
+                step={0.1}
+              />
             )}
             <label>
               <input
@@ -454,17 +594,62 @@ export function App() {
             </label>
           </div>
 
+          <h2>Time base</h2>
+          <div className="grid">
+            <label>
+              Time units
+              <select value={timeUnit} onChange={(e) => setTimeUnit(e.target.value as TimeUnit)}>
+                {TIME_UNITS.map((u) => (
+                  <option key={u.key} value={u.key}>
+                    {u.label}
+                  </option>
+                ))}
+              </select>
+            </label>
+            {!hasTimes && (
+              <NumField
+                label={`Sampling interval (${unitShort})`}
+                value={deltaT}
+                onChange={setDeltaT}
+                min={0.001}
+                step={1}
+                title="Time between samples, used to build the time axis"
+              />
+            )}
+          </div>
+          <p className="hint">
+            {hasTimes
+              ? `Times come from the data. They are read as ${timeUnitDef(timeUnit).label}, which sets the axis label, the tick spacing and the units of every reported interval and frequency.`
+              : `The data carries no time column, so the axis is built from the sampling interval above. It is read as ${timeUnitDef(timeUnit).label}.`}
+          </p>
+
           <h2>Figure</h2>
           <div className="grid">
             <label>
               X-axis label
-              <input value={xLabel} onChange={(e) => setXLabel(e.target.value)} />
+              <input
+                value={xLabel}
+                onChange={(e) => setXLabelOverride(e.target.value)}
+                onFocus={(e) => e.target.select()}
+              />
             </label>
             <label>
               Y-axis label
-              <input value={yLabel} onChange={(e) => setYLabel(e.target.value)} />
+              <input
+                value={yLabel}
+                onChange={(e) => setYLabel(e.target.value)}
+                onFocus={(e) => e.target.select()}
+              />
             </label>
           </div>
+          {xLabelOverride !== null && (
+            <p className="hint">
+              The x-axis label no longer follows the time units.{" "}
+              <button className="linkish" onClick={() => setXLabelOverride(null)}>
+                Follow them again
+              </button>
+            </p>
+          )}
           <div className="checks">
             <label>
               <input
@@ -503,6 +688,15 @@ export function App() {
                 <button onClick={() => downloadText(resultToCSV(result), `${loaded!.name}_cluster.csv`)}>
                   Results CSV
                 </button>
+                {multi && (
+                  <button
+                    onClick={() =>
+                      downloadText(segmentsToCSV(run!, unitShort), `${loaded!.name}_by_record.csv`)
+                    }
+                  >
+                    Per-record CSV
+                  </button>
+                )}
                 <button
                   onClick={async () => {
                     if (!svgRef.current) return;
@@ -512,6 +706,9 @@ export function App() {
                       datasetName: loaded!.name,
                       xLabel,
                       yLabel,
+                      unitShort,
+                      frequency,
+                      segments: multi ? run!.segments : undefined,
                     });
                   }}
                 >
@@ -529,7 +726,7 @@ export function App() {
             </div>
           )}
           {computed?.error && <p className="error">{computed.error}</p>}
-          {result && (
+          {result && run && (
             <>
               <div className="legend" aria-hidden="false">
                 <span className="key">
@@ -550,47 +747,122 @@ export function App() {
                 yLabel={yLabel}
                 svgRef={svgRef}
                 palette={dos ? FIG_DOS : FIG}
+                timeUnit={timeUnit}
+                segments={multi ? run.segments : undefined}
               />
 
+              {multi && (
+                <p className="hint">
+                  Each record was analysed on its own with these settings, so no detection window
+                  crosses a boundary and no reported interval spans one. The dividers mark where one
+                  record ends and the next begins.
+                </p>
+              )}
+
               <div className="statrow">
-                <div className="stat">
-                  <div className="statlabel">Peaks</div>
-                  <div className="statvalue">{result.summary.nPeaks}</div>
+                <div className="stat headline">
+                  <div className="statlabel">Pulse frequency</div>
+                  <div className="statvalue">
+                    {frequency ? fmt(frequency.perHour, 2) : fmt(result.summary.nPeaks)}
+                    <span className="statunit">
+                      {frequency ? " pulses/h" : " pulses (no time base)"}
+                    </span>
+                  </div>
+                  <div className="statsub">
+                    {result.summary.nPeaks} pulse{result.summary.nPeaks === 1 ? "" : "s"}
+                    {frequency ? ` in ${formatDuration(frequency.durationMin)}` : ""}
+                    {multi ? ` across ${run.segments.length} records` : ""}
+                  </div>
                 </div>
                 <div className="stat">
-                  <div className="statlabel">Valleys</div>
-                  <div className="statvalue">{result.summary.nValleys}</div>
-                </div>
-                <div className="stat">
-                  <div className="statlabel">Mean value</div>
-                  <div className="statvalue">{fmt(result.summary.meanValue)}</div>
-                </div>
-                <div className="stat">
-                  <div className="statlabel">Interpeak interval</div>
+                  <div className="statlabel">Interpulse interval</div>
                   <div className="statvalue">{fmtMS(result.summary.interPeakInterval)}</div>
+                  <div className="statsub">{unitShort}</div>
                 </div>
                 <div className="stat">
-                  <div className="statlabel">Peak height</div>
-                  <div className="statvalue">{fmtMS(result.summary.peakHeight)}</div>
+                  <div className="statlabel">Amplitude</div>
+                  <div className="statvalue">{fmtMS(result.summary.peakAmplitude)}</div>
+                  <div className="statsub">rise above baseline</div>
+                </div>
+                <div className="stat">
+                  <div className="statlabel">Peak value</div>
+                  <div className="statvalue">{fmtMS(result.summary.peakValue)}</div>
+                  <div className="statsub">absolute maximum</div>
+                </div>
+                <div className="stat">
+                  <div className="statlabel">Mean level</div>
+                  <div className="statvalue">{fmt(result.summary.meanValue)}</div>
+                  <div className="statsub">whole record</div>
                 </div>
               </div>
 
+              {multi && (
+                <>
+                  <h2>By record</h2>
+                  <div className="tablewrap">
+                    <table>
+                      <thead>
+                        <tr>
+                          <th>record</th>
+                          <th>points</th>
+                          <th>duration ({unitShort})</th>
+                          <th>pulses</th>
+                          <th>pulses/h</th>
+                          <th>interpulse ({unitShort})</th>
+                          <th>amplitude</th>
+                          <th>peak value</th>
+                          <th>baseline</th>
+                        </tr>
+                      </thead>
+                      <tbody>
+                        {run.segments.map((s) => {
+                          const m = s.result.summary;
+                          const f = pulseFrequency(m.nPeaks, m.recordDuration, timeUnit);
+                          return (
+                            <tr key={s.name + s.start}>
+                              <td>{s.name}</td>
+                              <td>{s.length}</td>
+                              <td>{fmt(m.recordDuration)}</td>
+                              <td>{m.nPeaks}</td>
+                              <td>{f ? fmt(f.perHour, 2) : "—"}</td>
+                              <td>{fmtMS(m.interPeakInterval)}</td>
+                              <td>{fmtMS(m.peakAmplitude)}</td>
+                              <td>{fmtMS(m.peakValue)}</td>
+                              <td>{fmtMS(m.valleyNadir)}</td>
+                            </tr>
+                          );
+                        })}
+                      </tbody>
+                    </table>
+                  </div>
+                </>
+              )}
+
               {result.peaks.length > 0 && (
                 <>
-                  <h2>Peaks</h2>
+                  <h2>Pulses</h2>
+                  <p className="hint">
+                    <strong>Peak value</strong> is the highest concentration reached, in the units of
+                    your data. <strong>Baseline</strong> is the mean of the {params.nNadir} nadir
+                    points immediately before the pulse starts. <strong>Amplitude</strong> is the
+                    difference between them — the rise the pulse represents. The original Fortran
+                    printed peak value as &quot;height&quot; and amplitude as &quot;L
+                    increase&quot;, which is where the two get confused.
+                  </p>
                   <div className="tablewrap">
                     <table>
                       <thead>
                         <tr>
                           <th>#</th>
-                          <th>position</th>
-                          <th>range</th>
-                          <th>width</th>
-                          <th>height</th>
-                          <th>largest %</th>
+                          <th>peak at ({unitShort})</th>
+                          <th>pulse spans</th>
+                          <th>width ({unitShort})</th>
+                          <th>baseline (nadir)</th>
+                          <th>peak value</th>
+                          <th>amplitude</th>
+                          <th>peak % of nadir</th>
                           <th>mean %</th>
                           <th>area</th>
-                          <th>increase</th>
                         </tr>
                       </thead>
                       <tbody>
@@ -602,11 +874,12 @@ export function App() {
                               {fmt(result.times[p.iFirst])}–{fmt(result.times[p.iLast])}
                             </td>
                             <td>{fmt(p.width)}</td>
-                            <td>{fmt(p.height)}</td>
+                            <td>{fmt(p.nadirBefore)}</td>
+                            <td>{fmt(p.peakValue)}</td>
+                            <td>{fmt(p.amplitude)}</td>
                             <td>{fmt(p.largestPct, 1)}</td>
                             <td>{fmt(p.meanPct, 1)}</td>
                             <td>{fmt(p.area)}</td>
-                            <td>{fmt(p.increase)}</td>
                           </tr>
                         ))}
                       </tbody>
@@ -623,11 +896,11 @@ export function App() {
                       <thead>
                         <tr>
                           <th>#</th>
-                          <th>position</th>
-                          <th>range</th>
-                          <th>width</th>
-                          <th>nadir</th>
-                          <th>mean</th>
+                          <th>nadir at ({unitShort})</th>
+                          <th>valley spans</th>
+                          <th>width ({unitShort})</th>
+                          <th>nadir (lowest value)</th>
+                          <th>mean level</th>
                         </tr>
                       </thead>
                       <tbody>

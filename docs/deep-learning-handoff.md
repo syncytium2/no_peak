@@ -84,9 +84,16 @@ conservative, that is a bonus to measure, not the headline to promise.
 
 ## 5. What already exists here to build on
 
-- [`src/demo.ts`](../src/demo.ts) — already the nucleus of the simulator:
-  baseline, exponential clearance (45 min half-life), additive pulses, ~7% CV
-  noise, seeded PRNG. Generalize this into the training generator.
+- [`tools/make_synthetic.py`](../tools/make_synthetic.py) — the nucleus of the
+  simulator, and the place the physiology is already argued out. Two secretion
+  models, not one: square bursts integrated over collection fractions for portal
+  GnRH (which has no clearance tail at these resolutions), exponential clearance
+  for peripheral LH (which does). Every scale is traced to a citation in
+  [`data/synthetic/README.md`](../data/synthetic/README.md). Generalize *this*
+  into the training generator, and inherit the sourcing standard with it — a
+  corpus built on invented scales trains a detector to the wrong prior.
+- [`src/demo.ts`](../src/demo.ts) — the same LH model in TypeScript (25 min
+  half-life, ~7% CV noise, seeded PRNG), for the in-browser demo.
 - [`src/core/cluster.ts`](../src/core/cluster.ts) — the baseline to beat, and a
   labeler for sanity checks. Both variants available.
 - [`scripts/run_csv.ts`](../scripts/run_csv.ts) — batch runner; extend it to

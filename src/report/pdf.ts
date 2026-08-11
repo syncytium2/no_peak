@@ -6,6 +6,8 @@ import { jsPDF } from "jspdf";
 import "svg2pdf.js";
 import autoTable from "jspdf-autotable";
 import type { ClusterResult, MeanSD } from "../core/types";
+import type { SegmentResult } from "../core/segments";
+import { formatDuration, type PulseFrequency } from "../core/timeUnits";
 import { fmt } from "../core/format";
 
 const INK = "#0b0b0b";
@@ -23,6 +25,12 @@ export interface ReportMeta {
   datasetName: string;
   xLabel: string;
   yLabel: string;
+  /** Time-unit suffix for interval columns, e.g. "min". */
+  unitShort: string;
+  /** Null when the x axis is not real time. */
+  frequency: PulseFrequency | null;
+  /** Set when several records were analysed together. */
+  segments?: SegmentResult[];
 }
 
 export async function generatePDFReport(
@@ -114,6 +122,7 @@ export async function generatePDFReport(
 
   // ---- summary ----
   const s = result.summary;
+  const u = meta.unitShort;
   doc.setFont("helvetica", "bold").setFontSize(10).setTextColor(INK);
   doc.text("Summary", MARGIN, y);
   y += 6;
@@ -121,12 +130,19 @@ export async function generatePDFReport(
     startY: y,
     margin: { left: MARGIN, right: MARGIN },
     body: [
-      ["Peaks", String(s.nPeaks), "Valleys", String(s.nValleys)],
-      ["Mean value", fmt(s.meanValue), "Total area", fmt(s.totalArea)],
-      ["Interpeak interval", fmtMS(s.interPeakInterval), "Peak width", fmtMS(s.peakWidth)],
-      ["Peak height", fmtMS(s.peakHeight), "Peak increase above basal", fmtMS(s.peakIncrease)],
-      ["Peak height, % of nadir", fmtMS(s.peakLargestPct), "Peak area", fmtMS(s.peakArea)],
-      ["Valley width", fmtMS(s.valleyWidth), "Valley nadir", fmtMS(s.valleyNadir)],
+      [
+        "Pulse frequency",
+        meta.frequency
+          ? `${fmt(meta.frequency.perHour, 2)} pulses/h  (${s.nPeaks} in ${formatDuration(meta.frequency.durationMin)})`
+          : `${s.nPeaks} pulses (no time base)`,
+        "Valleys",
+        String(s.nValleys),
+      ],
+      [`Interpulse interval (${u})`, fmtMS(s.interPeakInterval), `Pulse width (${u})`, fmtMS(s.peakWidth)],
+      ["Amplitude (rise above baseline)", fmtMS(s.peakAmplitude), "Peak value (absolute)", fmtMS(s.peakValue)],
+      ["Peak value, % of nadir", fmtMS(s.peakLargestPct), "Pulse area", fmtMS(s.peakArea)],
+      ["Mean level, whole record", fmt(s.meanValue), "Total area", fmt(s.totalArea)],
+      [`Valley width (${u})`, fmtMS(s.valleyWidth), "Valley nadir", fmtMS(s.valleyNadir)],
     ],
     theme: "plain",
     styles: { font: "helvetica", fontSize: 9, cellPadding: { top: 2, bottom: 2, left: 0, right: 8 }, textColor: INK2 },
@@ -137,26 +153,71 @@ export async function generatePDFReport(
   });
   y = (doc as unknown as { lastAutoTable: { finalY: number } }).lastAutoTable.finalY + 16;
 
-  // ---- peaks table ----
   const numStyle = { halign: "right" as const };
-  if (result.peaks.length > 0) {
+
+  // ---- per-record table, when several were analysed together ----
+  if (meta.segments && meta.segments.length > 1) {
     doc.setFont("helvetica", "bold").setFontSize(10).setTextColor(INK);
-    doc.text("Peaks", MARGIN, y);
+    doc.text("By record", MARGIN, y);
     y += 6;
     autoTable(doc, {
       startY: y,
       margin: { left: MARGIN, right: MARGIN },
-      head: [["#", "position", "range", "width", "height", "largest %", "mean %", "area", "increase"]],
+      head: [["record", "points", `duration (${u})`, "pulses", `interpulse (${u})`, "amplitude", "peak value"]],
+      body: meta.segments.map((seg) => {
+        const m = seg.result.summary;
+        return [
+          seg.name,
+          String(seg.length),
+          fmt(m.recordDuration),
+          String(m.nPeaks),
+          fmtMS(m.interPeakInterval),
+          fmtMS(m.peakAmplitude),
+          fmtMS(m.peakValue),
+        ];
+      }),
+      theme: "plain",
+      styles: { font: "helvetica", fontSize: 8.5, cellPadding: 3, textColor: INK, ...numStyle },
+      headStyles: { textColor: INK2, fontStyle: "bold", lineWidth: { bottom: 0.75 }, lineColor: GRID },
+      bodyStyles: { lineWidth: { bottom: 0.5 }, lineColor: GRID },
+      columnStyles: { 0: { halign: "left" } },
+    });
+    y = (doc as unknown as { lastAutoTable: { finalY: number } }).lastAutoTable.finalY + 16;
+  }
+
+  // ---- peaks table ----
+  if (result.peaks.length > 0) {
+    doc.setFont("helvetica", "bold").setFontSize(10).setTextColor(INK);
+    doc.text("Pulses", MARGIN, y);
+    y += 6;
+    autoTable(doc, {
+      startY: y,
+      margin: { left: MARGIN, right: MARGIN },
+      head: [
+        [
+          "#",
+          `peak at (${u})`,
+          "spans",
+          `width (${u})`,
+          "baseline",
+          "peak value",
+          "amplitude",
+          "peak %",
+          "mean %",
+          "area",
+        ],
+      ],
       body: result.peaks.map((pk, i) => [
         String(i + 1),
         fmt(result.times[pk.iMax]),
         `${fmt(result.times[pk.iFirst])}–${fmt(result.times[pk.iLast])}`,
         fmt(pk.width),
-        fmt(pk.height),
+        fmt(pk.nadirBefore),
+        fmt(pk.peakValue),
+        fmt(pk.amplitude),
         fmt(pk.largestPct, 1),
         fmt(pk.meanPct, 1),
         fmt(pk.area),
-        fmt(pk.increase),
       ]),
       theme: "plain",
       styles: { font: "helvetica", fontSize: 8.5, cellPadding: 3, textColor: INK, ...numStyle },

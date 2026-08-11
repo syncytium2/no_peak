@@ -1,5 +1,9 @@
 // Deterministic demo dataset: an LH-like pulsatile series, 10-minute sampling
 // over 12 hours. Seeded PRNG so every visitor sees the same figure.
+//
+// Peripheral LH, so exponential clearance is the right model and the half-life
+// (25 min in the ewe) is long enough for each pulse to span several samples.
+// Portal GnRH would be wrong to model this way — see tools/make_synthetic.py.
 
 function mulberry32(seed: number) {
   let a = seed >>> 0;
@@ -17,7 +21,7 @@ export function demoSeries(): { times: number[]; values: number[] } {
   const n = 72;
   const dt = 10; // minutes
   const baseline = 3;
-  const halfLifeMin = 45;
+  const halfLifeMin = 25;
   const k = Math.LN2 / halfLifeMin;
 
   const pulseStarts = [40, 150, 270, 380, 500, 620]; // minutes

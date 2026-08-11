@@ -70,16 +70,29 @@ export interface Peak {
   iLast: number;
   /** (iLast - iFirst) * deltaT */
   width: number;
-  /** Largest value in the peak — Fortran LVAL. */
-  height: number;
-  /** height as % of preceding nadir mean — Fortran AA ("LARGEST%"). */
+  /**
+   * The largest value reached in the pulse, in the units of the data — Fortran
+   * LVAL, printed as "HEIGHT". This is an absolute concentration, not a rise
+   * above baseline: `amplitude` is the rise. Keeping both is deliberate, since
+   * the two are routinely conflated when CLUSTER output is written up.
+   */
+  peakValue: number;
+  /** Mean of the nNadir points immediately before pulse onset — the pulse's baseline. */
+  nadirBefore: number;
+  /** Mean of the nNadir points after the pulse ends; null when the record ends first. */
+  nadirAfter: number | null;
+  /** peakValue as % of the preceding nadir mean — Fortran AA ("LARGEST%"). */
   largestPct: number | null;
   /** peak mean as % of surrounding nadir means — Fortran AB ("MEAN%"). */
   meanPct: number | null;
   /** width * (peak mean - lower surrounding nadir mean) — Fortran AC ("AREA"). */
   area: number | null;
-  /** height - preceding nadir mean — Fortran AD ("L INCREASE"). */
-  increase: number | null;
+  /**
+   * Pulse amplitude: peakValue - nadirBefore, the rise above the preceding
+   * baseline. Fortran AD, printed as "L INCREASE"; "amplitude" is what the
+   * endocrine literature calls it.
+   */
+  amplitude: number | null;
 }
 
 export interface Valley {
@@ -104,13 +117,21 @@ export interface ClusterSummary {
   nValleys: number;
   meanValue: number;
   totalArea: number;
+  /**
+   * times[n-1] - times[0], in the data's own time units. Pulse frequency is
+   * derived from this rather than stored, because only the UI knows what the
+   * time units are.
+   */
+  recordDuration: number;
   interPeakInterval: MeanSD | null;
   peakWidth: MeanSD | null;
-  peakHeight: MeanSD | null;
+  /** Absolute peak concentrations. See Peak.peakValue. */
+  peakValue: MeanSD | null;
+  /** Rises above the preceding baseline. See Peak.amplitude. */
+  peakAmplitude: MeanSD | null;
   peakLargestPct: MeanSD | null;
   peakMeanPct: MeanSD | null;
   peakArea: MeanSD | null;
-  peakIncrease: MeanSD | null;
   valleyWidth: MeanSD | null;
   valleyMeanLevel: MeanSD | null;
   valleyNadir: MeanSD | null;

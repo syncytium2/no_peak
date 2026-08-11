@@ -5,9 +5,11 @@
 
 import { useMemo, useRef, useState } from "react";
 import type { ClusterResult } from "../core/types";
+import type { SegmentResult } from "../core/segments";
+import { timeUnitDef, type TimeUnit } from "../core/timeUnits";
 import { fmt } from "../core/format";
 import { FIG, ERROR_BAR_OPACITY, type FigPalette } from "./palette";
-import { linearScale, niceTicks, padDomain, formatTick } from "./scale";
+import { linearScale, niceTicks, padDomain, formatTick, timeTicks } from "./scale";
 
 export interface ClusterChartProps {
   result: ClusterResult;
@@ -17,6 +19,10 @@ export interface ClusterChartProps {
   yLabel: string;
   svgRef: React.MutableRefObject<SVGSVGElement | null>;
   palette?: FigPalette;
+  /** Units of the x axis; picks the tick ladder. */
+  timeUnit?: TimeUnit;
+  /** Set when several records are shown end to end, to draw the boundaries. */
+  segments?: SegmentResult[];
 }
 
 const W = 900;
@@ -54,6 +60,8 @@ export function ClusterChart({
   yLabel,
   svgRef,
   palette: P = FIG,
+  timeUnit = "min",
+  segments,
 }: ClusterChartProps) {
   const { times, values, error, ups, downs, mscoreUp, pulse, peaks, params } = result;
   const n = values.length;
@@ -89,11 +97,31 @@ export function ClusterChart({
   }, [times, values, error, mscoreUp, n, showError, mainTop, mscoreTop]);
 
   const { x, y, yT, dt } = layout;
-  const xTicks = niceTicks(times[0], times[n - 1], 8);
+  // A time axis gets clock divisions (…30 s, 1 min, 5 min…) rather than the
+  // decimal 1/2/5 ladder, which on a seconds axis reads 100, 200, 300.
+  const unitMinutes = timeUnitDef(timeUnit).minutes;
+  const xTicks =
+    unitMinutes === null
+      ? niceTicks(times[0], times[n - 1], 8)
+      : timeTicks(times[0], times[n - 1], 8, unitMinutes * 60);
   const yTicks = niceTicks(y.domain[0], y.domain[1], 6);
   const tTicks = niceTicks(yT.domain[0], yT.domain[1], 3);
   const runs = pulseRuns(pulse);
   const showDots = n <= 150;
+
+  // Where one record ends and the next begins, plus a centred name for each.
+  // Drawn because the joins are otherwise invisible, and a reader is entitled
+  // to know that the trace is several animals rather than one long recording.
+  const joins = useMemo(() => {
+    if (!segments || segments.length < 2) return { lines: [] as number[], labels: [] as { at: number; name: string }[] };
+    const lines: number[] = [];
+    const labels: { at: number; name: string }[] = [];
+    segments.forEach((s, k) => {
+      if (k > 0) lines.push((times[s.start - 1] + times[s.start]) / 2);
+      labels.push({ at: (times[s.start] + times[s.start + s.length - 1]) / 2, name: s.name });
+    });
+    return { lines, labels };
+  }, [segments, times]);
 
   const linePath = useMemo(() => {
     let d = "";
@@ -266,6 +294,33 @@ export function ClusterChart({
               </g>
             ) : null,
           )}
+
+        {/* record boundaries, when several are shown end to end */}
+        {joins.lines.map((t, i) => (
+          <line
+            key={`join${i}`}
+            x1={x(t)}
+            x2={x(t)}
+            y1={M.top}
+            y2={stripTop + 2 * STRIP_H}
+            stroke={P.inkMuted}
+            strokeWidth="1"
+            strokeDasharray="2 4"
+          />
+        ))}
+        {joins.labels.map((l, i) => (
+          <text
+            key={`seg${i}`}
+            x={x(l.at)}
+            y={mainTop + 12}
+            fontSize="10"
+            fontFamily={P.font}
+            fill={P.inkMuted}
+            textAnchor="middle"
+          >
+            {l.name}
+          </text>
+        ))}
 
         {/* the series */}
         <path d={linePath} fill="none" stroke={P.series} strokeWidth="2" strokeLinejoin="round" strokeLinecap="round" />

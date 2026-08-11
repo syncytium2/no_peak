@@ -114,7 +114,12 @@ export function resultToCSV(r: ClusterResult): string {
   }
   out.push("");
   out.push("# peaks");
-  out.push("n,t_max,i_max,i_first,i_last,width,height,largest_pct,mean_pct,area,increase");
+  // peak_value is the absolute maximum (Fortran HEIGHT); amplitude is the rise
+  // above the preceding nadir (Fortran L INCREASE).
+  out.push(
+    "n,t_max,i_max,i_first,i_last,width,peak_value,nadir_before,nadir_after,amplitude," +
+      "largest_pct,mean_pct,area",
+  );
   r.peaks.forEach((p, i) => {
     out.push(
       [
@@ -124,11 +129,13 @@ export function resultToCSV(r: ClusterResult): string {
         p.iFirst,
         p.iLast,
         p.width,
-        p.height,
+        p.peakValue,
+        p.nadirBefore,
+        fmt(p.nadirAfter),
+        fmt(p.amplitude),
         fmt(p.largestPct),
         fmt(p.meanPct),
         fmt(p.area),
-        fmt(p.increase),
       ].join(","),
     );
   });

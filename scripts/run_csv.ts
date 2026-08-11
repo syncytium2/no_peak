@@ -28,11 +28,17 @@ const result = clusterMain(
   series.error ?? undefined,
 );
 
+const round = (v: number | null) => (v === null ? "—" : Number(v.toPrecision(4)));
+
 console.log(`${file}: ${series.values.length} points`);
-console.log(`peaks: ${result.summary.nPeaks}, valleys: ${result.summary.nValleys}`);
+console.log(
+  `peaks: ${result.summary.nPeaks}, valleys: ${result.summary.nValleys}, ` +
+    `duration ${result.summary.recordDuration}`,
+);
 for (const [i, p] of result.peaks.entries()) {
   console.log(
-    `  peak ${i + 1}: t=${times[p.iMax]} range ${times[p.iFirst]}-${times[p.iLast]} height ${p.height}`,
+    `  peak ${i + 1}: t=${times[p.iMax]} range ${times[p.iFirst]}-${times[p.iLast]} ` +
+      `peak=${round(p.peakValue)} nadir=${round(p.nadirBefore)} amplitude=${round(p.amplitude)}`,
   );
 }
 const pulseStr = result.pulse.join("");

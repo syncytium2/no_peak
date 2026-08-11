@@ -41,11 +41,11 @@ export function extractPeaks(
     if (iLast >= n) iLast = n - 1; // run reaches the final point: cap in-bounds
 
     // largest value over [iFirst, iLast] inclusive (Fortran DO 4350)
-    let height = -Infinity;
+    let peakValue = -Infinity;
     let iMax = iFirst;
     for (let i = iFirst; i <= iLast; i++) {
-      if (w[i] > height) {
-        height = w[i];
+      if (w[i] > peakValue) {
+        peakValue = w[i];
         iMax = i;
       }
     }
@@ -64,11 +64,13 @@ export function extractPeaks(
       iFirst,
       iLast,
       width,
-      height,
-      largestPct: before !== 0 ? (height / before) * 100 : null,
+      peakValue,
+      nadirBefore: before,
+      nadirAfter: after,
+      largestPct: before !== 0 ? (peakValue / before) * 100 : null,
       meanPct: after !== null ? (peakMean / ((after + before) / 2)) * 100 : null,
       area: after !== null ? width * (peakMean - Math.min(before, after)) : null,
-      increase: height - before,
+      amplitude: peakValue - before,
     });
 
     iFirst = iLast;
@@ -142,13 +144,14 @@ export function summarize(
     meanValue: sum / n,
     // trapezoidal area (Fortran: sum minus half the endpoints, times deltat)
     totalArea: (sum - w[0] / 2 - w[n - 1] / 2) * deltaT,
+    recordDuration: (n - 1) * deltaT,
     interPeakInterval: meanSD(intervals),
     peakWidth: meanSD(peaks.map((p) => p.width)),
-    peakHeight: meanSD(peaks.map((p) => p.height)),
+    peakValue: meanSD(peaks.map((p) => p.peakValue)),
+    peakAmplitude: meanSD(notNull(peaks.map((p) => p.amplitude))),
     peakLargestPct: meanSD(notNull(peaks.map((p) => p.largestPct))),
     peakMeanPct: meanSD(notNull(peaks.map((p) => p.meanPct))),
     peakArea: meanSD(notNull(peaks.map((p) => p.area))),
-    peakIncrease: meanSD(notNull(peaks.map((p) => p.increase))),
     valleyWidth: meanSD(valleys.map((v) => v.width)),
     valleyMeanLevel: meanSD(valleys.map((v) => v.mean)),
     valleyNadir: meanSD(valleys.map((v) => v.nadir)),
