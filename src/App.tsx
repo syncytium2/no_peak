@@ -305,123 +305,6 @@ export function App() {
         </p>
       </header>
 
-      <section className="loadrow">
-        <input
-          ref={fileRef}
-          type="file"
-          multiple
-          accept=".csv,.txt,.tsv,.dat,.pxp,.ibw"
-          style={{ display: "none" }}
-          onChange={(e) => {
-            const fs = Array.from(e.target.files ?? []);
-            if (fs.length) void onFiles(fs);
-            e.target.value = "";
-          }}
-        />
-        <label className="implpick">
-          Implementation
-          <select
-            value={params.variant}
-            onChange={(e) =>
-              setParams((p) => ({ ...p, variant: e.target.value as "igor" | "fortran" }))
-            }
-          >
-            <option value="igor">Igor port (validated)</option>
-            <option value="fortran">Original Fortran (CLUST5)</option>
-          </select>
-        </label>
-        <button className="primary" onClick={() => fileRef.current?.click()}>
-          Load data file
-        </button>
-        <button onClick={() => setPasteOpen((v) => !v)} aria-expanded={pasteOpen}>
-          {pasteOpen ? "Close" : "Paste or type data"}
-        </button>
-        <label className="samplepick">
-          Sample data
-          <select
-            value={SAMPLES.some((s) => s.key === loaded?.name) ? loaded!.name : ""}
-            onChange={(e) => loadSample(e.target.value)}
-          >
-            {/* placeholder shown only while a user-supplied file is loaded */}
-            <option value="" disabled>
-              choose a dataset…
-            </option>
-            {SAMPLE_GROUPS.map((g) => (
-              <optgroup key={g} label={g}>
-                {SAMPLES.filter((s) => s.group === g).map((s) => (
-                  <option key={s.key} value={s.key}>
-                    {s.label}
-                    {sampleCounts[s.key] ? ` — ${sampleCounts[s.key]} pts` : ""}
-                  </option>
-                ))}
-              </optgroup>
-            ))}
-          </select>
-        </label>
-
-        {/* Collapsed by default: the figure is what people come for, and this
-            is reference material they need once. */}
-        <details className="formats">
-          <summary>What can I load?</summary>
-          <ul>
-            <li>
-              <strong>Igor</strong> — a packed experiment (<code>.pxp</code>) or a single binary
-              wave (<code>.ibw</code>). You pick the wave to analyse, and its error and time waves
-              if it has them; the wave&apos;s own x scaling becomes the sampling interval.
-            </li>
-            <li>
-              <strong>Text</strong> — CSV, TSV or plain text with one row per sample and one, two
-              or three columns: <code>value</code>, <code>time,value</code>, or{" "}
-              <code>time,value,error</code>. A header row is optional and lines starting with{" "}
-              <code>#</code> are ignored.
-            </li>
-            <li>
-              <strong>Several files at once</strong> — each becomes one record, analysed together
-              under identical settings. Two files where one is named like errors (
-              <code>…_sd</code>, <code>…SEM</code>) are paired instead.
-            </li>
-          </ul>
-          <button
-            className="linkish"
-            onClick={() => downloadText(TEMPLATE_CSV, TEMPLATE_NAME)}
-            title="Download a small example file with the expected columns"
-          >
-            Download an example CSV
-          </button>{" "}
-          · <a href="#about">how to prepare a file</a>
-        </details>
-
-        {loaded && (
-          <div className="loadedname">
-            {/* The name and the provenance tag stay visible always: knowing at a
-                glance whether a figure is simulated, digitised or your own is
-                not something to put behind a click. The prose behind it is. */}
-            <span>
-              {loaded.name} — {loaded.segments.length > 1 && `${loaded.segments.length} records, `}
-              {loaded.segments.reduce((a, s) => a + s.values.length, 0)} points
-            </span>
-            {loaded.provenance === "simulated" && (
-              <span className="simtag" title="Generated data, not a real experiment">
-                simulated
-              </span>
-            )}
-            {loaded.provenance === "digitised" && (
-              <span
-                className="simtag digtag"
-                title="A real record, read off a published figure — approximate to the width of a printed line"
-              >
-                digitised from a figure
-              </span>
-            )}
-            {loaded.note && (
-              <details className="sourcefold">
-                <summary>about this dataset</summary>
-                <p className="samplenote">{loaded.note}</p>
-              </details>
-            )}
-          </div>
-        )}
-      </section>
 
       {igor && (
         <IgorPicker
@@ -514,6 +397,130 @@ export function App() {
       )}
 
       <div className="cols">
+        {/* Tooling column. The figure is the product; everything here is a
+            control you touch occasionally, so it sits beside the figure rather
+            than above it. On one column the figure is ordered first instead. */}
+        <div className="sidebar">
+          <section className="panel datapanel">
+            <input
+              ref={fileRef}
+              type="file"
+              multiple
+              accept=".csv,.txt,.tsv,.dat,.pxp,.ibw"
+              style={{ display: "none" }}
+              onChange={(e) => {
+                const fs = Array.from(e.target.files ?? []);
+                if (fs.length) void onFiles(fs);
+                e.target.value = "";
+              }}
+            />
+            <label className="implpick">
+              Implementation
+              <select
+                value={params.variant}
+                onChange={(e) =>
+                  setParams((p) => ({ ...p, variant: e.target.value as "igor" | "fortran" }))
+                }
+              >
+                <option value="igor">Igor port (validated)</option>
+                <option value="fortran">Original Fortran (CLUST5)</option>
+              </select>
+            </label>
+            <div className="loadbtns">
+              <button className="primary" onClick={() => fileRef.current?.click()}>
+                Load data file
+              </button>
+              <button onClick={() => setPasteOpen((v) => !v)} aria-expanded={pasteOpen}>
+                {pasteOpen ? "Close" : "Paste or type"}
+              </button>
+            </div>
+            <label className="samplepick">
+              Sample data
+              <select
+                value={SAMPLES.some((s) => s.key === loaded?.name) ? loaded!.name : ""}
+                onChange={(e) => loadSample(e.target.value)}
+              >
+                {/* placeholder shown only while a user-supplied file is loaded */}
+                <option value="" disabled>
+                  choose a dataset…
+                </option>
+                {SAMPLE_GROUPS.map((g) => (
+                  <optgroup key={g} label={g}>
+                    {SAMPLES.filter((s) => s.group === g).map((s) => (
+                      <option key={s.key} value={s.key}>
+                        {s.label}
+                        {sampleCounts[s.key] ? ` — ${sampleCounts[s.key]} pts` : ""}
+                      </option>
+                    ))}
+                  </optgroup>
+                ))}
+              </select>
+            </label>
+
+            {/* Collapsed by default: the figure is what people come for, and this
+                is reference material they need once. */}
+            <details className="formats">
+              <summary>What can I load?</summary>
+              <ul>
+                <li>
+                  <strong>Igor</strong> — a packed experiment (<code>.pxp</code>) or a single binary
+                  wave (<code>.ibw</code>). You pick the wave to analyse, and its error and time waves
+                  if it has them; the wave&apos;s own x scaling becomes the sampling interval.
+                </li>
+                <li>
+                  <strong>Text</strong> — CSV, TSV or plain text with one row per sample and one, two
+                  or three columns: <code>value</code>, <code>time,value</code>, or{" "}
+                  <code>time,value,error</code>. A header row is optional and lines starting with{" "}
+                  <code>#</code> are ignored.
+                </li>
+                <li>
+                  <strong>Several files at once</strong> — each becomes one record, analysed together
+                  under identical settings. Two files where one is named like errors (
+                  <code>…_sd</code>, <code>…SEM</code>) are paired instead.
+                </li>
+              </ul>
+              <button
+                className="linkish"
+                onClick={() => downloadText(TEMPLATE_CSV, TEMPLATE_NAME)}
+                title="Download a small example file with the expected columns"
+              >
+                Download an example CSV
+              </button>{" "}
+              · <a href="#about">how to prepare a file</a>
+            </details>
+
+            {loaded && (
+              <div className="loadedname">
+                {/* The name and the provenance tag stay visible always: knowing at a
+                    glance whether a figure is simulated, digitised or your own is
+                    not something to put behind a click. The prose behind it is. */}
+                <span>
+                  {loaded.name} — {loaded.segments.length > 1 && `${loaded.segments.length} records, `}
+                  {loaded.segments.reduce((a, s) => a + s.values.length, 0)} points
+                </span>
+                {loaded.provenance === "simulated" && (
+                  <span className="simtag" title="Generated data, not a real experiment">
+                    simulated
+                  </span>
+                )}
+                {loaded.provenance === "digitised" && (
+                  <span
+                    className="simtag digtag"
+                    title="A real record, read off a published figure — approximate to the width of a printed line"
+                  >
+                    digitised from a figure
+                  </span>
+                )}
+                {loaded.note && (
+                  <details className="sourcefold">
+                    <summary>about this dataset</summary>
+                    <p className="samplenote">{loaded.note}</p>
+                  </details>
+                )}
+              </div>
+            )}
+          </section>
+
         <details
           className="panel"
           open={settingsOpen}
@@ -789,6 +796,8 @@ export function App() {
             </>
           )}
         </details>
+
+        </div>
 
         <main className="content">
           {!loaded && (

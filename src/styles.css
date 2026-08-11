@@ -28,7 +28,7 @@ body {
 }
 
 .page {
-  max-width: 1200px;
+  max-width: 1500px;
   margin: 0 auto;
   padding: 24px 20px 48px;
 }
@@ -49,12 +49,13 @@ header h1 {
   margin: 4px 0 0;
 }
 
-.loadrow {
+/* The data controls, now a panel in the tooling column rather than a band
+   across the top. Stacked, because 300px is too narrow to sit them in a row. */
+.datapanel {
   display: flex;
-  align-items: center;
+  flex-direction: column;
+  align-items: stretch;
   gap: 10px;
-  flex-wrap: wrap;
-  margin: 20px 0 12px;
 }
 
 /* Implementation picker: a mode switch, not a detection parameter — it lives
@@ -62,6 +63,7 @@ header h1 {
 .implpick {
   display: flex;
   align-items: center;
+  justify-content: space-between;
   gap: 8px;
   font-size: 13px;
   font-weight: 600;
@@ -98,11 +100,27 @@ header h1 {
 }
 
 .samplepick {
-  display: flex;
-  align-items: center;
-  gap: 8px;
+  display: grid;
+  gap: 4px;
   font-size: 13px;
   color: var(--ink-2);
+}
+
+.datapanel .implpick select,
+.datapanel .samplepick select {
+  min-width: 0;
+  width: 100%;
+}
+
+/* the two load buttons share a row inside the narrow column */
+.datapanel .loadbtns {
+  display: flex;
+  gap: 8px;
+}
+
+.datapanel .loadbtns button {
+  flex: 1 1 auto;
+  white-space: nowrap;
 }
 
 .samplepick select {
@@ -350,18 +368,42 @@ body.dos .offer {
 
 .cols {
   display: grid;
-  grid-template-columns: 280px 1fr;
-  gap: 24px;
+  grid-template-columns: 300px 1fr;
+  gap: 20px;
   align-items: start;
+  margin-top: 14px;
+}
+
+/* Both panels stick as one column while the figure and its tables scroll.
+   Capped to the viewport and scrollable inside it: the column is now tall
+   enough that a plain sticky would pin it and put the export buttons out of
+   reach at the bottom. */
+.sidebar {
+  display: grid;
+  gap: 12px;
+  align-content: start;
+  position: sticky;
+  top: 16px;
+  max-height: calc(100vh - 32px);
+  overflow-y: auto;
+  overscroll-behavior: contain;
 }
 
 @media (max-width: 880px) {
   .cols {
     grid-template-columns: 1fr;
   }
-  /* single column: a stuck panel would pin and let the chart scroll over it */
-  .panel {
+  /* One column: the figure goes first and the tooling follows it, same
+     priority as on a wide screen. A stuck sidebar would also pin and let the
+     chart scroll underneath it, so unstick. */
+  .sidebar {
     position: static;
+    order: 2;
+    max-height: none;
+    overflow-y: visible;
+  }
+  .content {
+    order: 1;
   }
   /* condensed settings: two inputs per row, tighter fields */
   .panel .grid {
@@ -377,9 +419,7 @@ body.dos .offer {
   background: var(--surface);
   border: 1px solid var(--grid);
   border-radius: 8px;
-  padding: 16px;
-  position: sticky;
-  top: 16px;
+  padding: 14px;
 }
 
 .panel > summary {
