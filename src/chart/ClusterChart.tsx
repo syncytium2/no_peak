@@ -93,7 +93,7 @@ export function ClusterChart({
   const mainTop = showMscore ? mscoreTop + MSCORE_H + GAP : M.top;
   const stripTop = mainTop + MAIN_H + GAP;
   const axisTop = stripTop + 2 * STRIP_H + 6;
-  const CREDIT_H = credit ? 26 : 0;
+  const CREDIT_H = credit ? 38 : 0;
   const H = axisTop + AXIS_H + CREDIT_H;
 
   const layout = useMemo(() => {
@@ -557,7 +557,7 @@ export function ClusterChart({
 
         {/* source credit, wrapped over at most two lines */}
         {credit &&
-          (credit.match(/.{1,150}(\s|$)/g) ?? []).slice(0, 2).map((line, i) => (
+          (credit.match(/.{1,150}(\s|$)/g) ?? []).slice(0, 3).map((line, i) => (
             <text
               key={`cr${i}`}
               x={M.left}

@@ -92,12 +92,18 @@ export const SAMPLES: Sample[] = [
       "authors identified are marked on the published trace, so this record carries an answer " +
       "nobody in this project supplied — though it is their CLUSTER call, not ground truth about " +
       "secretion. The paper gives its settings but not its per-sample assay error, and without " +
-      "that the count is not reproducible: see the About page.",
+      "that the count is not reproducible: see the About page." +
+      " Its error column is reconstructed, not read off the page: the figure has no error " +
+      "bars and the paper does not say what error it gave CLUSTER, so the file supplies " +
+      "max(floor, 8% of value) — the floor being the assay sensitivity the paper reports " +
+      "for LH, and a value fitted to that paper's own pulse calls for GnRH. Detection needs " +
+      "it: at one-point windows the estimated models let a pulse inflate its own error and " +
+      "hide itself.",
     timeUnit: "min",
     deltaT: 5,
     valueLabel: "GnRH (pg/min)",
     citation:
-      "Digitised from Webster JR, Moenter SM, Barrell GK, Lehman MN, Karsch FJ, Endocrinology 1991;129(3):1635-43 (PMID 1874193), Fig. 3B, ewe #8067. Read off the published figure with an author's permission; values are approximate to the width of a printed line.",
+      "Digitised from Webster JR, Moenter SM, Barrell GK, Lehman MN, Karsch FJ, Endocrinology 1991;129(3):1635-43 (PMID 1874193), Fig. 3B, ewe #8067. Read off the published figure with an author's permission; values are approximate to the width of a printed line. The error bars are RECONSTRUCTED, not measured: the figure prints none and the paper does not report its per-sample error, so the file supplies max(floor, 0.08 x value).",
     load: csv(w91GnrhThx),
   },
   {
@@ -108,12 +114,18 @@ export const SAMPLES: Sample[] = [
     note:
       "MEASURED. Fig. 4A of the same paper, and the highest GnRH pulse frequency it recorded: 21 " +
       "pulses in 6 h, an interval near 17 min against 5-min sampling. The hardest real record in " +
-      "the app.",
+      "the app." +
+      " Its error column is reconstructed, not read off the page: the figure has no error " +
+      "bars and the paper does not say what error it gave CLUSTER, so the file supplies " +
+      "max(floor, 8% of value) — the floor being the assay sensitivity the paper reports " +
+      "for LH, and a value fitted to that paper's own pulse calls for GnRH. Detection needs " +
+      "it: at one-point windows the estimated models let a pulse inflate its own error and " +
+      "hide itself.",
     timeUnit: "min",
     deltaT: 5,
     valueLabel: "GnRH (pg/min)",
     citation:
-      "Digitised from Webster JR, Moenter SM, Barrell GK, Lehman MN, Karsch FJ, Endocrinology 1991;129(3):1635-43 (PMID 1874193), Fig. 4A, ewe #9013. Read off the published figure with an author's permission; values are approximate to the width of a printed line.",
+      "Digitised from Webster JR, Moenter SM, Barrell GK, Lehman MN, Karsch FJ, Endocrinology 1991;129(3):1635-43 (PMID 1874193), Fig. 4A, ewe #9013. Read off the published figure with an author's permission; values are approximate to the width of a printed line. The error bars are RECONSTRUCTED, not measured: the figure prints none and the paper does not report its per-sample error, so the file supplies max(floor, 0.08 x value).",
     load: csv(w91GnrhFast),
   },
   {
@@ -124,12 +136,18 @@ export const SAMPLES: Sample[] = [
     note:
       "MEASURED. Fig. 3A: an anestrous control in which the authors identified no GnRH pulses at " +
       "all. A real negative control — quieter and messier than a generated one, and the more " +
-      "honest test of a settings change for exactly that reason.",
+      "honest test of a settings change for exactly that reason." +
+      " Its error column is reconstructed, not read off the page: the figure has no error " +
+      "bars and the paper does not say what error it gave CLUSTER, so the file supplies " +
+      "max(floor, 8% of value) — the floor being the assay sensitivity the paper reports " +
+      "for LH, and a value fitted to that paper's own pulse calls for GnRH. Detection needs " +
+      "it: at one-point windows the estimated models let a pulse inflate its own error and " +
+      "hide itself.",
     timeUnit: "min",
     deltaT: 5,
     valueLabel: "GnRH (pg/min)",
     citation:
-      "Digitised from Webster JR, Moenter SM, Barrell GK, Lehman MN, Karsch FJ, Endocrinology 1991;129(3):1635-43 (PMID 1874193), Fig. 3A, ewe #8058. Read off the published figure with an author's permission; values are approximate to the width of a printed line.",
+      "Digitised from Webster JR, Moenter SM, Barrell GK, Lehman MN, Karsch FJ, Endocrinology 1991;129(3):1635-43 (PMID 1874193), Fig. 3A, ewe #8058. Read off the published figure with an author's permission; values are approximate to the width of a printed line. The error bars are RECONSTRUCTED, not measured: the figure prints none and the paper does not report its per-sample error, so the file supplies max(floor, 0.08 x value).",
     load: csv(w91GnrhCon),
   },
   {
@@ -139,12 +157,18 @@ export const SAMPLES: Sample[] = [
     provenance: "digitised",
     note:
       "MEASURED. Fig. 4B: one of the two thyroidectomized ewes with no detectable GnRH pulses during portal " +
-      "sampling, though it did show LH pulses beforehand. A second real negative control.",
+      "sampling, though it did show LH pulses beforehand. A second real negative control." +
+      " Its error column is reconstructed, not read off the page: the figure has no error " +
+      "bars and the paper does not say what error it gave CLUSTER, so the file supplies " +
+      "max(floor, 8% of value) — the floor being the assay sensitivity the paper reports " +
+      "for LH, and a value fitted to that paper's own pulse calls for GnRH. Detection needs " +
+      "it: at one-point windows the estimated models let a pulse inflate its own error and " +
+      "hide itself.",
     timeUnit: "min",
     deltaT: 5,
     valueLabel: "GnRH (pg/min)",
     citation:
-      "Digitised from Webster JR, Moenter SM, Barrell GK, Lehman MN, Karsch FJ, Endocrinology 1991;129(3):1635-43 (PMID 1874193), Fig. 4B, ewe #9009. Read off the published figure with an author's permission; values are approximate to the width of a printed line.",
+      "Digitised from Webster JR, Moenter SM, Barrell GK, Lehman MN, Karsch FJ, Endocrinology 1991;129(3):1635-43 (PMID 1874193), Fig. 4B, ewe #9009. Read off the published figure with an author's permission; values are approximate to the width of a printed line. The error bars are RECONSTRUCTED, not measured: the figure prints none and the paper does not report its per-sample error, so the file supplies max(floor, 0.08 x value).",
     load: csv(w91GnrhNone),
   },
   {
@@ -157,12 +181,18 @@ export const SAMPLES: Sample[] = [
       "GnRH record, sampled every 6 min for 6 h a fortnight before the collection surgery. Load " +
       "the two in turn and the difference is the point — LH is a concentration with a half-life " +
       "long against the sampling interval, so its pulses decay over several samples, while the " +
-      "portal GnRH pulses occupy one or two and return abruptly.",
+      "portal GnRH pulses occupy one or two and return abruptly." +
+      " Its error column is reconstructed, not read off the page: the figure has no error " +
+      "bars and the paper does not say what error it gave CLUSTER, so the file supplies " +
+      "max(floor, 8% of value) — the floor being the assay sensitivity the paper reports " +
+      "for LH, and a value fitted to that paper's own pulse calls for GnRH. Detection needs " +
+      "it: at one-point windows the estimated models let a pulse inflate its own error and " +
+      "hide itself.",
     timeUnit: "min",
     deltaT: 6,
     valueLabel: "LH (ng/ml)",
     citation:
-      "Digitised from Webster JR, Moenter SM, Barrell GK, Lehman MN, Karsch FJ, Endocrinology 1991;129(3):1635-43 (PMID 1874193), Fig. 3B, ewe #8067. Read off the published figure with an author's permission; values are approximate to the width of a printed line.",
+      "Digitised from Webster JR, Moenter SM, Barrell GK, Lehman MN, Karsch FJ, Endocrinology 1991;129(3):1635-43 (PMID 1874193), Fig. 3B, ewe #8067. Read off the published figure with an author's permission; values are approximate to the width of a printed line. The error bars are RECONSTRUCTED, not measured: the figure prints none and the paper does not report its per-sample error, so the file supplies max(floor, 0.08 x value).",
     load: csv(w91LhThx),
   },
   {
@@ -172,12 +202,18 @@ export const SAMPLES: Sample[] = [
     provenance: "digitised",
     note:
       "MEASURED. Fig. 4A of Webster et al. 1991, upper panel: LH presampling in the ewe that went on to " +
-      "show 21 GnRH pulses, the highest frequency in the study.",
+      "show 21 GnRH pulses, the highest frequency in the study." +
+      " Its error column is reconstructed, not read off the page: the figure has no error " +
+      "bars and the paper does not say what error it gave CLUSTER, so the file supplies " +
+      "max(floor, 8% of value) — the floor being the assay sensitivity the paper reports " +
+      "for LH, and a value fitted to that paper's own pulse calls for GnRH. Detection needs " +
+      "it: at one-point windows the estimated models let a pulse inflate its own error and " +
+      "hide itself.",
     timeUnit: "min",
     deltaT: 6,
     valueLabel: "LH (ng/ml)",
     citation:
-      "Digitised from Webster JR, Moenter SM, Barrell GK, Lehman MN, Karsch FJ, Endocrinology 1991;129(3):1635-43 (PMID 1874193), Fig. 4A, ewe #9013. Read off the published figure with an author's permission; values are approximate to the width of a printed line.",
+      "Digitised from Webster JR, Moenter SM, Barrell GK, Lehman MN, Karsch FJ, Endocrinology 1991;129(3):1635-43 (PMID 1874193), Fig. 4A, ewe #9013. Read off the published figure with an author's permission; values are approximate to the width of a printed line. The error bars are RECONSTRUCTED, not measured: the figure prints none and the paper does not report its per-sample error, so the file supplies max(floor, 0.08 x value).",
     load: csv(w91LhFast),
   },
   {
@@ -189,12 +225,18 @@ export const SAMPLES: Sample[] = [
       "MEASURED. Fig. 3A of Webster et al. 1991, upper panel: the anestrous control's LH, flat near the " +
       "assay's detection limit. Circulating LH falls roughly 50-fold at the transition to " +
       "anestrus, which is what a suppressed record looks like — and a reminder that a detector's " +
-      "baseline behaviour matters as much as its peaks.",
+      "baseline behaviour matters as much as its peaks." +
+      " Its error column is reconstructed, not read off the page: the figure has no error " +
+      "bars and the paper does not say what error it gave CLUSTER, so the file supplies " +
+      "max(floor, 8% of value) — the floor being the assay sensitivity the paper reports " +
+      "for LH, and a value fitted to that paper's own pulse calls for GnRH. Detection needs " +
+      "it: at one-point windows the estimated models let a pulse inflate its own error and " +
+      "hide itself.",
     timeUnit: "min",
     deltaT: 6,
     valueLabel: "LH (ng/ml)",
     citation:
-      "Digitised from Webster JR, Moenter SM, Barrell GK, Lehman MN, Karsch FJ, Endocrinology 1991;129(3):1635-43 (PMID 1874193), Fig. 3A, ewe #8058. Read off the published figure with an author's permission; values are approximate to the width of a printed line.",
+      "Digitised from Webster JR, Moenter SM, Barrell GK, Lehman MN, Karsch FJ, Endocrinology 1991;129(3):1635-43 (PMID 1874193), Fig. 3A, ewe #8058. Read off the published figure with an author's permission; values are approximate to the width of a printed line. The error bars are RECONSTRUCTED, not measured: the figure prints none and the paper does not report its per-sample error, so the file supplies max(floor, 0.08 x value).",
     load: csv(w91LhCon),
   },
   {
@@ -205,12 +247,18 @@ export const SAMPLES: Sample[] = [
     note:
       "MEASURED. Fig. 4B upper panel. This animal was pulsatile in LH beforehand but showed no GnRH pulses " +
       "during portal sampling, which the authors attribute partly to the disturbance of the " +
-      "collection itself.",
+      "collection itself." +
+      " Its error column is reconstructed, not read off the page: the figure has no error " +
+      "bars and the paper does not say what error it gave CLUSTER, so the file supplies " +
+      "max(floor, 8% of value) — the floor being the assay sensitivity the paper reports " +
+      "for LH, and a value fitted to that paper's own pulse calls for GnRH. Detection needs " +
+      "it: at one-point windows the estimated models let a pulse inflate its own error and " +
+      "hide itself.",
     timeUnit: "min",
     deltaT: 6,
     valueLabel: "LH (ng/ml)",
     citation:
-      "Digitised from Webster JR, Moenter SM, Barrell GK, Lehman MN, Karsch FJ, Endocrinology 1991;129(3):1635-43 (PMID 1874193), Fig. 4B, ewe #9009. Read off the published figure with an author's permission; values are approximate to the width of a printed line.",
+      "Digitised from Webster JR, Moenter SM, Barrell GK, Lehman MN, Karsch FJ, Endocrinology 1991;129(3):1635-43 (PMID 1874193), Fig. 4B, ewe #9009. Read off the published figure with an author's permission; values are approximate to the width of a printed line. The error bars are RECONSTRUCTED, not measured: the figure prints none and the paper does not report its per-sample error, so the file supplies max(floor, 0.08 x value).",
     load: csv(w91LhOther),
   },
   {

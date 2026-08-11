@@ -532,11 +532,14 @@ export function App() {
           onToggle={(e) => setSettingsOpen((e.target as HTMLDetailsElement).open)}
         >
           <summary>Settings</summary>
-          <p className="kbdhint">
-            <kbd>Tab</kbd> moves between fields and selects what is there, so you can type straight
-            over it. <kbd>↑</kbd> <kbd>↓</kbd> step a value — hold <kbd>Shift</kbd> for ten steps.
-            <kbd>Esc</kbd> undoes an entry.
-          </p>
+          <details className="kbdhint">
+            <summary>Keyboard</summary>
+            <p>
+              <kbd>Tab</kbd> moves between fields and selects what is there, so you can type
+              straight over it. <kbd>↑</kbd> <kbd>↓</kbd> step a value — hold <kbd>Shift</kbd> for
+              ten steps. <kbd>Esc</kbd> undoes an entry.
+            </p>
+          </details>
 
           <h2>Detection parameters</h2>
           <label className="presetpick">

@@ -588,10 +588,21 @@ body.dos .warn {
   background: none;
 }
 
+/* Folded: worth knowing once, not worth a paragraph above the fields every
+   time the panel opens. */
 .kbdhint {
-  margin: 0 0 12px;
+  margin: 0 0 10px;
   font-size: 12px;
   color: var(--muted);
+}
+
+.kbdhint > summary {
+  cursor: pointer;
+  padding: 2px 0;
+}
+
+.kbdhint p {
+  margin: 4px 0 0;
   line-height: 1.7;
 }
 
