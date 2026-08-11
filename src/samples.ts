@@ -134,10 +134,11 @@ export const SAMPLES: Sample[] = [
     label: "Thyroidectomized ewe #8067 — 11 pulses",
     provenance: "digitised",
     note:
-      "Jugular LH from the same animal as the GnRH record above, sampled every 6 min for 6 h " +
-      "before the portal surgery. Note how unalike the two look: LH is a concentration with a " +
-      "half-life long against the sampling interval, so its pulses decay over several samples, " +
-      "while the portal GnRH pulses occupy one or two.",
+      "Fig. 3B of Webster et al. 1991, upper panel: jugular LH from the same ewe as the portal " +
+      "GnRH record, sampled every 6 min for 6 h a fortnight before the collection surgery. Load " +
+      "the two in turn and the difference is the point — LH is a concentration with a half-life " +
+      "long against the sampling interval, so its pulses decay over several samples, while the " +
+      "portal GnRH pulses occupy one or two and return abruptly.",
     timeUnit: "min",
     deltaT: 6,
     valueLabel: "LH (ng/ml)",
@@ -148,7 +149,9 @@ export const SAMPLES: Sample[] = [
     group: DIG_LH,
     label: "Thyroidectomized ewe #9013 — 16 pulses",
     provenance: "digitised",
-    note: "Fig. 4A upper panel: LH presampling in the ewe that went on to show 21 GnRH pulses.",
+    note:
+      "Fig. 4A of Webster et al. 1991, upper panel: LH presampling in the ewe that went on to " +
+      "show 21 GnRH pulses, the highest frequency in the study.",
     timeUnit: "min",
     deltaT: 6,
     valueLabel: "LH (ng/ml)",
@@ -160,9 +163,10 @@ export const SAMPLES: Sample[] = [
     label: "Thyroid-intact control #8058 — no pulses",
     provenance: "digitised",
     note:
-      "The anestrous control's LH, flat near the assay's detection limit. Circulating LH falls " +
-      "roughly 50-fold at the transition to anestrus, which is what a suppressed record looks " +
-      "like — and a reminder that a detector's baseline behaviour matters as much as its peaks.",
+      "Fig. 3A of Webster et al. 1991, upper panel: the anestrous control's LH, flat near the " +
+      "assay's detection limit. Circulating LH falls roughly 50-fold at the transition to " +
+      "anestrus, which is what a suppressed record looks like — and a reminder that a detector's " +
+      "baseline behaviour matters as much as its peaks.",
     timeUnit: "min",
     deltaT: 6,
     valueLabel: "LH (ng/ml)",
@@ -221,7 +225,8 @@ export const SAMPLES: Sample[] = [
     provenance: "simulated",
     note:
       "The negative control from the same protocol, where that study found no pulses of GnRH at " +
-      "all. Everything but the pulses matches the record above, which makes it a sharper test of " +
+      "all. Everything but the pulses matches the simulated thyroidectomized record, which makes " +
+      "it a sharper test of " +
       "a settings change than a generic flat line: no pulse was generated here, so every pulse " +
       "reported is a false positive. At the published GnRH settings it yields about one — which " +
       "is what a stated 1% false positive rate predicts over 72 samples, not a defect. Loosen " +
