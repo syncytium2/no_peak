@@ -138,34 +138,63 @@ body.dos .samplepick select {
   font-weight: 600;
 }
 
-/* Provenance of a bundled dataset, next to its name: what it is meant to
-   resemble and on what basis. */
-.samplenote {
-  display: block;
-  max-width: 68ch;
-  margin-top: 4px;
+.loadedname {
+  display: flex;
+  align-items: baseline;
+  flex-wrap: wrap;
+  gap: 6px;
+  flex-basis: 100%;
+}
+
+/* Provenance of a bundled dataset. Folded away by default — the tag beside the
+   name already carries the part that must not be missed. */
+.sourcefold {
+  flex-basis: 100%;
+}
+
+.sourcefold > summary {
+  cursor: pointer;
   font-weight: 400;
   font-size: 12px;
-  line-height: 1.45;
+  color: var(--muted);
+}
+
+.samplenote {
+  display: block;
+  max-width: 72ch;
+  margin: 4px 0 0;
+  font-weight: 400;
+  font-size: 12px;
+  line-height: 1.5;
   color: var(--muted);
 }
 
 /* What the Load button accepts, spelled out rather than implied by the file
-   dialog's filter list. */
+   dialog's filter list — but folded, so it costs a line rather than a screen. */
 .formats {
   flex-basis: 100%;
+  font-size: 13px;
+  color: var(--ink-2);
+}
+
+.formats > summary {
+  cursor: pointer;
+  font-size: 13px;
+  color: var(--muted);
+  padding: 2px 0;
+}
+
+.formats[open] {
   margin-top: 4px;
   padding: 10px 14px;
   border: 1px solid var(--grid);
   border-radius: 8px;
   background: var(--surface);
-  font-size: 13px;
-  color: var(--ink-2);
 }
 
-.formats strong:first-child {
-  display: block;
-  margin-bottom: 4px;
+.formats[open] > summary {
+  margin-bottom: 6px;
+  font-weight: 600;
   color: var(--ink);
 }
 

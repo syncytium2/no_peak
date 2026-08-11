@@ -359,8 +359,10 @@ export function App() {
           </select>
         </label>
 
-        <div className="formats">
-          <strong>What the Load button accepts</strong>
+        {/* Collapsed by default: the figure is what people come for, and this
+            is reference material they need once. */}
+        <details className="formats">
+          <summary>What can I load?</summary>
           <ul>
             <li>
               <strong>Igor</strong> — a packed experiment (<code>.pxp</code>) or a single binary
@@ -387,12 +389,17 @@ export function App() {
             Download an example CSV
           </button>{" "}
           · <a href="#about">how to prepare a file</a>
-        </div>
+        </details>
 
         {loaded && (
-          <span className="loadedname">
-            {loaded.name} — {loaded.segments.length > 1 && `${loaded.segments.length} records, `}
-            {loaded.segments.reduce((a, s) => a + s.values.length, 0)} points
+          <div className="loadedname">
+            {/* The name and the provenance tag stay visible always: knowing at a
+                glance whether a figure is simulated, digitised or your own is
+                not something to put behind a click. The prose behind it is. */}
+            <span>
+              {loaded.name} — {loaded.segments.length > 1 && `${loaded.segments.length} records, `}
+              {loaded.segments.reduce((a, s) => a + s.values.length, 0)} points
+            </span>
             {loaded.provenance === "simulated" && (
               <span className="simtag" title="Generated data, not a real experiment">
                 simulated
@@ -406,8 +413,13 @@ export function App() {
                 digitised from a figure
               </span>
             )}
-            {loaded.note && <span className="samplenote">{loaded.note}</span>}
-          </span>
+            {loaded.note && (
+              <details className="sourcefold">
+                <summary>about this dataset</summary>
+                <p className="samplenote">{loaded.note}</p>
+              </details>
+            )}
+          </div>
         )}
       </section>
 
