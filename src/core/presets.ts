@@ -19,7 +19,10 @@ export interface ParamPreset {
   cite: string;
   /** What the paper said this combination costs in false positives. */
   note: string;
-  params: Pick<ClusterParams, "nPeak" | "nNadir" | "tScoreUp" | "tScoreDn" | "variant">;
+  params: Pick<
+    ClusterParams,
+    "nPeak" | "nNadir" | "tScoreUp" | "tScoreDn" | "variant" | "errorModel" | "assayCV" | "assayFloor"
+  >;
 }
 
 export const PRESETS: ParamPreset[] = [
@@ -28,7 +31,10 @@ export const PRESETS: ParamPreset[] = [
     label: "This app's defaults",
     cite: "",
     note: "Two-point windows and t = 2, the settings the Igor package opens with.",
-    params: { nPeak: 2, nNadir: 2, tScoreUp: 2, tScoreDn: 2, variant: "igor" },
+    params: {
+      nPeak: 2, nNadir: 2, tScoreUp: 2, tScoreDn: 2, variant: "igor",
+      errorModel: "Local SD", assayCV: 0.08, assayFloor: 0,
+    },
   },
   {
     key: "webster1991_gnrh",
@@ -38,8 +44,15 @@ export const PRESETS: ParamPreset[] = [
       "Hypophyseal-portal GnRH in the ewe, 5-min fractions over 6 h, reported in pg/min. The " +
       "paper states a false positive rate of 1% for this combination. It selects the original " +
       "Fortran implementation, which is what existed in 1991 — and which matters more than it " +
-      "sounds, because the Igor variant's t-score is not scale-invariant at one-point windows.",
-    params: { nPeak: 1, nNadir: 1, tScoreUp: 3.2, tScoreDn: 3.2, variant: "fortran" },
+      "sounds, because the Igor variant's t-score is not scale-invariant at one-point windows. " +
+      "It also sets the error model, which the paper does NOT report: an assay CV of 8% with a " +
+      "floor of 0.06 pg/min. Both are reconstructed, not published — the floor was chosen to " +
+      "match this paper's own pulse calls. Without an assay-shaped error the estimated models " +
+      "find nothing here, because at one-point windows a pulse inflates its own error.",
+    params: {
+      nPeak: 1, nNadir: 1, tScoreUp: 3.2, tScoreDn: 3.2, variant: "fortran",
+      errorModel: "Assay CV", assayCV: 0.08, assayFloor: 0.06,
+    },
   },
   {
     key: "webster1991_lh",
@@ -47,8 +60,13 @@ export const PRESETS: ParamPreset[] = [
     cite: "Webster JR, Moenter SM, Barrell GK, Lehman MN, Karsch FJ. Endocrinology 1991;129(3):1635–43.",
     note:
       "Jugular LH in the ewe, 6-min sampling over 6 h, reported in ng/ml. The paper states a " +
-      "false positive rate of 5% for this combination. Original Fortran, as above.",
-    params: { nPeak: 1, nNadir: 1, tScoreUp: 2.32, tScoreDn: 2.32, variant: "fortran" },
+      "false positive rate of 5% for this combination. Original Fortran, for the same reason. " +
+      "The error model is an assay CV of 8% with a floor of 0.45 ng/ml — the floor IS the assay " +
+      "sensitivity this paper reports; the CV is reconstructed.",
+    params: {
+      nPeak: 1, nNadir: 1, tScoreUp: 2.32, tScoreDn: 2.32, variant: "fortran",
+      errorModel: "Assay CV", assayCV: 0.08, assayFloor: 0.45,
+    },
   },
 ];
 
@@ -60,7 +78,10 @@ export function matchPreset(p: ClusterParams): ParamPreset | undefined {
       s.params.nNadir === p.nNadir &&
       s.params.tScoreUp === p.tScoreUp &&
       s.params.tScoreDn === p.tScoreDn &&
-      s.params.variant === p.variant,
+      s.params.variant === p.variant &&
+      s.params.errorModel === p.errorModel &&
+      (p.errorModel !== "Assay CV" ||
+        (s.params.assayCV === p.assayCV && s.params.assayFloor === p.assayFloor)),
   );
 }
 

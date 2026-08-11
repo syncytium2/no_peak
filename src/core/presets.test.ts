@@ -24,19 +24,34 @@ describe("published presets", () => {
     // The Fortran variant because that is what existed in 1991 — the paper
     // cites Veldhuis & Johnson's program, not the later Igor package.
     expect(preset("webster1991_gnrh").params).toEqual({
-      nPeak: 1,
-      nNadir: 1,
-      tScoreUp: 3.2,
-      tScoreDn: 3.2,
-      variant: "fortran",
+      nPeak: 1, nNadir: 1, tScoreUp: 3.2, tScoreDn: 3.2, variant: "fortran",
+      errorModel: "Assay CV", assayCV: 0.08, assayFloor: 0.06,
     });
     expect(preset("webster1991_lh").params).toEqual({
-      nPeak: 1,
-      nNadir: 1,
-      tScoreUp: 2.32,
-      tScoreDn: 2.32,
-      variant: "fortran",
+      nPeak: 1, nNadir: 1, tScoreUp: 2.32, tScoreDn: 2.32, variant: "fortran",
+      errorModel: "Assay CV", assayCV: 0.08, assayFloor: 0.45,
     });
+  });
+
+  // The defect this guards against: a preset that sets the windows and the
+  // t-scores but not the error model is not reproducible. Selecting it on a file
+  // with no error column left the app on Local SD, which at one-point windows
+  // finds nothing at all — the published settings appeared to give no pulses.
+  it("carries the error model, so selecting a preset configures the whole analysis", () => {
+    for (const key of ["webster1991_gnrh", "webster1991_lh"]) {
+      expect(preset(key).params.errorModel).toBe("Assay CV");
+      expect(preset(key).params.assayFloor).toBeGreaterThan(0);
+    }
+  });
+
+  it("reproduces the published count straight from the preset, with no error column", () => {
+    // exactly what the app does when a user picks the dataset and the preset
+    const s = parseSeries(readFileSync("data/digitized/webster1991_fig3b_thx_8067_gnrh.csv", "utf8"));
+    expect(s.error).toBeNull();
+    const r = clusterMain(s.times!, s.values, {
+      ...DEFAULT_PARAMS, ...preset("webster1991_gnrh").params,
+    });
+    expect(r.summary.nPeaks).toBe(11); // the count printed in that figure
   });
 
   it("recognises the current parameters as a preset, and edits as custom", () => {

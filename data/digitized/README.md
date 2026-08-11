@@ -24,6 +24,17 @@ and untested** — see
 which sets out why copyright is not the obstacle, why the contract might be, and
 why no publisher has ever been recorded objecting to this practice.
 
+### Reproducing the scoring in the app
+
+Load any record from the **Sample data** menu, pick **Portal GnRH — Webster et
+al. 1991** (or the LH one) under *Start from published settings*, and the counts
+below appear. The preset carries the error model as well as the windows and
+t-scores, because without it the published settings find nothing at all: these
+files have no error column, so the app falls back to an estimated model, and at
+one-point windows an estimated error reads a pulse's own height as noise and
+hides it. That is a property of estimating error from the data, not a defect in
+the data.
+
 Regenerate with:
 
 ```

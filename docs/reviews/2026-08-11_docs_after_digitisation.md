@@ -134,12 +134,16 @@ digitised".
 
 ## ⚠ Residual — deferred, not fixed
 
-1. **The app cannot reproduce its own headline number.** (role 7) The digitised
-   CSVs are `time,value` only, and the assay error model
-   (`max(floor, cv × value)`) exists as an inline expression in the scorer and
-   the test, not as a member of `ErrorModelType` in `src/core/errorModel.ts`. A
-   user selecting the Webster preset on a bundled digitised record has no way to
-   supply the error the result depends on. This is the largest outstanding gap.
+1. ~~**The app cannot reproduce its own headline number.**~~ **CLOSED**, and it
+   was reported from the user side before the fix landed: selecting the published
+   settings gave *no peaks*. Root cause exactly as roles 6 and 7 predicted — the
+   preset carried windows and t-scores but not the error model, the digitised
+   CSVs have no error column, so the app fell back to `Local SD`, which at
+   one-point windows lets a pulse inflate its own error and hide itself (0 of 70).
+   Fixed by adding an `Assay CV` model — `error = max(floor, CV × value)`, the
+   shape a real immunoassay has — to `ErrorModelType`, and by making presets
+   carry `errorModel` and its parameters. Loading a record and picking the preset
+   now reproduces the published counts with nothing else touched.
 2. **Deep links into the About page eject the reader.** (role 3) `src/main.tsx`
    routes on `hash === "#about"` exactly, so `#terms`, `#scale`, `#presets` etc.
    render the app instead of the section — including the one in-page link the
