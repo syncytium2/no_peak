@@ -23,6 +23,13 @@ export interface ClusterChartProps {
   timeUnit?: TimeUnit;
   /** Set when several records are shown end to end, to draw the boundaries. */
   segments?: SegmentResult[];
+  /**
+   * Source credit for data that is not the reader's own, drawn into the figure
+   * itself. An exported SVG or PNG separates from the app the moment it is
+   * dropped into a talk, so the credit has to be part of the artwork rather
+   * than something the app remembers on its behalf.
+   */
+  credit?: string;
 }
 
 const W = 900;
@@ -62,6 +69,7 @@ export function ClusterChart({
   palette: P = FIG,
   timeUnit = "min",
   segments,
+  credit,
 }: ClusterChartProps) {
   const { times, values, error, ups, downs, mscoreUp, pulse, peaks, params } = result;
   const n = values.length;
@@ -72,7 +80,8 @@ export function ClusterChart({
   const mainTop = showMscore ? mscoreTop + MSCORE_H + GAP : M.top;
   const stripTop = mainTop + MAIN_H + GAP;
   const axisTop = stripTop + 2 * STRIP_H + 6;
-  const H = axisTop + AXIS_H;
+  const CREDIT_H = credit ? 26 : 0;
+  const H = axisTop + AXIS_H + CREDIT_H;
 
   const layout = useMemo(() => {
     const dt = times.length > 1 ? times[1] - times[0] : 1;
@@ -170,6 +179,9 @@ export function ClusterChart({
         role="img"
         aria-label="Concentration time series with CLUSTER pulse detection overlay"
       >
+        {/* machine-readable provenance, kept even if the credit line is off */}
+        <title>{`${yLabel} vs ${xLabel} — CLUSTER pulse detection`}</title>
+        {credit && <desc>{credit}</desc>}
         <rect x="0" y="0" width={W} height={H} fill={P.surface} />
 
         {/* ---- t-score panel ---- */}
@@ -442,6 +454,21 @@ export function ClusterChart({
         >
           {xLabel}
         </text>
+
+        {/* source credit, wrapped over at most two lines */}
+        {credit &&
+          (credit.match(/.{1,150}(\s|$)/g) ?? []).slice(0, 2).map((line, i) => (
+            <text
+              key={`cr${i}`}
+              x={M.left}
+              y={axisTop + AXIS_H + 2 + i * 12}
+              fontSize="9"
+              fontFamily={P.font}
+              fill={P.inkMuted}
+            >
+              {line.trim()}
+            </text>
+          ))}
 
         {/* ---- hover layer (stripped from exports) ---- */}
         {hover !== null && (

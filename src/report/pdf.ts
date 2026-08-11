@@ -31,6 +31,8 @@ export interface ReportMeta {
   frequency: PulseFrequency | null;
   /** Set when several records were analysed together. */
   segments?: SegmentResult[];
+  /** Where the data came from, when it is not the reader's own. */
+  citation?: string;
 }
 
 export async function generatePDFReport(
@@ -55,6 +57,13 @@ export async function generatePDFReport(
     MARGIN,
     y,
   );
+  if (meta.citation) {
+    y += 12;
+    doc.setFontSize(8).setTextColor(INK2);
+    const cite = doc.splitTextToSize(meta.citation, CONTENT_W);
+    doc.text(cite, MARGIN, y);
+    y += (cite.length - 1) * 9;
+  }
   y += 18;
   doc.setDrawColor(GRID).setLineWidth(1);
   doc.line(MARGIN, y, PAGE_W - MARGIN, y);

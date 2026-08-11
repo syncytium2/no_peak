@@ -84,9 +84,23 @@ export function parseLooseNumbers(text: string): number[] | null {
 const fmt = (v: number | null | undefined) =>
   v === null || v === undefined ? "" : String(v);
 
-export function resultToCSV(r: ClusterResult): string {
+export interface ResultCSVMeta {
+  datasetName?: string;
+  /** Where the data came from, when it is not the user's own. */
+  citation?: string;
+}
+
+export function resultToCSV(r: ClusterResult, meta: ResultCSVMeta = {}): string {
   const out: string[] = [];
   out.push("# no_peak CLUSTER results");
+  if (meta.datasetName) out.push(`# dataset: ${meta.datasetName}`);
+  // Provenance travels with the numbers. A results table pasted into a
+  // manuscript must still say whose data it is and how it was obtained.
+  if (meta.citation) {
+    for (const line of meta.citation.match(/.{1,76}(\s|$)/g) ?? [meta.citation]) {
+      out.push(`# source: ${line.trim()}`);
+    }
+  }
   out.push(
     `# nPeak=${r.params.nPeak} nNadir=${r.params.nNadir} tUp=${r.params.tScoreUp} tDn=${r.params.tScoreDn}` +
       ` minPeak=${r.params.minPeak} error=${r.params.errorModel}` +

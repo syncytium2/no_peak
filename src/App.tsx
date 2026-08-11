@@ -40,6 +40,8 @@ interface Loaded {
   provenance?: "simulated" | "digitised";
   /** Provenance line shown under the name. */
   note?: string;
+  /** Source credit carried into every export. */
+  citation?: string;
 }
 
 const fmtMS = (m: MeanSD | null) => (m ? `${fmt(m.mean)} ± ${fmt(m.sd)}` : "—");
@@ -259,6 +261,7 @@ export function App() {
         name: sample.key,
         provenance: sample.provenance,
         note: sample.note,
+        citation: sample.citation,
         segments: [
           { name: sample.key, values: series.values, times: series.times, error: series.error },
         ],
@@ -734,7 +737,13 @@ export function App() {
                 >
                   PNG (4×)
                 </button>
-                <button onClick={() => downloadText(resultToCSV(result), `${loaded!.name}_cluster.csv`)}>
+                <button onClick={() => downloadText(
+                    resultToCSV(result, {
+                      datasetName: loaded!.name,
+                      citation: loaded!.citation,
+                    }),
+                    `${loaded!.name}_cluster.csv`,
+                  )}>
                   Results CSV
                 </button>
                 {multi && (
@@ -757,6 +766,7 @@ export function App() {
                       yLabel,
                       unitShort,
                       frequency,
+                      citation: loaded!.citation,
                       segments: multi ? run!.segments : undefined,
                     });
                   }}
@@ -798,6 +808,7 @@ export function App() {
                 palette={dos ? FIG_DOS : FIG}
                 timeUnit={timeUnit}
                 segments={multi ? run.segments : undefined}
+                credit={loaded?.citation}
               />
 
               {multi && (

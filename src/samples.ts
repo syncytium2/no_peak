@@ -58,6 +58,13 @@ export interface Sample {
   deltaT: number;
   /** Units of the measured values, for the y-axis label. */
   valueLabel: string;
+  /**
+   * One line naming where the numbers came from, carried into every export.
+   * A figure or results table that leaves this app must say whose data it is
+   * and that it was read off a printed page — that is the whole point of
+   * digitising with permission rather than quietly.
+   */
+  citation?: string;
   load: () => ParsedSeries;
 }
 
@@ -85,6 +92,8 @@ export const SAMPLES: Sample[] = [
     timeUnit: "min",
     deltaT: 5,
     valueLabel: "GnRH (pg/min)",
+    citation:
+      "Digitised from Webster JR, Moenter SM, Barrell GK, Lehman MN, Karsch FJ, Endocrinology 1991;129(3):1635-43 (PMID 1874193), Fig. 3B, ewe #8067. Read off the published figure with an author's permission; values are approximate to the width of a printed line.",
     load: csv(w91GnrhThx),
   },
   {
@@ -99,6 +108,8 @@ export const SAMPLES: Sample[] = [
     timeUnit: "min",
     deltaT: 5,
     valueLabel: "GnRH (pg/min)",
+    citation:
+      "Digitised from Webster JR, Moenter SM, Barrell GK, Lehman MN, Karsch FJ, Endocrinology 1991;129(3):1635-43 (PMID 1874193), Fig. 4A, ewe #9013. Read off the published figure with an author's permission; values are approximate to the width of a printed line.",
     load: csv(w91GnrhFast),
   },
   {
@@ -113,6 +124,8 @@ export const SAMPLES: Sample[] = [
     timeUnit: "min",
     deltaT: 5,
     valueLabel: "GnRH (pg/min)",
+    citation:
+      "Digitised from Webster JR, Moenter SM, Barrell GK, Lehman MN, Karsch FJ, Endocrinology 1991;129(3):1635-43 (PMID 1874193), Fig. 3A, ewe #8058. Read off the published figure with an author's permission; values are approximate to the width of a printed line.",
     load: csv(w91GnrhCon),
   },
   {
@@ -126,6 +139,8 @@ export const SAMPLES: Sample[] = [
     timeUnit: "min",
     deltaT: 5,
     valueLabel: "GnRH (pg/min)",
+    citation:
+      "Digitised from Webster JR, Moenter SM, Barrell GK, Lehman MN, Karsch FJ, Endocrinology 1991;129(3):1635-43 (PMID 1874193), Fig. 4B, ewe #9009. Read off the published figure with an author's permission; values are approximate to the width of a printed line.",
     load: csv(w91GnrhNone),
   },
   {
@@ -142,6 +157,8 @@ export const SAMPLES: Sample[] = [
     timeUnit: "min",
     deltaT: 6,
     valueLabel: "LH (ng/ml)",
+    citation:
+      "Digitised from Webster JR, Moenter SM, Barrell GK, Lehman MN, Karsch FJ, Endocrinology 1991;129(3):1635-43 (PMID 1874193), Fig. 3B, ewe #8067. Read off the published figure with an author's permission; values are approximate to the width of a printed line.",
     load: csv(w91LhThx),
   },
   {
@@ -155,6 +172,8 @@ export const SAMPLES: Sample[] = [
     timeUnit: "min",
     deltaT: 6,
     valueLabel: "LH (ng/ml)",
+    citation:
+      "Digitised from Webster JR, Moenter SM, Barrell GK, Lehman MN, Karsch FJ, Endocrinology 1991;129(3):1635-43 (PMID 1874193), Fig. 4A, ewe #9013. Read off the published figure with an author's permission; values are approximate to the width of a printed line.",
     load: csv(w91LhFast),
   },
   {
@@ -170,6 +189,8 @@ export const SAMPLES: Sample[] = [
     timeUnit: "min",
     deltaT: 6,
     valueLabel: "LH (ng/ml)",
+    citation:
+      "Digitised from Webster JR, Moenter SM, Barrell GK, Lehman MN, Karsch FJ, Endocrinology 1991;129(3):1635-43 (PMID 1874193), Fig. 3A, ewe #8058. Read off the published figure with an author's permission; values are approximate to the width of a printed line.",
     load: csv(w91LhCon),
   },
   {
@@ -184,6 +205,8 @@ export const SAMPLES: Sample[] = [
     timeUnit: "min",
     deltaT: 6,
     valueLabel: "LH (ng/ml)",
+    citation:
+      "Digitised from Webster JR, Moenter SM, Barrell GK, Lehman MN, Karsch FJ, Endocrinology 1991;129(3):1635-43 (PMID 1874193), Fig. 4B, ewe #9009. Read off the published figure with an author's permission; values are approximate to the width of a printed line.",
     load: csv(w91LhOther),
   },
   {
