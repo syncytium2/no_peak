@@ -110,17 +110,19 @@ here. It is not tuned to flatter the detector.
   with non-portal blood. Thyroidectomized ewes that failed to enter anestrus:
   **11.2 ± 1.4 pulses/6 h**, and as many as 21 in one ewe. Thyroid-intact
   anestrous controls: generally no pulses at all. Figures 3–4 put GnRH on a
-  0–4 pg/min axis and LH on 0–20 ng/ml. Pulses were identified with **this very
-  algorithm**, at settings the paper prints: peak and nadir clusters of one
-  point, t = 3.2/3.2 for GnRH and 2.32/2.32 for LH, stated to give false
-  positive rates of 1% and 5%. Those two settings ship as presets in
-  `src/core/presets.ts`.
+  **0–2 pg/min** axis over a baseline near 0.1–0.2, and LH on 0–20 ng/ml. Pulses
+  were identified with **this very algorithm**, at settings the paper prints:
+  peak and nadir clusters of one point, t = 3.2/3.2 for GnRH and 2.32/2.32 for
+  LH, stated to give false positive rates of 1% and 5%. Those two settings ship
+  as presets in `src/core/presets.ts`. Reproducing its counts needs the original
+  Fortran implementation, not the Igor one — see `docs/validation-status.md` on
+  scale invariance, and note that a 1991 paper predates the Igor package anyway.
 - Moenter SM, Brand RM, Midgley AR, Karsch FJ. Dynamics of gonadotropin-releasing
   hormone release during a pulse. *Endocrinology* 1992;130(1):503–10. PMID
   1727719. — GnRH pulse waveform at 30-s resolution: square contour, a rise of up
   to 50-fold within a minute, ~5.5 min sustained, back to baseline within 3 min.
   This is where the burst shape comes from. Its much larger pg/min figures are
-  not in conflict with the 0–4 above: 30-second fractions resolve the inside of a
+  not in conflict with the 0–2 above: 30-second fractions resolve the inside of a
   burst, where 5-minute fractions average over it.
 - Clarke IJ, Cummins JT. *Endocrinology* 1985;116(6):2376–83. PMID 3888609. —
   Ovine portal GnRH interpulse intervals, 27–53 min.
@@ -150,116 +152,15 @@ next to the data that produced it — the most valuable test case this project
 could hold, because it scores the port against a human-checked answer rather
 than against a simulator we wrote ourselves.
 
-### Where the permissions question actually lands
+### Permissions
 
-Checked 2026-08-11. Not legal advice, and one question below is genuinely
-unresolved.
-
-**Copyright is not the obstacle.** Under *Feist v. Rural Telephone*, 499 U.S.
-340 (1991), facts carry no copyright. The Court is explicit that this covers
-science: "The same is true of all facts — scientific, historical, biographical,
-and news of the day" (at 348), and "In no event may copyright extend to the
-facts themselves" (at 350–51). Its creation/discovery distinction fits
-measurement exactly — census takers "do not 'create' the population figures that
-emerge from their efforts; in a sense, they copy these figures from the world
-around them" (at 347). A subsequent user "remains free to use the facts
-contained in another's publication" and "the raw facts may be copied at will"
-(at 349–50). 17 U.S.C. §103(b) says the same in statute.
-
-Encoding a fact in a picture does not protect it: §102(b) withholds protection
-from any "idea, procedure, process, system, method of operation, concept,
-principle, or discovery, **regardless of the form in which it is described,
-explained, illustrated, or embodied**".
-
-The Copyright Office goes further than expected on the figure itself. Compendium
-§921 states that charts and graphs "rarely contain more than a de minimis amount
-of authorship", and its worked example concludes "The pie chart, in and of
-itself, is not copyrightable and cannot be registered." §707.2 adds that
-registering a scientific journal "does not extend to the facts, ideas,
-procedures … described in the work." So a standard two-panel concentration-versus-
-time plot may have thinner protection as a graphic than one would assume — though
-§903.1 does list charts among protectable pictorial works, so this is a spectrum,
-not a rule.
-
-**The one real copyright caveat** is whether *these particular* numbers are
-facts. Raw instrument readings are Feist's census taker. Modelled, fitted or
-estimated values are closer to *CDN v. Kapes* (9th Cir. 1999), which protected
-coin prices because they were "CDN's best estimate of the fair value" rather than
-"mere listings of actual prices paid", and *CCC v. Maclean Hunter* (2d Cir.
-1994). These traces are direct RIA measurements of collected fractions, which
-sits firmly on the Feist side — but no case addresses scientific figures
-specifically, and no US or EU authority was found addressing data extraction
-from a chart at all. Everything here reasons from general fact/expression
-principles.
-
-The EU sui generis database right is very unlikely to apply, but not for the
-reason first written here. An earlier draft of this file said a single figure is
-"probably not a database" under Art. 1(2). That is wrong: C-444/02 defines a
-database as "any collection of works, data or other materials, separable from one
-another without the value of their contents being affected, including a method or
-system of some sort for the retrieval of each of its constituent materials", and
-C-490/14 (*Verlag Esterbauer*) confirms the legislature intended "broad scope".
-There is no minimum size. A few dozen tabulated measurements qualify. Being a
-database is the easy part and decides nothing.
-
-The right fails at the next step instead. Art. 7(1) requires substantial
-investment in *obtaining, verifying or presenting* the contents, and *BHB v
-William Hill* (C-203/02) holds that this "does not cover the resources used for
-the creation of materials which make up the contents of a database" — nor
-verification "during the stage of creation". Running the experiment is creation,
-not obtaining. What survives is the saving clause at BHB [35]–[36]: a maker who
-also created the data still qualifies if *collecting, arranging, organising
-accessibility and verifying* it required investment **independent** of creating
-it. For the data behind one chart in one article there is essentially none, and
-the intrinsic scientific value of the data is expressly irrelevant (BHB [72],
-[78]).
-
-Supporting this, the Commission's own 2018 evaluation of the Directive
-(SWD(2018) 146 final, §5.4.1) states that following the 2004 rulings, courts will
-conclude such data was "'created' … not 'obtained'", so "most of the investment
-going into generating such databases should not be taken into account". Three
-further layers point the same way: Art. 8(1) lets a lawful user extract
-insubstantial parts "for any purposes whatsoever"; Art. 9(b) carries a
-scientific-research exception; and *CV-Online Latvia* (C-762/19) adds that the
-"main criterion" is "the risk that that investment may not be redeemed" — hard to
-show for data that is not commercially exploited. The 15-year term (Art. 10) on a
-1991 publication expired around 2007 in any case.
-
-Contestable at the edges: the German *Autobahnmaut* decision accepted a sui
-generis right in machine-recorded toll data, and the CJEU has never ruled on
-scientific measurement data specifically. There is no US equivalent to this
-right at all.
-
-**Contract is the obstacle, and it is unresolved.** OUP's legal notice forbids
-subscribers to "display or distribute any Restricted Content on any other site,
-the internet or any electronic network", and the Endocrine Society's own site
-terms define "Site Materials" to include "data" and prohibit "harvesting,
-scraping, or collection of" them without written consent. Whether those clauses
-reach a derived CSV of facts — which is textually not a copy of anything on the
-site — is arguable both ways and, as far as could be found, untested. The
-University of Michigan licence under which the PDF was obtained adds its own
-prohibition on posting licence-accessed material publicly, and that agreement is
-not public.
-
-OUP does permit non-commercial text and data mining without formal permission,
-but scopes it to the institutional subscription agreement and says nothing about
-whether the *outputs* may be redistributed. That silence is exactly the question.
-It is not inevitable silence: Elsevier's TDM policy says outright "We do not
-claim copyright over your TDM output" and "There are no restrictions on where and
-how you can publish your TDM output." OUP simply has not taken a public position.
-(In the EU this would be moot — DSM Directive Art. 3 gives research
-organisations a TDM exception for content they lawfully access, and Art. 7(1)
-makes contrary contract terms unenforceable. No US equivalent exists.)
-
-**Field practice is settled for the analysis, unsettled for the redistribution.**
-The Cochrane Handbook (§5.5.8) tells review authors outright to use digitiser
-software when data are not otherwise available, naming WebPlotDigitizer and
-others, and raises no permissions question at all. Reconstructing patient-level
-data from published Kaplan-Meier curves (Guyot et al., *BMC Med Res Methodol*
-2012;12:9) is an established, peer-reviewed, routinely redistributed practice.
-But that precedent is about *using* digitised values in an analysis. Publishing
-them as the deliverable dataset, from a paywalled source, has no precedent that
-could be found either way.
+Checked before digitising anything, and nothing has been digitised. The full
+analysis, with sources, is in [`docs/figure-data-permissions.md`](../../docs/figure-data-permissions.md).
+In short: copyright is not the obstacle — facts are not copyrightable, and a CSV
+of values read off a chart takes none of the figure's protected expression. The
+live constraint is contractual (OUP's and the Endocrine Society's site terms, and
+the University of Michigan licence the PDF came through), and whether those reach
+a derived CSV of facts is genuinely unresolved.
 
 ### So: the route to take
 
