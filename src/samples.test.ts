@@ -19,8 +19,33 @@ describe("bundled samples", () => {
     expect(dig).toHaveLength(8);
     expect(sim.length).toBeGreaterThan(0);
     // the real records lead the picker
-    expect(SAMPLE_GROUPS[0]).toMatch(/^Real:/);
+    expect(SAMPLE_GROUPS[0]).toMatch(/^Real/);
     expect(SAMPLES[0].provenance).toBe("digitised");
+  });
+
+  // The simulated GnRH records were built to the protocol of the same paper the
+  // digitised ones come from, so they are the one pair in the app that can
+  // genuinely be mistaken for each other. Keep them apart by construction.
+  it("never labels a generated record as if it were an animal", () => {
+    for (const s of SAMPLES.filter((x) => x.provenance === "simulated")) {
+      expect(s.label, `${s.key} label claims an animal`).not.toMatch(/\bewe\b|#\d/i);
+      expect(s.group).toMatch(/^Simulated/);
+      expect(s.note.slice(0, 40)).toMatch(/GENERATED|seeded|Resembles|simulat/i);
+    }
+    for (const s of SAMPLES.filter((x) => x.provenance === "digitised")) {
+      expect(s.group).toMatch(/^Real/);
+      expect(s.note).toMatch(/MEASURED/);
+    }
+  });
+
+  it("gives no two datasets the same label", () => {
+    const labels = SAMPLES.map((s) => `${s.group}|${s.label}`);
+    expect(new Set(labels).size).toBe(labels.length);
+    // and no simulated label may duplicate a digitised one even across groups
+    const dig = new Set(SAMPLES.filter((s) => s.provenance === "digitised").map((s) => s.label));
+    for (const s of SAMPLES.filter((x) => x.provenance === "simulated")) {
+      expect(dig.has(s.label), `${s.key} shares a label with a real record`).toBe(false);
+    }
   });
 
   it("has a unique key and a group for each", () => {

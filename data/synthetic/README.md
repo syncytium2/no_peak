@@ -1,9 +1,23 @@
 # Test data: what is allowed in here, and why
 
-Everything in this directory is **simulated**. No real recording is distributed
-with this app or its repository.
+Everything in this directory is **simulated**. It corresponds to no animal and
+no experiment.
 
-That constraint is not negotiable, but it has a failure mode, and this project
+> **Not to be confused with [`data/digitized/`](../digitized/README.md)**, which
+> holds real records from four ewes. The confusion is easy to fall into because
+> the GnRH files here were deliberately built to the protocol of the same paper
+> those real records come from — same 5-min portal fractions, same 6 h, same
+> concentration scale, similar pulse intervals. They were made before that
+> paper's data was available. They are a *model of the protocol*, not a version
+> of the animals: nothing here corresponds to ewe #8067 or any other.
+>
+> The two exist together because they carry opposite kinds of truth. Here you
+> know where every pulse is, because it was put there — so you can measure what
+> a detector misses and invents. There you know what that paper's own CLUSTER
+> run reported — a published, human-checked answer, but an answer about what a
+> detector said, not about what the animal secreted.
+
+Distributing no real recording is not negotiable, but it has a failure mode, and this project
 has already fallen into it once: simulated data that is plausible to look at and
 wrong in its physiology. A demo dataset is not decoration. It is the first thing
 a new user runs the detector on, the thing they calibrate their sense of the
@@ -62,17 +76,19 @@ reproducible.
 
 | File | Models | Interval | Length | Pulse interval |
 | --- | --- | --- | --- | --- |
-| `sim_gnrh_thx_ewe.csv` | Portal GnRH, thyroidectomized ewe — square bursts, no clearance | 5 min | 6 h | ~32 min |
-| `sim_gnrh_thx_fast.csv` | The fastest ewe in that study, 21 pulses in 6 h | 5 min | 6 h | ~17 min |
-| `sim_gnrh_intact.csv` | Thyroid-intact anestrous control — no pulses at all | 5 min | 6 h | none |
+| `sim_gnrh_thx_ewe.csv` | Portal GnRH model — square bursts, no clearance | 5 min | 6 h | ~32 min |
+| `sim_gnrh_thx_fast.csv` | Same model, driven fast enough that pulses merge | 5 min | 6 h | ~17 min |
+| `sim_gnrh_intact.csv` | Same model with the pulses switched off | 5 min | 6 h | none |
 | `sim_lh.csv` | Peripheral LH, exponential clearance | 10 min | 12 h | ~70 min |
 | `sim_lh_long.csv` | Peripheral LH, full day | 10 min | 24 h | ~190 min |
 | `sim_flat_control.csv` | Assay noise only — every pulse found is a false positive | 10 min | 12 h | none |
 | `sim_values_only.csv` | Peripheral LH with no time column | 10 min | 13 h | ~80 min |
 
-The three GnRH files are built to one published protocol (Webster et al. 1991,
-below) and are meant to be read together: a positive record, the same record at
-the fastest frequency observed, and the study's own negative control. At that
+The three GnRH files are one model at three settings, built to the protocol of
+Webster et al. 1991 (below) and meant to be read together: a pulse interval in
+the middle of what that paper reports, the same model driven to the fastest
+interval it observed, and the same model with the pulses switched off. None of
+them is an animal. At that
 paper's stated CLUSTER settings — peak and nadir clusters of one point, t = 3.2,
 original Fortran — `sim_gnrh_thx_ewe.csv` returns the 11 pulses per 6 h it
 reports, and does so at *any* rescaling of the data, which is what makes that a

@@ -1,5 +1,10 @@
 # Real traces, digitised from published figures
 
+> **Not to be confused with [`data/synthetic/`](../synthetic/README.md).** The
+> simulated GnRH records there were built to this very paper's protocol, so they
+> look and read alike — but they are generated, correspond to no animal, and
+> exist to answer a different question. See the note at the top of that file.
+
 Everything here was read off the printed figures of one paper:
 
 > Webster JR, Moenter SM, Barrell GK, Lehman MN, Karsch FJ. **Role of the thyroid

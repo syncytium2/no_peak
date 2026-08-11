@@ -70,25 +70,29 @@ export interface Sample {
 
 const csv = (text: string) => () => parseSeries(text);
 
-const DIG_GNRH = "Real: portal GnRH (Webster et al. 1991)";
-const DIG_LH = "Real: peripheral LH (Webster et al. 1991)";
-const PORTAL = "Simulated portal GnRH";
-const PERIPHERAL = "Simulated peripheral LH";
+// Group headings do a lot of work here. The simulated GnRH records were built
+// to the protocol of the same paper the digitised ones come from, so without an
+// explicit contrast in the heading they read as alternative takes on the same
+// animals. They are not: one set is four sheep, the other is a generator.
+const DIG_GNRH = "Real animals — portal GnRH, Webster et al. 1991";
+const DIG_LH = "Real animals — peripheral LH, Webster et al. 1991";
+const PORTAL = "Simulated — GnRH model, no animal";
+const PERIPHERAL = "Simulated — LH model, no animal";
 
 export const SAMPLES: Sample[] = [
   // ---- digitised from Webster et al. 1991, used with an author's permission --
   {
     key: "w91_gnrh_thx_8067",
     group: DIG_GNRH,
-    label: "Thyroidectomized ewe #8067 — 11 pulses",
+    label: "Ewe #8067, thyroidectomized — 11 pulses",
     provenance: "digitised",
     note:
-      "Read off Fig. 3B of Webster et al. 1991 (Endocrinology 129:1635): portal blood every 5 min " +
-      "for 6 h. This is a real record, and the 11 pulses the authors identified are published on " +
-      "the trace itself — so it is the one dataset here with an answer nobody in this project " +
-      "supplied. The paper gives its settings (1-point windows, t = 3.2, original Fortran) but " +
-      "not its per-sample assay error, and without that the count is not reproducible: see the " +
-      "About page.",
+      "MEASURED from a real ewe, then read off the printed page. Fig. 3B of Webster et al. 1991 " +
+      "(Endocrinology 129:1635): hypophyseal-portal blood every 5 min for 6 h. The 11 pulses the " +
+      "authors identified are marked on the published trace, so this record carries an answer " +
+      "nobody in this project supplied — though it is their CLUSTER call, not ground truth about " +
+      "secretion. The paper gives its settings but not its per-sample assay error, and without " +
+      "that the count is not reproducible: see the About page.",
     timeUnit: "min",
     deltaT: 5,
     valueLabel: "GnRH (pg/min)",
@@ -99,11 +103,11 @@ export const SAMPLES: Sample[] = [
   {
     key: "w91_gnrh_thx_9013",
     group: DIG_GNRH,
-    label: "Thyroidectomized ewe #9013 — 21 pulses, the fastest observed",
+    label: "Ewe #9013, thyroidectomized — 21 pulses, fastest in the study",
     provenance: "digitised",
     note:
-      "Fig. 4A of the same paper, and the highest GnRH pulse frequency it recorded: 21 pulses in " +
-      "6 h, an interval near 17 min against a 5-min sampling interval. The hardest real record in " +
+      "MEASURED. Fig. 4A of the same paper, and the highest GnRH pulse frequency it recorded: 21 " +
+      "pulses in 6 h, an interval near 17 min against 5-min sampling. The hardest real record in " +
       "the app.",
     timeUnit: "min",
     deltaT: 5,
@@ -115,12 +119,12 @@ export const SAMPLES: Sample[] = [
   {
     key: "w91_gnrh_con_8058",
     group: DIG_GNRH,
-    label: "Thyroid-intact control #8058 — no pulses",
+    label: "Ewe #8058, thyroid-intact control — no pulses",
     provenance: "digitised",
     note:
-      "Fig. 3A: an anestrous control in which the authors identified no GnRH pulses at all. A real " +
-      "negative control, measured rather than generated — every pulse reported here is a false " +
-      "positive.",
+      "MEASURED. Fig. 3A: an anestrous control in which the authors identified no GnRH pulses at " +
+      "all. A real negative control — quieter and messier than a generated one, and the more " +
+      "honest test of a settings change for exactly that reason.",
     timeUnit: "min",
     deltaT: 5,
     valueLabel: "GnRH (pg/min)",
@@ -131,10 +135,10 @@ export const SAMPLES: Sample[] = [
   {
     key: "w91_gnrh_thx_9009",
     group: DIG_GNRH,
-    label: "Thyroidectomized ewe #9009 — no pulses",
+    label: "Ewe #9009, thyroidectomized — no GnRH pulses",
     provenance: "digitised",
     note:
-      "Fig. 4B: one of the two thyroidectomized ewes with no detectable GnRH pulses during portal " +
+      "MEASURED. Fig. 4B: one of the two thyroidectomized ewes with no detectable GnRH pulses during portal " +
       "sampling, though it did show LH pulses beforehand. A second real negative control.",
     timeUnit: "min",
     deltaT: 5,
@@ -146,10 +150,10 @@ export const SAMPLES: Sample[] = [
   {
     key: "w91_lh_thx_8067",
     group: DIG_LH,
-    label: "Thyroidectomized ewe #8067 — 11 pulses",
+    label: "Ewe #8067, thyroidectomized — 11 pulses",
     provenance: "digitised",
     note:
-      "Fig. 3B of Webster et al. 1991, upper panel: jugular LH from the same ewe as the portal " +
+      "MEASURED. Fig. 3B of Webster et al. 1991, upper panel: jugular LH from the same ewe as the portal " +
       "GnRH record, sampled every 6 min for 6 h a fortnight before the collection surgery. Load " +
       "the two in turn and the difference is the point — LH is a concentration with a half-life " +
       "long against the sampling interval, so its pulses decay over several samples, while the " +
@@ -164,10 +168,10 @@ export const SAMPLES: Sample[] = [
   {
     key: "w91_lh_thx_9013",
     group: DIG_LH,
-    label: "Thyroidectomized ewe #9013 — 16 pulses",
+    label: "Ewe #9013, thyroidectomized — 16 pulses",
     provenance: "digitised",
     note:
-      "Fig. 4A of Webster et al. 1991, upper panel: LH presampling in the ewe that went on to " +
+      "MEASURED. Fig. 4A of Webster et al. 1991, upper panel: LH presampling in the ewe that went on to " +
       "show 21 GnRH pulses, the highest frequency in the study.",
     timeUnit: "min",
     deltaT: 6,
@@ -179,10 +183,10 @@ export const SAMPLES: Sample[] = [
   {
     key: "w91_lh_con_8058",
     group: DIG_LH,
-    label: "Thyroid-intact control #8058 — no pulses",
+    label: "Ewe #8058, thyroid-intact control — no pulses",
     provenance: "digitised",
     note:
-      "Fig. 3A of Webster et al. 1991, upper panel: the anestrous control's LH, flat near the " +
+      "MEASURED. Fig. 3A of Webster et al. 1991, upper panel: the anestrous control's LH, flat near the " +
       "assay's detection limit. Circulating LH falls roughly 50-fold at the transition to " +
       "anestrus, which is what a suppressed record looks like — and a reminder that a detector's " +
       "baseline behaviour matters as much as its peaks.",
@@ -196,10 +200,10 @@ export const SAMPLES: Sample[] = [
   {
     key: "w91_lh_thx_9009",
     group: DIG_LH,
-    label: "Thyroidectomized ewe #9009 — 11 pulses",
+    label: "Ewe #9009, thyroidectomized — 11 pulses",
     provenance: "digitised",
     note:
-      "Fig. 4B upper panel. This animal was pulsatile in LH beforehand but showed no GnRH pulses " +
+      "MEASURED. Fig. 4B upper panel. This animal was pulsatile in LH beforehand but showed no GnRH pulses " +
       "during portal sampling, which the authors attribute partly to the disturbance of the " +
       "collection itself.",
     timeUnit: "min",
@@ -212,15 +216,17 @@ export const SAMPLES: Sample[] = [
   {
     key: "sim_gnrh_thx_ewe",
     group: PORTAL,
-    label: "Thyroidectomized ewe — 11 pulses in 6 h",
+    label: "Model — 32-min pulse interval",
     provenance: "simulated",
     note:
-      "Built to the protocol of Webster et al. 1991 (Endocrinology 129:1635): portal blood every " +
-      "5 min for 6 h, GnRH as pg collected per min. Secretory bursts are square waves of about " +
-      "5.5 min, so a pulse occupies one or two fractions and returns abruptly — GnRH is cleared " +
-      "far faster than a collection window and has no decay tail at this resolution. At that " +
-      "paper's own settings (windows of 1 point, t = 3.2) this yields the 11 pulses per 6 h it " +
-      "reports.",
+      "GENERATED, not measured. tools/make_synthetic.py, seed 101: square secretory bursts of " +
+      "about 5.5 min on a 0.16 pg/min baseline, amplitudes drawn log-uniformly between 0.8 and " +
+      "2.8, a mean interval of 32 min, 7.8% assay noise, sampled into 5-min fractions. No " +
+      "clearance term, because GnRH is cleared faster than a collection window. " +
+      "It is built to the protocol of Webster et al. 1991 and resembles no animal in it — the " +
+      "real records from that paper are the group above. Use this one when you need to know " +
+      "where the pulses truly are: every one was put there deliberately, which the published " +
+      "records cannot tell you.",
     timeUnit: "min",
     deltaT: 5,
     valueLabel: "GnRH (pg/min)",
@@ -229,13 +235,13 @@ export const SAMPLES: Sample[] = [
   {
     key: "sim_gnrh_thx_fast",
     group: PORTAL,
-    label: "Fastest ewe in that study — 21 pulses in 6 h",
+    label: "Model — 17-min pulse interval (hard case)",
     provenance: "simulated",
     note:
-      "The same protocol driven at the highest frequency the study observed. An interpulse " +
-      "interval near 17 min leaves about three 5-min fractions per cycle, so the peak and nadir " +
-      "windows start to overlap neighbouring pulses and adjacent pulses merge — the detector " +
-      "finds fewer than were generated. It is here to make that limit visible.",
+      "GENERATED, not measured. The same model at seed 131 driven to a 17-min mean interval — " +
+      "about three 5-min fractions per cycle, where the peak and nadir windows start to overlap " +
+      "neighbouring pulses and adjacent pulses merge. The detector finds fewer than were " +
+      "generated, and that gap is the point of the file. Resembles no animal.",
     timeUnit: "min",
     deltaT: 5,
     valueLabel: "GnRH (pg/min)",
@@ -244,16 +250,13 @@ export const SAMPLES: Sample[] = [
   {
     key: "sim_gnrh_intact",
     group: PORTAL,
-    label: "Thyroid-intact anestrous ewe — no pulses",
+    label: "Model — pulse-free (false-positive check)",
     provenance: "simulated",
     note:
-      "The negative control from the same protocol, where that study found no pulses of GnRH at " +
-      "all. Everything but the pulses matches the simulated thyroidectomized record, which makes " +
-      "it a sharper test of " +
-      "a settings change than a generic flat line: no pulse was generated here, so every pulse " +
-      "reported is a false positive. At the published GnRH settings it yields about one — which " +
-      "is what a stated 1% false positive rate predicts over 72 samples, not a defect. Loosen " +
-      "the t-scores and watch that number climb.",
+      "GENERATED, not measured. The same model at seed 161 with the pulse amplitude set to " +
+      "nothing: assay noise around a 0.16 pg/min baseline and no secretory events at all. Every " +
+      "pulse reported here is a false positive, and unlike a real pulse-free record there is no " +
+      "doubt about that. Resembles no animal.",
     timeUnit: "min",
     deltaT: 5,
     valueLabel: "GnRH (pg/min)",
@@ -265,7 +268,7 @@ export const SAMPLES: Sample[] = [
     label: "10-min sampling over 12 h",
     provenance: "simulated",
     note:
-      "Jugular LH: a substantial baseline with modest pulses that decay over several samples. " +
+      "GENERATED, not measured. Jugular LH: a substantial baseline with modest pulses that decay over several samples. " +
       "Unlike GnRH, exponential clearance is right here — LH's half-life is long compared with " +
       "the sampling interval.",
     timeUnit: "min",
@@ -278,7 +281,7 @@ export const SAMPLES: Sample[] = [
     group: PERIPHERAL,
     label: "24-h run, lower pulse frequency",
     provenance: "simulated",
-    note: "A full-day LH time course at 10-min sampling, with pulses roughly every three hours.",
+    note: "GENERATED, not measured. A full-day LH time course at 10-min sampling, with pulses roughly every three hours.",
     timeUnit: "min",
     deltaT: 10,
     valueLabel: "LH (ng/ml)",
@@ -290,7 +293,7 @@ export const SAMPLES: Sample[] = [
     label: "Flat control, no pulses (checks false positives)",
     provenance: "simulated",
     note:
-      "Assay noise around a constant baseline and nothing else. Every pulse reported here is a " +
+      "GENERATED, not measured. Assay noise around a constant baseline and nothing else. Every pulse reported here is a " +
       "false positive, which makes it the quickest way to see what a settings change costs.",
     timeUnit: "min",
     deltaT: 10,
@@ -303,7 +306,7 @@ export const SAMPLES: Sample[] = [
     label: "Values only — no time column",
     provenance: "simulated",
     note:
-      "The same LH model written without a time column, to show what happens when the sampling " +
+      "GENERATED, not measured. The same LH model written without a time column, to show what happens when the sampling " +
       "interval has to be supplied by hand. It was generated at 10-min sampling.",
     timeUnit: "min",
     deltaT: 10,
@@ -316,7 +319,7 @@ export const SAMPLES: Sample[] = [
     label: "Demo — no error column",
     provenance: "simulated",
     note:
-      "A seeded LH-like series with no per-sample error, so the error model has to be estimated " +
+      "GENERATED, not measured. A seeded LH-like series with no per-sample error, so the error model has to be estimated " +
       "from the data itself.",
     timeUnit: "min",
     deltaT: 10,
