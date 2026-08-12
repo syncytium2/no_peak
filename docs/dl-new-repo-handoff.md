@@ -8,7 +8,7 @@ approach. It is the packing list and the license map. The plan itself — framin
 phases, kill criteria, corrected calibration targets — is
 [`deep-learning-handoff.md`](deep-learning-handoff.md); copy both files into the
 new repo and read that one first. Do not start from this document alone: the
-plan carries two hard-won corrections (the 55–60% sensitivity target and the
+plan carries two hard-won corrections (the 50–65% sensitivity target and the
 density-matched false-positive gate) that will silently invalidate the training
 distribution if missed.
 
@@ -114,7 +114,7 @@ Measured against the generating pulse times in Johnson's simulated data
 ⚠ AutoDecon's figure is a detection count (128 of 130), not a scored
 sensitivity, and its false-positive comparison is *conditional on dense pulse
 trains* — on a broad corpus CLUSTER's honest expectation is 16–22% FDR, not ~0.
-The density-matched target for the Phase-1 gate is **the 55–60% sensitivity
+The density-matched target for the Phase-1 gate is **the 50–65% sensitivity
 band at <1% FDR** (measured 55.8% igor / 58.4% fortran, at 0.3/0.4% FDR) on a
 corpus shaped like the reference data (~145 points, 10-min sampling,
 ~30 pulses, ~4% CV) — the band's derivation and its caveats are in

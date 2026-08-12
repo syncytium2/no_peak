@@ -1,9 +1,9 @@
 # Handoff: a learned pulse detector for no_peak
 
 **Status:** Phase 0 partially done (gap re-checked 2026-08-12, web search
-only ⚠; decisions open); Phase 1
-built but short of its own spec (see Phase 1's status note in §6); Phase 2
-partly done; Phases 3–5 not started. The per-phase table opens §6.
+only ⚠; decisions open); Phase 1 built but short of its own spec (see
+Phase 1's status note in §6); Phase 2 partly done; Phases 3–5 not started.
+The per-phase table opens §6.
 **Written:** 2026-08-08, against no_peak v0.2.0. **Updated:** 2026-08-12
 (murderboard review — run record:
 `docs/reviews/deep-learning-handoff_2026-08-12.md`). The Phase 1 gate and
@@ -117,8 +117,9 @@ all four.
    reviewers will be right to push back.
 4. **Uncertainty is already quantified elsewhere.** hormoneBayes (a latent
    on/off state-space model fit by per-record MCMC) and the Bayesian
-   deconvolution family (variable-pulse-count models fit by reversible-jump
-   MCMC) already give full posteriors from mechanistic models — though
+   deconvolution family (variable-pulse-count models fit by
+   trans-dimensional — birth–death or reversible-jump — MCMC) already give
+   full posteriors from mechanistic models — though
    *calibration* of those posteriors is demonstrated for neither; the
    nearest evidence is Carlson 2013's coverage results (>99% coverage of
    pulse number for the two Bayesian methods it compared; full citation in
@@ -147,9 +148,9 @@ Two honesty clauses:
   "one pulse, uncertain location" from "two pulses", are not in it. If the
   joint is wanted (Phase 0's target decision notes users may want IPI),
   the cheap amortized route is an autoregressive factorization over the
-  onset sequence — same
-  simulator, same loss, still one network. A normalizing flow over a
-  fixed-dimension parameter vector is *not* the fallback here: the variable
+  onset sequence — same simulator, same loss, still one network. A
+  normalizing flow over a fixed-dimension parameter vector is *not* the
+  fallback here: the variable
   pulse count makes the space transdimensional.
 - **"Under that model" includes the prior.** Every probability the tool
   reports depends on the parameter ranges in the generator
@@ -202,7 +203,6 @@ comparator only. That is what keeps objection 1 answered.
   | Runtime | `onnxruntime-web` WASM, ~3–8 MB | lazy-load only when this Implementation is selected; the app currently ships no ML dependency at all |
   | Latency | < 100 ms for a 200-point series | a small network at this length is single-digit ms on CPU; the bound is generous |
 
-  §7's budget kill criterion evaluates against this table.
 - **It must consume the error channel.** Per-sample assay precision is what
   makes CLUSTER honest. Feed the per-sample error in as an input channel,
   not an afterthought — a model that ignores measurement error will
@@ -238,11 +238,14 @@ canonical rather than letting two lists drift. What matters for the plan:
 - [`tools/score_benchmark.ts`](../tools/score_benchmark.ts) — corpus scorer,
   both variants, with a 72-combination `--sweep`. This — not
   `scripts/run_csv.ts` — is the thing to extend for corpus work.
-- `tools/score_against_truth.ts` — scorer for Johnson's simulated datasets
+- [`tools/score_against_truth.ts`](../tools/score_against_truth.ts) —
+  scorer for Johnson's simulated datasets
   (local only, `PULSEXP_DATA`). ⚠ Ships pinned to `variant: "igor"`; the
   fortran baseline row is currently not reproducible from it (a one-line
   fix — see `docs/validation-status.md`, reproducibility gaps).
-- `data/digitized/` + `tools/score_webster1991.ts` — eight real GnRH/LH
+- `data/digitized/` +
+  [`tools/score_webster1991.ts`](../tools/score_webster1991.ts) — eight
+  real GnRH/LH
   records digitized from Webster et al. 1991, carrying the paper's own 70
   published CLUSTER pulse calls: **the one public real-data answer key in
   the project**, and the only adjudicator Phase 4 has that is neither this
@@ -255,10 +258,10 @@ canonical rather than letting two lists drift. What matters for the plan:
 - [`tools/make_synthetic.py`](../tools/make_synthetic.py) — where the
   physiology is argued out, and the only implementation of the **portal
   GnRH model**: square secretory bursts time-averaged over each collection
-  fraction (the timed windows of portal blood collection), with no clearance
-  tail at 30 s–5 min collection resolutions. The benchmark generator lacks
-  this model entirely — porting it there is Phase 1 work. Nearly every scale
-  is traced to a citation in
+  fraction (the timed windows of portal blood collection), with no
+  clearance tail at practical (≈5-min) collection resolutions. The
+  benchmark generator lacks this model entirely — porting it there is
+  Phase 1 work. Nearly every scale is traced to a citation in
   [`data/synthetic/README.md`](../data/synthetic/README.md); the exceptions
   — the assay CV is an estimate from a lab wave's sample-to-error ratio (a
   "wave" is Igor's name for a data series), and the LH kinetics are uncited
@@ -276,12 +279,14 @@ canonical rather than letting two lists drift. What matters for the plan:
   label source — §3).
 - [`scripts/run_csv.ts`](../scripts/run_csv.ts) — single-file CSV runner
   (not a batch runner; its documented `node --experimental-strip-types`
-  invocation is broken — use `tsx`, which is not a project dependency, so
-  `npx tsx`; see `docs/next-steps.md` §7).
+  invocation is broken — use `npx vite-node`, already a dev dependency and
+  the root `README.md`'s documented command; `docs/next-steps.md` §7
+  tracks fixing the header).
 - `tools/pulsar/pulsar_run.R` — the PULSAR Otago runner behind the published
   head-to-head (single-file; the sweep and scorer are not committed).
 - `data/extracted/` — eleven CSVs: three real hormone series with measured
-  per-sample error (`gnrh`, `LHInfused`, `set1`); per the README, the rest
+  per-sample error (`gnrh`, `LHInfused`, `set1`); per the root
+  `README.md`, the rest
   are six manual test series (`man2`–`man6`, `null1`) and two scratch
   waves — provenance unstated.
   **Gitignored** — absent from any clone, lab machines only — which decides
@@ -302,7 +307,7 @@ use the first two options.) Every gate below asks whether simulated series
 | Phase | Deliverable | Status (2026-08-12) | Gate |
 |---|---|---|---|
 | 0 | go/no-go + scoping decisions | gap checked 2026-08-12 (web search only ⚠ — database search still owed); decisions open; Veldhuis & Johnson 1994 (*Methods Enzymol*) unread ⚠ | written kill list |
-| 1 | training simulator | built, short of spec (5 gaps listed below) | density-matched CLUSTER reproduction, 55–60% band at <1% FDR — passed 2026-08-10 (55.8/58.4% at 0.3/0.4%) ⚠ band drawn from same-day anchors and gate cannot currently fail automatically (see Phase 1); gaps 1–5 ungated |
+| 1 | training simulator | built, short of spec (5 gaps listed below) | **provisionally passed (dense profile only); broad-corpus sensitivity unresolved.** Dense: 55.8/58.4% at 0.3/0.4% FDR, inside the 50–65% at <1% band, and the gate now exits non-zero on failure (2026-08-12). ⚠ Band drawn from same-day anchors, so "passed" means consistent-with-anchors; gaps 1–5 ungated |
 | 2 | baselines on the frozen benchmark | partly done | published baseline table incl. calibrated t-score |
 | 3 | the model | not started | beats the calibrated t-score baseline on §7's terms |
 | 4 | honest evaluation | not started | pre-registered metrics |
@@ -312,8 +317,8 @@ use the first two options.) Every gate below asks whether simulated series
 
 Re-run the literature search (§1) — directly against PubMed, Google
 Scholar, and arXiv/bioRxiv, which the 2026-08-12 web-search check did not
-reach — and record the queries. Note that the plan
-has already run out of its own order: Phase 1 was built and gated before
+reach — and record the queries. Note that the plan has already run out of
+its own order: Phase 1 was built and gated before
 this phase's go/no-go was decided and before the Veldhuis & Johnson 1994
 methodology paper (below) was read. Phase 0 is still a live decision —
 treat the Phase 1 work as sunk cost, not as momentum. Then two scoping
@@ -337,13 +342,93 @@ decisions that gate everything below:
 
 Write down what would make this *not* worth doing — starting from §7, which
 is the current draft of exactly that list. Then read Veldhuis &
-Johnson 1994 (*Methods Enzymol* 240:377–415) on simulation-based testing of
+Johnson 1994 (*Methods Enzymol* 240:377–414) on simulation-based testing of
 pulse detectors — the field has a roughly forty-page opinion on how to
 generate synthetic series and score detectors against them, and matching
-that methodology is most of what makes this credible. ⚠ The paper is
-paywalled and was not obtainable during review, so nobody has yet checked
-`tools/simulate_benchmark.py` against it; getting the PDF is the cheapest
-outstanding derisking step.
+that methodology is most of what makes this credible.
+
+**Obtained and read 2026-08-12**, along with its companion (*Neurosci
+Biobehav Rev* 1994;18(4):605–612); both are in the `downLow` repository's
+lit cache. What the chapter does and does not supply, which matters because
+it was expected to settle the Phase 1 gate:
+
+- It does **not** predict a sensitivity figure for CLUSTER, and arguing it
+  should is arguing against the chapter's own thesis — that a scalar
+  detector score is meaningless unless amplitude, half-life, sampling
+  interval, experimental variance, cluster size and t are all stated.
+- It **does** give monotonic direction rules (pp. 388–389) and a sampling
+  adequacy rule (p. 392), both of which this generator can be tested
+  against without new data. That test has been run: see
+  `docs/validation-status.md`. Result so far: of the five direction rules,
+  **one reproduces** (pulse amplitude, on a clean axis), one fails (half-life —
+  a clean negative and a probable generator defect, though two proposed
+  mechanisms have each been tested and rejected, so the cause is open),
+  one is untestable on this corpus (sampling intensity — the axis is
+  structurally confounded with pulse density), one is unresolved pending
+  replication (assay CV), and one needs a per-sample false-positive rate that
+  nothing computes (pulse frequency). The adequacy rule does not explain the
+  broad-corpus shortfall.
+- It **does** carry published operating curves (Fig. 6, Cluster sensitivity
+  and positive accuracy against half-life at four t-statistics; Fig. 13,
+  four indices against t) which are independent predictions this generator
+  could be made to reproduce. They are raster figures, so using them means
+  digitizing — the practice this repo already has a tool and a permissions
+  analysis for. Fig. 6's primary source is **Urban et al., *Endocrinology*
+  1991;128:2008–2014**, which the owner supplied on 2026-08-12; it is in the
+  lit cache and its parameters are verified below. *Am J Physiol*
+  1988;255:E749 is now the only outstanding want-list item.
+
+**What Urban 1991 supplies, verified against the PDF (2026-08-12).** Its
+simulated FSH corpus is fully specified: 90-min pulse frequency ±30%,
+biexponential clearance with half-lives of 142 and 719 min (the slow component
+70% of the amplitude), 10.6-min secretory burst half-duration, 12% intrasample
+experimental variance, 300 samples at a 10-min interval, and 128 Cluster
+parameter permutations across five metabolic clearance rates. Its reported
+optima are ~0.83–0.85 sensitivity at >0.80 positive accuracy.
+
+**Do not anchor the Phase 1 gate to 0.83–0.85.** Two independent reasons.
+First, that is a deliberately slow, long-half-life hormone at 300 samples —
+the easy end of the sampling problem, not a comparable case. Second, its
+142-min fast component against 10-min sampling is ~14 samples per half-life,
+comfortably *above* the Veldhuis & Johnson adequacy rule, whereas the dense
+profile is structurally *below* it at 2–5 (`docs/validation-status.md`). The
+two numbers sit on opposite sides of a threshold we have separately shown does
+not transfer, so they are not on one scale.
+
+What is portable from Urban is the **shape**, not the level, and exactly two
+shapes qualify: sensitivity falls while positive accuracy rises as the
+threshold rises, and both degrade as half-life lengthens. Those are falsifiable
+across hormones in a way a band never is, and they are the better Phase 1
+replacement.
+
+⚠ **Do not add a sampling-intensity shape to that list**, however tempting —
+Urban's own data contradicts it. Immediately after reporting the optimum he
+records "no significant differences by analysis of variance in peak
+discrimination by the Cluster analysis program among 5-, 10-, or 15-min
+sampling intensities" (p. 2012). A gate demanding monotone sensitivity against
+sampling interval would fail against the paper it was drawn from. Note this
+also means the half-life shape must be gated carefully: our own corpus does
+*not* reproduce VJ's half-life rule (`docs/validation-status.md`), so of the
+two shapes above, only the threshold one is currently supported at both ends.
+
+**Why this project reports no specificity or negative accuracy**, which Urban
+settles at p. 2009 and which is worth quoting because it is the primary source
+for an omission every CLUSTER-family paper shares:
+
+> …in order to calculate negative accuracy and specificity, a true negative
+> result must be defined (11, 12). A true negative result in our system would
+> be any valley identified by Cluster that included no true peak maxima.
+> However, the presence of false positive peaks would falsely elevate the
+> number of true negative events by creating additional flanking valleys.
+> Since we are primarily concerned with the sensitivity and positive accuracy
+> of peak detection, we did not attempt to define or use a true negative term.
+
+The circularity is real and it is **specific to a valley-based true negative**,
+which is forced on any detector that emits spans rather than per-sample calls.
+A per-timepoint posterior does not have it: every sample either falls inside a
+true pulse or does not, independent of what the model predicted. So specificity
+returns for free if a learned detector targets per-timepoint output — but never
+for CLUSTER, and it must not leak into the shared scorers, which score spans.
 
 ### Phase 1 — the simulator (the real work)
 
@@ -410,7 +495,7 @@ set. The measured anchors:
 | Corpus | igor | fortran | Reference point |
 |---|---|---|---|
 | Johnson's six datasets (130 pulses) | 51.5% sens, 0 FP (0% FDR) | 60.8% sens ⚠, 0 FP (0% FDR) | Johnson's published Cluster column ≈58% (a count; his parameters unrecorded) |
-| Density-matched (`--profile dense`, 2026-08-10) | 55.8% sens, 0.3% FDR | 58.4% sens, 0.4% FDR | gate target: within the 55–60% band at <1% FDR |
+| Density-matched (`--profile dense`, 2026-08-10; re-derived 2026-08-12) | 55.8% sens, 0.3% FDR | 58.4% sens, 0.4% FDR | gate target: within the 50–65% band at <1% FDR |
 | Broad corpus (committed benchmark, measured 2026-08-12) | 37.3% sens, 16.5% FDR | 62.9% sens, 21.9% FDR | 16–22% FDR (prior measurement of this same corpus — no independent expectation exists); sensitivity gate unsettled (below) |
 
 Caveats that travel with the table:
@@ -419,39 +504,55 @@ Caveats that travel with the table:
   widened by one sampling interval; each detection is credited to at most
   one onset, and every uncredited detection counts as a false positive
   (the matching rule is recorded in `docs/validation-status.md`).
-- The ⚠ 60.8% comes from an uncommitted edit; the committed scorer is
-  igor-pinned (§5).
+- The ⚠ 60.8% came from an uncommitted edit. Fixed 2026-08-12:
+  `score_against_truth.ts` now scores both variants on every run, so the row
+  is derivable from committed code — but the figure itself has not been
+  re-derived since 2026-08-10, and cannot be without `PULSEXP_DATA`.
 - 130 pulses puts roughly ±8 points of binomial confidence interval on any
-  sensitivity here, so the 55–60% band is indicative, not precise.
+  sensitivity here, which is why the band is 50–65% and not the narrower
+  55–60% an earlier draft used: the wider band is the one that actually
+  spans all three Johnson anchors (51.5 / 58 / 60.8%).
 - The <1% FDR target rests on single-digit false-positive counts (2–3 of
   ~700 detections): quote raw counts and expect seed-to-seed movement.
-- The 55–60% band was adopted 2026-08-10 from the Johnson anchors
-  (51.5 / 58 / 60.8% — the igor anchor sits below it) on the same day the
-  dense profile was measured inside it, so read "passed" as "consistent
-  with the anchors", not as an independent prediction confirmed.
+- The band was adopted 2026-08-10 from those same anchors, on the same day
+  the dense profile was measured inside it, so read "passed" as "consistent
+  with the anchors", not as an independent prediction confirmed. Veldhuis &
+  Johnson 1994 was expected to supply an independent band and does not —
+  the chapter argues against scalar detector scores (§Phase 0).
 - "Zero false positives in every configuration tried" holds at defaults;
   the "27-point sweep" behind the wider phrase does not exist at all — the
   only committed sweep is `score_benchmark.ts --sweep`, 72 combinations on
   a different corpus (validation-status, reproducibility gaps).
 
-Three unresolved items, found in review — resolve, don't average:
+Three items were found unresolved in review. Two were closed 2026-08-12; the
+third narrowed but is still open.
 
-- The igor variant's 37.3% broad-corpus sensitivity sits below the 50–65%
-  band `score_benchmark.ts` itself prints as a gate. Either the band is
-  wrong for igor or the corpus is; nothing currently fails when it should.
-- The gate is stated in three places that disagree, on both axes: this doc
-  (55–60% sens, <1% FDR dense, 16–22% broad), `score_benchmark.ts`'s
-  printed GATE lines (50–65% sens, 15–25% FDR broad), and that same
-  script's own header comment (55–60% at "near-zero" — contradicting its
-  printed gate). A fourth copy in `dl-new-repo-handoff.md` §4 was
-  reconciled 2026-08-12. State the gate once — in the script, which is
-  what runs it — make it exit non-zero on failure, and cite it from
-  everywhere else.
-- The dense-profile figures regenerate from the committed generator
-  (`--profile dense`), but the committed scorer hardcodes `data/benchmark`
-  and takes no directory argument, so scoring a regenerated dense corpus
-  means editing the scorer. Add a `--dir` flag and record the two exact
-  commands.
+- **Closed — the gate is now stated once.** It had been stated in four
+  places that disagreed on both axes. It now lives in
+  `score_benchmark.ts`'s header, is printed from the same constants, and is
+  **50–65% sensitivity at under 1% FDR, judged on the dense profile only**.
+  The script exits non-zero when a dense corpus misses either arm, and
+  prints without failing on any other profile. Everywhere else — this doc,
+  `dl-new-repo-handoff.md` §4, `docs/validation-status.md` — cites it
+  rather than restating it.
+- **Closed — the dense corpus is scorable without editing code.** The two
+  exact commands:
+
+      python3 tools/simulate_benchmark.py --profile dense --n 40 --seed 7 --out /tmp/dense
+      npx vite-node tools/score_benchmark.ts --dir /tmp/dense
+
+  (`truth.json` was regenerated the same day so its records carry the
+  `profile` key the gate reads; the series files are byte-identical, and
+  the whole committed corpus reproduces exactly from seed 20260810.)
+- **Still open — why broad-corpus `igor` sensitivity is 37.3%.** It is no
+  longer a gate failure, because the gate no longer claims the broad corpus.
+  But it is still unexplained, and the leading explanation has now been
+  tested and rejected: Veldhuis & Johnson's sampling-adequacy rule, which
+  42% of the corpus violates, has the right *direction* but cannot account
+  for the shortfall — see `docs/validation-status.md`, "sampling adequacy is
+  not what holds broad-corpus sensitivity down". Pulse density is what
+  tracks it. Resolve it before wiring any broad-corpus arm into the gate;
+  a threshold there would currently be measuring corpus composition.
 
 Because "CLUSTER behaves the same" is tunable-toward by construction, the
 broad corpus also needs **realism checks that do not involve CLUSTER**:
@@ -461,10 +562,12 @@ were tuning targets and which were validation. The expert test — a domain
 expert should be unable to reliably distinguish simulated series from real
 ones — needs its terms specified before it runs (blinded presentation,
 stated n, stated pass/fail statistic), and its limits acknowledged: with
-~11 real series it is severely underpowered, and since `data/extracted/` is
-gitignored it can only run on a lab machine. (Real material on hand: three
-hormone series with measured error in `data/extracted/`, plus the eight
-digitized Webster records — that is the whole real-data pool.)
+~11 real series it is severely underpowered. (Real material on hand: three
+hormone series with measured error in `data/extracted/` — gitignored, lab
+machines only —
+plus the eight public digitized Webster records; that is the whole
+real-data pool, so only the full-pool version of the test needs a lab
+machine.)
 
 Do not tune the generator to drive the broad-corpus FDR toward zero; that
 would be fitting the simulator to an artifact.
@@ -475,7 +578,7 @@ would be fitting the simulator to an artifact.
 > as a general target: a simulator tuned to make CLUSTER hit 80% would be
 > systematically too easy — pulses too tall, noise too low, spacing too
 > generous — and a model trained on it would collapse on real records.
-> Calibrate to the measured 55–60% band instead. An earlier ~59% figure
+> Calibrate to the measured 50–65% band instead. An earlier ~59% figure
 > from a throwaway script was retracted; the regenerable figures are the
 > `--profile dense` ones in the table above (`docs/validation-status.md`).
 
@@ -486,10 +589,9 @@ calibrated wrapper on CLUSTER's own t-score** (`src/core/mscore.ts`) —
 Platt-scale the existing t trace (fit a two-parameter logistic, slope and
 intercept, mapping t-score → probability) against simulator truth. That
 wrapper costs ~zero parameters, runs client-side by definition, and is
-fully inspectable. It
-is the null hypothesis of this project, and §7 kills the project if the
-network cannot beat it.
-Publish the baseline table in the repo, scored on the Phase-1 benchmark
+fully inspectable. It is the null hypothesis of this project, and §7 kills
+the project if the network cannot beat it. Publish the baseline table in
+the repo, scored on the Phase-1 benchmark
 (`data/benchmark/` — public and committed; not to be confused with
 Johnson's datasets, which cannot be redistributed). Half the value of this
 project is a shared benchmark, independent of whether the network works.
@@ -509,12 +611,12 @@ project is a shared benchmark, independent of whether the network works.
 > true pulses); the AutoDecon paper's own scored result is ~96% sensitivity
 > (its abstract: "approximately 96% vs. 80%") on a *different* synthetic
 > corpus, at ~6× CLUSTER's false-positive rate (a pooled ratio; per group
-> it runs 3–33×).
-> The ceiling is known in kind — deconvolution is in a different class on
-> sensitivity — but not in number. Two consequences. First, **higher
-> sensitivity than CLUSTER is a solved problem** (AutoDecon, 2008, at a
-> false-positive cost — see Phase 4); calibrated uncertainty plus
-> client-side speed is the only defensible differentiator, so resist
+> it runs 3–33×). The ceiling is known in kind — deconvolution is in a
+> different class on sensitivity — but not in number. Two consequences.
+> First, **higher sensitivity than CLUSTER is a solved problem**
+> (AutoDecon, 2008, at a false-positive cost — see Phase 4); calibrated
+> uncertainty plus client-side speed is the only defensible
+> differentiator, so resist
 > leading with an accuracy number. An AutoDecon head-to-head on the Phase-1
 > corpus is runnable locally with `pulse_xp.exe`
 > (`dl-new-repo-handoff.md` §2). Second, **Johnson's datasets cannot be
@@ -548,8 +650,8 @@ shipped window settings and with the **fortran** variant — the Igor form's
 t-score is not scale-invariant (`docs/validation-status.md`), and record
 amplitudes span two orders of magnitude across the corpus. (An earlier
 draft suggested a per-point value-over-error channel and called it
-CLUSTER's own statistic — it is not:
-CLUSTER's statistic is the windowed contrast, and a per-point
+CLUSTER's own statistic — it is not: CLUSTER's statistic is the windowed
+contrast, and a per-point
 signal-to-noise ratio is directly computable from the value and error
 channels the network already has — redundant, not informative.) Feeding
 CLUSTER's statistic as an *input* does not breach §3's firewall — labels
@@ -570,8 +672,8 @@ the joint posterior; the space is transdimensional.
   which sidesteps a single threshold; state how the default is chosen
   anyway.) The CLUSTER-vs-AutoDecon comparison is instructive: higher
   sensitivity bought with ~6× the false positives (pooled; 3–33× per
-  group) is not a free win — both
-  halves of that figure come from AutoDecon's own corpus, and CLUSTER's ~1%
+  group) is not a free win — both halves of that figure come from
+  AutoDecon's own corpus, and CLUSTER's ~1%
   there (a per-point false-positive rate, not an FDR) is conditional on
   dense pulse trains (16–22% FDR measured broad; Phase 1) — and which side
   of the trade you want depends on the biological question.

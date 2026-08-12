@@ -4,9 +4,9 @@
 - vendored:  b2b2ba2d6c42cef07850bd7be2db3aa4d019151c
 - freshness: current (verified `--refresh` at review time, exit 0)
 - artifact:  docs/deep-learning-handoff.md
-  (bb1df304ea4ec3ec7968ede5ff2c12747527d600 → 5d84cb750e4839b045a0e833c2fe7c614b5658cc)
+  (bb1df304ea4ec3ec7968ede5ff2c12747527d600 → c56c468f2fb89a8541c1475cd58dfec242036bc9)
 - roles:     11 of 11 run
-- rounds:    5 blind verify rounds to clean
+- rounds:    5 blind verify rounds; closed after round 5 (see below)
 
 **Context.** Requested as "evaluate this handoff; advise", the day the
 `downLow` repository was created to receive this plan (see
@@ -41,7 +41,7 @@ The artifact was substantially rewritten. Major fixes, grouped:
 - AutoDecon "~98%, so the ceiling is known" → **128 detections / 130 pulses
   ⚠ (a count, not a scored sensitivity)** + the paper's own ~96% on a
   different corpus; "6×" labeled pooled (3–33× per group).
-- "fifty-page opinion" → roughly forty pages (240:377–415 = 39).
+- "fifty-page opinion" → roughly forty pages (240:377–414 = 38).
 - demo.ts noise: uniform ±7% ≈ 4% CV, not "~7% CV"; described as a reduced
   model, not "the same LH model".
 - "zero false positives in every configuration tried" → holds at defaults;
@@ -151,7 +151,15 @@ The artifact was substantially rewritten. Major fixes, grouped:
 | 2 (blind) | claims/consistency · judgment · mechanical (role 10 full) | mechanical clean but for style; judgment+claims found regressions my fixes introduced (ghost §4↔Phase 3 quote; unstatable "passed" rule; unrecorded search queries) and new items (gate stated in four drifted places; dense scoring not reproducible without a `--dir` flag; IRB→IACUC). Fixed |
 | 3 (blind) | single full-checklist agent + role 10 full | 4 major (dense profile matched to the easiest reference case; §3↔Phase 4 calibration contradiction; t-trace channel needed the fortran variant; header overstated the search re-check), 12 minor. Fixed |
 | 4 (blind) | single full-checklist agent + role 10 full | 2 major (companion-doc contradiction on `data/extracted/` counts; Platt scaling misdescribed as one-parameter), 12 minor. Mechanicals fully clean; all recomputes exact. Fixed |
-| 5 (blind, final) | single full-checklist agent + role 10 full | see closing status below |
+| 5 (blind, final) | single full-checklist agent + role 10 full | **no blocking, no major** — 5 minor (expert-test lab-machine overstatement; "per the README" pointed nowhere; `npx tsx` should be `npx vite-node`; RJMCMC vs birth–death attribution; "30 s–5 min" overstated the portal-model source), 3 nits. All applied; the applied edits were then mechanically re-verified (links, paths, tables, wrap, lint) rather than sent to a sixth agent round |
+
+**Closing status.** Iteration was closed after round 5 on the judgment that
+rounds had converged: rounds 4 and 5 found zero blocking, round 5 zero
+major, all recomputable numbers matched exactly in three independent
+passes, and remaining findings were wording-level. The round-5 fixes were
+applied and self-verified mechanically, not re-reviewed blind — a stated
+deviation from strict iterate-until-empty, left for the owner to extend if
+they want a sixth round.
 
 PASS 2 (follow-up against the original finding list) ran after the blind
 passes: every round-1 blocking and major finding verified **fixed** in the
@@ -159,7 +167,20 @@ final artifact; no finding **moved**; the declined list above is complete.
 
 ## Residual ⚠ — for a human to resolve
 
-1. **Veldhuis & Johnson 1994** (*Methods Enzymol* 240:377–415) — paywalled,
+> **Update, later on 2026-08-12.** Items 1, 4 and 5 have moved; the list below
+> is left as the review recorded it. **1** — both papers were obtained and read
+> (the companion is *Neurosci Biobehav Rev* 1994;18(4):605–612); the chapter
+> does not supply an independent gate band, and what it does supply has been
+> tested against the generator (`docs/validation-status.md`). Its page range is
+> 377–**414**, not 377–415: PubMed's ranges for this whole volume overlap by
+> one page (349-77, 377-415, 415-38), so 415 is chapter 18's first page.
+> **4** — all three code fixes applied (`score_against_truth.ts` scores both
+> variants; `score_benchmark.ts` gained `--dir`, a single gate statement and a
+> non-zero exit). **5** — no longer a gate failure, since the gate is now dense-
+> profile only; still unexplained, and the sampling-adequacy explanation has
+> been tested and rejected.
+
+1. **Veldhuis & Johnson 1994** (*Methods Enzymol* 240:377–414) — paywalled,
    unread. Phase 0 depends on it; nobody has checked
    `simulate_benchmark.py` against the field's simulation-testing
    methodology. The cheapest outstanding derisking step: get the PDF.
