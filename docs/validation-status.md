@@ -534,12 +534,49 @@ Decomposed on the same corpus:
 | **half-life alone** (5–20 → 20–35 → 35–60 min) | 35.1 → 38.5 → 38.2% | 63.9 → 60.4 → 64.0% |
 
 The sampling-interval arm has the sign VJ predict. The half-life arm has no
-trend at all, in either variant. **VJ's half-life rule does not reproduce on
-this corpus, and unlike the sampling arm this is a clean negative** — half-life
+trend at all, in either variant. ~~**VJ's half-life rule does not reproduce on
+this corpus, and unlike the sampling arm this is a clean negative**~~ — half-life
 is drawn independently of everything else in the generator, and measured
 against the committed corpus it correlates with nothing (|r| ≤ 0.12 against
 sampling interval, density, pulse mass, assay CV and record length). So this
 one is not a confound artifact.
+
+> **RETRACTED 2026-08-12. The half-life rule does reproduce; this measurement
+> could not see it.** Found by downLow
+> (`downLow/docs/handoff-to-no_peak_2026-08-12_half-life.md`), reproduced here
+> with the committed `score_benchmark.ts --dir` against corpora rebuilt from
+> this repo's own 200 records with each record's *own* half-life scaled and
+> everything else held:
+>
+> | half-life ×  | median | igor | fortran | igor FDR | fortran FDR |
+> |---|---:|---:|---:|---:|---:|
+> | 0.25 | 7.2 min | 39.9% | 68.6% | 5.9% | 20.1% |
+> | 1 | 28.9 min | 38.0% | 63.0% | 13.0% | 19.5% |
+> | 4 | 115.7 min | 35.6% | 51.3% | 29.0% | 26.6% |
+>
+> Sensitivity falls and FDR rises as half-life lengthens, monotonically, in both
+> variants, over a 16× range — VJ's predicted direction. (At ×1 the rebuild
+> scores 38.0/63.0 against this corpus's committed 37.3/62.9, so it is faithful.)
+>
+> **The error above is not in the numbers; it is in the inference.** "Half-life
+> correlates with nothing, so this is not a confound artifact" conflates bias
+> with variance. Zero correlation removes bias. It does nothing about the
+> *noise floor* of a between-record comparison, which is set by the spread of
+> the parameters half-life is being averaged against — and on this corpus
+> sampling interval spans 20.5 points of sensitivity and pulse density 32.2,
+> against a true half-life effect near 3 points for `igor`. The decisive case is
+> `fortran`: the paired design finds **17.3 points** where the stratification
+> finds **0.1** (63.9 / 60.4 / 64.0). A comparison blind to a 17-point effect
+> cannot support "no effect", still less a reversed one.
+>
+> **This invalidates the method, not just this row.** Every VJ direction rule
+> scored below was judged by stratifying this corpus. The amplitude arm spans 22
+> points across its strata and is probably above the noise floor; the sampling,
+> CV and frequency verdicts are not obviously so. Re-test each by pairing before
+> citing any of them again — including on `/methods`. The rule worth keeping:
+> **a stratified corpus cannot test a direction rule when the parameter's own
+> effect is smaller than the spread of the parameters it is confounded with.
+> Pair, or do not conclude.**
 
 It also is not an adequacy artifact, which was the obvious escape. VJ pair the
 direction rule with the five-sample rule, so the rule should only be expected
@@ -709,10 +746,18 @@ first and fall with the second.
 `fortran`'s FDR falls across the same bands (25.3% → 14.4%), so the sign is
 right on both error types. Amplitude is drawn independently of everything else
 in the generator, so unlike the sampling axis this one is not standing in for
-density. **It is the only one of VJ's five direction rules this corpus
-currently reproduces** — the sampling rule is untestable here, the half-life
+density. ~~**It is the only one of VJ's five direction rules this corpus
+currently reproduces**~~ — the sampling rule is untestable here, the half-life
 rule fails, the CV rule is unresolved, and the frequency rule needs a
 per-sample false-positive rate nothing computes.
+
+> **Amended 2026-08-12.** The half-life rule *does* reproduce when measured by
+> pairing rather than by stratifying (see the retraction above), so amplitude is
+> not the only one. More importantly, **this whole scorecard was produced by the
+> method that failed there.** Amplitude's 22-point spread across strata is
+> probably above the noise floor and so probably safe; the sampling, CV and
+> frequency verdicts have not been re-tested by pairing and should not be cited
+> until they are.
 
 **Assay CV does not.** The endpoints have the right sign in both variants
 (48.2 → 32.9% and 69.6 → 57.9%), but the middle two bands invert, and they
