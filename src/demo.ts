@@ -36,7 +36,9 @@ export function demoSeries(): { times: number[]; values: number[] } {
       const dtp = t - pulseStarts[p];
       if (dtp >= 0) v += amplitudes[p] * Math.exp(-k * dtp);
     }
-    // ~7% CV assay noise
+    // Uniform ±7%, so the CV is 0.07/sqrt(3) ≈ 4% — not 7%, and hard-bounded in
+    // a way no assay is. This is the demo's reduced model; tools/make_synthetic.py
+    // is the reference one, where cv is a real Gaussian parameter.
     v *= 1 + (rand() - 0.5) * 0.14;
     times.push(t);
     values.push(Number(v.toFixed(3)));
