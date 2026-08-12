@@ -127,14 +127,26 @@ the repo**, both learned the hard way in `downLow` and both worth knowing
 - It compares a file's stamp against `HEAD`, not against the file's content, so
   a file that did not change still reads as stale until its stamp is bumped.
   Bump **every** stamp in the set on a re-vendor, not only the ones that moved.
+  Do **not** file that as churn or a false alarm: the stamp is a claim about
+  *which upstream commit this copy corresponds to*, and after an unrelated
+  commit the copy genuinely corresponds to the new one — same bytes, new
+  commit. Bumping is the honest update. A reader told it is a formality starts
+  skipping it, which is worse than the noise.
 - Verifying by hand hits a cache that can serve the previous sha, so it will
   report stale on a file you just corrected. Use `--refresh` when checking
   manually; the session-start path is fine.
 
 Both are the same shape: the check's output standing in for the files'
 condition. That is the proxy failure of `docs/validation-status.md`'s header
-table pointed inward at the tool, which is worth knowing because a check that
-cries wolf twice is a check someone turns off.
+table pointed inward at the tool.
+
+**The thing that would actually kill this hook is its alert-to-action ratio.**
+Every upstream commit fires it, and the action is almost always a one-line
+stamp bump. That is what gets a check turned off, not any single false alarm.
+If it becomes a problem the fix is to compare *content* rather than stamp for
+files that did not move — but note where that would have to land:
+`tools/murderboard_freshness.sh` is vendored from `syncytium2/murderboard` and
+must not be edited here, so the change belongs upstream.
 
 ### E. Deploys are fine — but check the site, not `dist/` mtimes
 

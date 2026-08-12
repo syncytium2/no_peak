@@ -46,6 +46,13 @@ _Last updated: 2026-08-12 (v0.2.0)._ Open work is in
 > code, only for non-reproduction to be reported honestly rather than
 > reconciled away.
 >
+> The binding constraint is **latency, not rigor**. Report the mismatch
+> *immediately* and with no diagnosis attached — the instinct to understand it
+> first is what fails, because every hour spent working out why a number
+> disagrees is an hour the other party spends building on it. "Your number does
+> not reproduce here and I don't know why" is the whole of the required
+> message.
+>
 > **And check `git status`, not just the file.** More than one agent worked in
 > this checkout that day, which is the single fact most of the day's confusion
 > reduces to: a file read mid-edit, edits found and misattributed to the owner,
