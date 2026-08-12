@@ -1,5 +1,5 @@
 import { describe, expect, it } from "vitest";
-import { niceTicks, timeTicks } from "./scale";
+import { niceTicks, promoteTimeUnit, timeTicks } from "./scale";
 
 describe("timeTicks", () => {
   const step = (t: number[]) => Number((t[1] - t[0]).toPrecision(12));
@@ -52,5 +52,37 @@ describe("timeTicks", () => {
   it("degenerates safely", () => {
     expect(timeTicks(5, 5, 8, 1)).toEqual([5]);
     expect(timeTicks(0, 100, 8, 0)).toEqual(niceTicks(0, 100, 8));
+  });
+});
+
+describe("promoteTimeUnit", () => {
+  it("reads a 6 h record in hours, not 60-minute multiples", () => {
+    // The complaint this exists for: a minutes axis over ewe #9013's 6 h record
+    // ticks 0, 60, 120 … 360, which is an hour ladder the reader has to divide.
+    const t = timeTicks(-2.5, 362.5, 8, 60);
+    expect(t).toEqual([0, 60, 120, 180, 240, 300, 360]);
+    const p = promoteTimeUnit(t, 1);
+    expect(p).toEqual({ divisor: 60, short: "h" });
+    expect(t.map((v) => v / p!.divisor)).toEqual([0, 1, 2, 3, 4, 5, 6]);
+  });
+
+  it("promotes a seconds axis to minutes, and to hours when it earns it", () => {
+    expect(promoteTimeUnit(timeTicks(0, 600, 8, 1), 1 / 60)).toEqual({ divisor: 60, short: "min" });
+    expect(promoteTimeUnit(timeTicks(0, 86400, 8, 1), 1 / 60)).toEqual({
+      divisor: 3600,
+      short: "h",
+    });
+  });
+
+  it("leaves an axis alone when its own unit reads better", () => {
+    // 10-minute ticks are minutes; 1.5 h would read worse than 90.
+    expect(promoteTimeUnit([0, 10, 20, 30], 1)).toBeNull();
+    expect(promoteTimeUnit([0, 90, 180], 1)).toBeNull();
+    // ticks anchored off the hour (a zoom window starting at 05:30)
+    expect(promoteTimeUnit([90, 150, 210], 1)).toBeNull();
+    // an hours axis has nothing above it here, and sample numbers are not time
+    expect(promoteTimeUnit([0, 2, 4], 60)).toBeNull();
+    expect(promoteTimeUnit([0, 60, 120], null)).toBeNull();
+    expect(promoteTimeUnit([60], 1)).toBeNull();
   });
 });

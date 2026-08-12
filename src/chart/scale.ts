@@ -81,6 +81,38 @@ export function timeTicks(
   return ticks.length >= 2 ? ticks : niceTicks(min, max, target);
 }
 
+/**
+ * When every tick on a time axis lands on a whole larger unit, the axis is
+ * counting in that unit and should say so: a 6 h record on a minutes axis ticks
+ * 0, 60, 120 … 360, which is an hour ladder wearing minute clothes and asks the
+ * reader to divide by 60 to think in hours.
+ *
+ * Returns the divisor and the unit to display in, or null when the ticks are
+ * already in the axis's own unit. Never promotes past what the ticks support —
+ * a 90-minute step stays in minutes, because 1.5 h reads worse than 90.
+ */
+export interface UnitPromotion {
+  /** Divide tick values by this to get the displayed number. */
+  divisor: number;
+  /** Suffix for the axis label, e.g. "h". */
+  short: string;
+}
+
+export function promoteTimeUnit(ticks: number[], unitMinutes: number | null): UnitPromotion | null {
+  if (unitMinutes === null || !(unitMinutes > 0) || ticks.length < 2) return null;
+  const stepMin = Math.abs(ticks[1] - ticks[0]) * unitMinutes;
+  if (!(stepMin > 0)) return null;
+  // A promotion has to divide every tick, not just the step: ticks anchored off
+  // a whole unit (a window starting at 05:30) still read best in their own.
+  const whole = (perMin: number) =>
+    ticks.every((t) => Math.abs(((t * unitMinutes) / perMin) % 1) < 1e-9);
+
+  if (unitMinutes < 1 && stepMin >= 60 && whole(60)) return { divisor: 60 / unitMinutes, short: "h" };
+  if (unitMinutes < 1 && stepMin >= 1 && whole(1)) return { divisor: 1 / unitMinutes, short: "min" };
+  if (unitMinutes === 1 && stepMin >= 60 && whole(60)) return { divisor: 60, short: "h" };
+  return null;
+}
+
 /** Pad a domain by a fraction on each side (peak labels need headroom). */
 export function padDomain([lo, hi]: [number, number], fLo = 0.05, fHi = 0.1): [number, number] {
   const span = hi - lo || 1;

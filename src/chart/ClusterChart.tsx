@@ -6,10 +6,17 @@
 import { useId, useMemo, useRef, useState } from "react";
 import type { ClusterResult } from "../core/types";
 import type { SegmentResult } from "../core/segments";
-import { timeUnitDef, type TimeUnit } from "../core/timeUnits";
+import { defaultAxisLabel, timeUnitDef, type TimeUnit } from "../core/timeUnits";
 import { fmt } from "../core/format";
 import { FIG, ERROR_BAR_OPACITY, type FigPalette } from "./palette";
-import { linearScale, niceTicks, padDomain, formatTick, timeTicks } from "./scale";
+import {
+  linearScale,
+  niceTicks,
+  padDomain,
+  formatTick,
+  timeTicks,
+  promoteTimeUnit,
+} from "./scale";
 
 export interface ClusterChartProps {
   result: ClusterResult;
@@ -146,6 +153,12 @@ export function ClusterChart({
     unitMinutes === null
       ? niceTicks(x.domain[0], x.domain[1], 8)
       : timeTicks(x.domain[0], x.domain[1], 8, unitMinutes * 60);
+  // 0, 60, 120 … 360 on a minutes axis is an hour ladder in minute clothing, so
+  // display it in hours — but only when the label is this unit's own, since a
+  // label someone typed is theirs and must keep agreeing with the numbers.
+  const promo = promoteTimeUnit(xTicks, unitMinutes);
+  const axisLabel =
+    promo && xLabel === defaultAxisLabel(timeUnit) ? `Time (${promo.short})` : xLabel;
   const yTicks = niceTicks(y.domain[0], y.domain[1], 6);
   const tTicks = niceTicks(yT.domain[0], yT.domain[1], 3);
   const runs = pulseRuns(pulse);
@@ -551,7 +564,7 @@ export function ClusterChart({
               textAnchor="middle"
               style={{ fontVariantNumeric: "tabular-nums" }}
             >
-              {formatTick(t)}
+              {formatTick(promo ? t / promo.divisor : t)}
             </text>
           </g>
         ))}
@@ -563,7 +576,7 @@ export function ClusterChart({
           fill={P.inkPrimary}
           textAnchor="middle"
         >
-          {xLabel}
+          {axisLabel}
         </text>
 
         {/* source credit, wrapped over at most two lines */}

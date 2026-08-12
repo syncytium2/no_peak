@@ -303,6 +303,12 @@ export function App() {
       <header>
         <h1>
           no_peak<span className="tagline"> — CLUSTER pulse detection</span>
+          {/* Up top rather than only in the footer: a reader deciding whether
+              to trust a result wants to know how old the tool is and which
+              build produced it, before reading the result. */}
+          <span className="stamp">
+            v{VERSION} · built {BUILT} · since {longDate(BORN)}
+          </span>
         </h1>
         <p className="privacy">
           Runs entirely in your browser. Uploaded data is processed on your machine and never sent

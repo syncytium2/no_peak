@@ -33,7 +33,7 @@ CLUSTER's speed, **not** accuracy: AutoDecon already beat CLUSTER on accuracy in
 | `tools/score_benchmark.ts`, `tools/score_against_truth.ts` | Scoring harnesses: benchmark corpus and Johnson's simulated data respectively. The latter reads a local Pulse_XP `Data/` folder via `PULSEXP_DATA` (see §2). |
 | `tools/score_webster1991.ts` | Scores any detector against the one public real-data ground truth (§3). |
 | `src/core/cluster.ts` + `src/core/` | The baseline to beat, both variants (`igor`, `fortran`), and a sanity-check labeler. |
-| `scripts/run_csv.ts` | Batch runner over CSVs. (Known defect: its documented `node --experimental-strip-types` invocation fails; use `tsx`. See `next-steps.md` §7.) |
+| `scripts/run_csv.ts` | Single-file CSV runner (not batch; loop it or extend `tools/score_benchmark.ts` for corpus work). (Known defect: its documented `node --experimental-strip-types` invocation fails; use `tsx`. See `next-steps.md` §7.) |
 | `docs/validation-status.md` | Every baseline number quoted below, with its caveats attached. |
 | `docs/reference-code.md`, `docs/figure-data-permissions.md` | The license and permissions ground truth for everything in §2 and §3. |
 
@@ -91,8 +91,10 @@ What is inside, and why each part matters:
 3. **The frozen synthetic benchmark** (`data/benchmark/`, public): generating
    truth known exactly, publishable, but only as credible as the simulator —
    which is the whole Phase-1 gate.
-4. **`data/extracted/`** (gitignored, lab machines only): eleven real GnRH/LH
-   series, three with *measured* per-sample error. No truth labels; sim-to-real
+4. **`data/extracted/`** (gitignored, lab machines only): eleven CSVs, of
+   which three are real GnRH/LH series with *measured* per-sample error
+   (`gnrh`, `LHInfused`, `set1`); the rest are manual test series and
+   scratch waves. No truth labels; sim-to-real
    agreement checks only. Igor panel settings recorded alongside are priors for
    what humans actually choose.
 
@@ -111,10 +113,12 @@ Measured against the generating pulse times in Johnson's simulated data
 
 ⚠ AutoDecon's figure is a detection count (128 of 130), not a scored
 sensitivity, and its false-positive comparison is *conditional on dense pulse
-trains* — on a broad corpus CLUSTER's honest expectation is 15–20% FDR, not ~0.
-The density-matched target for the Phase-1 gate is **56–58% sensitivity at <1%
-FDR** on a corpus shaped like the reference data (~145 points, 10-min sampling,
-~30 pulses, ~4% CV).
+trains* — on a broad corpus CLUSTER's honest expectation is 16–22% FDR, not ~0.
+The density-matched target for the Phase-1 gate is **the 55–60% sensitivity
+band at <1% FDR** (measured 55.8% igor / 58.4% fortran, at 0.3/0.4% FDR) on a
+corpus shaped like the reference data (~145 points, 10-min sampling,
+~30 pulses, ~4% CV) — the band's derivation and its caveats are in
+`deep-learning-handoff.md` Phase 1.
 
 ## 5. Standing decisions the new repo inherits
 

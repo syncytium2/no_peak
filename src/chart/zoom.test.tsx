@@ -32,9 +32,12 @@ const ticks = (html: string) =>
 
 describe("horizontal zoom", () => {
   it("narrows the axis to the requested window", () => {
+    // Unzoomed, this 6 h record ticks on whole hours, so the axis promotes
+    // itself to hours and reads 0…6 (see promoteTimeUnit). Zoomed to an hour,
+    // the ticks are 10-minute marks and stay in minutes.
     const all = ticks(draw());
     const win = ticks(draw([120, 180]));
-    expect(Math.max(...all)).toBeGreaterThan(300);
+    expect(Math.max(...all)).toBe(6);
     expect(Math.min(...win)).toBeGreaterThanOrEqual(120);
     expect(Math.max(...win)).toBeLessThanOrEqual(180);
   });
@@ -70,8 +73,11 @@ describe("horizontal zoom", () => {
   });
 
   it("still draws the whole record when no window is set", () => {
+    // In hours, the promoted unit for a 6 h record: first tick at the start,
+    // last within reach of the end.
     const t = ticks(draw());
-    expect(Math.min(...t)).toBeLessThanOrEqual(60);
-    expect(Math.max(...t)).toBeGreaterThanOrEqual(300);
+    expect(Math.min(...t)).toBe(0);
+    expect(Math.max(...t)).toBe(6);
+    expect(draw()).toContain("Time (h)");
   });
 });

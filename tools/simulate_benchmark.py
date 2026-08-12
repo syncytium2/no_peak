@@ -35,7 +35,8 @@ Priors, and why:
                    concentration (a + b/x form), matching the regional-CV idea
                    in Veldhuis 1986 (Pediatr Res 20:632).
   baseline drift   Slow sinusoidal component on some records; Carlson 2013
-                   found ignoring a changing baseline biases every method.
+                   found ignoring a changing baseline biases every method
+                   they compared (CLUSTER was not among the four).
 """
 
 from __future__ import annotations
