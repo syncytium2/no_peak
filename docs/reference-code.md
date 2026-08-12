@@ -95,6 +95,31 @@ published (Veldhuis & Johnson 1986) and algorithms are not copyrightable. A
 reimplementation written from the paper and from reading the reference code is
 ours to license as we choose; the reference *source* is not ours to ship.
 
+## Closed negative: the "nine variance models" are not in the distribution
+
+Veldhuis & Johnson's 1994 companion paper (*Neurosci Biobehav Rev* 18(4):605–612)
+captions its Fig. 1 with CLUSTER's pooled *t* applied to replicates "or
+preferably to the dose-dependent intrasample SD's calculated by **one of nine
+variance models**". Neither that paper nor the *Methods Enzymol* chapter
+enumerates the nine. If they were listed anywhere, they would pin what this
+port's seven error models are approximations *of*, so it was worth chasing.
+
+**They are not in the Pulse_XP distribution.** Checked 2026-08-12 against
+`AutoDeconSoftware.zip` (Dropbox, not committed — see the folder note in
+`docs/`), reading `Docs/Pulse_XP_Cluster_0808.pdf`,
+`Docs/Pulse_XP_FileFormat_0808.pdf`, `Docs/Hormone_FileFormat_0901.pdf`,
+`Docs/Pulse_XP_Intro_0808.pdf` and `Docs/Cluster8_QuickStart_0908.pdf`:
+
+- The Cluster manual says only that the algorithm works "in relation to
+  dose-dependent variance models" — plural, unenumerated.
+- The Variance Model sections describe exactly **one** parametric form: the
+  `PUL_NATV` input filter's model in minimal detectable concentration and assay
+  CV, where MDC is defined as twice the SD of a large number of replicates at
+  zero hormone concentration.
+
+So the nine, if they matter, come from the 1986 CLUSTER primary or earlier —
+not from this distribution. Recorded so nobody spends another hour on it.
+
 ## Provenance, for the record
 
 Source material came from `gitlab.com/um-mip/coding-project` (local working

@@ -3,8 +3,30 @@
 Honest accounting of what has and has not been checked, so the claim in the
 README and on the site can be matched against reality.
 
-_Last updated: 2026-08-11 (v0.2.0)._ Open work is in
+_Last updated: 2026-08-12 (v0.2.0)._ Open work is in
 [`docs/next-steps.md`](next-steps.md).
+
+> **How the 2026-08-12 findings below were settled, because the next reader gets
+> the conclusions without the process.** Four confident claims collapsed that
+> day: two apparent direction-rule passes recorded here, one explanation for the
+> broad-corpus shortfall, and one "retraction" asserting a defect had never
+> existed. They had nothing in common except that each was settled by going to
+> the artifact rather than to the argument — the source PDF, the commit via
+> `git show`, the paper's own page, the corpus itself. Two of them were
+> plausible, internally consistent, and produced by careful reasoning from a
+> premise nobody had checked. Where a claim below is about what code does, what
+> a paper says, or what the corpus contains, it is recorded with the command or
+> the page that settles it. Please keep it that way.
+>
+> One further note on *how* they were caught, because it tells you what to do
+> rather than merely what to admire. Not one was caught by its own author, and
+> the mechanism was not review either — in the sharpest case the author found
+> their own bug, but only after a second party reported that a number would not
+> reproduce and could not say why. So the working rule is the cheap one:
+> **report the mismatch even when you cannot explain it, and expect the author
+> to find the cause.** That needs no one to be a good reviewer of anyone else's
+> code, only for non-reproduction to be reported honestly rather than
+> reconciled away.
 
 > The reference Fortran and Igor sources are **not committed** — third-party
 > code we cannot redistribute. Neither is the oracle output (`data/oracle/`,
@@ -271,6 +293,7 @@ Tested directly with a density-matched corpus — 40 records, 145 points,
 10-minute sampling, ~4% CV, ~30 pulses each, Johnson's shape:
 
     python3 tools/simulate_benchmark.py --profile dense --n 40 --seed 7 --out /tmp/dense
+    npx vite-node tools/score_benchmark.ts --dir /tmp/dense
     igor     55.8% sensitivity, 0.3% FDR
     fortran  58.4% sensitivity, 0.4% FDR
 
@@ -297,14 +320,291 @@ holds its false-positive rate down; a simulator that sets reported error equal
 to true noise exposes the test's nominal ~2%-per-point rate and fills a long
 corpus with spurious pulses.
 
+## Finding: VJ's direction rule passes; VJ's adequacy rule is the wrong lens (2026-08-12)
+
+Veldhuis & Johnson 1994 (*Methods Enzymol* 240:377–414) give, at pp. 388–389,
+monotonic direction rules for detector error: decreasing pulse amplitude,
+increasing half-life, increasing experimental uncertainty, increasing pulse
+frequency and diminished sampling intensity each drive detection errors up.
+They also state an adequacy rule — five or more samples per half-life and per
+burst width (p. 392). Both are stated while validating deconvolution and
+generalized to peak detection only loosely, so they are a strong prior, not a
+bound.
+
+Measured on the committed 200-record corpus, **42% of records fall below that
+adequacy rule** on the half-life arm (median 5.49 samples per half-life, min
+0.53; 30 records under 2). The burst-width arm is not computable — the
+generator does not record burst width in `truth.json`. That 42% was proposed as
+the explanation for the `igor` variant's 37.3% broad-corpus sensitivity sitting
+under the gate band: not a broken detector, a corpus largely in a regime the
+chapter says nothing resolves.
+
+**Tested, and it does not survive.** Run `score_benchmark.ts --strata`:
+
+| samples per half-life | n | igor sens | fortran sens |
+| --- | --- | --- | --- |
+| under 2 | 30 | 28.4% | 50.0% |
+| 2 to 5 | 54 | 33.8% | 53.5% |
+| 5 to 10 | 62 | 39.2% | 66.1% |
+| 10 and up | 54 | 46.7% | 81.8% |
+
+Two readings, and they point opposite ways:
+
+**⚠ The apparent direction-rule pass was withdrawn the same day — see "the
+sampling axis does not mean what it looks like" below.** Sensitivity does rise
+monotonically across these bands in both variants, 28.4 → 46.7% for `igor` and
+50.0 → 81.8% for `fortran`, and that was initially recorded here as VJ's
+sampling-intensity rule reproducing. It is not: samples per half-life is a
+*ratio* of two quantities whose VJ rules push it in opposite directions, and
+decomposing it dissolves the result. The table is kept because it is what
+`--strata` prints and because the adequacy-rule conclusion below does not
+depend on it.
+
+**The adequacy rule does not explain the shortfall, and cannot.** Even the
+best-sampled stratum reaches only 46.7% for `igor`, still under the band. The
+decisive case is `--profile dense`, which scores 55.8%: it lies below the
+adequacy rule **by construction, not by chance**. The generator draws its
+half-life from U(20, 50) minutes against a fixed 10-minute sampling interval
+(`simulate_benchmark.py`, the `dense` branch), so every dense record falls
+strictly inside 2–5 samples per half-life — measured median 3.63, max 4.99, and
+no seed can produce otherwise. A corpus that *cannot* satisfy the rule outscores
+one sampled twice as well. Sampling adequacy is a real effect here and the
+wrong mechanism.
+
+**What that reframing costs the rule.** The dense profile is deliberately
+shaped like Johnson's own reference datasets, which are real endocrine
+sampling protocols. If dense is structurally sub-threshold, then routine
+sampling practice in this field violates VJ's adequacy rule as a matter of
+course. The rule is stated while validating *deconvolution* — a harder inverse
+problem, which has to resolve the secretion waveform rather than just localize
+a rise — and it does not transfer to peak detection. Treat it as a description
+of that harder problem, not as a standard this project or any other should
+gate on, and treat future claims leaning on it with suspicion.
+
+What actually tracks it is pulse density, which is the finding in the section
+above, seen from the other side. As density rises from under 0.05 to over 0.15
+pulses per sample, `igor` FDR falls 37.7% → 0.6% while sensitivity falls
+57.7% → 25.5%; `fortran` runs 90.2% → 41.9% sensitivity over the same range.
+The broad corpus is 32% high-density records, and those are where the misses
+are.
+
+⚠ **One caution on reading the FDR column against pulse frequency**, because it
+looks like a sign violation and is not established as one: FDR's denominator is
+the detection count, which itself grows with pulse frequency, so FDR can fall
+while the false-positive *count* rises. Testing VJ's frequency rule properly
+needs a per-sample false-positive rate, which nothing here computes yet. The
+same confound runs the other way on the sampling axis — samples per half-life
+is set by the sampling interval, which also sets the record length and so the
+density. The two axes above are not independent.
+
+### The sampling axis does not mean what it looks like (2026-08-12, same day)
+
+The table above bands records by **samples per half-life**, which is
+`half_life / sampling_interval`. VJ state *increasing half-life* and
+*diminished sampling intensity* as separate rules that each drive errors up.
+In the ratio those two pull in **opposite directions**: the ratio rises either
+because the half-life got longer (VJ: errors up) or because the interval got
+shorter (VJ: errors down). A monotone trend in the ratio therefore cannot be
+read as either rule reproducing. That the ratio is also how VJ state their
+adequacy rule is a tension in the source, not a licence to use it as a test.
+
+Decomposed on the same corpus:
+
+| | igor | fortran |
+| --- | --- | --- |
+| **sampling interval alone** (2 → 5 → 10 min) | 48.2 → 39.2 → 27.7% | 85.7 → 67.0 → 42.5% |
+| **half-life alone** (5–20 → 20–35 → 35–60 min) | 35.1 → 38.5 → 38.2% | 63.9 → 60.4 → 64.0% |
+
+The sampling-interval arm has the sign VJ predict. The half-life arm has no
+trend at all, in either variant. **VJ's half-life rule does not reproduce on
+this corpus, and unlike the sampling arm this is a clean negative** — half-life
+is drawn independently of everything else in the generator, and measured
+against the committed corpus it correlates with nothing (|r| ≤ 0.12 against
+sampling interval, density, pulse mass, assay CV and record length). So this
+one is not a confound artifact.
+
+It also is not an adequacy artifact, which was the obvious escape. VJ pair the
+direction rule with the five-sample rule, so the rule should only be expected
+to hold in the adequate regime; below it, a short half-life is punished by
+simple aliasing (the bolus decays between samples) in a way that could mask the
+opposite effect. Holding the interval fixed **and** restricting to above-floor
+records does not rescue it — `igor` at 2-min sampling runs 34.7 → 53.9 → 57.7%
+across rising half-life (n = 19/19/20), which is the *opposite* sign, while at
+5-min sampling it runs 39.8 → 33.3%. The direction flips between intervals and
+between variants inside the regime where VJ's rule is supposed to apply.
+
+⚠ **Treat this as a probable defect in the generator, not a finding about
+CLUSTER — but the mechanism is open.** Two candidate explanations have been
+proposed and both fail a test of their own prediction. They are recorded
+because the next person will think of them too:
+
+1. **Undiminished step.** A pulse is an *instantaneous* bolus decaying as
+   `m·exp(-k·d)`, so the step at its own onset is the full mass `m` whatever
+   the half-life, while a longer half-life raises the accumulated background —
+   suggesting long half-lives are simply easier here. The reported SD is affine
+   in concentration, `sd = cv_mid·(v + floor)`, so accumulated background does
+   raise the noise the step is judged against and could in principle cancel it.
+   Measured, it does not: local step-to-noise is flat (below). So the premise
+   survives — but a flat local ratio predicts long half-lives are the *same*,
+   not easier, so this does not account for a 23-point gain either.
+2. **Window filling.** A broad long-half-life excursion fills CLUSTER's
+   multi-point peak window while a narrow spike leaves it straddling the decay.
+   This predicts the wrong-sign gap should shrink at `nPeak = 1` and grow at
+   `nPeak = 3`. Measured at 2-min sampling above the floor, the `igor` gap runs
+   **+24.5, +23.0, +20.9** across `nPeak` 1→3 — flat, and drifting the opposite
+   way from the prediction. `fortran` is likewise flat at −9.3, −6.1, −6.2.
+   **Rejected**: the anomaly is invariant to peak-window size.
+
+The single-step detectability proxy (median step over reported SD at true
+onsets, 2-min sampling, above floor) is **flat across half-life**: 4.51, 4.75,
+4.24. Two sessions computed this independently and initially disagreed; the
+discrepancy was traced to a real bug in the other computation, which located
+the onset by *nearest* sample and so about half the time differenced two
+pre-onset samples — pure noise rather than the pulse step. Corrected, it is
+flat there too (5.60, 5.63, 4.91 on the same 19/19/20 records). A residual
+level offset of about one unit between the two remains and is not worth
+chasing; both agree on the shape, which is what carries the conclusion.
+
+**The useful result is a constraint, not a story.** Flat local step-to-noise
+alongside a +23-point sensitivity gain means the effect **is not local** — it
+cannot be read off any single onset, which excludes every single-point
+explanation at once: step size, local SD, amplitude-to-noise ratio. Together
+with the `nPeak` sweep excluding window geometry, whatever this is lives in the
+**multi-sample structure** of the excursion, not in individual pulses and not
+in the detector's window size.
+
+⚠ **Do not admit a third mechanism into this document without the sweep that
+tests it.** Two have already been proposed, found plausible, and killed.
+
+**What is established: the finding, not the story.** Half-life is a clean axis,
+the rule fails on it, and the failure survives both the confound and adequacy
+escapes. Why remains open.
+
+### Why this axis resists interrogation, and what that implies for sequencing
+
+There is a structural reason the half-life anomaly is hard to pin down. In this
+generator the *only* timescale in a pulse is `1/k`, so the width of the
+excursion in samples and the half-life are **the same parameter**. Any attempt
+to ask "is it width or is it half-life?" is asking the corpus to separate two
+things it varies as one.
+
+That gives the burst-duration gap an evidentiary argument it did not have a
+moment ago. Adding finite burst width `D` makes the excursion roughly
+`(D + decay)/dt` wide, so width becomes separable from half-life by varying `D`
+at fixed half-life. Porting the square-burst model from `tools/make_synthetic.py`
+is therefore not only the physiologically defensible choice — it is the
+enabling change that makes this axis testable at all. That is the strongest
+current reason to sequence it first.
+
+Independently of the cause, **the generator has no burst-duration model at
+all** — a pulse has no width. That gap is already recorded as Phase 1 work in
+`docs/deep-learning-handoff.md`, where the square-burst model in
+`tools/make_synthetic.py` is noted as never having been ported across. Real
+bursts have finite width (Urban's FSH burst half-duration is 10.6 min), so
+closing it is worth doing on its own merits before anything trains on this
+corpus. It should *not* be assumed to be the fix for the half-life anomaly
+until something demonstrates that it is — but it is very likely the change
+that makes the anomaly *testable*, which is a different and better reason to
+do it first. See the next section.
+
+**And the sampling arm is not clean either.** In this generator, density is
+roughly `sampling_interval / mean_ipi`, so a coarser interval mechanically
+means denser records — the two cannot be separated by stratifying, only by
+resampling one record at several intervals, which nothing here does. The FDR
+column gives the confound away: it runs 33.3% → 1.5% (`igor`) across the same
+interval bands, which is the density signature from the section above, not a
+sampling signature.
+
+**The floor reading is untestable here — not refuted.** Urban et al. 1991
+varied sampling over 5/10/15 min at a 142-min half-life — 9.5 to 28.4 samples
+per half-life, entirely *above* VJ's floor — and reported "no significant
+differences by analysis of variance in peak discrimination … among 5-, 10-, or
+15-min sampling intensities" (p. 2012). That suggests the rule is a floor below
+which detection degrades rather than a gradient that keeps paying above it,
+which would reconcile Urban's null with this corpus's effect.
+
+Restricted to the 116 records above the floor, the interval effect does
+persist — `igor` 49.5 → 37.3 → 31.3%, `fortran` 85.3 → 64.0 → 52.1%. But that
+is **not** evidence against the floor reading, because restricting to
+above-floor records does not decouple interval from density: the 6× density
+confound above is still present inside that subset. The surviving effect is as
+attributable to density as to sampling, which is the same objection that
+retired the axis in the first place. Recorded as neither established nor
+disproved. The practical consequence is unchanged — keep it out of the gate —
+but the reason is that the corpus cannot decide it, not that it is wrong.
+
+The confound is exact rather than approximate, and worth stating precisely
+because it explains why no stratification rescues this axis. Since
+`n = max(24, duration/dt)`, once that floor stops binding the record length
+scales with `dt` and pulses-per-sample reduces to `dt / mean_ipi`, with the
+record length cancelling out. Measured against that prediction:
+
+| sampling interval | n | measured density | `dt / mean_ipi` |
+| --- | --- | --- | --- |
+| 2 min | 63 | 0.0405 | 0.0390 |
+| 5 min | 76 | 0.1122 | 0.1108 |
+| 10 min | 61 | 0.2399 | 0.2349 |
+
+A 6× density swing across the three bands. The sampling axis is a density axis
+wearing a sampling label.
+
+**Verdict: this corpus cannot test VJ's sampling rule, and no stratification
+of it will.** The honest reading of the Urban null is that he manipulated
+sampling on a *fixed* underlying signal while this corpus varies everything at
+once. Testing the rule properly needs the generator to emit one record at
+several sampling intervals — a small change, and the right next piece of work
+on this axis.
+
+### The two clean axes: amplitude passes, assay CV does not (2026-08-12)
+
+Pulse amplitude and assay CV are the axes nothing else in the generator is
+drawn from, so they test VJ's direction rules without the sampling-interval
+confound. Both are now recorded per record in `truth.json` and stratified by
+`--strata`. VJ predict that decreasing amplitude and increasing experimental
+uncertainty each drive detection errors up, so sensitivity should rise with the
+first and fall with the second.
+
+| | igor | fortran |
+| --- | --- | --- |
+| **amplitude** (log median mass / basal, four bands) | 28.3 → 30.5 → 43.0 → 50.5% | 53.9 → 62.2 → 67.5 → 67.6% |
+| **assay CV** (under 0.075 → 0.125 and up) | 48.2 → 33.8 → 39.2 → 32.9% | 69.6 → 60.5 → 67.0 → 57.9% |
+
+**Amplitude passes cleanly** — monotone increasing in both variants, and
+`fortran`'s FDR falls across the same bands (25.3% → 14.4%), so the sign is
+right on both error types. Amplitude is drawn independently of everything else
+in the generator, so unlike the sampling axis this one is not standing in for
+density. **It is the only one of VJ's five direction rules this corpus
+currently reproduces** — the sampling rule is untestable here, the half-life
+rule fails, the CV rule is unresolved, and the frequency rule needs a
+per-sample false-positive rate nothing computes.
+
+**Assay CV does not.** The endpoints have the right sign in both variants
+(48.2 → 32.9% and 69.6 → 57.9%), but the middle two bands invert, and they
+invert *the same way in both variants* — which argues against detector noise
+and for something in the corpus.
+
+⚠ **This is not yet a finding, and the reason is worth stating.** Each band
+holds ~50 records scored once, with no run-to-run error bar anywhere in this
+project's benchmark numbers. A four-point monotonicity check on single runs can
+be broken by sampling noise as easily as by a misspecified generator, and
+nothing here can currently tell those apart. Resolving it needs replication —
+several seeds per condition, reporting spread — which is the first concrete
+thing this benchmark needs that it does not have. Until then, record the CV
+axis as unresolved rather than as a failure.
+
 ## Reproducibility gaps (found by review, 2026-08-10)
 
 Several numbers in this document cannot currently be re-derived from the repo.
 They are reported as measured, but a reader cannot check them:
 
-- **The `fortran` rows in the ground-truth table.** `tools/score_against_truth.ts`
-  hardcodes `variant: "igor"`; the fortran figures came from an edit that was
-  never committed.
+- **The `fortran` rows in the ground-truth table.** ~~`tools/score_against_truth.ts`
+  hardcodes `variant: "igor"`~~ — **closed 2026-08-12**: the scorer now runs both
+  variants on every invocation, so both rows are derivable from committed code.
+  What is *not* closed: the published 60.8% and 51.5% were measured on
+  2026-08-10 and have not been re-derived since, and Johnson's datasets are not
+  redistributable, so no one without `PULSEXP_DATA` can check either figure.
+  That limitation is now stated on all three public surfaces that quote them
+  (`index.html`, `public/methods.html`, `public/llms.txt`) rather than only here.
 - **The PULSAR head-to-head.** `tools/pulsar/pulsar_run.R` runs one file and
   prints peak times; the dataset loop, the G-value sweep, the per-dataset CV
   derivation and the scorer are not in the repo.
