@@ -330,6 +330,32 @@
     it.
   </p>
 
+  <h3>Batch processing, without the browser</h3>
+  <p>
+    The web page is built for looking at one record. For a study with two
+    hundred of them, the same algorithm runs from a command line. The source
+    repository — <a href="https://github.com/syncytium2/no_peak">github.com/syncytium2/no_peak</a>
+    — carries <code>scripts/cluster.ts</code>, which takes files or a directory
+    and writes one summary row per record: sample count, record duration, pulse
+    count, pulse frequency, and the mean interpulse interval, peak value,
+    amplitude, pulse width and nadir. That is a table you can read straight into
+    R, SPSS or a spreadsheet.
+  </p>
+  <p>
+    Two properties of it are worth stating, because they are what make a batch
+    result comparable rather than merely convenient. Every record is analyzed
+    under <em>one</em> set of detection settings — tuning the parameters per
+    animal makes the pulse counts incomparable between animals, since the
+    parameters are the model. And the records are still analyzed independently:
+    nothing is concatenated, and no averaging window ever spans two of them. The
+    summary table is produced by the same function behind the app's
+    <strong>Per-record CSV</strong> button, so a batch run and a run in this
+    browser report the same numbers for the same data. Settings, version and —
+    where a published preset was used — its citation ride in the file's comment
+    header, on the same principle as every other export here: provenance travels
+    with the numbers.
+  </p>
+
   <h3>What the reported quantities are called</h3>
   <p>
     <strong>Peak value</strong> is the highest concentration reached inside a

@@ -8,11 +8,11 @@
 //  - the backward zap pass runs from n-2 down to 3;
 //  - an initial down-run forces a pulse that began before recording started.
 
-import { mScore } from "./mscore";
-import { mean } from "./stats";
-import { buildErrorArray } from "./errorModel";
-import { extractPeaks, extractValleys, summarize } from "./peaks";
-import type { ClusterParams, ClusterResult } from "./types";
+import { mScore } from "./mscore.ts";
+import { mean } from "./stats.ts";
+import { buildErrorArray } from "./errorModel.ts";
+import { extractPeaks, extractValleys, summarize } from "./peaks.ts";
+import type { ClusterParams, ClusterResult } from "./types.ts";
 
 export interface UpDnResult {
   flags: number[];

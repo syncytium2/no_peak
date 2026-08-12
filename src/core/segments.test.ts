@@ -114,7 +114,7 @@ describe("runSegments", () => {
 
   it("writes one CSV row per record", () => {
     const run = runSegments([seg("ewe 1", record(3)), seg("ewe 2", record(2))], params(), 10);
-    const lines = segmentsToCSV(run, "min").trim().split("\n");
+    const lines = segmentsToCSV(run.segments, "min").trim().split("\n");
     expect(lines).toHaveLength(3); // header + two records
     expect(lines[1]).toContain('"ewe 1"');
     expect(lines[2]).toContain('"ewe 2"');

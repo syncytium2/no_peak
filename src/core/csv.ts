@@ -4,7 +4,7 @@
 //   2 columns: time, value
 //   3 columns: time, value, error
 
-import type { ClusterResult } from "./types";
+import type { ClusterResult } from "./types.ts";
 
 export interface ParsedSeries {
   times: number[] | null;

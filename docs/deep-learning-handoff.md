@@ -237,7 +237,9 @@ canonical rather than letting two lists drift. What matters for the plan:
   plus `truth.json`, seed 20260810, committed and publishable.
 - [`tools/score_benchmark.ts`](../tools/score_benchmark.ts) — corpus scorer,
   both variants, with a 72-combination `--sweep`. This — not
-  `scripts/run_csv.ts` — is the thing to extend for corpus work.
+  `scripts/cluster.ts` — is the thing to extend for corpus work: the CLI
+  reports pulse statistics over a batch, but nothing in it compares a
+  detection to a known onset, which is what corpus work needs.
 - [`tools/score_against_truth.ts`](../tools/score_against_truth.ts) —
   scorer for Johnson's simulated datasets
   (local only, `PULSEXP_DATA`). ⚠ Ships pinned to `variant: "igor"`; the
@@ -277,11 +279,12 @@ canonical rather than letting two lists drift. What matters for the plan:
 - [`src/core/cluster.ts`](../src/core/cluster.ts) — the baseline to beat,
   both variants (`igor`, `fortran`), and a sanity-check comparator (never a
   label source — §3).
-- [`scripts/run_csv.ts`](../scripts/run_csv.ts) — single-file CSV runner
-  (not a batch runner; its documented `node --experimental-strip-types`
-  invocation is broken — use `npx vite-node`, already a dev dependency and
-  the root `README.md`'s documented command; `docs/next-steps.md` §7
-  tracks fixing the header).
+- [`scripts/cluster.ts`](../scripts/cluster.ts) — the command line: one record
+  or a directory of them under one parameter set, one summary row per record,
+  `-v` for a per-pulse listing. Runs on bare `node` with no loader; `npx
+  vite-node` also works. (Formerly `scripts/run_csv.ts`; the broken
+  `--experimental-strip-types` invocation that `docs/next-steps.md` §7 tracked
+  is fixed at the source — `src/core/` imports carry `.ts` extensions.)
 - `tools/pulsar/pulsar_run.R` — the PULSAR Otago runner behind the published
   head-to-head (single-file; the sweep and scorer are not committed).
 - `data/extracted/` — eleven CSVs: three real hormone series with measured

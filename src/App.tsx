@@ -803,7 +803,10 @@ export function App() {
                 {multi && (
                   <button
                     onClick={() =>
-                      downloadText(segmentsToCSV(run!, unitShort), `${loaded!.name}_by_record.csv`)
+                      downloadText(
+                        segmentsToCSV(run!.segments, unitShort),
+                        `${loaded!.name}_by_record.csv`,
+                      )
                     }
                   >
                     Per-record CSV

@@ -15,9 +15,9 @@
 // the display, because seeing every animal on one axis is the other half of why
 // the practice exists.
 
-import { clusterMain } from "./cluster";
-import { meanSD } from "./stats";
-import type { ClusterParams, ClusterResult, ClusterSummary, Peak, Valley } from "./types";
+import { clusterMain } from "./cluster.ts";
+import { meanSD } from "./stats.ts";
+import type { ClusterParams, ClusterResult, ClusterSummary, Peak, Valley } from "./types.ts";
 
 /** One record — typically one animal — to be analyzed under shared settings. */
 export interface Segment {
@@ -216,15 +216,23 @@ type ClusterSource = Pick<
   "peaks" | "valleys" | "values" | "times" | "summary"
 >;
 
-/** Per-segment CSV: one row per record, the shape you would paste into a stats package. */
-export function segmentsToCSV(run: SegmentedRun, unitShort: string): string {
+/**
+ * Per-segment CSV: one row per record, the shape you would paste into a stats
+ * package.
+ *
+ * Takes the segment list rather than a whole `SegmentedRun` because it reads
+ * nothing else, and because a caller analyzing records that are not one
+ * concatenated study — `scripts/cluster.ts` over a directory of files — has
+ * results to tabulate without a combined trace to put them in.
+ */
+export function segmentsToCSV(segments: SegmentResult[], unitShort: string): string {
   const cell = (v: number | null | undefined) =>
     v === null || v === undefined || !Number.isFinite(v) ? "" : String(v);
   const out = [
     `segment,n_points,duration_${unitShort},n_pulses,pulses_per_${unitShort},` +
       `mean_interpulse_interval,mean_peak_value,mean_amplitude,mean_pulse_width,mean_nadir`,
   ];
-  for (const s of run.segments) {
+  for (const s of segments) {
     const m = s.result.summary;
     out.push(
       [

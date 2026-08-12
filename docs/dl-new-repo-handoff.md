@@ -33,7 +33,7 @@ CLUSTER's speed, **not** accuracy: AutoDecon already beat CLUSTER on accuracy in
 | `tools/score_benchmark.ts`, `tools/score_against_truth.ts` | Scoring harnesses: benchmark corpus and Johnson's simulated data respectively. The latter reads a local Pulse_XP `Data/` folder via `PULSEXP_DATA` (see §2). |
 | `tools/score_webster1991.ts` | Scores any detector against the one public real-data ground truth (§3). |
 | `src/core/cluster.ts` + `src/core/` | The baseline to beat, both variants (`igor`, `fortran`), and a sanity-check labeler. |
-| `scripts/run_csv.ts` | Single-file CSV runner (not batch; loop it or extend `tools/score_benchmark.ts` for corpus work). (Known defect: its documented `node --experimental-strip-types` invocation fails; use `tsx`. See `next-steps.md` §7.) |
+| `scripts/cluster.ts` | The command line: one record or a whole directory under one parameter set, summary CSV out, `-v` for a per-pulse listing. Runs on bare `node`, no loader. (Was `scripts/run_csv.ts`, whose broken invocation — `next-steps.md` §7 — is fixed: `src/core/` imports now carry `.ts` extensions.) For *scoring* a corpus against ground truth you still want `tools/score_benchmark.ts`; this one reports, it does not score. |
 | `docs/validation-status.md` | Every baseline number quoted below, with its caveats attached. |
 | `docs/reference-code.md`, `docs/figure-data-permissions.md` | The license and permissions ground truth for everything in §2 and §3. |
 

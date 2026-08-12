@@ -249,11 +249,15 @@ not-verified heading. Partially repaired; still wants restructuring into
 
 ## 7. Smaller, verified, and each a one-liner
 
-- `scripts/run_csv.ts`'s documented invocation is broken. Its header says
+- ~~`scripts/run_csv.ts`'s documented invocation is broken. Its header says
   `node --experimental-strip-types`, which fails on the repo's extensionless
   imports; `tsx` works but is not a declared dependency. Add `tsx` to
   devDependencies and fix the header, or add `.ts` extensions in
-  `src/core/cluster.ts`.
+  `src/core/cluster.ts`.~~ **Done 2026-08-12**, by the second route: every
+  import inside `src/core/` carries a `.ts` extension, so bare `node` resolves
+  them and no dependency was added. The runner grew into `scripts/cluster.ts`,
+  the batch command line — see `README.md`, "Command line". Do not strip those
+  extensions back off; the documented invocation dies with them.
 - `src/core/presets.test.ts` still says "21 pulses were generated" for
   `sim_gnrh_thx_fast`; the generator makes **22**, and the `< 21` bound rests on
   the old denominator.
@@ -323,6 +327,12 @@ identical.
   two public pages state the Igor oracle spans *every* error model and a new
   model can have no oracle. If a per-sample error is needed, put it in the data
   as a column and use Error Wave — that is what the digitized records do.
+- **Every import inside `src/core/` carries an explicit `.ts` extension**, and
+  that is load-bearing rather than a style choice: it is what lets bare `node`
+  resolve them, which is what makes `scripts/cluster.ts` — the command line —
+  run with no loader and no dependency. A tidy-up that strips them back off
+  breaks the invocation documented in `README.md` and in two handoffs, and the
+  app's tests will not notice, because Vite resolves both forms.
 - **Sensitivity and precision on the Webster scoring are not equally earned.**
   96% sensitivity is invariant to the fitted constants; 99% precision is not,
   and runs 45–100% across defensible floors. Quote the LH arm if quoting one

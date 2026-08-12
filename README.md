@@ -11,6 +11,7 @@ user's machine.** Figures are publication-grade SVG (vector) with 4× PNG export
 
 - `npm run dev` — local dev server
 - `npm test` — core algorithm tests (vitest)
+- `npm run cluster` — the command line (see below)
 - `npm run build` — static bundle in `dist/`
 - `npm run deploy` — test + build + `wrangler deploy` (Cloudflare Workers,
   assets-only, same model as colonel-kernel; wrangler uses the machine's cached
@@ -128,6 +129,44 @@ Port fidelity notes:
 Source material copied from `gitlab.com/um-mip/coding-project`
 (local: `~/Documents/coding-projectx`).
 
+## Command line — batch processing without the browser
+
+`scripts/cluster.ts` runs the same core over one record or a directory of them
+and writes a summary table, one row per record. The web app is for looking at a
+record; this is for the case where there are two hundred of them and the answer
+wanted is a column in a stats package.
+
+```sh
+node scripts/cluster.ts records/ --preset webster1991_lh -o summary.csv
+node scripts/cluster.ts data/digitized/*.csv --n-peak 3 --t-up 2.5 > summary.csv
+npm run cluster -- --help
+npm run cluster -- --list-presets
+```
+
+Four things about it are deliberate:
+
+- **No loader and no extra dependency.** Plain `node` runs it: Node strips the
+  types, and every import inside `src/core/` carries an explicit `.ts`
+  extension so bare Node can resolve it. (`npx vite-node scripts/cluster.ts`
+  works too, and is what `tools/score_*.ts` use.) Don't remove those
+  extensions — the invocation in this README breaks the moment you do.
+- **The table is the app's table.** It comes from `segmentsToCSV`, the same
+  function behind the app's "Per-record CSV" button, called rather than
+  reimplemented. A batch run and a run in the browser cannot drift apart, and
+  `scripts/cluster.test.ts` re-asserts through the CLI the pulse counts that
+  `src/core/presets.test.ts` asserts through the library.
+- **One parameter set for the whole batch.** Tuning CLUSTER per animal makes
+  the pulse counts incomparable between animals — the argument in
+  `src/core/segments.ts`. Records are still analyzed independently: nothing is
+  concatenated and no window spans two files.
+- **A record it can't read costs its own row, not the run.** Skips are listed
+  on stderr *and* in the `#` header of the CSV, so a short table is never
+  silently short. `--strict` stops on the first one instead.
+
+The `#` header carries the settings, the version, and — with `--preset` — the
+citation the settings came from, on the same principle as `resultToCSV`:
+provenance travels with the numbers.
+
 ## docs
 
 - **`docs/next-steps.md` — read this first.** Open work, ranked, with what is
@@ -199,8 +238,11 @@ without them those suites skip. Committed: `data/synthetic/` and `data/benchmark
   `null1`), two scratch waves, and `igor_panel_settings.txt` — the Cluster
   panel globals stored in the experiment (last Igor run: nPeak=1, nNadir=1,
   tUp=tDn=2, minPeak=0, error model = user error wave).
-- `scripts/run_csv.ts` — CLI runner for validation
-  (`npx vite-node scripts/run_csv.ts data/extracted/set1.csv 2 2 2 2 0 "Error Wave"`).
+- `scripts/cluster.ts` — the command line, used for validation runs against
+  Igor output without opening the browser
+  (`node scripts/cluster.ts data/extracted/set1.csv --error-model "Error Wave" -v`;
+  `-v` prints the per-pulse listing those comparisons read). See
+  **Command line** above.
 
 ## Port plan (sketch)
 

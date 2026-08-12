@@ -25,10 +25,10 @@ which are measurement noise, and reports:
 - a publication-grade SVG figure, exportable as vector PDF or 4× PNG.
 
 Input is plain text, one sample per line, with optional time and per-sample SD
-columns; ten variance models are supported, including a user-supplied error
-wave. The tool ships sample datasets of two kinds, each tagged: real records
-digitized from published figures, and simulated records that match no animal.
-It never opens blank.
+columns; seven variance models are supported — the seven the Igor reference
+package exposes, no more — including a user-supplied error wave. The tool ships
+sample datasets of two kinds, each tagged: real records digitized from published
+figures, and simulated records that match no animal. It never opens blank.
 
 ## Scope, stated precisely
 
@@ -107,6 +107,14 @@ and no request that carries user data. The algorithm is pure TypeScript in
 `src/core/` with no UI dependencies. Privacy is structural rather than
 promised: there is no code path that could transmit a loaded recording, which is
 the relevant property for anyone whose data is human-subject or HIPAA-regulated.
+
+Because the algorithm has no UI dependencies, it also runs headless: the source
+repository (https://github.com/syncytium2/no_peak) carries `scripts/cluster.ts`,
+a command line that takes a directory of records and writes one summary row per
+record — the batch path for a study, as against the page's one-record-at-a-time
+view. It uses the same summary function as the app's per-record export, and
+analyzes every record under one parameter set, independently, with no window
+spanning two records.
 
 ## Pages
 

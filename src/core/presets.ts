@@ -10,7 +10,7 @@
 // The rule for adding one: the parameters must be stated in the paper, not
 // inferred from its figures, and the citation goes in with them.
 
-import type { ClusterParams } from "./types";
+import type { ClusterParams } from "./types.ts";
 
 export interface ParamPreset {
   key: string;

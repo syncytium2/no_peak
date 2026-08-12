@@ -1,8 +1,8 @@
 // Port of ts_error() from ClusterMasterV4-1.ipf:1146.
 // Builds the per-point error array used by the pooled t-test.
 
-import type { ErrorModelType } from "./types";
-import { sampleSD, sem } from "./stats";
+import type { ErrorModelType } from "./types.ts";
+import { sampleSD, sem } from "./stats.ts";
 
 /**
  * Keep the selected error model consistent with the loaded file: a file with

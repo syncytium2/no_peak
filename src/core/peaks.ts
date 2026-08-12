@@ -8,8 +8,8 @@
 // NDF is 1 for every point, so the Fortran (NDF+1)-weighted means reduce to
 // plain means.
 
-import { mean, meanSD } from "./stats";
-import type { ClusterSummary, Peak, Valley } from "./types";
+import { mean, meanSD } from "./stats.ts";
+import type { ClusterSummary, Peak, Valley } from "./types.ts";
 
 export function extractPeaks(
   pulse: number[],
