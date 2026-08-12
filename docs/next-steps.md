@@ -59,6 +59,32 @@ half-life failure is a probable generator defect. Two mechanisms were proposed
 and each was killed by its own prediction, so the cause is open — do not admit
 a third without the sweep that tests it, which item A is what enables.
 
+### B2. Read Urban et al. 1988 — cheapest high-value item, and it is already here
+
+`01-lit/urban et al 1988 endocrine reviews…pdf` — *Contemporary aspects of
+discrete peak-detection algorithms. I. The paradigm of the luteinizing hormone
+pulse signal in men*, *Endocr Rev* 1988;9(1):3–37, PMID 3286234. Thirty-four
+pages, 76 mentions of Cluster, by the group that wrote it. Arrived 2026-08-12
+and nobody has read it. Its contents section by section:
+
+- **§V.E — sampling intensity vs false-positive and false-negative rates.** The
+  axis this project could not test all day. Partially read already, and it
+  contradicts Veldhuis & Johnson 1994 on the false-positive direction; see
+  `docs/validation-status.md`. Read the rest before building any gate on a
+  sampling shape.
+- **§III.B — ideal properties of discrete signal detectors.** The closest thing
+  to a written specification the gate has ever had, from the algorithm's own
+  authors.
+- **§V.C — concordance between simultaneous endocrine time series.** The design
+  the digitized Webster records were wrongly claimed to instantiate. Read it
+  before writing a want-list entry for such a dataset, because it states what
+  the design actually requires.
+- **§IV.B — detailed comparison of eight contemporary pulse-detection
+  algorithms**, and **§V.B** on the three statistical error classes.
+
+Two of those bear directly on questions this project generated on 2026-08-12
+rather than questions it already knew it had. It wants a session of its own.
+
 ### C. Restructure the reproducibility gaps by category
 
 A **reproducibility gap** is a bug in our tooling and can be closed. A

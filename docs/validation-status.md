@@ -441,6 +441,45 @@ same confound runs the other way on the sampling axis — samples per half-life
 is set by the sampling interval, which also sets the record length and so the
 density. The two axes above are not independent.
 
+### The two source papers disagree about the sampling axis (2026-08-12)
+
+Before treating any false-positive result on the sampling axis as a defect,
+note that there is no single published sign to test against. The rule this
+project has been checking itself against is Veldhuis & Johnson 1994, p. 388,
+verbatim:
+
+> In general, decreasing secretory pulse amplitude, increasing half-life of
+> ligand removal, increasing experimental uncertainty in the data, increasing
+> pulse frequency, and diminished sampling intensity all tend to promote an
+> increased number of false-positive as well as false-negative errors…
+
+So: *diminished* sampling → false positives **up**. But Urban et al. 1988
+(*Endocr Rev* 9(1):3–37, §V.E, Figs. 30–31) — the same group, and the review
+VJ 1994 cites as its ref 25 for these very methods — models the opposite:
+increasing sampling intensity raises true-positive detection *and* "a
+progressive increase in contaminating false-positive peaks", while
+false-negative errors fall. So: *increased* sampling → false positives **up**.
+
+The two cannot both be right, and the 1988 paper is explicit that its figures
+are "provisional models" whose interactions "have not been defined" — they are
+schematics, not measurements. That is probably the resolution: the 1994
+sentence is a compact generalization, the 1988 figures are a conceptual model,
+and neither is a fitted result.
+
+**This corpus matches the 1988 model on both error types.** Across sampling
+intervals 2 → 5 → 10 min (that is, decreasing sampling intensity), `igor`
+sensitivity falls 48.2 → 39.2 → 27.7% while FDR falls 33.3 → 6.0 → 1.5%; more
+sampling buys more true pulses and more false ones. Which is Fig. 30 and
+Fig. 31 together, and the opposite of the 1994 sentence on the false-positive
+half.
+
+Do not read that as the generator vindicated: the axis is still confounded with
+density at 6×, so it is not clean evidence for anything. What it does settle is
+narrower and worth having — **an apparent wrong sign against VJ 1994 on this
+axis is not prima facie a defect**, because the field's own review says the
+other thing. Any future gate built on a sampling-intensity shape has to pick a
+side and say which, and Urban 1988 §V.E is the place to read before picking.
+
 ### The sampling axis does not mean what it looks like (2026-08-12, same day)
 
 The table above bands records by **samples per half-life**, which is
