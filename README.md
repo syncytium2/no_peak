@@ -75,7 +75,21 @@ app holds no user data to expose.
 > all. Fixing it means turning the managed robots.txt off in the Cloudflare
 > dashboard for the `tonydefazio.com` zone (and leaving Security > Bots >
 > "Block AI Scrapers and Crawlers" off too). Nothing in this repo can override
-> it. Verify with `curl -s https://nopeak.tonydefazio.com/robots.txt`.
+> it. Verify with `curl -s https://nopeak.tonydefazio.com/robots.txt` — this
+> repo's `public/robots.txt` should be the whole response, with no managed
+> preamble above it.
+>
+> **If the dashboard will not load**, the same setting is reachable over the
+> API at `PATCH /zones/{zone_id}/settings/robots_txt_management`. Confirmed
+> 2026-08-12 to be a real route on this zone — it answers `9109 Unauthorized`
+> rather than `7000 No route`, which is the difference between "wrong scope"
+> and "wrong URL". The machine's cached wrangler OAuth token cannot do it:
+> wrangler's scope set tops out at `zone (read)` and is not extensible by
+> re-running `wrangler login`. It needs an API token with zone-settings write,
+> and minting one is itself a dashboard trip, so this is a shortcut for the
+> next time rather than a way out of the first. Zone and account ids come from
+> `wrangler whoami` and `GET /zones?name=tonydefazio.com`; they are
+> deliberately not written down here.
 
 Code layout: `src/core/` is the algorithm (pure functions — `cluster.ts`,
 `mscore.ts`, `errorModel.ts`, `peaks.ts`, `format.ts`) plus the input and
