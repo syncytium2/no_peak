@@ -144,6 +144,8 @@ def simulate(rng: random.Random, profile: str = "broad") -> dict:
             "cv_mid": round(cv_mid, 4),
             "noise_ratio": round(noise_ratio, 3),
             "drift_amplitude": round(drift_amp, 5),
+            "mass_mu": round(mass_mu, 5),
+            "mass_sigma": round(mass_sigma, 5),
             "profile": profile,
             "n_true_pulses": len(true_onsets),
         },
