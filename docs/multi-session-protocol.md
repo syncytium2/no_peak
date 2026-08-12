@@ -108,7 +108,14 @@ do is tell you it is happening. The rest is convention, and it is short:
 - **One session, one worktree, one branch** when work will last more than a few
   minutes: `git worktree add -b <slug> ../<repo>-worktrees/<slug> main`.
   Worktrees live in a *sibling* directory so tooling never sees duplicate copies.
-- **Stage by path. Never `git add -A`, `-u`, or `.`** in a shared checkout.
+- **Commit by path, not merely stage by path.** `git add -A` is the obvious
+  trap, but staging carefully is *not enough*: the index is shared too, so
+  `git add <mine>` followed by `git commit` still sweeps in whatever a peer had
+  already staged. Caught doing exactly this on 2026-08-12, hours after writing
+  the line above — a peer's staged rename rode along in an unrelated commit.
+  Use `git commit --only <path>...` (or `git commit <path>...`), which commits
+  the named paths and ignores the rest of the index. Check `git status --short`
+  first and read the left-hand column: a staged entry has no leading space.
 - **Pin a sha before concluding anything about what committed code does** —
   `git show <sha>:<path>`, or check `git log -- <path>` first. Running the file
   in front of you proves nothing about the file someone else is discussing.
