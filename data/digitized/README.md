@@ -87,6 +87,27 @@ The GnRH pair with no pulses are real negative controls, which a simulator
 cannot provide: the thyroid-intact ewe had entered anestrus, and #9009 showed LH
 pulses beforehand but no GnRH pulses during collection.
 
+**The two hormones in a row are not simultaneous, and no cross-hormone
+concordance can be computed from them.** They are paired by *animal*, not by
+time: the GnRH is from the collection period, the LH from presampling a
+fortnight earlier, at a different interval (5 vs 6 min) and a different length
+(73 vs 61 samples). The series do not overlap.
+
+This is worth stating because the data invites the opposite conclusion twice
+over. Veldhuis & Johnson list, as an accepted paradigm for biologically
+validating LH pulse detection, "simultaneous monitoring of hypothalamic
+GnRH secretion and pituitary LH release in the ovariectomized ewe"
+(*Methods Enzymol* 1994;240:377–414, Table I, p. 392) — which reads exactly
+like these files and is not what they are. Treating them as simultaneous would
+license a claim of *independent biological* validation, which VJ rank above
+agreement with another algorithm, from data that cannot support it. Row #9009
+shows how badly it would mislead: 0 GnRH pulses against 11 LH pulses in one
+animal, which looks like total discordance and is simply two different
+fortnights.
+
+What these records are remains what the section above says — an answer key of
+CLUSTER's own 1991 calls, and so a cross-implementation consistency check.
+
 ## How much to trust the numbers
 
 These are approximate. They carry the width of a printed line and the resolution
