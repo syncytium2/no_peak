@@ -10,13 +10,31 @@ _Last updated: 2026-08-12 (v0.2.0)._ Open work is in
 > the conclusions without the process.** Four confident claims collapsed that
 > day: two apparent direction-rule passes recorded here, one explanation for the
 > broad-corpus shortfall, and one "retraction" asserting a defect had never
-> existed. They had nothing in common except that each was settled by going to
-> the artifact rather than to the argument — the source PDF, the commit via
-> `git show`, the paper's own page, the corpus itself. Two of them were
-> plausible, internally consistent, and produced by careful reasoning from a
-> premise nobody had checked. Where a claim below is about what code does, what
-> a paper says, or what the corpus contains, it is recorded with the command or
-> the page that settles it. Please keep it that way.
+> existed. Each was settled by going to the artifact rather than to the
+> argument — the source PDF, the commit via `git show`, the paper's own page,
+> the corpus itself. Two were plausible, internally consistent, and produced by
+> careful reasoning from a premise nobody had checked. Where a claim below is
+> about what code does, what a paper says, or what the corpus contains, it is
+> recorded with the command or the page that settles it. Please keep it that
+> way.
+>
+> But "check the artifact" reads as advice about diligence, and that is not
+> what went wrong. Every failure that day consulted *an* artifact — just not
+> the one that answered the question. In each case something stood in for the
+> real thing because it resembled it and was easier to reach:
+>
+> | The proxy consulted | The artifact that answers |
+> | --- | --- |
+> | a working tree | the commit under discussion |
+> | `git ls-files` | the filesystem (untracked files vanish) |
+> | an ownership conversation | the actual set of shared files |
+> | a dataset's file table | the prose above it that qualifies the table |
+> | samples per half-life | two separate physical rules, which it fuses |
+>
+> The last is a measurement rather than a lookup and belongs on the list
+> anyway: it is a quantity that resembles what you want, is easier to reach,
+> and is not it. So the operative question is not "did I check?" but **"is this
+> the artifact that can answer this question, or the nearest thing to it?"**
 >
 > One further note on *how* they were caught, because it tells you what to do
 > rather than merely what to admire. Not one was caught by its own author, and
