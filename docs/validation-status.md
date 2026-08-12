@@ -86,11 +86,25 @@ Run it with `tools/score_against_truth.ts` (data not distributed; set
 
 Two things worth keeping:
 
-**Zero false positives, in every configuration tried** — including a 27-point
-sweep of window sizes and thresholds. CLUSTER missed a great many real pulses
-here and invented none. That is the specificity/sensitivity trade the
-literature describes (≈1% vs ≈6% false positives against AutoDecon), seen
-directly.
+**Zero false positives at the default settings**, on both variants, re-run and
+confirmed 2026-08-12. CLUSTER missed a great many real pulses here and invented
+none — the sensitivity/positive-accuracy trade the literature describes (≈1% vs
+≈6% false positives against AutoDecon), seen directly.
+
+> **Corrected 2026-08-12.** This read "in every configuration tried — including
+> a 27-point sweep of window sizes and thresholds". No such sweep exists in the
+> repo and none can be reproduced, so the claim is narrowed to what the
+> committed scorer actually runs. The only committed sweep is
+> `score_benchmark.ts --sweep`, 72 combinations on a different corpus.
+>
+> "Specificity" was also the wrong word, here and below. In this literature it
+> means TN/(TN+FP) and needs a true-negative count, which nothing here
+> computes. What is measured is **positive accuracy** — TP/(TP+FP), the
+> complement of the FDR quoted elsewhere. Urban, Johnson & Veldhuis considered
+> defining a true negative for exactly this purpose and declined, because
+> false positives inflate the count by creating flanking valleys (*Endocrinology*
+> 1991;128:2008–14, p. 2009). This project follows them: it reports sensitivity
+> and positive accuracy, and claims neither specificity nor negative accuracy.
 
 **The `fortran` variant closely reproduces Johnson's own published Cluster
 counts** — per-dataset 15/15/17/8/12/12 against his 14/14/16/7/13/11, a total
@@ -142,7 +156,7 @@ The honest summary: on this data all three CLUSTER-family detectors land in the
 50–60% band with CLUSTER distinguished by never producing a false positive,
 while deconvolution (AutoDecon) is in a different class entirely at ~98%. If
 you need to *count* pulses, use deconvolution. If you need to be able to
-defend every pulse you report, the specificity is the argument.
+defend every pulse you report, the positive accuracy is the argument.
 
 ## Scored against a published answer on real data (2026-08-11)
 
@@ -482,11 +496,29 @@ escapes. Why remains open.
 
 ### Why this axis resists interrogation, and what that implies for sequencing
 
-There is a structural reason the half-life anomaly is hard to pin down. In this
-generator the *only* timescale in a pulse is `1/k`, so the width of the
-excursion in samples and the half-life are **the same parameter**. Any attempt
-to ask "is it width or is it half-life?" is asking the corpus to separate two
-things it varies as one.
+There is a structural reason the half-life anomaly is hard to pin down, and it
+is exact rather than approximate. In this generator the *only* timescale in a
+pulse is `1/k`. The width of an excursion above a fraction `f` of its own peak
+is
+
+    t_f = ln(1/f) / k = half_life · ln(1/f) / ln2
+
+so in samples that is `half_life · ln(1/f) / (ln2 · dt)`. At `f = 0.5` the log
+terms cancel and it reduces exactly to `half_life / dt` — which *is* samples
+per half-life, the ratio axis retired above as uninterpretable. Excursion width
+in samples and samples per half-life are the same quantity under two names.
+
+The consequence is sharper than "hard to interrogate". At fixed sampling,
+*"sensitivity rises with excursion width"* and *"sensitivity rises with
+half-life"* are the same sentence. The one mechanism still standing in the
+surviving space — that a longer excursion gives more consecutive elevated
+samples and so more chances to form a passing cluster — is therefore a
+**re-description of the observation, not an explanation of it**, and it is
+unfalsifiable on this corpus rather than merely untested.
+
+It also retires the ratio axis a second time on independent grounds: once
+because VJ's half-life and sampling rules pull opposite ways inside it, and
+again because this particular effect is definitionally trapped in it.
 
 That gives the burst-duration gap an evidentiary argument it did not have a
 moment ago. Adding finite burst width `D` makes the excursion roughly
