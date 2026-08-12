@@ -348,8 +348,12 @@ generate synthetic series and score detectors against them, and matching
 that methodology is most of what makes this credible.
 
 **Obtained and read 2026-08-12**, along with its companion (*Neurosci
-Biobehav Rev* 1994;18(4):605–612); both are in the `downLow` repository's
-lit cache. What the chapter does and does not supply, which matters because
+Biobehav Rev* 1994;18(4):605–612). Both are in the owner's shared library at
+`~/Dropbox-UniversityofMichigan/Richard DeFazio/01-lit/`, under readable
+author-year-journal filenames — **not** in either repository. An earlier
+version of this line pointed at a `lit/` folder inside `downLow`, which the
+owner consolidated into `01-lit` on 2026-08-12; nothing is cached in a repo.
+What the chapter does and does not supply, which matters because
 it was expected to settle the Phase 1 gate:
 
 - It does **not** predict a sensitivity figure for CLUSTER, and arguing it
@@ -374,9 +378,32 @@ it was expected to settle the Phase 1 gate:
   could be made to reproduce. They are raster figures, so using them means
   digitizing — the practice this repo already has a tool and a permissions
   analysis for. Fig. 6's primary source is **Urban et al., *Endocrinology*
-  1991;128:2008–2014**, which the owner supplied on 2026-08-12; it is in the
-  lit cache and its parameters are verified below. *Am J Physiol*
-  1988;255:E749 is now the only outstanding want-list item.
+  1991;128:2008–2014**, which the owner supplied on 2026-08-12; it is in
+  `01-lit` and its parameters are verified below.
+
+**The want list, corrected 2026-08-12.** An earlier version of this line said
+*Am J Physiol* 1988;255:E749 was the only outstanding item. Three are, and the
+authoritative list is `_NEEDED.md` in `01-lit` rather than this file:
+
+- **Veldhuis & Johnson 1988**, *Am J Physiol* 255:E749–59 — the simulation
+  paper the 1994 chapter leans on throughout (its refs 8 and 28) and the source
+  of the convolution model behind the 1991 performance curves. Highest value
+  for Phase 1.
+- **Veldhuis & Johnson 1986**, *Am J Physiol* 250:E486–93 — the CLUSTER
+  primary. Note `_NEEDED.md` justifies this one as "the port has never cited
+  its own algorithm's source paper", which is **not true of no_peak**: it is
+  cited with its DOI here at §0, in `index.html` and in `public/llms.txt`. The
+  paper is still worth having; the stated reason is wrong.
+- **Urban, Johnson & Veldhuis 1989**, *Am J Physiol* 257:E88–94 — on
+  sensitivity and positive accuracy.
+
+**Landed and not yet used:** Urban RJ *et al.*, "Contemporary aspects of
+discrete peak-detection algorithms. I. The paradigm of the luteinizing hormone
+pulse signal in men", *Endocr Rev* 1988;9(1):3–37, PMID 3286234 — verified
+against PubMed 2026-08-12 and sitting in `01-lit` unread by any session. A
+34-page review of discrete peak-detection algorithms in exactly this domain is
+the most likely place to find the field's own account of what CLUSTER is
+usually compared against, and nobody has opened it.
 
 **What Urban 1991 supplies, verified against the PDF (2026-08-12).** Its
 simulated FSH corpus is fully specified: 90-min pulse frequency ±30%,
