@@ -104,9 +104,27 @@ values corresponds to a real measurement. (The real traces, digitized later, are
 in `data/digitized/`.)
 
 One parameter is not tightly pinned and should be treated as an estimate: the
-assay CV, set to 7.8% from the sample-to-error ratio of a real lab wave. The
-paper reports its GnRH intra-assay variation as a median variance ratio (0.02 ±
-0.01) rather than as a CV, so this could not be taken from it directly.
+**GnRH** assay CV, set to 7.8% from the sample-to-error ratio of a real lab wave.
+Webster 1991 reports its GnRH intra-assay variation as a median variance ratio
+(0.02 ± 0.01) rather than as a CV, so this could not be taken from it directly.
+
+The **LH** assay CV no longer rests on that estimate. Midgley 1997 (below)
+reports, for the jugular LH assays these scales come from, an **intra-assay CV
+of 6.2%** and an interassay CV of 11.4%. The 7–8% used in the LH files sits
+just above the intra-assay figure, which is the right side to err on: a
+detector tuned to optimistic error calls noise.
+
+**One LH scale is still unsourced, and is now known to disagree with the
+literature: the interpulse interval.** The files use 70 min (`sim_lh`), 80
+(`sim_values_only`) and 190 (`sim_lh_long`). Midgley 1997 measures **1.40
+pulses/h — one every ~43 min** — in ovariectomized ewes. Those animals carry no
+steroid replacement and so run unrestrained, whereas Webster 1991's ewes are
+ovariectomized *and estradiol-implanted*, and estradiol slows LH pulse
+frequency; a longer interval is therefore defensible for a steroid-replaced
+model. Defensible is not sourced. Either cite a steroid-replaced ovine series
+for these intervals, or bring them toward 43 min and regenerate. Until one of
+those happens this is the single scale in this directory that the rule at the
+top of this file does not cover.
 
 `sim_gnrh_thx_fast.csv` is deliberately at the edge of what CLUSTER can resolve:
 roughly three samples per cycle means the peak and nadir windows start to
@@ -150,6 +168,27 @@ here. It is not tuned to flatter the detector.
 - Maggi R et al. GnRH and GnRH receptors in the pathophysiology of the human
   female reproductive system. *Hum Reprod Update* 2016;22(3):358–81. — GnRH
   degradation and half-life.
+- **Midgley AR Jr, McFadden K, Ghazzi M, Karsch FJ, Brown MB, Mauger DT,
+  Padmanabhan V. Nonclassical secretory dynamics of LH revealed by
+  hypothalamo-hypophyseal portal sampling of sheep.** *Endocrine*
+  1997;6(2):133–43. doi 10.1210/BF02738956, PMID 9225127. — **The peripheral LH
+  scales, added 2026-08-12.** Jugular LH in six ovariectomized ewes, sampled
+  every 5 min for 6–12 h, analysed with the Kushler–Brown pulsefit algorithm
+  (Table 1): **half-time of disappearance 24.2 min** (per-ewe 18.2–30.5; the
+  Discussion rounds it to "approx 25 min", and cites Butler et al. 1972 at 22.5
+  and 26.5 min for two pulses) — which is where `half_life=25.0` comes from.
+  **Baseline 3.23 ng/ml** (per-ewe 1.66, 2.97, 3.02, 3.51, 4.50, 4.87), which
+  brackets the 3.5–4.5 used here. **Pulse amplitude 7.9 ng/ml** (per-ewe
+  3.4–21.8), against the 2.0–9.5 generated. Same lab lineage as the GnRH files:
+  Karsch is an author, Moenter is acknowledged for collecting the samples, and
+  the jugular series are those of Karsch et al. 1993.
+  Two cautions this paper attaches to its own numbers. Its **deconvolution**
+  column puts the same half-time at **12.3 min** — half the pulsefit figure, on
+  the same data, which the authors attribute to 5-min sampling. So "the LH
+  half-life" is method-dependent, and 25 min is the pulsefit answer, not a
+  constant of nature. And these ewes carried **no steroid replacement**, so
+  they run at the unrestrained pulse frequency: **1.40 pulses/h, one every
+  ~43 min** (see the interpulse-interval note below).
 
 ## A note on the "6-minute sampling interval"
 

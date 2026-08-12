@@ -55,6 +55,20 @@ References for the scales used:
     the original Fortran implementation, not the Igor one — see
     docs/validation-status.md on scale invariance, and note that a 1991 paper
     predates the Igor package anyway.
+  Midgley AR Jr, McFadden K, Ghazzi M, Karsch FJ, Brown MB, Mauger DT,
+    Padmanabhan V. Nonclassical secretory dynamics of LH revealed by
+    hypothalamo-hypophyseal portal sampling of sheep. Endocrine 1997;6(2):
+    133-43. PMID 9225127. THE PERIPHERAL LH SCALES BELOW. Jugular LH in six
+    ovariectomized ewes, 5-min sampling, Kushler-Brown pulsefit (its Table 1):
+    half-time of disappearance 24.2 min (per-ewe 18.2-30.5) -> half_life=25.0;
+    baseline 3.23 ng/ml (per-ewe 1.66-4.87) -> baseline 3.5-4.5; pulse
+    amplitude 7.9 ng/ml (per-ewe 3.4-21.8) -> amp 2.0-9.5; jugular LH
+    intra-assay CV 6.2% -> cv 0.07-0.08. Two cautions from the paper itself:
+    its deconvolution column puts the same half-time at 12.3 min, so 25 min is
+    the pulsefit answer rather than a constant; and its ewes carry no steroid
+    replacement, so their 1.40 pulses/h (one every ~43 min) is the unrestrained
+    rate. THE mean_ipi VALUES BELOW (70, 80, 190) ARE NOT SOURCED — see
+    data/synthetic/README.md.
   Moenter SM, Brand RM, Midgley AR, Karsch FJ. Dynamics of gonadotropin-
     releasing hormone release during a pulse. Endocrinology 1992;130(1):503-10.
     PMID 1727719. (GnRH pulse waveform: square contour, ~5.5 min sustained.
