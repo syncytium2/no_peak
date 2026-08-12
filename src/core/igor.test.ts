@@ -240,7 +240,7 @@ describe("timeUnitFromIgor", () => {
     expect(timeUnitFromIgor("hr")).toBe("h");
   });
 
-  it("returns null for unset or unrecognised units, leaving the choice alone", () => {
+  it("returns null for unset or unrecognized units, leaving the choice alone", () => {
     expect(timeUnitFromIgor("")).toBeNull();
     expect(timeUnitFromIgor("pg/ml")).toBeNull();
   });

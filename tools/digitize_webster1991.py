@@ -1,4 +1,4 @@
-"""Digitise the hormone traces from Webster et al. 1991, Figures 3 and 4.
+"""Digitize the hormone traces from Webster et al. 1991, Figures 3 and 4.
 
     Webster JR, Moenter SM, Barrell GK, Lehman MN, Karsch FJ. Role of the
     thyroid gland in seasonal reproduction. III. Thyroidectomy blocks seasonal
@@ -11,7 +11,7 @@ which are measurements and carry no copyright of their own. See
 docs/figure-data-permissions.md for the reasoning and its limits.
 
 Why this dataset is worth the trouble: the figures mark, with an open circle,
-every pulse the authors' own CLUSTER run identified. Digitising them therefore
+every pulse the authors' own CLUSTER run identified. Digitizing them therefore
 recovers a trace *and* that paper's own pulse call for it — an answer key this
 project cannot manufacture, though it records what a detector reported rather
 than what the animal secreted.
@@ -29,12 +29,12 @@ Open circles are found as their enclosed white interiors: label the white
 pixels, discard anything touching the panel border, and keep blobs that are the
 right size, near-square and well filled. That rejects both the counters of
 letters in the panel title and the tall thin gaps enclosed between the limbs of
-a spike. The circles are drawn centred on their data point, so at those samples
-the circle's centre IS the value.
+a spike. The circles are drawn centered on their data point, so at those samples
+the circle's center IS the value.
 
 Everywhere else the value has to come off the polyline, and the trap there is
 that a steep limb covers many rows within a single column. Sampled at a vertex's
-exact x, the ink run reaches from the vertex away towards its neighbours: at a
+exact x, the ink run reaches from the vertex away towards its neighbors: at a
 local maximum the vertex is the TOP of the run, at a local minimum the BOTTOM.
 Which applies is not known until the series is. Sampled halfway between two
 vertices, though, the segment is straight and the run is symmetric about its
@@ -244,7 +244,7 @@ def read_panel(ink, p, scale, ring_xy, ring_r=14):
         r = read((at(i) + at(i + 1)) / 2)
         mids.append(None if r is None else val(T + (r[0] + r[1]) / 2))
 
-    # shortest path: pick one candidate per sample, minimising disagreement
+    # shortest path: pick one candidate per sample, minimizing disagreement
     # between the implied midpoints and the measured ones
     prev = {j: 0.0 for j in range(len(cand[0]))}
     back = []
@@ -268,7 +268,7 @@ def read_panel(ink, p, scale, ring_xy, ring_r=14):
     picks.reverse()
 
     values = [cand[i][picks[i]] for i in range(n)]
-    # the endpoints sit on the frame, which was erased; carry the neighbour in
+    # the endpoints sit on the frame, which was erased; carry the neighbor in
     for i in (0, n - 1):
         if values[i] is None:
             values[i] = values[1] if i == 0 else values[n - 2]
@@ -328,7 +328,7 @@ def main(pdf):
 
 def write(series):
     banner = (
-        "# DIGITISED FROM A PUBLISHED FIGURE - not a raw laboratory record.\n"
+        "# DIGITIZED FROM A PUBLISHED FIGURE - not a raw laboratory record.\n"
         "# Webster JR, Moenter SM, Barrell GK, Lehman MN, Karsch FJ.\n"
         "# Endocrinology 1991;129(3):1635-43. PMID 1874193. {panel}, ewe #{animal}\n"
         "# ({group}). {hormone} in {unit}, sampled every {dt} min for 6 h.\n"
@@ -337,7 +337,7 @@ def write(series):
         "# scan's resolution as error. Used with an author's permission.\n"
         "# Pulses identified in the paper: {pulses} (see webster1991_pulses.csv).\n"
         "#\n"
-        "# COLUMN 3 (error) IS RECONSTRUCTED, NOT DIGITISED. The figure prints no\n"
+        "# COLUMN 3 (error) IS RECONSTRUCTED, NOT DIGITIZED. The figure prints no\n"
         "# error bars, and the paper does not report what per-sample error it gave\n"
         "# CLUSTER. This column is max({floor:g}, {cv:g} x value) — an assay-shaped\n"
         "# error: a proportional term plus a floor at the detection limit. For LH\n"

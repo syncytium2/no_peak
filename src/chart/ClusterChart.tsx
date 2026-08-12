@@ -147,7 +147,7 @@ export function ClusterChart({
   const runs = pulseRuns(pulse);
   const showDots = n <= 150;
 
-  // Where one record ends and the next begins, plus a centred name for each.
+  // Where one record ends and the next begins, plus a centered name for each.
   // Drawn because the joins are otherwise invisible, and a reader is entitled
   // to know that the trace is several animals rather than one long recording.
   const joins = useMemo(() => {

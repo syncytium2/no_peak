@@ -1,5 +1,5 @@
 // Score the CLUSTER port against the pulse calls published in Webster et al.
-// 1991, using the traces digitised from that paper's own figures.
+// 1991, using the traces digitized from that paper's own figures.
 //
 // This is the only ground truth in the project that neither the port nor the
 // simulator produced. Every other check compares this code against a reference
@@ -59,7 +59,7 @@ function published(): Map<string, Set<number>> {
 /**
  * Compare detected pulses with published ones, allowing a one-sample slack.
  * A pulse marked at sample k and detected at k±1 is the same pulse: the peak of
- * a two-sample pulse is ambiguous at this sampling rate, and the digitised
+ * a two-sample pulse is ambiguous at this sampling rate, and the digitized
  * values carry the figure's line width.
  */
 function match(found: number[], truth: Set<number>, slack = 1) {

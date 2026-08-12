@@ -51,12 +51,12 @@ reimplements its algorithm in TypeScript, and ships that — with the author's
 approval, not merely on the argument that algorithms are uncopyrightable.
 
 **Decided 2026-08-10: we are not publishing Johnson's source.** The approval
-covers the port, not redistribution, and the licence below forbids passing the
+covers the port, not redistribution, and the license below forbids passing the
 code to third parties. `reference/fortran/` stays gitignored and out of history.
 (Fragments of the Fortran do circulate online; that changes nothing about what
 this project chooses to publish.)
 
-**The Igor Cluster package is withheld by choice, not by licence.** It is the
+**The Igor Cluster package is withheld by choice, not by license.** It is the
 Moenter lab's own work — the lab is free to publish it — and the decision is
 simply *not at this time*, because this app is intended to succeed it. That is
 a different reason from the Fortran's, and the two should not be conflated: the
@@ -66,7 +66,7 @@ About page states them separately.
 
 Johnson's `HYPERGEO.PDF` (inside the `hypergeo.zip` distribution, held
 privately — not in this repository) carries an
-explicit licence for the **"Hormone Pulse Analysis programs"** family, which is
+explicit license for the **"Hormone Pulse Analysis programs"** family, which is
 the umbrella covering Pulse_XP, AutoDecon, Cluster8 and HyperGeo:
 
 > Licensor: Michael L. Johnson … Software is furnished to the Licensee free, or
@@ -81,7 +81,7 @@ So redistribution of **Johnson's programs** is prohibited in writing, not merely
 unclear, and the history purge was warranted. Local use is explicitly allowed,
 so running them for validation is fine.
 
-⚠ **Two limits on that conclusion.** The licence names the "Hormone Pulse
+⚠ **Two limits on that conclusion.** The license names the "Hormone Pulse
 Analysis programs" and the distribution lists Pulse_XP, AutoDecon, Cluster8 and
 HyperGeo; the code actually ported here is `CLUST5.MPF` **v6.01**, which is the
 same lineage but not named. And the **Igor Cluster package is a different

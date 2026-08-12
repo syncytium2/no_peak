@@ -1,4 +1,4 @@
-// Analysing several records under one set of detection settings.
+// Analyzing several records under one set of detection settings.
 //
 // The working practice this supports: rather than tune CLUSTER separately for
 // each animal in a study — which makes the settings, and therefore the pulse
@@ -19,7 +19,7 @@ import { clusterMain } from "./cluster";
 import { meanSD } from "./stats";
 import type { ClusterParams, ClusterResult, ClusterSummary, Peak, Valley } from "./types";
 
-/** One record — typically one animal — to be analysed under shared settings. */
+/** One record — typically one animal — to be analyzed under shared settings. */
 export interface Segment {
   name: string;
   values: number[];
@@ -65,7 +65,7 @@ export function runSegments(
   params: ClusterParams,
   deltaT: number,
 ): SegmentedRun {
-  if (segments.length === 0) throw new Error("No data to analyse.");
+  if (segments.length === 0) throw new Error("No data to analyze.");
 
   const results: SegmentResult[] = [];
   // Absolute time the next segment's first sample should sit at. The first
@@ -81,7 +81,7 @@ export function runSegments(
     } catch (e) {
       const why = e instanceof Error ? e.message : String(e);
       throw new Error(
-        segments.length === 1 ? why : `"${seg.name}" could not be analysed: ${why}`,
+        segments.length === 1 ? why : `"${seg.name}" could not be analyzed: ${why}`,
       );
     }
 

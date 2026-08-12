@@ -55,7 +55,7 @@ describe("published presets", () => {
     expect(r.summary.nPeaks).toBe(11); // the count printed in that figure
   });
 
-  it("recognises the current parameters as a preset, and edits as custom", () => {
+  it("recognizes the current parameters as a preset, and edits as custom", () => {
     expect(matchPreset({ ...DEFAULT_PARAMS })?.key).toBe("default");
     expect(matchPreset({ ...DEFAULT_PARAMS, ...preset("webster1991_gnrh").params })?.key).toBe(
       "webster1991_gnrh",

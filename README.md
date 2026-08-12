@@ -85,7 +85,7 @@ settled. The article itself is NOT redistributed; only the numbers.
 **Read `data/synthetic/README.md` before adding a dataset.** Every scale in a
 bundled dataset has to be traceable to a citation, recorded next to the
 parameter it justifies; test data is either simulated from documented physiology
-or digitised from a publishable figure, and is labelled as such. This is a
+or digitized from a publishable figure, and is labeled as such. This is a
 standing constraint, not a style preference — an earlier GnRH dataset here was
 generated with an exponential clearance tail the hormone does not have, on a
 time scale ten times too fast, and that mis-teaches the window settings to every

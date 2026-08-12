@@ -29,7 +29,7 @@ export interface ReportMeta {
   unitShort: string;
   /** Null when the x axis is not real time. */
   frequency: PulseFrequency | null;
-  /** Set when several records were analysed together. */
+  /** Set when several records were analyzed together. */
   segments?: SegmentResult[];
   /** Where the data came from, when it is not the reader's own. */
   citation?: string;
@@ -164,7 +164,7 @@ export async function generatePDFReport(
 
   const numStyle = { halign: "right" as const };
 
-  // ---- per-record table, when several were analysed together ----
+  // ---- per-record table, when several were analyzed together ----
   if (meta.segments && meta.segments.length > 1) {
     doc.setFont("helvetica", "bold").setFontSize(10).setTextColor(INK);
     doc.text("By record", MARGIN, y);

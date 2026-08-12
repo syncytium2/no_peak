@@ -125,7 +125,7 @@ defend every pulse you report, the specificity is the argument.
 ## Scored against a published answer on real data (2026-08-11)
 
 The first check in this project where neither the trace nor the answer came from
-us. Eight hormone records were digitised from the figures of Webster et al. 1991
+us. Eight hormone records were digitized from the figures of Webster et al. 1991
 (Endocrinology 129:1635, PMID 1874193) with an author's permission. Those figures
 mark, with an open circle, every pulse that paper's own CLUSTER run identified —
 70 in total across four animals — so they carry that paper's own pulse call for
@@ -187,9 +187,9 @@ parameters. It now has a measurement behind that advice instead of a principle,
 and the About page says so on that basis.
 
 Two further caveats. Both fitted floors are about 9 px on a 400 dpi scan — the
-same order as the digitisation uncertainty itself — so "the assay error the
+same order as the digitization uncertainty itself — so "the assay error the
 hormones actually had" is not established by this experiment, only assumed.
-And the digitiser reads a marked sample's value from the circle centre and
+And the digitizer reads a marked sample's value from the circle center and
 erases a ±14 px box around it, which is wider than the 10.9 px sample pitch; at
 one-point windows the t-test at a published pulse therefore compares two
 samples that are annotation-derived or reconstructed. That is disclosed in
@@ -239,7 +239,7 @@ Consequences applied:
   the much later Igor package.
 - `hasScaleDependence()` drives an in-app warning whenever the Igor variant is
   combined with windows narrow enough for this to bite.
-- `src/core/scale-invariance.test.ts` pins both behaviours, so neither can
+- `src/core/scale-invariance.test.ts` pins both behaviors, so neither can
   regress silently.
 
 Not corrected in the Igor path, deliberately. That path exists to reproduce
@@ -279,7 +279,7 @@ section reported 59.0%/59.1% from a throwaway script that was never persisted;
 those numbers were unreproducible and are superseded by the ones above, which
 the committed `--profile dense` regenerates. The conclusion is unchanged.)
 So the simulator reproduces
-CLUSTER's documented behaviour when the record looks like the records it was
+CLUSTER's documented behavior when the record looks like the records it was
 documented on, and reveals real false positives when it does not.
 
 **What follows.** The "≈1% false positives" that CLUSTER is credited with in

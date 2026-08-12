@@ -32,11 +32,11 @@ Test data added here must be one of two things, and must say which:
    baseline, pulse amplitude, pulse frequency, pulse shape, assay CV — traceable
    to a citation, recorded in `tools/make_synthetic.py` next to the parameter it
    justifies. Generated from a seeded PRNG so the files are reproducible.
-2. **Digitised from a published figure.** Only from a figure the licence permits
-   reusing, with the citation, the figure number, and the digitising method
+2. **Digitized from a published figure.** Only from a figure the license permits
+   reusing, with the citation, the figure number, and the digitizing method
    recorded alongside it.
 
-Either way it is labelled as such everywhere it surfaces: a banner in the file, a
+Either way it is labeled as such everywhere it surfaces: a banner in the file, a
 `simulated` tag in the app, and a provenance note in the dataset picker.
 
 What is not allowed: parameters chosen because the resulting picture looked
@@ -45,7 +45,7 @@ right. If a scale cannot be traced to a source, it does not go in.
 ## What went wrong before, since it is instructive
 
 The first GnRH dataset here was generated with an exponential clearance term, a
-1-unit sampling interval labelled as minutes, and a mean interpulse interval of
+1-unit sampling interval labeled as minutes, and a mean interpulse interval of
 5.2 minutes. Three errors compounding:
 
 - **GnRH has no clearance tail at these resolutions.** Its circulating half-life
@@ -57,10 +57,10 @@ The first GnRH dataset here was generated with an exponential clearance term, a
   window — which is why the results are reported in pg/min and not pg/ml. A
   pulse therefore lands almost entirely inside one fraction and appears as a
   one- or two-sample spike with an abrupt return. An exponential decay spanning
-  several samples is an artefact of the model, not a property of the hormone.
+  several samples is an artifact of the model, not a property of the hormone.
 - **The time scale was sample index in disguise.** The generator was fitted to
   the *shape* of a real wave that carried no x scaling, and its index spacing was
-  then labelled "minutes". The pulse interval came out ten times too fast.
+  then labeled "minutes". The pulse interval came out ten times too fast.
 - **The label said "fast sampling".** It meant high pulse frequency, which is a
   different claim about a different quantity.
 
@@ -100,7 +100,7 @@ authors claimed. Both are pinned in `src/core/presets.test.ts`.
 The amplitude scale matches the pulse heights drawn in that paper's Figs. 3–4 —
 GnRH peaks reaching about 2.1 pg/min over a baseline near 0.1–0.2, on an axis
 that runs to 3. Only those ranges are taken from the figure; none of these
-values corresponds to a real measurement. (The real traces, digitised later, are
+values corresponds to a real measurement. (The real traces, digitized later, are
 in `data/digitized/`.)
 
 One parameter is not tightly pinned and should be treated as an estimate: the
@@ -110,7 +110,7 @@ paper reports its GnRH intra-assay variation as a median variance ratio (0.02 ±
 
 `sim_gnrh_thx_fast.csv` is deliberately at the edge of what CLUSTER can resolve:
 roughly three samples per cycle means the peak and nadir windows start to
-overlap neighbouring pulses, and adjacent pulses merge — the detector finds
+overlap neighboring pulses, and adjacent pulses merge — the detector finds
 fewer than were generated. That is the honest result, and the reason the file is
 here. It is not tuned to flatter the detector.
 
@@ -166,12 +166,12 @@ Simulation shows what a detector does against a known answer; it cannot show how
 it behaves against the messiness of a real assay. That gap was closed on
 2026-08-11: one of the authors of Webster et al. 1991 gave permission, and the
 eight traces from that paper's Figs. 3–4 — including the pulses its own CLUSTER
-run marked — are digitised in [`data/digitized/`](../digitized/README.md).
+run marked — are digitized in [`data/digitized/`](../digitized/README.md).
 
 The reasoning about what that permission does and does not settle, including why
 copyright was never the obstacle and why the contractual question stays open, is
 in [`docs/figure-data-permissions.md`](../../docs/figure-data-permissions.md).
 
-Nothing in *this* directory is digitised from any figure. Only the pulse heights
+Nothing in *this* directory is digitized from any figure. Only the pulse heights
 and axis ranges printed in Figs. 3–4 were used, to scale a simulation — which
 takes no data point at all.

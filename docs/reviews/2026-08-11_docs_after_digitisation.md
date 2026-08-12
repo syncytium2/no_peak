@@ -1,4 +1,4 @@
-# Murderboard run — documentation after the Webster digitisation
+# Murderboard run — documentation after the Webster digitization
 
 - upstream:  syncytium2/murderboard @ b2b2ba2d6c42cef07850bd7be2db3aa4d019151c
 - vendored:  b2b2ba2d6c42cef07850bd7be2db3aa4d019151c (re-vendored during this run — see below)
@@ -54,7 +54,7 @@ Also corrected: `tools/make_synthetic.py`, `tools/score_webster1991.ts`,
 
 **The two public pages said the opposite of the truth.** `public/methods.html`
 and `public/llms.txt` both stated that *every* bundled dataset is simulated and
-corresponds to no animal, experiment or measurement. Eight real digitised ewe
+corresponds to no animal, experiment or measurement. Eight real digitized ewe
 records had shipped that morning. These are the no-JavaScript and
 machine-readable surfaces — what a crawler, a reviewer's agent, or anyone
 without JS actually reads — and they carried an inversion of the single fact this
@@ -105,20 +105,20 @@ Also corrected on role 4's evidence:
   derivation. Worse, the Fortran variant already reproduces CLUST5 exactly at
   defaults and the 1991 analysis was that lineage — so the port's fidelity was
   not the free variable in this experiment. The reconstructed error input was.
-- **The answer key contaminates the input.** The digitiser reads a marked
-  sample's value from the circle centre and erases a ±14 px box around it; the
+- **The answer key contaminates the input.** The digitizer reads a marked
+  sample's value from the circle center and erases a ±14 px box around it; the
   sample pitch is 10.9 px (GnRH) and 13.1 px (LH). So at a marked pulse the pulse
-  sample *and both neighbours* are annotation-derived or reconstructed — and at
+  sample *and both neighbors* are annotation-derived or reconstructed — and at
   one-point windows the t-test compares exactly those. Now disclosed.
 - **Both fitted floors are ~9 px on a 400 dpi scan**, the same order as the
-  digitisation uncertainty itself. "The assay error the hormones actually had" is
+  digitization uncertainty itself. "The assay error the hormones actually had" is
   assumed, not established.
 - **The ±1-sample match slack was undisclosed.** At zero slack the result is 66
   of 70, 94%/97% — so the headline survives, which strengthens it. Now stated.
 - **The permission claim overstated its scope.** An author can give a courtesy
   blessing; they cannot license the publisher's rights or waive the terms of the
   subscription the copy came through. `data/digitized/README.md` said the
-  contractual question was "the right way through it"; the document it summarises
+  contractual question was "the right way through it"; the document it summarizes
   says the contractual position "remains unresolved and untested". Corrected to
   match.
 
@@ -130,22 +130,22 @@ three misses were attributed to the animal with the smallest pulses "relative to
 baseline" when it is the smallest in absolute terms; "0 to 170" is 171; "124 unit
 tests" is 194; "11 files, 16–145 points" is 15 files, 61–145; `README.md` called
 `data/digitized/` "simulated, ours"; four documents ended on "nothing has been
-digitised".
+digitized".
 
 ## ⚠ Residual — deferred, not fixed
 
 1. ~~**The app cannot reproduce its own headline number.**~~ **CLOSED**, and it
    was reported from the user side before the fix landed: selecting the published
    settings gave *no peaks*. Root cause exactly as roles 6 and 7 predicted — the
-   preset carried windows and t-scores but not the error model, the digitised
+   preset carried windows and t-scores but not the error model, the digitized
    CSVs have no error column, so the app fell back to `Local SD`, which at
    one-point windows lets a pulse inflate its own error and hide itself (0 of 70).
    First fixed by adding a new `Assay CV` model to `ErrorModelType` — which was
    wrong, and was caught on review: this port's identity is exposing exactly what
    Igor exposes, two public pages claim the Igor oracle spans *every* error
    model, and a new model can have no oracle. Reverted. The right fix uses the
-   reference's own machinery: the digitised files carry a third column with a
-   reconstructed per-sample error, labelled as such in the header, and the
+   reference's own machinery: the digitized files carry a third column with a
+   reconstructed per-sample error, labeled as such in the header, and the
    presets select the existing Error Wave model. Loading a record and picking the preset
    now reproduces the published counts with nothing else touched.
 2. **Deep links into the About page eject the reader.** (role 3) `src/main.tsx`
@@ -174,12 +174,12 @@ digitised".
 9. **`sim_gnrh_thx_fast` generates 22 bursts, not 21** (role 1). The banner was
    corrected; `presets.test.ts`'s comment and its `< 21` bound still rest on the
    old denominator.
-10. **Two consent claims are recorded second-hand, with no primary artefact.**
+10. **Two consent claims are recorded second-hand, with no primary artifact.**
     (role 2) "This port is made with Michael Johnson's approval" rests only on a
     line in `docs/reference-code.md` ("Reported by R.A. DeFazio, 2026-08-10");
     "used with the permission of one of the paper's authors, obtained
     2026-08-11" names no author and cites no record, and now appears in eight
-    dataset notes, three documents, the digitiser, and every exported figure.
+    dataset notes, three documents, the digitizer, and every exported figure.
     Both are public statements about identifiable third parties' consent. They
     need a dated primary record — an email, a note of the conversation — kept
     wherever the repo keeps such things. **This one is the user's to resolve; it
@@ -187,7 +187,7 @@ digitised".
 11. **Webster et al. 1991 is not verifiable from the repo** (role 2). It is not
     open access, not committed, and not in the lit cache, so a reviewer cannot
     check the protocol figures, the printed CLUSTER settings, the assay
-    sensitivities, or the per-panel pulse counts that the whole digitised set
+    sensitivities, or the per-panel pulse counts that the whole digitized set
     rests on. The one verbatim quotation attributed to it
     (`tools/make_synthetic.py`, "In 4 of 5 thyroid-intact ewes…") is unconfirmed.
     Depositing the PDF in the lit library would close this.

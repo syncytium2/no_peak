@@ -1,4 +1,4 @@
-# DIGITISED FROM A PUBLISHED FIGURE - not a raw laboratory record.
+# DIGITIZED FROM A PUBLISHED FIGURE - not a raw laboratory record.
 # Webster JR, Moenter SM, Barrell GK, Lehman MN, Karsch FJ.
 # Endocrinology 1991;129(3):1635-43. PMID 1874193. Fig 4A, ewe #9013
 # (thyroidectomized). GnRH in pg/min, sampled every 5 min for 6 h.
@@ -7,7 +7,7 @@
 # scan's resolution as error. Used with an author's permission.
 # Pulses identified in the paper: 21 (see webster1991_pulses.csv).
 #
-# COLUMN 3 (error) IS RECONSTRUCTED, NOT DIGITISED. The figure prints no
+# COLUMN 3 (error) IS RECONSTRUCTED, NOT DIGITIZED. The figure prints no
 # error bars, and the paper does not report what per-sample error it gave
 # CLUSTER. This column is max(0.06, 0.08 x value) — an assay-shaped
 # error: a proportional term plus a floor at the detection limit. For LH

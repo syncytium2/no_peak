@@ -1,7 +1,7 @@
 // Sample datasets bundled with the app, of two kinds that must never be
 // confused — hence `provenance` on every entry.
 //
-// DIGITISED: real records, read off the published figures of Webster et al.
+// DIGITIZED: real records, read off the published figures of Webster et al.
 // 1991 with the permission of one of its authors. The figures mark every pulse
 // that paper's own CLUSTER run identified, so these carry a ground truth this
 // project did not produce. They are approximate to the width of a printed line.
@@ -45,11 +45,11 @@ export interface Sample {
   label: string;
   /**
    * Where the numbers came from. "simulated" is generated and resembles no
-   * animal; "digitised" was read off a published figure and is a real record,
+   * animal; "digitized" was read off a published figure and is a real record,
    * carrying the figure's line width as error. The two must never be confused,
    * so the tag is on the dataset rather than left to the note.
    */
-  provenance: "simulated" | "digitised";
+  provenance: "simulated" | "digitized";
   /** What it is meant to resemble, and on what evidence. */
   note: string;
   /** Units of the sample times. */
@@ -62,7 +62,7 @@ export interface Sample {
    * One line naming where the numbers came from, carried into every export.
    * A figure or results table that leaves this app must say whose data it is
    * and that it was read off a printed page — that is the whole point of
-   * digitising with permission rather than quietly.
+   * digitizing with permission rather than quietly.
    */
   citation?: string;
   load: () => ParsedSeries;
@@ -71,7 +71,7 @@ export interface Sample {
 const csv = (text: string) => () => parseSeries(text);
 
 // Group headings do a lot of work here. The simulated GnRH records were built
-// to the protocol of the same paper the digitised ones come from, so without an
+// to the protocol of the same paper the digitized ones come from, so without an
 // explicit contrast in the heading they read as alternative takes on the same
 // animals. They are not: one set is four sheep, the other is a generator.
 const DIG_GNRH = "Real animals — portal GnRH, Webster et al. 1991";
@@ -80,12 +80,12 @@ const PORTAL = "Simulated — GnRH model, no animal";
 const PERIPHERAL = "Simulated — LH model, no animal";
 
 export const SAMPLES: Sample[] = [
-  // ---- digitised from Webster et al. 1991, used with an author's permission --
+  // ---- digitized from Webster et al. 1991, used with an author's permission --
   {
     key: "w91_gnrh_thx_8067",
     group: DIG_GNRH,
     label: "Ewe #8067, thyroidectomized — 11 pulses",
-    provenance: "digitised",
+    provenance: "digitized",
     note:
       "MEASURED from a real ewe, then read off the printed page. Fig. 3B of Webster et al. 1991 " +
       "(Endocrinology 129:1635): hypophyseal-portal blood every 5 min for 6 h. The 11 pulses the " +
@@ -103,14 +103,14 @@ export const SAMPLES: Sample[] = [
     deltaT: 5,
     valueLabel: "GnRH (pg/min)",
     citation:
-      "Digitised from Webster JR, Moenter SM, Barrell GK, Lehman MN, Karsch FJ, Endocrinology 1991;129(3):1635-43 (PMID 1874193), Fig. 3B, ewe #8067. Read off the published figure with an author's permission; values are approximate to the width of a printed line. The error bars are RECONSTRUCTED, not measured: the figure prints none and the paper does not report its per-sample error, so the file supplies max(floor, 0.08 x value).",
+      "Digitized from Webster JR, Moenter SM, Barrell GK, Lehman MN, Karsch FJ, Endocrinology 1991;129(3):1635-43 (PMID 1874193), Fig. 3B, ewe #8067. Read off the published figure with an author's permission; values are approximate to the width of a printed line. The error bars are RECONSTRUCTED, not measured: the figure prints none and the paper does not report its per-sample error, so the file supplies max(floor, 0.08 x value).",
     load: csv(w91GnrhThx),
   },
   {
     key: "w91_gnrh_thx_9013",
     group: DIG_GNRH,
     label: "Ewe #9013, thyroidectomized — 21 pulses, fastest in the study",
-    provenance: "digitised",
+    provenance: "digitized",
     note:
       "MEASURED. Fig. 4A of the same paper, and the highest GnRH pulse frequency it recorded: 21 " +
       "pulses in 6 h, an interval near 17 min against 5-min sampling. The hardest real record in " +
@@ -125,14 +125,14 @@ export const SAMPLES: Sample[] = [
     deltaT: 5,
     valueLabel: "GnRH (pg/min)",
     citation:
-      "Digitised from Webster JR, Moenter SM, Barrell GK, Lehman MN, Karsch FJ, Endocrinology 1991;129(3):1635-43 (PMID 1874193), Fig. 4A, ewe #9013. Read off the published figure with an author's permission; values are approximate to the width of a printed line. The error bars are RECONSTRUCTED, not measured: the figure prints none and the paper does not report its per-sample error, so the file supplies max(floor, 0.08 x value).",
+      "Digitized from Webster JR, Moenter SM, Barrell GK, Lehman MN, Karsch FJ, Endocrinology 1991;129(3):1635-43 (PMID 1874193), Fig. 4A, ewe #9013. Read off the published figure with an author's permission; values are approximate to the width of a printed line. The error bars are RECONSTRUCTED, not measured: the figure prints none and the paper does not report its per-sample error, so the file supplies max(floor, 0.08 x value).",
     load: csv(w91GnrhFast),
   },
   {
     key: "w91_gnrh_con_8058",
     group: DIG_GNRH,
     label: "Ewe #8058, thyroid-intact control — no pulses",
-    provenance: "digitised",
+    provenance: "digitized",
     note:
       "MEASURED. Fig. 3A: an anestrous control in which the authors identified no GnRH pulses at " +
       "all. A real negative control — quieter and messier than a generated one, and the more " +
@@ -147,14 +147,14 @@ export const SAMPLES: Sample[] = [
     deltaT: 5,
     valueLabel: "GnRH (pg/min)",
     citation:
-      "Digitised from Webster JR, Moenter SM, Barrell GK, Lehman MN, Karsch FJ, Endocrinology 1991;129(3):1635-43 (PMID 1874193), Fig. 3A, ewe #8058. Read off the published figure with an author's permission; values are approximate to the width of a printed line. The error bars are RECONSTRUCTED, not measured: the figure prints none and the paper does not report its per-sample error, so the file supplies max(floor, 0.08 x value).",
+      "Digitized from Webster JR, Moenter SM, Barrell GK, Lehman MN, Karsch FJ, Endocrinology 1991;129(3):1635-43 (PMID 1874193), Fig. 3A, ewe #8058. Read off the published figure with an author's permission; values are approximate to the width of a printed line. The error bars are RECONSTRUCTED, not measured: the figure prints none and the paper does not report its per-sample error, so the file supplies max(floor, 0.08 x value).",
     load: csv(w91GnrhCon),
   },
   {
     key: "w91_gnrh_thx_9009",
     group: DIG_GNRH,
     label: "Ewe #9009, thyroidectomized — no GnRH pulses",
-    provenance: "digitised",
+    provenance: "digitized",
     note:
       "MEASURED. Fig. 4B: one of the two thyroidectomized ewes with no detectable GnRH pulses during portal " +
       "sampling, though it did show LH pulses beforehand. A second real negative control." +
@@ -168,14 +168,14 @@ export const SAMPLES: Sample[] = [
     deltaT: 5,
     valueLabel: "GnRH (pg/min)",
     citation:
-      "Digitised from Webster JR, Moenter SM, Barrell GK, Lehman MN, Karsch FJ, Endocrinology 1991;129(3):1635-43 (PMID 1874193), Fig. 4B, ewe #9009. Read off the published figure with an author's permission; values are approximate to the width of a printed line. The error bars are RECONSTRUCTED, not measured: the figure prints none and the paper does not report its per-sample error, so the file supplies max(floor, 0.08 x value).",
+      "Digitized from Webster JR, Moenter SM, Barrell GK, Lehman MN, Karsch FJ, Endocrinology 1991;129(3):1635-43 (PMID 1874193), Fig. 4B, ewe #9009. Read off the published figure with an author's permission; values are approximate to the width of a printed line. The error bars are RECONSTRUCTED, not measured: the figure prints none and the paper does not report its per-sample error, so the file supplies max(floor, 0.08 x value).",
     load: csv(w91GnrhNone),
   },
   {
     key: "w91_lh_thx_8067",
     group: DIG_LH,
     label: "Ewe #8067, thyroidectomized — 11 pulses",
-    provenance: "digitised",
+    provenance: "digitized",
     note:
       "MEASURED. Fig. 3B of Webster et al. 1991, upper panel: jugular LH from the same ewe as the portal " +
       "GnRH record, sampled every 6 min for 6 h a fortnight before the collection surgery. Load " +
@@ -192,14 +192,14 @@ export const SAMPLES: Sample[] = [
     deltaT: 6,
     valueLabel: "LH (ng/ml)",
     citation:
-      "Digitised from Webster JR, Moenter SM, Barrell GK, Lehman MN, Karsch FJ, Endocrinology 1991;129(3):1635-43 (PMID 1874193), Fig. 3B, ewe #8067. Read off the published figure with an author's permission; values are approximate to the width of a printed line. The error bars are RECONSTRUCTED, not measured: the figure prints none and the paper does not report its per-sample error, so the file supplies max(floor, 0.08 x value).",
+      "Digitized from Webster JR, Moenter SM, Barrell GK, Lehman MN, Karsch FJ, Endocrinology 1991;129(3):1635-43 (PMID 1874193), Fig. 3B, ewe #8067. Read off the published figure with an author's permission; values are approximate to the width of a printed line. The error bars are RECONSTRUCTED, not measured: the figure prints none and the paper does not report its per-sample error, so the file supplies max(floor, 0.08 x value).",
     load: csv(w91LhThx),
   },
   {
     key: "w91_lh_thx_9013",
     group: DIG_LH,
     label: "Ewe #9013, thyroidectomized — 16 pulses",
-    provenance: "digitised",
+    provenance: "digitized",
     note:
       "MEASURED. Fig. 4A of Webster et al. 1991, upper panel: LH presampling in the ewe that went on to " +
       "show 21 GnRH pulses, the highest frequency in the study." +
@@ -213,19 +213,19 @@ export const SAMPLES: Sample[] = [
     deltaT: 6,
     valueLabel: "LH (ng/ml)",
     citation:
-      "Digitised from Webster JR, Moenter SM, Barrell GK, Lehman MN, Karsch FJ, Endocrinology 1991;129(3):1635-43 (PMID 1874193), Fig. 4A, ewe #9013. Read off the published figure with an author's permission; values are approximate to the width of a printed line. The error bars are RECONSTRUCTED, not measured: the figure prints none and the paper does not report its per-sample error, so the file supplies max(floor, 0.08 x value).",
+      "Digitized from Webster JR, Moenter SM, Barrell GK, Lehman MN, Karsch FJ, Endocrinology 1991;129(3):1635-43 (PMID 1874193), Fig. 4A, ewe #9013. Read off the published figure with an author's permission; values are approximate to the width of a printed line. The error bars are RECONSTRUCTED, not measured: the figure prints none and the paper does not report its per-sample error, so the file supplies max(floor, 0.08 x value).",
     load: csv(w91LhFast),
   },
   {
     key: "w91_lh_con_8058",
     group: DIG_LH,
     label: "Ewe #8058, thyroid-intact control — no pulses",
-    provenance: "digitised",
+    provenance: "digitized",
     note:
       "MEASURED. Fig. 3A of Webster et al. 1991, upper panel: the anestrous control's LH, flat near the " +
       "assay's detection limit. Circulating LH falls roughly 50-fold at the transition to " +
       "anestrus, which is what a suppressed record looks like — and a reminder that a detector's " +
-      "baseline behaviour matters as much as its peaks." +
+      "baseline behavior matters as much as its peaks." +
       " Its error column is reconstructed, not read off the page: the figure has no error " +
       "bars and the paper does not say what error it gave CLUSTER, so the file supplies " +
       "max(floor, 8% of value) — the floor being the assay sensitivity the paper reports " +
@@ -236,14 +236,14 @@ export const SAMPLES: Sample[] = [
     deltaT: 6,
     valueLabel: "LH (ng/ml)",
     citation:
-      "Digitised from Webster JR, Moenter SM, Barrell GK, Lehman MN, Karsch FJ, Endocrinology 1991;129(3):1635-43 (PMID 1874193), Fig. 3A, ewe #8058. Read off the published figure with an author's permission; values are approximate to the width of a printed line. The error bars are RECONSTRUCTED, not measured: the figure prints none and the paper does not report its per-sample error, so the file supplies max(floor, 0.08 x value).",
+      "Digitized from Webster JR, Moenter SM, Barrell GK, Lehman MN, Karsch FJ, Endocrinology 1991;129(3):1635-43 (PMID 1874193), Fig. 3A, ewe #8058. Read off the published figure with an author's permission; values are approximate to the width of a printed line. The error bars are RECONSTRUCTED, not measured: the figure prints none and the paper does not report its per-sample error, so the file supplies max(floor, 0.08 x value).",
     load: csv(w91LhCon),
   },
   {
     key: "w91_lh_thx_9009",
     group: DIG_LH,
     label: "Ewe #9009, thyroidectomized — 11 pulses",
-    provenance: "digitised",
+    provenance: "digitized",
     note:
       "MEASURED. Fig. 4B upper panel. This animal was pulsatile in LH beforehand but showed no GnRH pulses " +
       "during portal sampling, which the authors attribute partly to the disturbance of the " +
@@ -258,7 +258,7 @@ export const SAMPLES: Sample[] = [
     deltaT: 6,
     valueLabel: "LH (ng/ml)",
     citation:
-      "Digitised from Webster JR, Moenter SM, Barrell GK, Lehman MN, Karsch FJ, Endocrinology 1991;129(3):1635-43 (PMID 1874193), Fig. 4B, ewe #9009. Read off the published figure with an author's permission; values are approximate to the width of a printed line. The error bars are RECONSTRUCTED, not measured: the figure prints none and the paper does not report its per-sample error, so the file supplies max(floor, 0.08 x value).",
+      "Digitized from Webster JR, Moenter SM, Barrell GK, Lehman MN, Karsch FJ, Endocrinology 1991;129(3):1635-43 (PMID 1874193), Fig. 4B, ewe #9009. Read off the published figure with an author's permission; values are approximate to the width of a printed line. The error bars are RECONSTRUCTED, not measured: the figure prints none and the paper does not report its per-sample error, so the file supplies max(floor, 0.08 x value).",
     load: csv(w91LhOther),
   },
   {
@@ -288,7 +288,7 @@ export const SAMPLES: Sample[] = [
     note:
       "GENERATED, not measured. The same model at seed 131 driven to a 17-min mean interval — " +
       "about three 5-min fractions per cycle, where the peak and nadir windows start to overlap " +
-      "neighbouring pulses and adjacent pulses merge. The detector finds fewer than were " +
+      "neighboring pulses and adjacent pulses merge. The detector finds fewer than were " +
       "generated, and that gap is the point of the file. Resembles no animal.",
     timeUnit: "min",
     deltaT: 5,

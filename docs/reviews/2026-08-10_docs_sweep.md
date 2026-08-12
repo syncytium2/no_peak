@@ -17,7 +17,7 @@ Roster check passes on each. Reviewers did not edit; fixes applied in the main t
 
 **The public page misled in three ways.** It linked to a GitHub repo that
 404s (the repo is private) *and* asserted the reference Fortran and Igor code
-were there — advertising redistribution of code whose licence forbids exactly
+were there — advertising redistribution of code whose license forbids exactly
 that. It claimed "no server, no upload" absolutely, on a page that carries a
 contact form posting to a third party. And it quoted CLUSTER's ~1%
 false-positive rate with none of the density caveat this project measured and
@@ -77,7 +77,7 @@ Every role ran on every artifact (four reviewers × 11 roles). Consolidated:
 | # | Role | Outcome across the four artifacts |
 |---|---|---|
 | 1 | Claim & data verifier — "Prove It." | The bulk of the damage. ~25 findings, including the dead GitHub link, the false `data/oracle/` claim in four places, the unreproducible density figures, the stale 36-test count, and AutoDecon's count-as-sensitivity. Numbers were recomputed, not read. |
-| 2 | Citation & reference validator — "DOI or Die." | All 21 About-page citations verified clean against PubMed/Crossref; 8 attributed claims checked against source text. Findings were scope and format: Carlson 2013 generalised past the methods it compared, DynPeak credited with a posterior it does not compute, "6× false positives" really 3–33× per group, one missing PMID. |
+| 2 | Citation & reference validator — "DOI or Die." | All 21 About-page citations verified clean against PubMed/Crossref; 8 attributed claims checked against source text. Findings were scope and format: Carlson 2013 generalized past the methods it compared, DynPeak credited with a posterior it does not compute, "6× false positives" really 3–33× per group, one missing PMID. |
 | 3 | Consistency auditor — "Cross-Examiner." | Found the cross-document contradictions: About vs reference-code on redistribution, validation-status vs llms.txt on test count, igor-validation describing finished work as pending, handoff status contradicted by 201 committed files. |
 | 4 | Adversarial reviewer — "Reviewer 2." | Two kill criteria that could not fire; selective reporting of the benchmark run (FDR quoted, sensitivity suppressed); "independent corroboration" that is circular; the undisclosed `includeTruncated` knob moving sensitivity 37.3→26.9%. |
 | 5 | Line editor — "Kill Your Darlings." | Few findings; prose judged disciplined across all four. A fragment, one hedge that undercut its own evidence, mixed hyphen/en-dash ranges. |

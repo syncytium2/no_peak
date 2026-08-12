@@ -16,7 +16,7 @@ started the day).
 ## 1. Two consent claims have no primary record — **only you can close this**
 
 The repo makes two public statements about identifiable people's consent, and
-neither has a dated primary artefact behind it:
+neither has a dated primary artifact behind it:
 
 - *"This port is made with Michael Johnson's approval"* (`src/About.tsx`). The
   only record is a line in `docs/reference-code.md`: "Reported by R.A. DeFazio,
@@ -27,7 +27,7 @@ neither has a dated primary artefact behind it:
   CSV header, and **every exported figure, PDF and results CSV**.
 
 What is needed: a dated note of who granted what, when, and for what scope —
-digitising is not the same permission as redistributing — kept wherever this
+digitizing is not the same permission as redistributing — kept wherever this
 project keeps such things. Until then the claim is unverifiable by anyone
 reading the repo, including a reviewer who might reasonably ask.
 
@@ -49,7 +49,7 @@ Fix is a dashboard setting on the `tonydefazio.com` zone (AI Crawl Control →
 managed robots.txt off; Security → Bots → "Block AI Scrapers and Crawlers" left
 off). Nothing in this repo can override it.
 
-**Decide it rather than inherit it.** The digitised Webster data is now public,
+**Decide it rather than inherit it.** The digitized Webster data is now public,
 so "should AI crawlers index this" is a live question, not a leftover. Whatever
 you choose, make the repo say the same thing the edge does.
 
@@ -72,7 +72,7 @@ it. Small change, and it unlocks six ids that currently exist for nothing.
 
 4,330 words, 23 sections, **no table of contents, no figures**, and headings
 that barely outrank the body: `.about h2` is 15px and `.about h3` is 14px
-against 14px body text, all in the same colour. Cheapest high-value fix in the
+against 14px body text, all in the same color. Cheapest high-value fix in the
 set, in order:
 
 1. Render a TOC from the ids that already exist (~15 lines).
@@ -113,7 +113,7 @@ not-verified heading. Partially repaired; still wants restructuring into
 - `public/llms.txt` claims "ten variance models"; there are **seven**.
 - `index.html` has no `<meta name="description">` and no `og:description`, so
   social cards render captionless. No favicon anywhere either (404).
-- `data/digitized/webster1991_pulses.csv` lacks the `# DIGITISED FROM A
+- `data/digitized/webster1991_pulses.csv` lacks the `# DIGITIZED FROM A
   PUBLISHED FIGURE` banner its eight siblings carry.
 
 ## 8. Duplication that currently agrees, and will not forever
@@ -137,9 +137,9 @@ identical.
 
 ## 9. Standing invitations, if the data becomes available
 
-- **Digitise Webster Figs. 3–4's LH presampling panels' error bars** — there are
+- **Digitize Webster Figs. 3–4's LH presampling panels' error bars** — there are
   none; this is settled. But if the authors still hold the underlying values,
-  they would replace both the digitised traces *and* the reconstructed error
+  they would replace both the digitized traces *and* the reconstructed error
   column, and moot most of the caveats in `data/digitized/README.md`.
 - **Deposit the Webster PDF in the lit cache.** It is not open access, not
   committed and not cached, so no reviewer can check the protocol figures, the
@@ -157,16 +157,16 @@ identical.
   was added during this session to solve a real problem and reverted, because
   two public pages state the Igor oracle spans *every* error model and a new
   model can have no oracle. If a per-sample error is needed, put it in the data
-  as a column and use Error Wave — that is what the digitised records do.
+  as a column and use Error Wave — that is what the digitized records do.
 - **Sensitivity and precision on the Webster scoring are not equally earned.**
   96% sensitivity is invariant to the fitted constants; 99% precision is not,
   and runs 45–100% across defensible floors. Quote the LH arm if quoting one
   number: its floor is the paper's own published assay sensitivity.
-- **The digitised records' error column is reconstructed, not measured**, and
+- **The digitized records' error column is reconstructed, not measured**, and
   the app draws it as error bars that leave in exported figures. That statement
   rides in the file header, the export credit, the dataset note and the About
   page. Do not let it fall out of any of them.
 - **`data/synthetic/` and `data/digitized/` are different kinds of thing** and
   the simulated GnRH files were deliberately built to the same paper's protocol,
-  so they look alike. `src/samples.test.ts` enforces the labelling that keeps
+  so they look alike. `src/samples.test.ts` enforces the labeling that keeps
   them apart; do not relax it.

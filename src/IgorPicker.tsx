@@ -122,7 +122,7 @@ export function IgorPicker({ file, fileName, onCancel, onLoad }: IgorPickerProps
       </h2>
       <p className="hint">
         {waves.length} numeric wave{waves.length === 1 ? "" : "s"} found. Tick the one you want to
-        analyse — or tick several to run every record under one set of detection settings, which is
+        analyze — or tick several to run every record under one set of detection settings, which is
         the point of concatenating a study.
       </p>
 
@@ -150,7 +150,7 @@ export function IgorPicker({ file, fileName, onCancel, onLoad }: IgorPickerProps
                       type="checkbox"
                       checked={on}
                       onChange={() => toggle(w.path)}
-                      aria-label={`Analyse ${w.path}`}
+                      aria-label={`Analyze ${w.path}`}
                     />
                   </td>
                   <td>
@@ -239,7 +239,7 @@ export function IgorPicker({ file, fileName, onCancel, onLoad }: IgorPickerProps
 
       <div className="pastefoot">
         <button className="primary" onClick={load} disabled={chosen.length === 0}>
-          {chosen.length > 1 ? `Analyse ${chosen.length} records together` : "Analyse this wave"}
+          {chosen.length > 1 ? `Analyze ${chosen.length} records together` : "Analyze this wave"}
         </button>
         <button onClick={onCancel}>Cancel</button>
         {lengthMismatch && (

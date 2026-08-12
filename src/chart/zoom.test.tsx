@@ -46,7 +46,7 @@ describe("horizontal zoom", () => {
 
   it("leaves every reported statistic untouched", () => {
     // the chart is a pure view of one result; zooming re-renders, it does not
-    // re-analyse, so the summary object is the same one either way
+    // re-analyze, so the summary object is the same one either way
     const before = JSON.stringify(run.combined.summary);
     draw([120, 180]);
     draw();

@@ -16,11 +16,11 @@ Verbatim: *"scales wrong on sample data"*. Three compounding errors in the GnRH
 dataset:
 
 - It applied an exponential clearance tail to GnRH. GnRH has no half-life worth
-  modelling at these resolutions — circulating half-life is 2–4 minutes, shorter
+  modeling at these resolutions — circulating half-life is 2–4 minutes, shorter
   than any collection window, and portal blood is collected as integrated
   fractions. A pulse belongs in one or two samples with an abrupt return, not a
   decay spanning five.
-- Its sampling interval was sample index relabelled as minutes, making the pulse
+- Its sampling interval was sample index relabeled as minutes, making the pulse
   interval ten times too fast.
 - It was described as "fast sampling" when what was meant was high pulse
   frequency — a different claim about a different quantity.
@@ -81,7 +81,7 @@ blocking a published parameter set, not an exotic setting.
 | Could not tab through settings quickly | Fields select their contents on focus; ↑/↓ step, Shift for ten steps, Esc reverts |
 | First number field refused the value 1, repeatedly | Real bug, reproduced and fixed — see below |
 | "Fast sampling" is irritating wording | Now "high pulse frequency" / "10-min fractions" throughout |
-| Need for high-quality or digitised test data, labelled | `data/synthetic/README.md` sets the standard; the figure data was digitised with an author's permission the same day — see `data/digitized/` |
+| Need for high-quality or digitized test data, labeled | `data/synthetic/README.md` sets the standard; the figure data was digitized with an author's permission the same day — see `data/digitized/` |
 
 ## The number-entry bug
 

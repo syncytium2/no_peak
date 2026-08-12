@@ -48,7 +48,7 @@ describe("runSegments", () => {
 
   it("does not let a detection window straddle the join", () => {
     // A record ending high butted against one starting low is a step change no
-    // detector could know is artificial. Analysed separately, neither record
+    // detector could know is artificial. Analyzed separately, neither record
     // sees it; concatenated and run once, the step is a pulse edge.
     const high = [9, 9, 9, 9, 9, 9];
     const low = [1, 1, 1, 1, 1, 1];
@@ -60,7 +60,7 @@ describe("runSegments", () => {
       [...high, ...low],
       params(),
     );
-    expect(naive.downs.some((d) => d === -1)).toBe(true); // the artefact it avoids
+    expect(naive.downs.some((d) => d === -1)).toBe(true); // the artifact it avoids
   });
 
   it("lays records end to end without overlapping in time", () => {

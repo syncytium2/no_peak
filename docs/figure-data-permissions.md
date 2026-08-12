@@ -1,7 +1,7 @@
-# Digitising data from a published figure: where the permissions question lands
+# Digitizing data from a published figure: where the permissions question lands
 
 > **Resolved, 2026-08-11.** One of the paper's authors gave permission, which is
-> the route this document recommends below. The eight traces are digitised and
+> the route this document recommends below. The eight traces are digitized and
 > live in [`data/digitized/`](../data/digitized/README.md); the extraction is
 > `tools/digitize_webster1991.py`. The article itself is not redistributed —
 > only the numbers.
@@ -92,7 +92,7 @@ selection, coordination or arrangement" and did not infringe.
 
 *CDN v. Kapes*, 197 F.3d 1256 (9th Cir. 1999) and *CCC v. Maclean Hunter*, 44
 F.3d 61 (2d Cir. 1994) held that numbers produced by expert judgment are
-"created, not discovered" and so protectable. If a figure plots modelled, fitted
+"created, not discovered" and so protectable. If a figure plots modeled, fitted
 or smoothed values rather than raw readings, that line is arguable.
 
 Four things blunt it here:
@@ -162,19 +162,19 @@ measurement data specifically.
 
 Contract can restrict what copyright permits, and this is where the actual risk
 sits. Reichman & Uhlir's standing argument about scientific data in the US is
-exactly this: the operative constraint is access terms and licences, not
+exactly this: the operative constraint is access terms and licenses, not
 copyright.
 
 - **OUP legal notice** forbids subscribers to "display or distribute any
   Restricted Content on any other site, the internet or any electronic network".
 - **Endocrine Society site terms** define "Site Materials" to include *data* and
   prohibit "harvesting, scraping, or collection of" them without written consent.
-- **The U-M licence** the PDF was obtained under prohibits posting
-  licence-accessed material publicly, and is not public.
+- **The U-M license** the PDF was obtained under prohibits posting
+  license-accessed material publicly, and is not public.
 
 Whether any of that reaches a derived CSV of facts — textually not a copy of
 anything on their site — is arguable both ways and appears untested. Note that
-*WIREdata* expressly declined to resolve the parallel licence question, while
+*WIREdata* expressly declined to resolve the parallel license question, while
 recording "profound skepticism" about the licensor's reading.
 
 OUP permits non-commercial TDM without formal permission but scopes it to the
@@ -182,7 +182,7 @@ undisclosed institutional agreement and says nothing about redistributing
 outputs. That silence is not inevitable: Elsevier states plainly that it claims
 no copyright over TDM output and places no restriction on publishing it. OUP has
 simply not taken a public position. (In the EU this would be moot — DSM Directive
-Art. 3 gives research organisations a TDM exception for lawfully accessed
+Art. 3 gives research organizations a TDM exception for lawfully accessed
 content, and Art. 7(1) makes contrary contract terms unenforceable. No US
 equivalent.)
 
@@ -204,7 +204,7 @@ sources", and its permissions guidelines list "only data is taken from the
 source" among instances where permission is not needed. Read honestly, though,
 Elsevier's three formulations are not consistent — one of them qualifies the
 carve-out to data "that was not previously in figure or table format", which is
-precisely what digitising a figure is not. Do not lean on any single wording.
+precisely what digitizing a figure is not. Do not lean on any single wording.
 
 **PLOS goes furthest and requires the opposite of permission**: its mandatory
 minimal data set expressly includes "The values used to build graphs" and "**The
@@ -225,21 +225,21 @@ WebPlotDigitizer, Engauge and others. Searching the full text of that chapter,
 PRISMA 2020's explanation document mentions figure data exactly once, and only
 to ask that you name the tool — a transparency requirement, not a rights one.
 
-**An earlier draft of this file said publishing digitised values as the
+**An earlier draft of this file said publishing digitized values as the
 deliverable dataset "has no precedent found either way". That was wrong.** It is
 routine and peer-reviewed:
 
 - **GlobTherm** (*Scientific Data* 2018;5:180022, CC BY) — thermal tolerances for
   2,133 species, values "extracted using Plot digitizer software", deposited in
   Dryad.
-- **Cu-Cr-X alloys** (*Scientific Data* 2025;12:2023, dataset licence unverified; the article itself is CC BY-NC-ND) — 3,018
+- **Cu-Cr-X alloys** (*Scientific Data* 2025;12:2023, dataset license unverified; the article itself is CC BY-NC-ND) — 3,018
   records auto-extracted from 251 figures in 146 papers published by Elsevier,
   Springer Nature and Wiley, redistributed for "unrestricted access".
 - **AedesTraits** (*Scientific Data* 2025;12:2033) — WebPlotDigitizer v4.8,
   30,969 rows on Zenodo under CC BY.
 - **PANGAEA** — about 2,400 datasets match the *terms* "digitized from the
   original publication" (an exact-phrase search returns none), CC BY, with the
-  digitised provenance stated in each record.
+  digitized provenance stated in each record.
 - Kaplan-Meier reconstruction (Guyot et al., *BMC Med Res Methodol* 2012;12:9,
   1,848 citations) is mainstream, and reconstructed patient-level datasets are
   deposited publicly under CC BY.
@@ -247,19 +247,19 @@ routine and peer-reviewed:
 No publisher objection to any of it was found. After deliberate searching across
 Retraction Watch, DMCA records, repository takedowns and editorials, **there is
 no recorded instance of a publisher or journal objecting to, or acting against,
-the digitisation of a figure or redistribution of the resulting numbers.** The
+the digitization of a figure or redistribution of the resulting numbers.** The
 one real takedown in this vicinity (Kaggle, July 2026) concerned verbatim
 redistribution of *photographs*. The only objection of any kind found anywhere
 came from an individual author, and was groundless under *Feist*.
 
 **The honest negative, which matters.** No dataset paper, competition, or tool
 has ever articulated the doctrine "extracted values are facts, therefore
-redistributable regardless of the source's licence". The chart-extraction
-community reasons about *images* and source-document licences, never about the
+redistributable regardless of the source's license". The chart-extraction
+community reasons about *images* and source-document licenses, never about the
 numbers. There is abundant *practice* and no stated *doctrine*. Relying on the
 argument means making it, not citing someone who made it. Note also that DSM
-Arts. 3–4 authorise reproductions and extractions *for the purpose of* TDM and do
-not on their face authorise redistributing the resulting dataset — don't
+Arts. 3–4 authorize reproductions and extractions *for the purpose of* TDM and do
+not on their face authorize redistributing the resulting dataset — don't
 over-read them.
 
 ## The closest precedent to this project, and what it chose
@@ -269,25 +269,25 @@ luteinizing hormone data." *Frontiers in Endocrinology* 2022;13:957993, CC BY
 4.0.** Methods, verbatim: "The female LH data were obtained through **digitizing
 the representative LH profile … depicted in Figure 2 of (24)**" — where (24) is
 Johnson ML et al., "AutoDecon…", *Analytical Biochemistry* 2008;381:8–17. That
-is the same Michael Johnson whose licence this repo already navigates, in an
+is the same Michael Johnson whose license this repo already navigates, in an
 Elsevier journal, in this exact domain.
 
-So digitising Johnson's published figure, and saying so plainly, passed peer
+So digitizing Johnson's published figure, and saying so plainly, passed peer
 review at a CC BY journal. But **they did not redistribute the numbers**: their
 data availability statement reads "The authors do not own the data and therefore
 cannot make them available", and their public repository contains code and a
-GPL-3 licence, no data files. (Their statement lumps the digitised series
+GPL-3 license, no data files. (Their statement lumps the digitized series
 together with a separate clinical dataset, so it is not certain which it was
 aimed at.)
 
 ## If it is ever done here, the model to follow
 
 **GLACIMONTIS** (*Scientific Data* 2026;13:629, CC BY) is the only project found
-that anticipates objections rather than ignoring them. It digitises published
+that anticipates objections rather than ignoring them. It digitizes published
 figures by default when authors do not respond, describes the output as "a
 derivative product", records per-record provenance — and: "**In cases where
 authors explicitly declined to have their reconstructions included … we respected
-their decision.**" Courtesy, honoured without conceding that permission was
+their decision.**" Courtesy, honored without conceding that permission was
 legally required.
 
 Per-record source citation is universal practice across every precedent above and
@@ -301,11 +301,11 @@ a 15-working-day turnaround, and no fee schedule or precedent exists for this
 kind of ask.
 
 **Ask the authors.** Karsch and Moenter are both at Michigan and this project is
-already in contact with that lab. Author blessing is not a copyright licence and
+already in contact with that lab. Author blessing is not a copyright license and
 does not override the publisher's terms, but the only risk actually live here is
 the relational one, and that is what it addresses. Better still, they may still
 hold the underlying values — **original data from an author beats anything
-digitised from a figure and moots this entire document.**
+digitized from a figure and moots this entire document.**
 
 Worth asking the U-M library (`library.collections@umich.edu`) in parallel
 whether the OUP agreement permits publishing TDM outputs; they can read a

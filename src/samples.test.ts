@@ -1,4 +1,4 @@
-// Every bundled dataset must load, parse and analyse.
+// Every bundled dataset must load, parse and analyze.
 //
 // The sample registry is the one place where a data file, its declared sampling
 // interval and its units are asserted to belong together, and nothing else
@@ -13,18 +13,18 @@ import { pulseFrequency } from "./core/timeUnits";
 import { DEFAULT_PARAMS } from "./core/types";
 
 describe("bundled samples", () => {
-  it("ships both the digitised records and the simulated ones", () => {
-    const dig = SAMPLES.filter((s) => s.provenance === "digitised");
+  it("ships both the digitized records and the simulated ones", () => {
+    const dig = SAMPLES.filter((s) => s.provenance === "digitized");
     const sim = SAMPLES.filter((s) => s.provenance === "simulated");
     expect(dig).toHaveLength(8);
     expect(sim.length).toBeGreaterThan(0);
     // the real records lead the picker
     expect(SAMPLE_GROUPS[0]).toMatch(/^Real/);
-    expect(SAMPLES[0].provenance).toBe("digitised");
+    expect(SAMPLES[0].provenance).toBe("digitized");
   });
 
   // The simulated GnRH records were built to the protocol of the same paper the
-  // digitised ones come from, so they are the one pair in the app that can
+  // digitized ones come from, so they are the one pair in the app that can
   // genuinely be mistaken for each other. Keep them apart by construction.
   it("never labels a generated record as if it were an animal", () => {
     for (const s of SAMPLES.filter((x) => x.provenance === "simulated")) {
@@ -32,7 +32,7 @@ describe("bundled samples", () => {
       expect(s.group).toMatch(/^Simulated/);
       expect(s.note.slice(0, 40)).toMatch(/GENERATED|seeded|Resembles|simulat/i);
     }
-    for (const s of SAMPLES.filter((x) => x.provenance === "digitised")) {
+    for (const s of SAMPLES.filter((x) => x.provenance === "digitized")) {
       expect(s.group).toMatch(/^Real/);
       expect(s.note).toMatch(/MEASURED/);
     }
@@ -41,8 +41,8 @@ describe("bundled samples", () => {
   it("gives no two datasets the same label", () => {
     const labels = SAMPLES.map((s) => `${s.group}|${s.label}`);
     expect(new Set(labels).size).toBe(labels.length);
-    // and no simulated label may duplicate a digitised one even across groups
-    const dig = new Set(SAMPLES.filter((s) => s.provenance === "digitised").map((s) => s.label));
+    // and no simulated label may duplicate a digitized one even across groups
+    const dig = new Set(SAMPLES.filter((s) => s.provenance === "digitized").map((s) => s.label));
     for (const s of SAMPLES.filter((x) => x.provenance === "simulated")) {
       expect(dig.has(s.label), `${s.key} shares a label with a real record`).toBe(false);
     }
@@ -92,8 +92,8 @@ describe("bundled samples", () => {
     }
   });
 
-  it("keeps the digitised records on the scale their figures are drawn on", () => {
-    for (const s of SAMPLES.filter((x) => x.provenance === "digitised")) {
+  it("keeps the digitized records on the scale their figures are drawn on", () => {
+    for (const s of SAMPLES.filter((x) => x.provenance === "digitized")) {
       const v = s.load().values;
       const ceiling = s.valueLabel.includes("GnRH") ? 3 : 31;
       expect(Math.max(...v), `${s.key} exceeds its axis`).toBeLessThanOrEqual(ceiling);
@@ -101,8 +101,8 @@ describe("bundled samples", () => {
     }
   });
 
-  it("cites the source in every digitised record's note", () => {
-    for (const s of SAMPLES.filter((x) => x.provenance === "digitised")) {
+  it("cites the source in every digitized record's note", () => {
+    for (const s of SAMPLES.filter((x) => x.provenance === "digitized")) {
       expect(s.note + s.label).toMatch(/Fig\.|Webster/);
     }
   });

@@ -8,7 +8,7 @@ than around one comfortable case.
 Unlike the datasets in data/synthetic/ (which exist to make the app's demo look
 plausible), this corpus records the generating pulse times, so detections can be
 scored for sensitivity and false positives. It is entirely our own output and
-carries no third-party licence, so it can be published — which matters, because
+carries no third-party license, so it can be published — which matters, because
 the ground-truth data we have been scoring against cannot be.
 
     python3 tools/simulate_benchmark.py            # writes data/benchmark/

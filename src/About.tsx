@@ -40,7 +40,7 @@ export function About({ onBack }: { onBack: () => void }) {
       <h3 id="twokinds">Two kinds of bundled data, and why both</h3>
       <p>
         The <strong>Sample data</strong> menu holds two things that must not be mistaken for one
-        another. They are labelled distinctly everywhere they appear, and the distinction is not
+        another. They are labeled distinctly everywhere they appear, and the distinction is not
         cosmetic — they answer different questions.
       </p>
       <ul>
@@ -52,7 +52,7 @@ export function About({ onBack }: { onBack: () => void }) {
           printed trace. That is a published answer, but an answer about what a detector
           reported, not about what the animal secreted. They are approximate to the width
           of a printed line, and their <strong>error column is reconstructed, not
-          digitised</strong> — the figures print no error bars and the paper does not report what
+          digitized</strong> — the figures print no error bars and the paper does not report what
           per-sample error it gave CLUSTER, so each file supplies <code>max(floor, 8% of value)</code>.
           For LH that floor is the assay sensitivity the paper reports; for GnRH it was fitted to
           that paper&apos;s own pulse calls. Detection needs it: at one-point windows every
@@ -90,17 +90,17 @@ export function About({ onBack }: { onBack: () => void }) {
       <p>
         Igor packed experiments (<code>.pxp</code>) and binary waves (<code>.ibw</code>) load
         directly — no export to text first. The app lists the numeric waves in the file and you
-        choose which to analyse, along with its error and time waves if it has them. Where the
+        choose which to analyze, along with its error and time waves if it has them. Where the
         Igor Cluster package&apos;s column naming is used (<code>…C1(RD)</code> for data,{" "}
         <code>C2(STDEV)</code> for errors, <code>C3(Times)</code> for the time base) the pairing is
         proposed automatically, and you can override it. A wave&apos;s own x scaling becomes the
-        sampling interval and its x units set the time axis, so the figure is labelled from the
+        sampling interval and its x units set the time axis, so the figure is labeled from the
         data rather than from memory. Both byte orders are read, including experiments written on
         older Macs.
       </p>
       <p>
-        Ticking <strong>several waves at once</strong> analyses them as separate records under one
-        set of detection settings — see <a href="#concatenate">analysing a whole study</a> below.
+        Ticking <strong>several waves at once</strong> analyzes them as separate records under one
+        set of detection settings — see <a href="#concatenate">analyzing a whole study</a> below.
       </p>
 
       <h3>Text files</h3>
@@ -133,12 +133,12 @@ export function About({ onBack }: { onBack: () => void }) {
       <p>
         You can also select <strong>two files at once</strong> — a data file and a separate error
         file — and they will be paired, provided they have the same number of rows. The error file
-        is recognised by its name containing <code>err</code>, <code>sd</code>, <code>sem</code>,
+        is recognized by its name containing <code>err</code>, <code>sd</code>, <code>sem</code>,
         or <code>stdev</code>. Either way, the app asks before switching to your errors, because
         scaling the test by measurement error changes which pulses are detected.
       </p>
 
-      <h2 id="concatenate">Analysing a whole study at once</h2>
+      <h2 id="concatenate">Analyzing a whole study at once</h2>
       <p>
         A common working practice: rather than tune the detector separately for each animal — which
         makes the settings, and therefore the pulse counts, incomparable between animals — you
@@ -284,7 +284,7 @@ export function About({ onBack }: { onBack: () => void }) {
         oracle for this port and silently diverging from it would make the port untestable. If you
         are reproducing a published threshold, or your values are far from order 1, use the
         original Fortran implementation. If you are comparing groups within one study whose data
-        is all on the same scale, the Igor behaviour will not mislead you — but report which
+        is all on the same scale, the Igor behavior will not mislead you — but report which
         implementation you used.
       </p>
 
@@ -327,7 +327,7 @@ export function About({ onBack }: { onBack: () => void }) {
       <h3 id="reporting">Report your error model, not just the five parameters</h3>
       <p>
         This used to be advice on principle. It is now a measurement. The app bundles eight real
-        hormone records digitised, with an author&apos;s permission, from the figures of a 1991
+        hormone records digitized, with an author&apos;s permission, from the figures of a 1991
         study that used this same algorithm — figures which mark every pulse that study&apos;s own
         analysis identified, 70 in all. That is an answer key, not ground truth about
         secretion — and because the study used this same algorithm, agreeing with it
@@ -723,9 +723,9 @@ export function About({ onBack }: { onBack: () => void }) {
 
       <h2>This implementation</h2>
       <p>
-        The source and test suite are on GitHub under an MIT licence. Neither reference
+        The source and test suite are on GitHub under an MIT license. Neither reference
         implementation is redistributed with it, for different reasons: Johnson&apos;s Fortran is
-        under a licence that forbids passing it on, and the Igor Pro Cluster package is the
+        under a license that forbids passing it on, and the Igor Pro Cluster package is the
         laboratory&apos;s own code, which this app is intended to succeed. If you find a case where
         no_peak disagrees with Igor or the original Fortran, that is a bug worth reporting: please
         get in touch with the data and parameters.

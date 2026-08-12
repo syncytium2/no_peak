@@ -51,7 +51,7 @@ describe("hand-typed numbers (parseLooseNumbers)", () => {
     expect(parseLooseNumbers("time value\n10 abc")).toBeNull();
   });
 
-  it("declines input too short to analyse", () => {
+  it("declines input too short to analyze", () => {
     expect(parseLooseNumbers("1 2")).toBeNull();
   });
 });

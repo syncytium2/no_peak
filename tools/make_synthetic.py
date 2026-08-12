@@ -23,8 +23,8 @@ Two secretion models, because the two hormones do not behave alike:
                       entirely inside one fraction, and appears as a one- or
                       two-sample spike with an abrupt return to baseline — two
                       samples only when the burst straddles a fraction boundary.
-                      Modelling GnRH with an exponential clearance tail across
-                      several samples is an artefact of the model, not a
+                      Modeling GnRH with an exponential clearance tail across
+                      several samples is an artifact of the model, not a
                       property of the hormone.
 
   pulsatile()         Peripheral LH. Here exponential clearance IS right: LH is
@@ -48,7 +48,7 @@ References for the scales used:
     run GnRH to 3 pg/min and LH to about 31 ng/ml, with observed GnRH pulse
     peaks reaching ~2.1 over a baseline near 0.1-0.2. ONLY those ranges and the
     observed peak heights are taken from the figures; no data
-    point is digitised from them. Pulses in that paper were identified with
+    point is digitized from them. Pulses in that paper were identified with
     this very algorithm, at settings it prints: peak and nadir clusters of one
     point, t = 3.2/3.2 for GnRH and 2.32/2.32 for LH, stated to give false
     positive rates of 1% and 5% respectively. Reproducing those counts needs
@@ -194,7 +194,7 @@ write(
 # Not an invented hard case — an observed one (Fig. 4A, and that panel reaches
 # the same ~2 pg/min ceiling). At an interpulse interval near 17 min, a 5-min
 # fraction leaves about three samples per cycle, which is where the peak and
-# nadir windows begin to overlap neighbouring pulses and adjacent pulses merge.
+# nadir windows begin to overlap neighboring pulses and adjacent pulses merge.
 # It is here to make that limit visible.
 write(
     "sim_gnrh_thx_fast.csv",

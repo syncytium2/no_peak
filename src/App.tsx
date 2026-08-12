@@ -37,7 +37,7 @@ interface Loaded {
   name: string;
   segments: Segment[];
   /** Set for bundled datasets: how the numbers were obtained. */
-  provenance?: "simulated" | "digitised";
+  provenance?: "simulated" | "digitized";
   /** Provenance line shown under the name. */
   note?: string;
   /** Source credit carried into every export. */
@@ -147,7 +147,7 @@ export function App() {
         return;
       }
 
-      // Otherwise every file is a record in its own right: analyse them
+      // Otherwise every file is a record in its own right: analyze them
       // together under one set of settings.
       loadSegments(
         `${parsed.length} records`,
@@ -469,7 +469,7 @@ export function App() {
               <ul>
                 <li>
                   <strong>Igor</strong> — a packed experiment (<code>.pxp</code>) or a single binary
-                  wave (<code>.ibw</code>). You pick the wave to analyse, and its error and time waves
+                  wave (<code>.ibw</code>). You pick the wave to analyze, and its error and time waves
                   if it has them; the wave&apos;s own x scaling becomes the sampling interval.
                 </li>
                 <li>
@@ -479,7 +479,7 @@ export function App() {
                   <code>#</code> are ignored.
                 </li>
                 <li>
-                  <strong>Several files at once</strong> — each becomes one record, analysed together
+                  <strong>Several files at once</strong> — each becomes one record, analyzed together
                   under identical settings. Two files where one is named like errors (
                   <code>…_sd</code>, <code>…SEM</code>) are paired instead.
                 </li>
@@ -497,7 +497,7 @@ export function App() {
             {loaded && (
               <div className="loadedname">
                 {/* The name and the provenance tag stay visible always: knowing at a
-                    glance whether a figure is simulated, digitised or your own is
+                    glance whether a figure is simulated, digitized or your own is
                     not something to put behind a click. The prose behind it is. */}
                 <span>
                   {loaded.name} — {loaded.segments.length > 1 && `${loaded.segments.length} records, `}
@@ -508,12 +508,12 @@ export function App() {
                     simulated
                   </span>
                 )}
-                {loaded.provenance === "digitised" && (
+                {loaded.provenance === "digitized" && (
                   <span
                     className="simtag digtag"
                     title="A real record, read off a published figure — approximate to the width of a printed line"
                   >
-                    digitised from a figure
+                    digitized from a figure
                   </span>
                 )}
                 {loaded.note && (
@@ -867,7 +867,7 @@ export function App() {
 
               {multi && (
                 <p className="hint">
-                  Each record was analysed on its own with these settings, so no detection window
+                  Each record was analyzed on its own with these settings, so no detection window
                   crosses a boundary and no reported interval spans one. The dividers mark where one
                   record ends and the next begins.
                 </p>

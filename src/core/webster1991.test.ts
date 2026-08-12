@@ -84,7 +84,7 @@ function score(errorModel: ErrorModelType | "assay") {
   return { hit, missed, extra };
 }
 
-describe("Webster et al. 1991, digitised", () => {
+describe("Webster et al. 1991, digitized", () => {
   it("carries all eight traces and the 70 published pulse calls", () => {
     const truth = publishedCalls();
     expect([...truth.values()].reduce((a, s) => a + s.size, 0)).toBe(70);

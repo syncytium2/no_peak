@@ -27,7 +27,7 @@ which are measurement noise, and reports:
 Input is plain text, one sample per line, with optional time and per-sample SD
 columns; ten variance models are supported, including a user-supplied error
 wave. The tool ships sample datasets of two kinds, each tagged: real records
-digitised from published figures, and simulated records that match no animal.
+digitized from published figures, and simulated records that match no animal.
 It never opens blank.
 
 ## Scope, stated precisely
@@ -84,13 +84,13 @@ Reported plainly because the point of the tool is trustworthy numbers:
   data. Deconvolution methods (AutoDecon) recover ~98% of pulses — but that is a detection count containing unscored false positives, not a scored sensitivity on the same data. If you
   need to *count* pulses, use deconvolution; CLUSTER's argument is that it can
   defend every pulse it does report.
-- **The near-zero false-positive rate is partly an artefact of the standard
+- **The near-zero false-positive rate is partly an artifact of the standard
   benchmark.** Johnson's datasets carry roughly one pulse per five samples. On a
   simulated corpus spanning realistic ranges of sampling interval, half-life,
   pulse mass and inter-pulse interval — averaging 6.5 pulses per record — the
   same code produces a 16–22% false-discovery rate. A density-matched corpus
-  reproduces the published behaviour (55.8% sensitivity for the Igor variant, 58.4% for the Fortran, both under 0.5% FDR), which is how
-  the discrepancy was localised to pulse density rather than to the port. Read
+  reproduces the published behavior (55.8% sensitivity for the Igor variant, 58.4% for the Fortran, both under 0.5% FDR), which is how
+  the discrepancy was localized to pulse density rather than to the port. Read
   the literature's "≈1% false positives" as conditional on dense pulse trains.
 - No expert-annotated pulse lists exist for these datasets, so "correct" means
   "matches the reference implementations and the simulator's ground truth", not
@@ -122,7 +122,7 @@ the relevant property for anyone whose data is human-subject or HIPAA-regulated.
 The original Fortran and the Igor Pro package are third-party code that is not
 redistributable, and are not included in this project. The laboratory's own unpublished
 recordings are not distributed either. The bundled datasets are of two kinds,
-tagged distinctly: eight records digitised from the published figures of
+tagged distinctly: eight records digitized from the published figures of
 Webster et al. 1991 with an author's permission, and simulated records that
 correspond to no animal.
 

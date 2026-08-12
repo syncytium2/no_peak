@@ -60,7 +60,7 @@ interface NumType {
 
 /**
  * Decode the `type` field into an element reader. Returns null for text waves
- * (type 0) and for anything unrecognised.
+ * (type 0) and for anything unrecognized.
  */
 function numericType(type: number): NumType | null {
   const unsigned = (type & NT_UNSIGNED) !== 0;
@@ -319,7 +319,7 @@ function packedEndianness(dv: DataView): boolean {
     const n = dv.getInt32(4, le);
     if (type <= 20 && n >= 0 && RECORD_HEADER + n <= dv.byteLength) return le;
   }
-  throw new Error("not an Igor packed experiment (unrecognised first record).");
+  throw new Error("not an Igor packed experiment (unrecognized first record).");
 }
 
 // ---- pairing heuristics ----------------------------------------------------
@@ -354,7 +354,7 @@ export function suggestPartners(
 }
 
 /**
- * Igor x-unit strings mapped onto the app's time units. Unrecognised or empty
+ * Igor x-unit strings mapped onto the app's time units. Unrecognized or empty
  * units return null so the caller leaves the user's own choice alone.
  */
 export function timeUnitFromIgor(xUnits: string): "s" | "min" | "h" | null {
