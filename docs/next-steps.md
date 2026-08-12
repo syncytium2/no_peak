@@ -6,10 +6,85 @@ below is either a defect someone found or a gap a review recorded, not a wish.
 State at handoff: 196 tests pass, `tsc -b` clean, `dist/` is byte-identical to
 what <https://nopeak.tonydefazio.com> serves, working tree clean.
 
+> **Updated 2026-08-12.** State now: **200 tests pass**, `tsc -b` clean, working
+> tree clean, `main` pushed, and <https://nopeak.tonydefazio.com> **verified
+> current** — both `index.html` and `/methods` changed today and the live site
+> serves the new text. The numbered items below are unchanged and still open
+> unless struck; the block immediately after this one is the work that arrived
+> on 2026-08-12. **The numbering is load-bearing** — `deep-learning-handoff.md`
+> and others cite `next-steps.md` by section number, so add new items rather
+> than renumbering.
+
 Sources for everything here: `docs/reviews/2026-08-11_docs_after_digitisation.md`
 (the 11-role murderboard, which carries the full findings and the role ledger)
 and `docs/reviews/2026-08-11_expert_review.md` (the outside domain review that
 started the day).
+
+---
+
+## Arrived 2026-08-12 — unnumbered, so the sections below keep their numbers
+
+Full detail for all of these is in `docs/validation-status.md`; this is the
+ranked summary.
+
+### A. The fixed-record generator capability — **the top item, and it needs a go**
+
+`tools/simulate_benchmark.py` draws a fresh pulse train on every call, so it
+cannot emit controlled variants of one record. Three separate open questions
+all need exactly that, which is why this is one change and not three:
+
+- a **five-runs-per-condition variance estimate** — nothing in this benchmark
+  has an error bar, and a four-point monotonicity check on single runs cannot
+  distinguish a misspecified generator from sampling noise;
+- **Urban's resampling design** — one signal sampled at several intervals,
+  which turns his published null result into a prediction we can fail rather
+  than a shape we assume;
+- **sweeping burst width at fixed half-life**, which is currently impossible
+  because a pulse has no width and so width *is* half-life.
+
+⚠ Two traps, both already recorded in the generator's own comments. Replicates
+must differ in the **noise draw alone** — reseeding `simulate()` wholesale
+redraws onsets and masses too, and then the spread measured is corpus variance,
+not measurement variance. And the byte-identical regeneration guarantee this
+file has twice been leaned on dies with the change, so it must be re-verified
+rather than assumed.
+
+### B. VJ's half-life direction rule fails, and nobody knows why
+
+Of Veldhuis & Johnson's five direction rules, one reproduces (amplitude), one
+**fails on a clean axis** (half-life), one is untestable here (sampling — the
+axis is a density axis in disguise), one is unresolved pending replication
+(assay CV), and one needs a statistic nothing computes (frequency). The
+half-life failure is a probable generator defect. Two mechanisms were proposed
+and each was killed by its own prediction, so the cause is open — do not admit
+a third without the sweep that tests it, which item A is what enables.
+
+### C. Restructure the reproducibility gaps by category
+
+A **reproducibility gap** is a bug in our tooling and can be closed. A
+**distribution limit** is a property of someone else's license and can never
+be. `docs/validation-status.md` currently files both under one heading that
+implies all are actionable — at least three entries (the gitignored oracle
+data, the Igor package, the Webster PDF) are the second kind. Collapsing the
+two is how a repo talks itself into believing an unfixable problem is a to-do.
+
+### D. The freshness hook — **needs your approval, twice requested**
+
+A `SessionStart` hook running `tools/murderboard_freshness.sh` against the
+vendored-doc set. The `downLow` repo has it approved and armed; this repo does
+not. It would have caught two of the five wrong conclusions of 2026-08-12. No
+Claude session will install it without you saying so, because it means writing
+`.claude/settings.json`.
+
+### E. Deploys are fine — but check the site, not `dist/` mtimes
+
+Not an open item; recorded because it was nearly filed as one. After the
+2026-08-12 public-surface edits, `dist/` mtimes suggested a stale build. They
+were misleading: the build had run, and both `/` and `/methods` on
+<https://nopeak.tonydefazio.com> serve today's text. Verify deployment by
+fetching the live URL and grepping for a string you just wrote — case
+insensitively, which is the second thing that fooled this check. `npm run
+deploy` runs tests, builds and deploys, and does **not** push.
 
 ---
 
@@ -153,6 +228,24 @@ identical.
 
 ## Things to not undo by accident
 
+- **Seven of these files have a downstream consumer.** The `downLow` repo
+  (`~/Developer/downLow`, the learned-detector project) *vendors* copies of
+  `docs/validation-status.md`, `docs/reference-code.md`,
+  `docs/figure-data-permissions.md`, `data/digitized/README.md`,
+  `data/benchmark/truth.json`, `tools/score_benchmark.ts`,
+  `tools/score_against_truth.ts` and `tools/simulate_benchmark.py`. Its copies
+  carry a stamp naming the no_peak sha they came from, and a freshness check
+  compares that stamp against this repo's `main`. **no_peak is canonical for
+  all of them**; renaming or moving one silently breaks a consumer that cannot
+  see this repo's history. Tell that session — or leave the new path in a
+  commit message, which is the only channel that survives. Its own
+  `docs/vendoring.md` is the authority on the arrangement.
+- **Another Claude session may be working in this same checkout**, sharing one
+  working tree *and* one `.git`. Stage explicit paths; never `git add -A` or
+  `commit -a`, which sweep up the other session's unfinished work. Before
+  concluding anything about what committed code does, pin the sha *and* run
+  `git status` — see `docs/validation-status.md`'s header for why the first
+  alone fails silently.
 - **The port exposes exactly the seven error models Igor exposes.** An eighth
   was added during this session to solve a real problem and reverted, because
   two public pages state the Igor oracle spans *every* error model and a new
