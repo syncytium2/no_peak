@@ -715,10 +715,16 @@ export function About({ onBack }: { onBack: () => void }) {
         </li>
       </ul>
       <p>
-        One gap worth naming: despite the obvious appeal, there is no established deep-learning
-        pulse detector for serial hormone assays. Adjacent machine-learning work exists on hormone
-        trajectory prediction and cycle-phase classification, but nothing that identifies pulses in
-        the way these tools do. If you were hoping to cite one, it does not yet exist.
+        One gap worth naming: despite the obvious appeal, there is no modern deep-learning pulse
+        detector for serial hormone assays in routine use. It was tried in the 1990s — Prank and
+        colleagues located growth-hormone secretory bursts with adaptive mixtures of local experts
+        (<em>Hum Reprod Update</em> 1997;3(3):215–34), and a 1994 abstract trained a
+        back-propagation network on fifteen series against expert-marked pulses (<em>Pediatr Res</em>{" "}
+        35:A82) — but neither entered use, and the second illustrates the central difficulty: with
+        no ground truth to learn from, it could only imitate an expert, inheriting whatever that
+        expert got wrong. Adjacent machine-learning work exists on hormone trajectory prediction
+        and cycle-phase classification. Nothing since identifies pulses in a concentration time
+        series with a learned model the way the tools above do.
       </p>
 
       <h2>This implementation</h2>
