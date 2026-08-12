@@ -220,10 +220,13 @@
     </table>
   </div>
   <p>
-    Every row above was measured on 2026-08-10 and none has been re-derived
-    since. Johnson's datasets cannot be redistributed, so unlike the rest of
-    this page these numbers cannot be re-run from the repository alone — a
-    reader has to take them on the record rather than check them.
+    The two CLUSTER rows were last re-derived 2026-08-12 and reproduce exactly,
+    per-dataset as well as in total. The PULSAR row has not been re-derived: the
+    committed <code>pulsar_run.R</code> runs one file and prints peak times,
+    while the dataset loop, threshold sweep and scorer behind that number are
+    not in the repository. Johnson's datasets cannot be redistributed either, so
+    unlike the rest of this page these numbers cannot be re-run from a clone
+    alone.
   </p>
   <p>
     Read that as a description, not a scoreboard. PULSAR Otago reports a peak

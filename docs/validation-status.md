@@ -632,11 +632,20 @@ They are reported as measured, but a reader cannot check them:
 - **The `fortran` rows in the ground-truth table.** ~~`tools/score_against_truth.ts`
   hardcodes `variant: "igor"`~~ — **closed 2026-08-12**: the scorer now runs both
   variants on every invocation, so both rows are derivable from committed code.
-  What is *not* closed: the published 60.8% and 51.5% were measured on
-  2026-08-10 and have not been re-derived since, and Johnson's datasets are not
-  redistributable, so no one without `PULSEXP_DATA` can check either figure.
-  That limitation is now stated on all three public surfaces that quote them
-  (`index.html`, `public/methods.html`, `public/llms.txt`) rather than only here.
+  **Fully closed 2026-08-12**: both rows were then re-derived and reproduce
+  exactly — `igor` 67/130 (51.5%) and `fortran` 79/130 (60.8%), zero false
+  positives, with the per-dataset `fortran` counts 15/15/17/8/12/12 matching
+  the published table. Run twice from independent sessions, agreeing to the
+  digit. The data comes from `Data/` inside `AutoDeconSoftware.zip` in the
+  owner's Dropbox — extract it to a scratch directory and point `PULSEXP_DATA`
+  at that:
+
+      PULSEXP_DATA=/tmp/pxdata npx vite-node tools/score_against_truth.ts
+
+  What remains is a distribution limit rather than a reproducibility one:
+  Johnson's datasets are not redistributable, so a reader with only a clone
+  still cannot check either figure. That is what the three public surfaces
+  (`index.html`, `public/methods.html`, `public/llms.txt`) now say.
 - **The PULSAR head-to-head.** `tools/pulsar/pulsar_run.R` runs one file and
   prints peak times; the dataset loop, the G-value sweep, the per-dataset CV
   derivation and the scorer are not in the repo.

@@ -64,9 +64,9 @@ Two implementations ship side by side and are switchable in the UI:
   six datasets at default settings, the `fortran` variant recovers 60.8% with
   zero false positives and the `igor` variant 51.5% with zero false positives —
   bracketing the ~58% Johnson published for Cluster on that same data. Both
-  figures were measured on 2026-08-10 and have not been re-derived since, and
-  the datasets cannot be redistributed, so this is the one claim here that
-  cannot be re-run from the repository alone.
+  figures were last re-derived 2026-08-12 and reproduce exactly. The datasets
+  cannot be redistributed, so this is the one claim here that cannot be re-run
+  from the repository alone.
 - **Head-to-head with PULSAR Otago** (Porteous et al. 2021), run headlessly from
   its own GPL-3 source on the same data with the same ground truth: 56.2%
   sensitivity with 6 false positives, at its best threshold setting.
