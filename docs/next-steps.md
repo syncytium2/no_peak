@@ -50,6 +50,11 @@ against. The falsifiable target on that axis is Urban's *null* across 5/10/15-
 min sampling, not a direction. Know that before building, or you will look for
 a pass/fail that cannot exist.
 
+That arm shrank because **the field cannot adjudicate it, not because we
+cannot** — no measurement of ours would change it. Deferring this item would
+only be warranted if the limit were on our side. The other two arms are
+untouched, which is why it stays ranked first.
+
 ⚠ Two traps, both already recorded in the generator's own comments. Replicates
 must differ in the **noise draw alone** — reseeding `simulate()` wholesale
 redraws onsets and masses too, and then the spread measured is corpus variance,
@@ -114,6 +119,22 @@ vendored-doc set. The `downLow` repo has it approved and armed; this repo does
 not. It would have caught two of the five wrong conclusions of 2026-08-12. No
 Claude session will install it without you saying so, because it means writing
 `.claude/settings.json`.
+
+⚠ **Two ways this check reports truthfully about itself and misleadingly about
+the repo**, both learned the hard way in `downLow` and both worth knowing
+*before* installing it rather than after:
+
+- It compares a file's stamp against `HEAD`, not against the file's content, so
+  a file that did not change still reads as stale until its stamp is bumped.
+  Bump **every** stamp in the set on a re-vendor, not only the ones that moved.
+- Verifying by hand hits a cache that can serve the previous sha, so it will
+  report stale on a file you just corrected. Use `--refresh` when checking
+  manually; the session-start path is fine.
+
+Both are the same shape: the check's output standing in for the files'
+condition. That is the proxy failure of `docs/validation-status.md`'s header
+table pointed inward at the tool, which is worth knowing because a check that
+cries wolf twice is a check someone turns off.
 
 ### E. Deploys are fine — but check the site, not `dist/` mtimes
 
