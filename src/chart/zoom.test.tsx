@@ -54,6 +54,21 @@ describe("horizontal zoom", () => {
     expect(run.combined.peaks.length).toBeGreaterThan(5);
   });
 
+  it("never lets a window extend the axis past the record", () => {
+    // The sweep that makes a window can overshoot the plot edges (pointer
+    // capture keeps the drag alive out there), so the window arrives wider
+    // than the data. The record ends at 360 min; an axis reaching 380 would
+    // read as twenty minutes of data that does not exist.
+    const signedTicks = (html: string) =>
+      [...html.matchAll(/<text[^>]*y="4\d\d"[^>]*>(-?[\d,]+)<\/text>/g)]
+        .map((m) => Number(m[1].replace(/,/g, "")))
+        .filter((v) => Number.isFinite(v));
+    const right = signedTicks(draw([300, 380]));
+    expect(Math.max(...right)).toBeLessThanOrEqual(360);
+    const left = signedTicks(draw([-40, 60]));
+    expect(Math.min(...left)).toBeGreaterThanOrEqual(0);
+  });
+
   it("still draws the whole record when no window is set", () => {
     const t = ticks(draw());
     expect(Math.min(...t)).toBeLessThanOrEqual(60);

@@ -99,7 +99,11 @@ export function ClusterChart({
   const layout = useMemo(() => {
     const dt = times.length > 1 ? times[1] - times[0] : 1;
     const full: [number, number] = [times[0] - dt / 2, times[n - 1] + dt / 2];
-    const x = linearScale(xRange ?? full, [M.left, W - M.right]);
+    // A window is honored only within the record. An axis running past the
+    // data would read as data that is not there.
+    const win =
+      xRange && ([Math.max(full[0], xRange[0]), Math.min(full[1], xRange[1])] as [number, number]);
+    const x = linearScale(win && win[1] > win[0] ? win : full, [M.left, W - M.right]);
 
     let yLo = Infinity;
     let yHi = -Infinity;
@@ -238,8 +242,15 @@ export function ClusterChart({
     // Too short a sweep is a click, not a selection — leave the view alone so
     // the tooltip stays usable.
     if (Math.abs(to - from) < 8) return;
-    const lo = timeAt(Math.min(from, to));
-    const hi = timeAt(Math.max(from, to));
+    // Pointer capture keeps the drag alive past the plot edges, where timeAt
+    // extrapolates freely — so a sweep can name times the record does not
+    // reach. Clamp to the data; a sweep past both ends means "show all".
+    const lo = Math.max(full[0], timeAt(Math.min(from, to)));
+    const hi = Math.min(full[1], timeAt(Math.max(from, to)));
+    if (lo <= full[0] && hi >= full[1]) {
+      onXRangeChange?.(undefined);
+      return;
+    }
     if (hi - lo > 0) onXRangeChange?.([lo, hi]);
   }
 
