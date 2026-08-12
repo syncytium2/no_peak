@@ -17,6 +17,16 @@ user's machine.** Figures are publication-grade SVG (vector) with 4× PNG export
   Cloudflare OAuth). Custom domain is added in the Cloudflare dashboard —
   DNS for tonydefazio.com is Cloudflare-managed, nothing to do at Porkbun.
 
+`playwright-core` is a devDependency for **checking the running app in a real
+browser**, which the tests cannot do: it is how the horizontal-zoom overshoot
+was found and how the hour-axis promotion was confirmed on screen. Start
+`npm run dev`, then drive the page with a short script — load a sample, read the
+rendered SVG text, screenshot it. Note the browser binary is **not** in
+`node_modules`: Playwright keeps it in `~/Library/Caches/ms-playwright/`, so
+point `executablePath` at the `chrome-headless-shell` there rather than calling
+`chromium.launch()` bare. Never assert a UI claim from a test alone when one
+minute of this would settle it.
+
 Readable without JavaScript: the app is client-rendered, so anything that fetches
 the URL without running a browser — a crawler, a reviewer's AI assistant, a text
 browser — used to get an empty `<div id="root">`. Two things fix that and both
