@@ -27,6 +27,18 @@ _Last updated: 2026-08-12 (v0.2.0)._ Open work is in
 > to find the cause.** That needs no one to be a good reviewer of anyone else's
 > code, only for non-reproduction to be reported honestly rather than
 > reconciled away.
+>
+> **And check `git status`, not just the file.** More than one agent worked in
+> this checkout that day, which is the single fact most of the day's confusion
+> reduces to: a file read mid-edit, edits found and misattributed to the owner,
+> and one confident retraction of a real defect written after reading a file
+> that had changed twenty minutes earlier. Pinning the commit —
+> `git show <sha>:<path>`, and saying which sha — is half the fix, and it is
+> the half that fails silently here: uncommitted edits are in no commit, so
+> pinning shows a clean file and a confident wrong answer. Before concluding
+> anything about what this code does, pin the sha **and** check whether the
+> tree is dirty. In a shared checkout the gap between them is someone else's
+> unfinished work, not your own.
 
 > The reference Fortran and Igor sources are **not committed** — third-party
 > code we cannot redistribute. Neither is the oracle output (`data/oracle/`,

@@ -99,6 +99,29 @@ def simulate(rng: random.Random, profile: str = "broad") -> dict:
 
     k = math.log(2.0) / half_life
 
+    # ONE RNG STREAM, and two consequences that pull against each other.
+    #
+    # Benign today: the params dict at the bottom is assembled AFTER the series,
+    # from locals already drawn, so adding keys to it consumes no randomness.
+    # That is why `profile`, `mass_mu` and `mass_sigma` could be recorded
+    # without moving a single byte under data/benchmark/series/.
+    #
+    # The trap for whoever separates the streams: three open items — a
+    # five-runs-per-condition variance estimate, Urban's resample-at-fixed-
+    # signal design, and sweeping burst width at fixed half-life — all need one
+    # record emitted in controlled variants, which means drawing the pulse
+    # train ONCE and giving the noise its own stream. That is structural, not a
+    # parameter. Note that the variance estimate is only meaningful if
+    # replicates differ in the noise draw ALONE: reseeding simulate() wholesale
+    # redraws onsets and masses too, and then the spread measured is corpus
+    # variance, not measurement variance, and Urban's null gets tested against
+    # a null inflated by everything except the thing it is about.
+    #
+    # And once noise has its own stream, the paragraph above stops holding:
+    # adding or reordering draws is no longer automatically safe, so the
+    # byte-identical regeneration guarantee this file has been leaned on for
+    # twice must be re-verified rather than assumed.
+
     # --- pulse onsets: gamma-ish spacing, first one anywhere in the first IPI
     onsets: list[float] = []
     t = rng.uniform(0.0, mean_ipi)
