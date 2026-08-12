@@ -42,6 +42,14 @@ all need exactly that, which is why this is one change and not three:
 - **sweeping burst width at fixed half-life**, which is currently impossible
   because a pulse has no width and so width *is* half-life.
 
+⚠ **On the sampling arm, this produces a description and not a gate.** The
+field publishes both signs for sampling intensity's effect on false positives
+and explicitly disclaims the interactions (`docs/validation-status.md`), so
+decoupling density yields a clean measurement with nothing to check it
+against. The falsifiable target on that axis is Urban's *null* across 5/10/15-
+min sampling, not a direction. Know that before building, or you will look for
+a pass/fail that cannot exist.
+
 ⚠ Two traps, both already recorded in the generator's own comments. Replicates
 must differ in the **noise draw alone** — reseeding `simulate()` wholesale
 redraws onsets and masses too, and then the spread measured is corpus variance,
@@ -74,7 +82,12 @@ and nobody has read it. Its contents section by section:
   sampling shape.
 - **§III.B — ideal properties of discrete signal detectors.** The closest thing
   to a written specification the gate has ever had, from the algorithm's own
-  authors.
+  authors. ⚠ **Read it as input to a gate, not as one.** It is a 1988 list of
+  properties a *detector* should have, not a validation protocol for a
+  *simulator*, and the temptation on finding a criteria list will be to adopt
+  it wholesale. That is the same move that made VJ's five-samples-per-half-life
+  rule look like a gate when it is a deconvolution condition — see the
+  adequacy-rule finding in `docs/validation-status.md`.
 - **§V.C — concordance between simultaneous endocrine time series.** The design
   the digitized Webster records were wrongly claimed to instantiate. Read it
   before writing a want-list entry for such a dataset, because it states what

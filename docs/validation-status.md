@@ -460,11 +460,19 @@ increasing sampling intensity raises true-positive detection *and* "a
 progressive increase in contaminating false-positive peaks", while
 false-negative errors fall. So: *increased* sampling → false positives **up**.
 
-The two cannot both be right, and the 1988 paper is explicit that its figures
-are "provisional models" whose interactions "have not been defined" — they are
-schematics, not measurements. That is probably the resolution: the 1994
-sentence is a compact generalization, the 1988 figures are a conceptual model,
-and neither is a fitted result.
+**The disagreement is asymmetric, which is informative.** The two papers *agree*
+on false negatives — sparser sampling overlooks more true pulses, VJ say it and
+Urban's Fig. 31 shows it — and diverge on false positives alone. A wholesale
+disagreement would suggest one of them is simply wrong; a split on exactly one
+of two error types, from the same group, in papers that cite each other, points
+instead at neither being a fitted result.
+
+Urban 1988 says as much, and its disclaimer is stronger than "schematic"
+(p. 36): the figures are "provisional models, since at present the exact nature
+and magnitude of the various possible **interactions among** true-positive,
+false-positive, and false-negative errors have not been defined." The claim is
+not that the numbers are rough — it is that the *joint* behavior of the three
+error types is unknown. Neither paper licenses a sign on this axis.
 
 **This corpus matches the 1988 model on both error types.** Across sampling
 intervals 2 → 5 → 10 min (that is, decreasing sampling intensity), `igor`
@@ -477,8 +485,28 @@ Do not read that as the generator vindicated: the axis is still confounded with
 density at 6×, so it is not clean evidence for anything. What it does settle is
 narrower and worth having — **an apparent wrong sign against VJ 1994 on this
 axis is not prima facie a defect**, because the field's own review says the
-other thing. Any future gate built on a sampling-intensity shape has to pick a
-side and say which, and Urban 1988 §V.E is the place to read before picking.
+other thing.
+
+**This retires the sampling axis for a third time, on grounds independent of
+the first two — and this one survives fixing them.** The three reasons now are:
+
+1. VJ's half-life and sampling rules pull in opposite directions inside
+   `half_life / dt`, so the ratio is uninterpretable;
+2. sampling interval is confounded with per-sample density at 6× in this
+   generator;
+3. the field publishes **both signs** and disclaims the interactions entirely.
+
+Build the fixed-record capability, decouple density, take a clean measurement —
+and there is still no published sign to check it against. That changes what
+that capability is *for* on this axis: not "test VJ's sampling rule", which is
+not a testable object, but "establish what the sampling relationship is in our
+simulator", which is a **description, not a gate**. Whoever builds it should
+know that before starting, or they will go looking for a pass/fail that cannot
+exist.
+
+Urban's own null across 5/10/15-min sampling remains the one falsifiable thing
+on this axis, and it survives all three objections precisely because it is a
+null rather than a sign.
 
 ### The sampling axis does not mean what it looks like (2026-08-12, same day)
 
