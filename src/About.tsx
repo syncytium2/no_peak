@@ -461,7 +461,7 @@ export function About({ onBack }: { onBack: () => void }) {
           </a>{" "}
           — the simulation methodology for characterizing false-positive and false-negative rates.
           <span className="cite">
-            Veldhuis JD, Johnson ML. <em>Methods Enzymol.</em> 1994;240:377–415. PMID 7823840.
+            Veldhuis JD, Johnson ML. <em>Methods Enzymol.</em> 1994;240:377–414. PMID 7823840.
           </span>
         </li>
         <li>
