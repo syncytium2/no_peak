@@ -527,12 +527,16 @@ export function App() {
                     the reader's face until the paper's real per-sample error is
                     known. */}
                 {loaded.provenance === "digitized" && (
-                  <p className="warn">
-                    <strong>The error bars on this record are reconstructed, not measured.</strong>{" "}
-                    The published figure prints none and the paper does not report its per-sample
-                    assay error, so this file supplies max(floor, 8% of value) in its place.
-                    Detection depends on that error, so treat the pulse calls as conditional on it.
-                  </p>
+                  <details className="warn" open>
+                    <summary>
+                      <strong>The error bars on this record are reconstructed, not measured.</strong>
+                    </summary>
+                    <p>
+                      The published figure prints none and the paper does not report its per-sample
+                      assay error, so this file supplies max(floor, 8% of value) in its place.
+                      Detection depends on that error, so treat the pulse calls as conditional.
+                    </p>
+                  </details>
                 )}
               </div>
             )}
