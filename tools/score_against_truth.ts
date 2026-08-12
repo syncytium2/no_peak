@@ -9,6 +9,11 @@
 // ghsim*.dat with matching .ans files). It is not redistributed here; point
 // PULSEXP_DATA at a local copy.
 //
+// Both variants are scored on every run. They must be: the two of them are the
+// top and bottom rows of the ground-truth table in docs/validation-status.md,
+// and this script was for a long time pinned to `igor`, which left the
+// `fortran` row un-derivable from anything committed.
+//
 //   PULSEXP_DATA=/path/to/Pulse_XP/Data npx vite-node tools/score_against_truth.ts
 //
 // File formats, reverse-engineered from the files themselves:
@@ -90,47 +95,52 @@ const PUBLISHED: Record<string, { sim: number; cluster: number; autodecon: numbe
   ghsim3: { sim: 17, cluster: 11, autodecon: 17 },
 };
 
-console.log(
-  "case      n   dt   true  found   TP  miss   FP   sens%   | published: Cluster / AutoDecon",
-);
-let tTP = 0, tMiss = 0, tFP = 0;
-
-for (const name of CASES) {
-  const dat = `${DIR}/${name}.dat`;
-  const ans = `${DIR}/${name}.ans`;
-  if (!existsSync(dat) || !existsSync(ans)) {
-    console.log(`${name}: missing`);
-    continue;
-  }
-  const s = readDat(dat);
-  const truth = readTruth(ans);
-  const dt = s.times[1] - s.times[0];
-
-  const r = clusterMain(
-    s.times,
-    s.values,
-    { ...DEFAULT_PARAMS, errorModel: "Error Wave", variant: "igor" },
-    s.errors,
-  );
-  const detected = r.peaks.map((p) => ({ start: s.times[p.iFirst], end: s.times[p.iLast] }));
-  const sc = score(truth, detected, dt);
-  tTP += sc.truePositives;
-  tMiss += sc.missed;
-  tFP += sc.falsePositives;
-
-  const pub = PUBLISHED[name];
-  const sens = ((sc.truePositives / truth.length) * 100).toFixed(0);
+function runVariant(variant: "igor" | "fortran") {
   console.log(
-    `${name.padEnd(8)} ${String(s.values.length).padStart(3)} ${String(dt).padStart(4)} ` +
-      `${String(truth.length).padStart(6)} ${String(detected.length).padStart(6)} ` +
-      `${String(sc.truePositives).padStart(4)} ${String(sc.missed).padStart(5)} ` +
-      `${String(sc.falsePositives).padStart(4)} ${sens.padStart(6)}%   | ` +
-      `${pub ? `${pub.cluster} / ${pub.autodecon} (of ${pub.sim})` : ""}`,
+    `\n${variant} variant\n` +
+      "case      n   dt   true  found   TP  miss   FP   sens%   | published: Cluster / AutoDecon",
+  );
+  let tTP = 0, tMiss = 0, tFP = 0;
+
+  for (const name of CASES) {
+    const dat = `${DIR}/${name}.dat`;
+    const ans = `${DIR}/${name}.ans`;
+    if (!existsSync(dat) || !existsSync(ans)) {
+      console.log(`${name}: missing`);
+      continue;
+    }
+    const s = readDat(dat);
+    const truth = readTruth(ans);
+    const dt = s.times[1] - s.times[0];
+
+    const r = clusterMain(
+      s.times,
+      s.values,
+      { ...DEFAULT_PARAMS, errorModel: "Error Wave", variant },
+      s.errors,
+    );
+    const detected = r.peaks.map((p) => ({ start: s.times[p.iFirst], end: s.times[p.iLast] }));
+    const sc = score(truth, detected, dt);
+    tTP += sc.truePositives;
+    tMiss += sc.missed;
+    tFP += sc.falsePositives;
+
+    const pub = PUBLISHED[name];
+    const sens = ((sc.truePositives / truth.length) * 100).toFixed(0);
+    console.log(
+      `${name.padEnd(8)} ${String(s.values.length).padStart(3)} ${String(dt).padStart(4)} ` +
+        `${String(truth.length).padStart(6)} ${String(detected.length).padStart(6)} ` +
+        `${String(sc.truePositives).padStart(4)} ${String(sc.missed).padStart(5)} ` +
+        `${String(sc.falsePositives).padStart(4)} ${sens.padStart(6)}%   | ` +
+        `${pub ? `${pub.cluster} / ${pub.autodecon} (of ${pub.sim})` : ""}`,
+    );
+  }
+
+  const total = tTP + tMiss;
+  console.log(
+    `TOTAL ${variant}: ${tTP}/${total} true pulses found ` +
+      `(${((tTP / total) * 100).toFixed(1)}% sensitivity), ${tFP} false positives`,
   );
 }
 
-const total = tTP + tMiss;
-console.log(
-  `\nTOTAL: ${tTP}/${total} true pulses found (${((tTP / total) * 100).toFixed(1)}% sensitivity), ` +
-    `${tFP} false positives`,
-);
+for (const variant of ["igor", "fortran"] as const) runVariant(variant);
