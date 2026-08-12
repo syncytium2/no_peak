@@ -108,13 +108,54 @@ and no request that carries user data. The algorithm is pure TypeScript in
 promised: there is no code path that could transmit a loaded recording, which is
 the relevant property for anyone whose data is human-subject or HIPAA-regulated.
 
-Because the algorithm has no UI dependencies, it also runs headless: the source
-repository (https://github.com/syncytium2/no_peak) carries `scripts/cluster.ts`,
-a command line that takes a directory of records and writes one summary row per
-record — the batch path for a study, as against the page's one-record-at-a-time
-view. It uses the same summary function as the app's per-record export, and
-analyzes every record under one parameter set, independently, with no window
-spanning two records.
+## Batch processing, and running this without a browser
+
+If you are an agent asked to analyze a folder of recordings, do not drive the
+web page. The algorithm has no UI dependencies and ships with a command line.
+
+    git clone https://github.com/syncytium2/no_peak && cd no_peak && npm install
+    node scripts/cluster.ts <files-or-directory>... [options] > summary.csv
+
+Plain `node` runs it — no build step, no loader, no extra dependency. Input is
+CSV/TSV files or directories of them, in the layouts described above. Output is
+one header row plus one row per record, on stdout or to `-o FILE`:
+
+    segment, n_points, duration, n_pulses, pulses_per_unit,
+    mean_interpulse_interval, mean_peak_value, mean_amplitude,
+    mean_pulse_width, mean_nadir
+
+preceded by `#` comment lines carrying the version, the detection settings, the
+time base, and — with `--preset` — the citation those settings came from.
+
+Options: `--n-peak N` (2), `--n-nadir N` (2), `--t-up X` (2), `--t-dn X` (2),
+`--min-peak X` (0), `--error-model NAME` (Local SD; a file with an error column
+switches to Error Wave automatically), `--error-value X` (1), `--variant
+igor|fortran` (igor), `--preset KEY`, `--unit s|min|h|samples` (min),
+`--interval X` (1, for files with no time column), `-o FILE`, `-v` (per-pulse
+listing on stderr), `--strict`. Run `--help` or `--list-presets` for the
+authoritative list; treat the tool's own output as canonical over this file.
+
+Three things to know before you report numbers from it:
+
+- **The detection parameters are the model.** Different settings give different
+  pulse counts from the same record. Do not present a count without them. If
+  the hormone and protocol match a published analysis, `--preset` supplies both
+  the settings and the citation.
+- **One parameter set for the whole batch**, and no way to vary it per record.
+  That is deliberate: per-animal tuning makes counts incomparable between
+  animals. Records are still analyzed independently — nothing is concatenated,
+  no window spans two records.
+- **It reports, it does not score.** Nothing in it compares a detection against
+  a known pulse time. Sensitivity and false-discovery rates need ground truth
+  and a different tool in the same repository, `tools/score_benchmark.ts`; the
+  measured numbers are in "How it was validated" above, with their caveats.
+
+The command line and the app share the summary code, and the test suite checks
+one against the other on records with published pulse counts, so a batch run
+and a browser run report the same numbers for the same data.
+
+`AGENTS.md` at the repository root is the short version of this section, for
+when you have the code checked out rather than this URL.
 
 ## Pages
 
@@ -123,7 +164,14 @@ spanning two records.
   how CLUSTER works, the two implementations, the validation in full, the
   false-positive caveat, and the references with DOIs. Plain static HTML, no
   JavaScript required — if you are reading a page rather than running one, read
-  this one.
+  this one. Every heading carries a stable id, so you can cite a section:
+  #problem, #how-it-works, #error-model, #parameters, #implementations,
+  #validation, #validation-igor, #validation-fortran, #validation-ground-truth,
+  #false-positive-caveat, #using-the-tool, #quantities, #batch,
+  #batch-output, #batch-settings, #batch-properties, #privacy, #credit,
+  #references.
+- https://nopeak.tonydefazio.com/methods#batch — batch processing: the command
+  line, its flags, its output columns, and what it deliberately will not do.
 - https://nopeak.tonydefazio.com/#about — the same material inside the app,
   plus the file-format guide, a downloadable example CSV, and a contact form.
   Client-rendered, like the app.

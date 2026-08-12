@@ -183,6 +183,26 @@ td.num {
   font-variant-numeric: tabular-nums;
 }
 
+/* Command blocks. Long commands scroll inside the box rather than widening
+   the page, which is the same rule .scroll applies to wide tables. */
+pre {
+  font-family: var(--mono);
+  font-size: 0.86rem;
+  line-height: 1.6;
+  background: var(--code-bg);
+  border: 1px solid var(--rule);
+  border-radius: 4px;
+  padding: 0.85rem 1rem;
+  margin: 0 0 1.25rem;
+  overflow-x: auto;
+}
+
+pre code {
+  background: none;
+  padding: 0;
+  font-size: inherit;
+}
+
 .callout {
   background: var(--surface);
   border: 1px solid var(--rule);

@@ -35,6 +35,8 @@
         "isAccessibleForFree": true,
         "offers": { "@type": "Offer", "price": "0", "priceCurrency": "USD" },
         "license": "https://opensource.org/license/mit/",
+        "codeRepository": "https://github.com/syncytium2/no_peak",
+        "programmingLanguage": "TypeScript",
         "author": { "@type": "Person", "name": "Richard Anthony DeFazio" },
         "keywords": "CLUSTER algorithm, pulse detection, hormone pulsatility, luteinizing hormone, LH, GnRH, endocrine time series, Veldhuis, Johnson, neuroendocrinology",
         "featureList": [
@@ -42,7 +44,8 @@
           "Switchable Igor Pro and original Fortran (CLUST5 v6.01) implementations",
           "Peak and valley tables: position, width, height, percent increase, area",
           "Publication-grade SVG figures with 4x PNG and vector PDF export",
-          "Runs entirely in the browser: no server, no upload, no analytics"
+          "Runs entirely in the browser: no server, no upload, no analytics",
+          "Command-line batch mode: a directory of records in, one summary row per record out"
         ]
       }
     </script>
@@ -121,6 +124,17 @@
           celebrated near-zero false-positive rate is partly a property of the benchmark: on sparse
           records the same code produces a 16–22% false-discovery rate. Use CLUSTER when you need to
           defend every pulse you report; use deconvolution when you need to count them.
+        </p>
+
+        <p>
+          <strong>Analyzing a whole study, or reading this without a browser?</strong> The
+          algorithm has no interface dependencies and ships with a command line: point
+          <code>scripts/cluster.ts</code> at a directory of records and it writes one summary row
+          per record — the same per-record table this app exports, from the same code. The source
+          is at <a href="https://github.com/syncytium2/no_peak">github.com/syncytium2/no_peak</a>
+          (MIT), the recipe is at <a href="/methods#batch">Methods § Batch processing</a>, and
+          <code>AGENTS.md</code> in the repository is the version written for an agent rather than
+          a person.
         </p>
 
         <p>

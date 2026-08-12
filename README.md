@@ -46,6 +46,15 @@ need to stay accurate:
   validation numbers, and the honest limitations from
   `docs/validation-status.md`.
 - `public/sitemap.xml` lists `/` and `/methods`.
+- `AGENTS.md` at the repository root is the same job for an agent that has the
+  *code* rather than the URL: what the tool is, how to run the batch CLI, and
+  the four things to get right before reporting a number from it (the
+  parameters are the model; peak value ≠ amplitude; the CLI reports rather than
+  scores; CLUSTER misses pulses and the honest figure is in
+  `docs/validation-status.md`). It also carries the shared-checkout and
+  `.ts`-extension rules, because an agent editing this repo trips both.
+- Every heading on `/methods` carries a stable `id`, so a reader — human or
+  machine — can cite a section rather than the page. `llms.txt` lists them.
 
 All of these repeat numbers that live in `docs/validation-status.md`; change
 them together.

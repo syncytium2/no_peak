@@ -51,7 +51,7 @@
     </p>
   </header>
 
-  <h2>The problem</h2>
+  <h2 id="problem">The problem</h2>
   <p>
     Many hormones are secreted in bursts rather than continuously. Sample an
     animal's blood every few minutes and you get a jagged concentration series;
@@ -66,7 +66,7 @@
     browser.
   </p>
 
-  <h2>How CLUSTER works</h2>
+  <h2 id="how-it-works">How CLUSTER works</h2>
   <p>
     CLUSTER asks one local question, repeatedly. At every sample it compares the
     mean of the next <em>n</em><sub>peak</sub> points against the mean of the
@@ -87,7 +87,7 @@
     about assay precision rather than about biology.
   </p>
 
-  <h3>The error model</h3>
+  <h3 id="error-model">The error model</h3>
   <p>
     The per-point error can be estimated from the spread of the data values
     themselves — over a sliding window, or across the whole record, as an SD or a
@@ -96,7 +96,7 @@
     assay reports its own per-sample precision.
   </p>
 
-  <h3>The parameters are the model</h3>
+  <h3 id="parameters">The parameters are the model</h3>
   <p>
     The price of CLUSTER's simplicity is that the detection parameters — the two
     window widths, the two t-score thresholds, and the minimum value a pulse must
@@ -110,7 +110,7 @@
     deconvolution methods, which are listed at the end of this page.
   </p>
 
-  <h2>Which implementation you are running</h2>
+  <h2 id="implementations">Which implementation you are running</h2>
   <p>
     Three implementations sit behind this app, and the differences between them
     are documented rather than smoothed over:
@@ -150,7 +150,7 @@
     missing columns. The original behavior is one checkbox away.
   </p>
 
-  <h3>Two discrepancies found by validating rather than reading</h3>
+  <h3 id="discrepancies">Two discrepancies found by validating rather than reading</h3>
   <p>
     Both were invisible to careful source reading and only appeared when the
     reference programs were actually run:
@@ -176,12 +176,12 @@
     </li>
   </ul>
 
-  <h2>Validation</h2>
+  <h2 id="validation">Validation</h2>
   <p>
     Three independent checks, in increasing order of what they actually prove:
   </p>
 
-  <h3>1. Against Igor Pro</h3>
+  <h3 id="validation-igor">1. Against Igor Pro</h3>
   <p>
     Fifteen runs spanning every error model, asymmetric window sizes, threshold
     combinations and three datasets were executed in Igor and diffed point by
@@ -189,7 +189,7 @@
     <strong>75 of 75 checks pass.</strong>
   </p>
 
-  <h3>2. Against the original Fortran</h3>
+  <h3 id="validation-fortran">2. Against the original Fortran</h3>
   <p>
     CLUST5 v6.01 was compiled with gfortran and run on the same input. At the
     documented defaults the port reproduces it <strong>exactly</strong>: all 96
@@ -198,7 +198,7 @@
     and increase above basal.
   </p>
 
-  <h3>3. Against known ground truth</h3>
+  <h3 id="validation-ground-truth">3. Against known ground truth</h3>
   <p>
     The first check that asks "does it find the pulses that are really there?"
     rather than "does it match the reference implementations?". Johnson's
@@ -246,7 +246,7 @@
     positive accuracy is the argument.</strong>
   </p>
 
-  <h2>A caveat on CLUSTER's false-positive rate</h2>
+  <h2 id="false-positive-caveat">A caveat on CLUSTER's false-positive rate</h2>
   <div class="callout">
     <p>
       <strong>CLUSTER's celebrated near-zero false-positive rate is partly a
@@ -284,7 +284,7 @@
     conservatism is precisely what holds its false-positive rate down.
   </p>
 
-  <h2>Using the tool</h2>
+  <h2 id="using-the-tool">Using the tool</h2>
   <p>
     Input is plain text, one sample per line. Commas, tabs, semicolons or spaces
     all work, and a header row is detected and skipped. Three layouts are
@@ -330,33 +330,7 @@
     it.
   </p>
 
-  <h3>Batch processing, without the browser</h3>
-  <p>
-    The web page is built for looking at one record. For a study with two
-    hundred of them, the same algorithm runs from a command line. The source
-    repository — <a href="https://github.com/syncytium2/no_peak">github.com/syncytium2/no_peak</a>
-    — carries <code>scripts/cluster.ts</code>, which takes files or a directory
-    and writes one summary row per record: sample count, record duration, pulse
-    count, pulse frequency, and the mean interpulse interval, peak value,
-    amplitude, pulse width and nadir. That is a table you can read straight into
-    R, SPSS or a spreadsheet.
-  </p>
-  <p>
-    Two properties of it are worth stating, because they are what make a batch
-    result comparable rather than merely convenient. Every record is analyzed
-    under <em>one</em> set of detection settings — tuning the parameters per
-    animal makes the pulse counts incomparable between animals, since the
-    parameters are the model. And the records are still analyzed independently:
-    nothing is concatenated, and no averaging window ever spans two of them. The
-    summary table is produced by the same function behind the app's
-    <strong>Per-record CSV</strong> button, so a batch run and a run in this
-    browser report the same numbers for the same data. Settings, version and —
-    where a published preset was used — its citation ride in the file's comment
-    header, on the same principle as every other export here: provenance travels
-    with the numbers.
-  </p>
-
-  <h3>What the reported quantities are called</h3>
+  <h3 id="quantities">What the reported quantities are called</h3>
   <p>
     <strong>Peak value</strong> is the highest concentration reached inside a
     pulse — an absolute level, printed by the Fortran as <code>HEIGHT</code>.
@@ -372,7 +346,100 @@
     pulse to the last, and reads high on records with long quiet stretches.
   </p>
 
-  <h2>Privacy is architectural, not a promise</h2>
+  <h2 id="batch">Batch processing: running this without the browser</h2>
+  <p>
+    The page above is built for looking at one record. A study is two hundred of
+    them, and clicking stops scaling somewhere around fifty. The same algorithm
+    runs from a command line over a whole directory, writing one summary row per
+    record — the table you would paste into R, SPSS or a spreadsheet.
+  </p>
+  <p>
+    It lives in the source repository,
+    <a href="https://github.com/syncytium2/no_peak">github.com/syncytium2/no_peak</a>
+    (MIT). Clone it, <code>npm install</code>, and:
+  </p>
+<pre><code>node scripts/cluster.ts records/ -o summary.csv
+node scripts/cluster.ts records/ --preset webster1991_lh -o summary.csv
+node scripts/cluster.ts one.csv --n-peak 3 --t-up 2.5 --unit min -v
+node scripts/cluster.ts --help
+node scripts/cluster.ts --list-presets</code></pre>
+  <p>
+    Input is files or directories, in the same three text layouts the app
+    accepts. Output is CSV on standard output, or to <code>-o</code>. There is
+    no build step, no loader and no extra dependency: plain
+    <code>node</code> runs it.
+  </p>
+
+  <h3 id="batch-output">What it writes</h3>
+  <p>
+    One header row, then one row per record:
+    <code>segment</code>, <code>n_points</code>, <code>duration</code>,
+    <code>n_pulses</code>, <code>pulses_per_unit</code>,
+    <code>mean_interpulse_interval</code>, <code>mean_peak_value</code>,
+    <code>mean_amplitude</code>, <code>mean_pulse_width</code>,
+    <code>mean_nadir</code>. Above them, comment lines carrying the version, the
+    detection settings, the time base, and — when a published preset was used —
+    the citation those settings came from. Provenance travels with the numbers,
+    the same rule every other export here follows.
+  </p>
+
+  <h3 id="batch-settings">The settings</h3>
+  <div class="scroll">
+  <table>
+    <thead>
+      <tr><th>Flag</th><th>Default</th><th>What it sets</th></tr>
+    </thead>
+    <tbody>
+      <tr><td class="num">--n-peak</td><td class="num">2</td><td>Points averaged in the test window</td></tr>
+      <tr><td class="num">--n-nadir</td><td class="num">2</td><td>Points averaged in the baseline window</td></tr>
+      <tr><td class="num">--t-up</td><td class="num">2</td><td>t-score for a significant increase</td></tr>
+      <tr><td class="num">--t-dn</td><td class="num">2</td><td>t-score for a significant decrease</td></tr>
+      <tr><td class="num">--min-peak</td><td class="num">0</td><td>Minimum data value for a pulse</td></tr>
+      <tr><td class="num">--error-model</td><td class="num">Local SD</td><td>One of the seven models above; a file with an error column switches to Error Wave automatically</td></tr>
+      <tr><td class="num">--error-value</td><td class="num">1</td><td>Value for Fixed, and SQRT's fallback for non-positive data</td></tr>
+      <tr><td class="num">--variant</td><td class="num">igor</td><td><code>igor</code> or <code>fortran</code> — see &ldquo;Which implementation you are running&rdquo;</td></tr>
+      <tr><td class="num">--preset</td><td>—</td><td>A published parameter set, with its citation</td></tr>
+      <tr><td class="num">--unit</td><td class="num">min</td><td><code>s</code>, <code>min</code>, <code>h</code>, or <code>samples</code></td></tr>
+      <tr><td class="num">--interval</td><td class="num">1</td><td>Sampling interval, for files with no time column</td></tr>
+      <tr><td class="num">-o</td><td>stdout</td><td>Where to write the summary CSV</td></tr>
+      <tr><td class="num">-v</td><td>off</td><td>Also list every pulse, on standard error</td></tr>
+      <tr><td class="num">--strict</td><td>off</td><td>Stop on the first unreadable record instead of skipping it</td></tr>
+    </tbody>
+  </table>
+  </div>
+
+  <h3 id="batch-properties">Three properties that make a batch result comparable</h3>
+  <p>
+    <strong>One parameter set for the whole batch.</strong> Tuning the detector
+    per animal makes the pulse counts incomparable between animals, because the
+    parameters are the model. The command line has no way to vary them per
+    record, deliberately.
+  </p>
+  <p>
+    <strong>Records are still analyzed independently.</strong> Nothing is
+    concatenated and no averaging window ever spans two records, so no pulse is
+    invented at a join and no interpulse interval is measured across one.
+  </p>
+  <p>
+    <strong>It is the same code as this page's app.</strong> The summary table
+    comes from the function behind the <strong>Per-record CSV</strong> button,
+    called rather than reimplemented, and the test suite re-runs through the
+    command line the pulse counts it checks through the library — including the
+    11 GnRH pulses Webster et al. (1991) mark in the digitized THX ewe. A batch
+    run and a run in this browser cannot report different numbers for the same
+    data without a test failing.
+  </p>
+  <p class="callout">
+    <strong>What it is not.</strong> It reports pulse statistics; it does not
+    score a detector against known pulse times. If you have ground truth and
+    want sensitivity and false-discovery rates, that is
+    <code>tools/score_benchmark.ts</code> in the same repository, and the
+    numbers it produces are the ones in
+    <a href="#validation-ground-truth">Validation against known ground truth</a>
+    above.
+  </p>
+
+  <h2 id="privacy">Privacy is architectural, not a promise</h2>
   <p>
     no_peak is a static bundle served from object storage. There is no
     server-side script, no database, no account, and no analytics. The algorithm
@@ -382,7 +449,7 @@
     That is the relevant property if your recordings are human-subject data.
   </p>
 
-  <h2>Credit</h2>
+  <h2 id="credit">Credit</h2>
   <p>
     CLUSTER is the work of <strong>Michael L. Johnson</strong> and
     <strong>Johannes D. Veldhuis</strong>. Johnson, a biophysicist and Professor
@@ -401,10 +468,10 @@
     recordings are not distributed either.
   </p>
 
-  <h2>References</h2>
+  <h2 id="references">References</h2>
   <p>Every citation here was checked against PubMed or publisher records.</p>
 
-  <h3>The algorithm</h3>
+  <h3 id="refs-algorithm">The algorithm</h3>
   <ul class="refs">
     <li>
       <a href="https://doi.org/10.1152/ajpendo.1986.250.4.E486">Cluster analysis: a simple, versatile, and robust algorithm for endocrine pulse detection</a>
@@ -428,7 +495,7 @@
     </li>
   </ul>
 
-  <h3>Other detectors, and when to prefer them</h3>
+  <h3 id="refs-other-detectors">Other detectors, and when to prefer them</h3>
   <ul class="refs">
     <li>
       <a href="https://doi.org/10.1210/endocr/bqab165">PULSAR Otago</a> — an actively
@@ -450,7 +517,7 @@
     </li>
   </ul>
 
-  <h3>Applied to firing rate</h3>
+  <h3 id="refs-firing-rate">Applied to firing rate</h3>
   <ul class="refs">
     <li>
       <a href="https://doi.org/10.1098/rsos.201040">Firing patterns of gonadotropin-releasing hormone neurons are sculpted by their biologic state</a>

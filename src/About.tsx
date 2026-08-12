@@ -160,6 +160,20 @@ export function About({ onBack }: { onBack: () => void }) {
         neither can happen, and the <strong>Per-record CSV</strong> export gives you one row per
         animal ready to paste into a statistics package.
       </p>
+      <h3 id="batch">When there are too many to click through</h3>
+      <p>
+        Selecting files stops scaling somewhere around fifty records. The same algorithm runs from
+        a command line, over a whole directory, writing exactly the per-record table described
+        above — so a study is one command rather than an afternoon of uploads. It is the same
+        code, not a reimplementation: the batch tool calls the function behind the{" "}
+        <strong>Per-record CSV</strong> button, and the test suite checks the two against each
+        other on records with published pulse counts.
+      </p>
+      <p>
+        <a className="btnlink" href="/methods#batch">
+          How to run it in batch →
+        </a>
+      </p>
       <h3>Things that will trip you up</h3>
       <ul>
         <li>

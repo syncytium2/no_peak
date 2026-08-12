@@ -830,6 +830,14 @@ export function App() {
                 >
                   PDF report
                 </button>
+                {/* Last, after the downloads, because it navigates rather than
+                    producing a file — and offered at the moment it becomes
+                    relevant: someone with several records loaded is one step
+                    from having fifty, which is where clicking stops scaling.
+                    The CLI writes this same per-record table. */}
+                <a className="btnlink" href="/methods#batch">
+                  {multi ? "Batch this without the browser →" : "Batch processing →"}
+                </a>
               </div>
             </>
           )}

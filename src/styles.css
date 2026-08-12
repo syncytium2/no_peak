@@ -278,7 +278,8 @@ body.dos .simtag {
   color: var(--ink-2);
 }
 
-button {
+button,
+a.btnlink {
   font: inherit;
   padding: 7px 14px;
   border-radius: 6px;
@@ -288,8 +289,18 @@ button {
   cursor: pointer;
 }
 
-button:hover {
+button:hover,
+a.btnlink:hover {
   border-color: var(--muted);
+}
+
+/* A link that sits in a row of buttons and must not look like a stranger
+   there. Dashed, because it navigates away instead of producing a file — the
+   one way it differs from its neighbors, and worth showing. */
+a.btnlink {
+  display: inline-block;
+  text-decoration: none;
+  border-style: dashed;
 }
 
 button.primary {
@@ -1059,6 +1070,7 @@ body.dos {
 }
 
 body.dos button,
+body.dos a.btnlink,
 body.dos input,
 body.dos select,
 body.dos .panel,
@@ -1086,13 +1098,19 @@ body.dos .checks label.inline input {
   border-color: var(--ink-2);
 }
 
-body.dos button {
+body.dos button,
+body.dos a.btnlink {
   background: #000;
   color: var(--ink);
   border: 1px solid var(--ink-2);
 }
 
-body.dos button:hover {
+body.dos a.btnlink {
+  border-style: dashed;
+}
+
+body.dos button:hover,
+body.dos a.btnlink:hover {
   background: var(--ink);
   color: #000;
 }
