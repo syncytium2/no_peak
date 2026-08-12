@@ -16,7 +16,7 @@ import {
 import { DEFAULT_PARAMS, type ClusterParams, type ErrorModelType, type MeanSD } from "./core/types";
 import { ClusterChart } from "./chart/ClusterChart";
 import { FIG, FIG_DOS } from "./chart/palette";
-import { BORN, BUILT, VERSION, longDate } from "./version";
+import { BORN, BUILT, VERSION } from "./version";
 import { downloadPNG, downloadSVG, downloadText } from "./chart/export";
 import { IgorPicker } from "./IgorPicker";
 import { NumField } from "./NumField";
@@ -307,7 +307,7 @@ export function App() {
               to trust a result wants to know how old the tool is and which
               build produced it, before reading the result. */}
           <span className="stamp">
-            v{VERSION} · built {BUILT} · since {longDate(BORN)}
+            v{VERSION} · built {BUILT} · since {BORN}
           </span>
         </h1>
         <p className="privacy">
@@ -1102,7 +1102,7 @@ export function App() {
           <a href="/methods">Methods reference</a>
         </p>
         <p>
-          v{VERSION} · built {BUILT} · first commit {longDate(BORN)} ·{" "}
+          v{VERSION} · built {BUILT} · first commit {BORN} ·{" "}
           <a href="#about">contact</a>
         </p>
       </footer>
