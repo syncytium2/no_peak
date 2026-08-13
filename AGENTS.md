@@ -101,7 +101,8 @@ is invented at a join and no interpulse interval is measured across one.
   still sweeps up a peer's work. `docs/multi-session-protocol.md` is the full
   account, and it is a transcript of things that actually went wrong.
 - **Data provenance is enforced, not assumed.** `data/digitized/` is real
-  measurement read off published figures with an author's permission;
+  measurement read off published figures (rights position:
+  `docs/figure-data-permissions.md`);
   `data/synthetic/` corresponds to no animal. They are deliberately similar in
   shape and must never be described interchangeably; `src/samples.test.ts`
   enforces the labeling.

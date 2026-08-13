@@ -1,16 +1,41 @@
 # Digitizing data from a published figure: where the permissions question lands
 
-> **Resolved, 2026-08-11.** One of the paper's authors gave permission, which is
-> the route this document recommends below. The eight traces are digitized and
-> live in [`data/digitized/`](../data/digitized/README.md); the extraction is
-> `tools/digitize_webster1991.py`. The article itself is not redistributed —
-> only the numbers.
+> **Status, 2026-08-13 — the author route closed, and it closed correctly.**
 >
-> The analysis below is kept because the question will recur for the next paper,
-> and because what it concluded still holds: copyright was never the obstacle,
-> the contractual position remains unresolved and untested, and asking an author
-> was both the quickest way through and the only one that also produced someone
-> who could confirm the data was being read correctly.
+> This document's recommendation was "ask the authors." That was done, and the
+> answer was that **it is not an author's question to answer**: permission
+> belongs to the copyright holder. No objection was raised to the data being
+> used or published — the author simply declined to be the grantor, and
+> suggested generating test data by hand instead, which is what
+> [`data/synthetic/`](../data/synthetic/README.md) already does.
+>
+> **A banner on this file previously read "Resolved, 2026-08-11. One of the
+> paper's authors gave permission."** That claim named no author and had no
+> artifact behind it; `next-steps.md` §1 had flagged it as unverifiable, and it
+> has now been withdrawn from every file that carried it — eight CSV headers,
+> `src/samples.ts` and therefore every exported figure, PDF and results CSV,
+> `tools/digitize_webster1991.py`, and four public pages. **Do not reinstate
+> it.**
+>
+> The eight traces remain in [`data/digitized/`](../data/digitized/README.md).
+> They now rest on the analysis below and nothing else, which is the honest
+> position and, on this document's own reasoning, a sufficient one: copyright
+> was never the obstacle, the practice is routine and precedented, and no
+> publisher has ever been recorded objecting. The contractual question remains
+> unresolved and untested — as it was on 2026-08-11, since an author's blessing
+> never addressed it.
+>
+> **Asked on 2026-08-13, both open:** the Endocrine Society, for permission or
+> for a statement that none is needed; and the University of Michigan library,
+> for whether the institutional license already permits publishing values
+> derived this way. Record both answers here. **Withdraw the data if either
+> says no.**
+>
+> One lesson worth keeping, because it cost a fortnight: the recommendation
+> below said author blessing "addresses the relational risk," and that was
+> right — but a blessing that is never written down addresses nothing, because
+> it cannot be produced later. Get the artifact at the time or do not make the
+> claim.
 
 Researched 2026-08-11 across four passes, reading primary sources — the U.S.
 Reports, the Copyright Office's Compendium and regulations, EUR-Lex and CURIA —
@@ -311,5 +336,14 @@ Worth asking the U-M library (`library.collections@umich.edu`) in parallel
 whether the OUP agreement permits publishing TDM outputs; they can read a
 contract we cannot.
 
-That is the route that was taken, on 2026-08-11; the outcome is in the banner at
-the top of this document and the traces are in `data/digitized/`.
+That is the route that was taken, on 2026-08-11 and again on 2026-08-13. The
+outcome is in the banner at the top of this document: **the author route is
+closed**, because permission is not an author's to give — which this section
+half-anticipated ("Author blessing is not a copyright license") without drawing
+the conclusion that an author might therefore decline to offer one at all.
+
+So the remaining routes are the two now in flight: the copyright holder, and the
+U-M library on the institutional license. RightsLink is still the wrong door for
+the reasons above, so the Society was approached directly, and the request leads
+with the more answerable question — *does this require permission at all?* —
+rather than with the formal ask.

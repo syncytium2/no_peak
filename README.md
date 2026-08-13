@@ -124,12 +124,22 @@ picker; `sim_gnrh_thx_ewe` loads by default so the app never opens blank. Real
 lab recordings are NOT bundled and NOT committed — see `docs/reference-code.md`.
 
 `data/digitized/` holds eight REAL hormone records, read off the published
-figures of Webster et al. 1991 with an author's permission
+figures of Webster et al. 1991
 (`tools/digitize_webster1991.py`). Those figures mark every pulse that paper's
 own CLUSTER run identified, so the set carries a ground truth nobody here
-supplied — the only such data in the project. See `data/digitized/README.md`,
-and `docs/figure-data-permissions.md` for how the permissions question was
-settled. The article itself is NOT redistributed; only the numbers.
+supplied — the only such data in the project. The article itself is NOT
+redistributed; only the numbers.
+
+⚠ **The permissions question is open, not settled, and the repo said otherwise
+until 2026-08-13.** A claim that the records were used "with the permission of
+one of the paper's authors" stood in eight CSV headers, `src/samples.ts` and so
+every exported figure and PDF, and four public pages — with no artifact behind
+it. An author was then asked directly and declined to be the grantor, correctly
+pointing to the copyright holder. The claim has been withdrawn everywhere; **do
+not reinstate it.** What the data rests on now is the analysis in
+`docs/figure-data-permissions.md` alone. Requests to the Endocrine Society and
+to the U-M library are open as of 2026-08-13. See its banner and
+`data/digitized/README.md`.
 
 **Read `data/synthetic/README.md` before adding a dataset.** Every scale in a
 bundled dataset has to be traceable to a citation, recorded next to the
@@ -264,7 +274,9 @@ do not have redistribution rights for. `reference/` is gitignored; see
 `data/oracle/`, `data/oracle_igor/` — real lab recordings and output derived
 from them. Keep them locally to run the oracle tests and regenerate oracles;
 without them those suites skip. Committed: `data/synthetic/` and `data/benchmark/` (simulated, ours) and
-`data/digitized/` (real, read off a published figure with an author's permission).
+`data/digitized/` (real, read off a published figure; the rights position is
+  in `docs/figure-data-permissions.md` and rests on no author's permission —
+  see its banner).
 
 - `cluster td- just data.pxp` — Igor experiment containing sample cluster
   data (from `~/Documents/coding-projectx/sample data in pxp/`), for

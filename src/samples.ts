@@ -2,7 +2,10 @@
 // confused — hence `provenance` on every entry.
 //
 // DIGITIZED: real records, read off the published figures of Webster et al.
-// 1991 with the permission of one of its authors. The figures mark every pulse
+// 1991. The article is not redistributed — only these numbers, which are
+// measurements; docs/figure-data-permissions.md carries the rights position and
+// its limits, and says why no claim of an author's permission appears here.
+// The figures mark every pulse
 // that paper's own CLUSTER run identified, so these carry a ground truth this
 // project did not produce. They are approximate to the width of a printed line.
 // See data/digitized/README.md and tools/digitize_webster1991.py.
@@ -80,7 +83,7 @@ const PORTAL = "Simulated — GnRH model, no animal";
 const PERIPHERAL = "Simulated — LH model, no animal";
 
 export const SAMPLES: Sample[] = [
-  // ---- digitized from Webster et al. 1991, used with an author's permission --
+  // ---- digitized from the published figures of Webster et al. 1991 ----------
   {
     key: "w91_gnrh_thx_8067",
     group: DIG_GNRH,
@@ -103,7 +106,7 @@ export const SAMPLES: Sample[] = [
     deltaT: 5,
     valueLabel: "GnRH (pg/min)",
     citation:
-      "Digitized from Webster JR, Moenter SM, Barrell GK, Lehman MN, Karsch FJ, Endocrinology 1991;129(3):1635-43 (PMID 1874193), Fig. 3B, ewe #8067. Read off the published figure with an author's permission; values are approximate to the width of a printed line. The error bars are RECONSTRUCTED, not measured: the figure prints none and the paper does not report its per-sample error, so the file supplies max(floor, 0.08 x value).",
+      "Digitized from Webster JR, Moenter SM, Barrell GK, Lehman MN, Karsch FJ, Endocrinology 1991;129(3):1635-43 (PMID 1874193), Fig. 3B, ewe #8067. Read off the published figure; values are approximate to the width of a printed line. The error bars are RECONSTRUCTED, not measured: the figure prints none and the paper does not report its per-sample error, so the file supplies max(floor, 0.08 x value).",
     load: csv(w91GnrhThx),
   },
   {
@@ -125,7 +128,7 @@ export const SAMPLES: Sample[] = [
     deltaT: 5,
     valueLabel: "GnRH (pg/min)",
     citation:
-      "Digitized from Webster JR, Moenter SM, Barrell GK, Lehman MN, Karsch FJ, Endocrinology 1991;129(3):1635-43 (PMID 1874193), Fig. 4A, ewe #9013. Read off the published figure with an author's permission; values are approximate to the width of a printed line. The error bars are RECONSTRUCTED, not measured: the figure prints none and the paper does not report its per-sample error, so the file supplies max(floor, 0.08 x value).",
+      "Digitized from Webster JR, Moenter SM, Barrell GK, Lehman MN, Karsch FJ, Endocrinology 1991;129(3):1635-43 (PMID 1874193), Fig. 4A, ewe #9013. Read off the published figure; values are approximate to the width of a printed line. The error bars are RECONSTRUCTED, not measured: the figure prints none and the paper does not report its per-sample error, so the file supplies max(floor, 0.08 x value).",
     load: csv(w91GnrhFast),
   },
   {
@@ -147,7 +150,7 @@ export const SAMPLES: Sample[] = [
     deltaT: 5,
     valueLabel: "GnRH (pg/min)",
     citation:
-      "Digitized from Webster JR, Moenter SM, Barrell GK, Lehman MN, Karsch FJ, Endocrinology 1991;129(3):1635-43 (PMID 1874193), Fig. 3A, ewe #8058. Read off the published figure with an author's permission; values are approximate to the width of a printed line. The error bars are RECONSTRUCTED, not measured: the figure prints none and the paper does not report its per-sample error, so the file supplies max(floor, 0.08 x value).",
+      "Digitized from Webster JR, Moenter SM, Barrell GK, Lehman MN, Karsch FJ, Endocrinology 1991;129(3):1635-43 (PMID 1874193), Fig. 3A, ewe #8058. Read off the published figure; values are approximate to the width of a printed line. The error bars are RECONSTRUCTED, not measured: the figure prints none and the paper does not report its per-sample error, so the file supplies max(floor, 0.08 x value).",
     load: csv(w91GnrhCon),
   },
   {
@@ -168,7 +171,7 @@ export const SAMPLES: Sample[] = [
     deltaT: 5,
     valueLabel: "GnRH (pg/min)",
     citation:
-      "Digitized from Webster JR, Moenter SM, Barrell GK, Lehman MN, Karsch FJ, Endocrinology 1991;129(3):1635-43 (PMID 1874193), Fig. 4B, ewe #9009. Read off the published figure with an author's permission; values are approximate to the width of a printed line. The error bars are RECONSTRUCTED, not measured: the figure prints none and the paper does not report its per-sample error, so the file supplies max(floor, 0.08 x value).",
+      "Digitized from Webster JR, Moenter SM, Barrell GK, Lehman MN, Karsch FJ, Endocrinology 1991;129(3):1635-43 (PMID 1874193), Fig. 4B, ewe #9009. Read off the published figure; values are approximate to the width of a printed line. The error bars are RECONSTRUCTED, not measured: the figure prints none and the paper does not report its per-sample error, so the file supplies max(floor, 0.08 x value).",
     load: csv(w91GnrhNone),
   },
   {
@@ -192,7 +195,7 @@ export const SAMPLES: Sample[] = [
     deltaT: 6,
     valueLabel: "LH (ng/ml)",
     citation:
-      "Digitized from Webster JR, Moenter SM, Barrell GK, Lehman MN, Karsch FJ, Endocrinology 1991;129(3):1635-43 (PMID 1874193), Fig. 3B, ewe #8067. Read off the published figure with an author's permission; values are approximate to the width of a printed line. The error bars are RECONSTRUCTED, not measured: the figure prints none and the paper does not report its per-sample error, so the file supplies max(floor, 0.08 x value).",
+      "Digitized from Webster JR, Moenter SM, Barrell GK, Lehman MN, Karsch FJ, Endocrinology 1991;129(3):1635-43 (PMID 1874193), Fig. 3B, ewe #8067. Read off the published figure; values are approximate to the width of a printed line. The error bars are RECONSTRUCTED, not measured: the figure prints none and the paper does not report its per-sample error, so the file supplies max(floor, 0.08 x value).",
     load: csv(w91LhThx),
   },
   {
@@ -213,7 +216,7 @@ export const SAMPLES: Sample[] = [
     deltaT: 6,
     valueLabel: "LH (ng/ml)",
     citation:
-      "Digitized from Webster JR, Moenter SM, Barrell GK, Lehman MN, Karsch FJ, Endocrinology 1991;129(3):1635-43 (PMID 1874193), Fig. 4A, ewe #9013. Read off the published figure with an author's permission; values are approximate to the width of a printed line. The error bars are RECONSTRUCTED, not measured: the figure prints none and the paper does not report its per-sample error, so the file supplies max(floor, 0.08 x value).",
+      "Digitized from Webster JR, Moenter SM, Barrell GK, Lehman MN, Karsch FJ, Endocrinology 1991;129(3):1635-43 (PMID 1874193), Fig. 4A, ewe #9013. Read off the published figure; values are approximate to the width of a printed line. The error bars are RECONSTRUCTED, not measured: the figure prints none and the paper does not report its per-sample error, so the file supplies max(floor, 0.08 x value).",
     load: csv(w91LhFast),
   },
   {
@@ -236,7 +239,7 @@ export const SAMPLES: Sample[] = [
     deltaT: 6,
     valueLabel: "LH (ng/ml)",
     citation:
-      "Digitized from Webster JR, Moenter SM, Barrell GK, Lehman MN, Karsch FJ, Endocrinology 1991;129(3):1635-43 (PMID 1874193), Fig. 3A, ewe #8058. Read off the published figure with an author's permission; values are approximate to the width of a printed line. The error bars are RECONSTRUCTED, not measured: the figure prints none and the paper does not report its per-sample error, so the file supplies max(floor, 0.08 x value).",
+      "Digitized from Webster JR, Moenter SM, Barrell GK, Lehman MN, Karsch FJ, Endocrinology 1991;129(3):1635-43 (PMID 1874193), Fig. 3A, ewe #8058. Read off the published figure; values are approximate to the width of a printed line. The error bars are RECONSTRUCTED, not measured: the figure prints none and the paper does not report its per-sample error, so the file supplies max(floor, 0.08 x value).",
     load: csv(w91LhCon),
   },
   {
@@ -258,7 +261,7 @@ export const SAMPLES: Sample[] = [
     deltaT: 6,
     valueLabel: "LH (ng/ml)",
     citation:
-      "Digitized from Webster JR, Moenter SM, Barrell GK, Lehman MN, Karsch FJ, Endocrinology 1991;129(3):1635-43 (PMID 1874193), Fig. 4B, ewe #9009. Read off the published figure with an author's permission; values are approximate to the width of a printed line. The error bars are RECONSTRUCTED, not measured: the figure prints none and the paper does not report its per-sample error, so the file supplies max(floor, 0.08 x value).",
+      "Digitized from Webster JR, Moenter SM, Barrell GK, Lehman MN, Karsch FJ, Endocrinology 1991;129(3):1635-43 (PMID 1874193), Fig. 4B, ewe #9009. Read off the published figure; values are approximate to the width of a printed line. The error bars are RECONSTRUCTED, not measured: the figure prints none and the paper does not report its per-sample error, so the file supplies max(floor, 0.08 x value).",
     load: csv(w91LhOther),
   },
   {

@@ -5,10 +5,16 @@
     suppression of gonadotropin-releasing hormone secretion in sheep.
     Endocrinology 1991;129(3):1635-43. PMID 1874193.
 
-Used with the permission of one of the paper's authors. The article itself is
-not open access and is not redistributed here; only the numerical values are,
-which are measurements and carry no copyright of their own. See
-docs/figure-data-permissions.md for the reasoning and its limits.
+The article itself is not open access and is not redistributed here; only the
+numerical values are, which are measurements and carry no copyright of their
+own. See docs/figure-data-permissions.md for the reasoning and its limits.
+
+⚠ Do not restore the phrase "used with an author's permission" here or in the
+files this writes. It stood until 2026-08-13, when an author of the paper was
+asked directly and declined to be the grantor, pointing to the copyright holder
+instead. That is the correct answer and matches what this project already knew
+— an author can give a blessing but cannot license the publisher's rights — but
+it means the sentence has no artifact behind it and must not be reasserted.
 
 Why this dataset is worth the trouble: the figures mark, with an open circle,
 every pulse the authors' own CLUSTER run identified. Digitizing them therefore
@@ -334,7 +340,8 @@ def write(series):
         "# ({group}). {hormone} in {unit}, sampled every {dt} min for 6 h.\n"
         "# Values read off the printed trace by tools/digitize_webster1991.py and\n"
         "# are therefore approximate; they carry the figure's line width and the\n"
-        "# scan's resolution as error. Used with an author's permission.\n"
+        "# scan's resolution as error. The article is not redistributed - only\n"
+        "# these numbers, which are measurements. See data/digitized/README.md.\n"
         "# Pulses identified in the paper: {pulses} (see webster1991_pulses.csv).\n"
         "#\n"
         "# COLUMN 3 (error) IS RECONSTRUCTED, NOT DIGITIZED. The figure prints no\n"

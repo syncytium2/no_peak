@@ -182,7 +182,7 @@ The original Fortran and the Igor Pro package are third-party code that is not
 redistributable, and are not included in this project. The laboratory's own unpublished
 recordings are not distributed either. The bundled datasets are of two kinds,
 tagged distinctly: eight records digitized from the published figures of
-Webster et al. 1991 with an author's permission, and simulated records that
+Webster et al. 1991, and simulated records that
 correspond to no animal.
 
 ## Related tools by the same author

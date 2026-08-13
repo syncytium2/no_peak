@@ -163,27 +163,48 @@ deploy` runs tests, builds and deploys, and does **not** push.
 
 ---
 
-## 1. Two consent claims have no primary record — **only you can close this**
+## 1. Two consent claims had no primary record — **one is closed, one is not**
 
-The repo makes two public statements about identifiable people's consent, and
-neither has a dated primary artifact behind it:
+The repo made two public statements about identifiable people's consent, and
+neither had a dated primary artifact behind it. The second is now withdrawn; the
+first still stands unsupported and is the live half of this item:
 
 - *"This port is made with Michael Johnson's approval"* (`src/About.tsx`). The
   only record is a line in `docs/reference-code.md`: "Reported by R.A. DeFazio,
   2026-08-10."
-- *"Used with the permission of one of the paper's authors, obtained
+- ~~*"Used with the permission of one of the paper's authors, obtained
   2026-08-11"*. This names no author and cites no record, and it now appears in
   eight dataset notes, three documents, `tools/digitize_webster1991.py`, every
-  CSV header, and **every exported figure, PDF and results CSV**.
+  CSV header, and **every exported figure, PDF and results CSV**.~~
+  **Resolved 2026-08-13 by withdrawal, not by evidence.** An author of the paper
+  was asked directly and **declined to be the grantor**, pointing to the
+  copyright holder — the correct answer, and the same distinction this repo had
+  already drawn. No objection to the data was raised. The claim has been removed
+  from all of the above; **do not reinstate it.** This item was right that the
+  sentence was unverifiable, and the lesson is narrower than "get permission":
+  *a blessing that is never written down addresses nothing, because it cannot be
+  produced later.* Requests are now open with the Endocrine Society (permission,
+  or a statement that none is needed) and the U-M library (whether the
+  institutional license already covers it) — record both answers in
+  `docs/figure-data-permissions.md` and withdraw the data if either says no.
 
-What is needed: a dated note of who granted what, when, and for what scope —
-digitizing is not the same permission as redistributing — kept wherever this
-project keeps such things. Until then the claim is unverifiable by anyone
-reading the repo, including a reviewer who might reasonably ask.
+**The live half is Johnson's approval**, which is still a public claim on the
+About page resting on a single line of hearsay in `docs/reference-code.md`
+("Reported by R.A. DeFazio, 2026-08-10"). What is needed is what was needed
+before: a dated note of who granted what, when, and for what scope — porting is
+not the same permission as redistributing — kept wherever this project keeps
+such things. Until then it is unverifiable by anyone reading the repo, including
+a reviewer who might reasonably ask.
 
-Note the scope wording is already careful (`data/digitized/README.md` says an
-author's *courtesy* permission cannot license the publisher's rights). The gap
-is the record, not the phrasing.
+⚠ **Do not treat the Webster outcome as a template for this one.** They are
+different in kind: the Webster claim was about *data facts* a publisher owns,
+and an author had no standing to grant it. Johnson's approval is about *his own
+code*, which he does have standing to grant — so here the artifact is worth
+chasing rather than withdrawing, and withdrawing the claim would be the wrong
+correction. The port's legitimacy does not depend on it either way (the
+algorithm is published and algorithms are not copyrightable —
+`docs/reference-code.md`), but the sentence on the About page asserts something
+specific about a named person and should be supportable.
 
 ## 2. ~~`robots.txt` policy is not in effect, and the repo says the opposite~~
 

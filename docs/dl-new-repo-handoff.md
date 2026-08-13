@@ -81,8 +81,14 @@ What is inside, and why each part matters:
    no_peak): eight real GnRH/LH traces with **70 published CLUSTER pulse calls**
    marked by the paper's own analysis — the only ground truth nobody in this
    project supplied. Two caveats travel with it and must be copied, not
-   summarized away: (a) redistribution rests on an author's courtesy permission
-   whose primary record is still being chased (`next-steps.md` §1);
+   summarized away: (a) ⚠ **redistribution rests on no author's permission.**
+   That claim stood until 2026-08-13, when an author was asked directly and
+   declined to be the grantor, pointing to the copyright holder; it has been
+   withdrawn from every file that carried it and must not be reinstated
+   downstream either. The data now rests on the analysis in
+   `docs/figure-data-permissions.md` alone, and requests to the Endocrine
+   Society and the U-M library are open — **re-vendor that document before
+   relying on this**, and be prepared to drop the records if either says no;
    (b) ⚠ **the error column is reconstructed, not measured** — a fitted
    assay-CV model, not what the 1991 lab recorded. What Webster's group actually
    used for intra-assay error is an open question the owner is still running

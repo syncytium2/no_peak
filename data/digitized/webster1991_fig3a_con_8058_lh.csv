@@ -4,7 +4,8 @@
 # (thyroid-intact control). LH in ng/ml, sampled every 6 min for 6 h.
 # Values read off the printed trace by tools/digitize_webster1991.py and
 # are therefore approximate; they carry the figure's line width and the
-# scan's resolution as error. Used with an author's permission.
+# scan's resolution as error. The article is not redistributed - only
+# these numbers, which are measurements. See data/digitized/README.md.
 # Pulses identified in the paper: 0 (see webster1991_pulses.csv).
 #
 # COLUMN 3 (error) IS RECONSTRUCTED, NOT DIGITIZED. The figure prints no

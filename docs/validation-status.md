@@ -199,7 +199,7 @@ defend every pulse you report, the positive accuracy is the argument.
 
 The first check in this project where neither the trace nor the answer came from
 us. Eight hormone records were digitized from the figures of Webster et al. 1991
-(Endocrinology 129:1635, PMID 1874193) with an author's permission. Those figures
+(Endocrinology 129:1635, PMID 1874193). Those figures
 mark, with an open circle, every pulse that paper's own CLUSTER run identified —
 70 in total across four animals — so they carry that paper's own pulse call for
 real data. It is an answer key, not ground truth about secretion — and since

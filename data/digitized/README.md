@@ -12,17 +12,39 @@ Everything here was read off the printed figures of one paper:
 > of gonadotropin-releasing hormone secretion in sheep.** *Endocrinology*
 > 1991;129(3):1635–1643. PMID 1874193. DOI 10.1210/endo-129-3-1635.
 
-**Used with the courtesy permission of one of the paper's authors**, obtained
-2026-08-11. The article is not open access and is not redistributed here — only
-these numbers, which are measurements.
+The article is not open access and is not redistributed here — only these
+numbers, which are measurements.
 
-Be precise about what that permission is and is not. An author can give their
-blessing; they cannot license the publisher's rights or waive the terms of the
-subscription the copy came through. So the **contractual question remains open
-and untested** — see
-[`docs/figure-data-permissions.md`](../../docs/figure-data-permissions.md),
-which sets out why copyright is not the obstacle, why the contract might be, and
-why no publisher has ever been recorded objecting to this practice.
+## What this rests on, and what it does not
+
+**It does not rest on an author's permission, and any earlier statement here
+that it did has been withdrawn.** Until 2026-08-13 this file said the records
+were "used with the courtesy permission of one of the paper's authors, obtained
+2026-08-11" — unnamed, with no artifact behind it, which
+[`docs/next-steps.md`](../../docs/next-steps.md) §1 had flagged as
+unverifiable. An author of the paper was then asked directly and **declined to
+be the grantor**, pointing to the copyright holder instead.
+
+That answer is correct, and it is the same distinction this file already drew:
+an author can give a blessing, but cannot license the publisher's rights or
+waive the terms of the subscription the copy came through. The sentence was
+never load-bearing as a legal matter — it addressed the *relational* risk, not
+the contractual one. It is gone because it had no record behind it, not because
+anyone objected to the data being here. **No author has objected**, then or
+since.
+
+So what remains is the position set out in
+[`docs/figure-data-permissions.md`](../../docs/figure-data-permissions.md), on
+its own and without a blessing on top of it: measurements are facts and carry no
+copyright (*Feist*); digitizing figures is routine and Cochrane-recommended
+practice, precedented in peer-reviewed data papers; and no publisher has ever
+been recorded objecting to it. The **contractual question remains open and
+untested**, which that document says at length rather than glossing.
+
+Permission was requested from the Endocrine Society, and the University of
+Michigan library was asked whether the institutional license already covers
+publishing values derived this way — both on 2026-08-13. **Update this section
+when either answers**, and withdraw the data if the answer is no.
 
 ### Reproducing the scoring in the app
 
