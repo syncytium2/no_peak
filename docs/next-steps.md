@@ -6,12 +6,15 @@ below is either a defect someone found or a gap a review recorded, not a wish.
 State at handoff: 196 tests pass, `tsc -b` clean, `dist/` is byte-identical to
 what <https://nopeak.tonydefazio.com> serves, working tree clean.
 
-> **Updated 2026-08-12.** State now: **200 tests pass**, `tsc -b` clean, working
+> **Updated 2026-08-13.** State now: **218 tests pass**, `tsc -b` clean, working
 > tree clean, `main` pushed, and <https://nopeak.tonydefazio.com> **verified
-> current** — both `index.html` and `/methods` changed today and the live site
-> serves the new text. The numbered items below are unchanged and still open
-> unless struck; the block immediately after this one is the work that arrived
-> on 2026-08-12. **The numbering is load-bearing** — `deep-learning-handoff.md`
+> current on the wire**, not from `dist/` mtimes. Since 2026-08-12 the core
+> gained a command line — `scripts/cluster.ts`, batch over a directory, one
+> summary row per record, documented at `/methods#batch`, in `llms.txt`, and in
+> a new root `AGENTS.md`. **§2 and both `scripts/run_csv.ts` items in §7 are
+> closed**; the numbered items below are otherwise unchanged and still open
+> unless struck. The block after this one is the work that arrived on
+> 2026-08-12. **The numbering is load-bearing** — `deep-learning-handoff.md`
 > and others cite `next-steps.md` by section number, so add new items rather
 > than renumbering.
 
@@ -182,28 +185,36 @@ Note the scope wording is already careful (`data/digitized/README.md` says an
 author's *courtesy* permission cannot license the publisher's rights). The gap
 is the record, not the phrasing.
 
-## 2. `robots.txt` policy is not in effect, and the repo says the opposite
+## 2. ~~`robots.txt` policy is not in effect, and the repo says the opposite~~
 
-Cloudflare's managed robots.txt is prepended at the edge and disallows **nine**
-AI agents; the site's own "all crawlers welcome" text and `Sitemap:` line never
-take effect. Verify any time with:
+**Closed 2026-08-13.** The owner turned managed robots.txt off on the
+`tonydefazio.com` zone. The repo and the edge now say the same thing, and it was
+checked on the wire rather than inferred from the dashboard: the live
+`robots.txt` is byte-identical to `public/robots.txt`, and ClaudeBot, GPTBot,
+CCBot, PerplexityBot and Googlebot user-agents each fetch `/methods` with a 200.
+`kernel.tonydefazio.com` shares the zone and is fixed by the same change —
+verified the same two ways.
 
-```
-curl -s https://nopeak.tonydefazio.com/robots.txt | head -20
-```
+Three things learned here that outlive the item:
 
-Fix is a dashboard setting on the `tonydefazio.com` zone (AI Crawl Control →
-managed robots.txt off; Security → Bots → "Block AI Scrapers and Crawlers" left
-off). Nothing in this repo can override it.
+- **Verifying takes two checks, not one.** Managed robots.txt and "Block AI
+  Scrapers and Crawlers" fail differently, and the second acts *before*
+  `robots.txt` is read — so a clean `robots.txt` proves nothing about an edge
+  block in front of it. Fetch the file *and* fetch a page under a crawler
+  user-agent. Both recipes are in `README.md` and in `public/robots.txt`'s own
+  comment header.
+- **The `README.md` error this item was tracking is fixed.** It claimed the
+  managed file *replaces* colonel-kernel's robots.txt outright. It does not — it
+  prepends there too, exactly as here, and the rewritten section says so.
+- **The mechanism is documented rather than deleted**, in both `README.md` and
+  `public/robots.txt`. The setting is a dashboard toggle no file in this repo can
+  override, so it can come back without warning and without a diff.
 
-**Decide it rather than inherit it.** The digitized Webster data is now public,
-so "should AI crawlers index this" is a live question, not a leftover. Whatever
-you choose, make the repo say the same thing the edge does.
-
-One correction found while checking: `README.md` claims the managed file
-*replaces* colonel-kernel's robots.txt outright. It does not — it prepends
-there too, exactly as here. That sentence is still wrong and should be fixed
-when the policy is settled.
+Still genuinely open, and only you can answer it: **the policy was inherited, not
+decided.** The digitized Webster data is public now, so "should AI crawlers index
+this" is a live question. The current answer is "yes, all of them" — that is what
+the edge now enforces. Change it deliberately if that is not what you want, and
+change the repo with it.
 
 ## 3. Deep links into the About page eject the reader
 

@@ -64,32 +64,47 @@ colonel-kernel's stated policy and for the same reason: this is a free public
 scientific tool that should be discoverable and described accurately, and the
 app holds no user data to expose.
 
-> ⚠ **That policy is currently NOT in effect, and the override is invisible from
-> this repo.** Cloudflare's AI Crawl Control injects a *managed* robots.txt at
-> the edge that prepends `Disallow: /` groups for ClaudeBot, GPTBot, CCBot,
-> Google-Extended, Bytespider, Amazonbot, Applebot-Extended and
-> meta-externalagent. Those named groups are more specific than our
-> `User-agent: *`, so they win. On kernel.tonydefazio.com it is worse: the
-> managed file *replaces* the site's own robots.txt outright, so colonel-kernel's
-> "all crawlers welcome" text and its `Sitemap:` line never reach the wire at
-> all. Fixing it means turning the managed robots.txt off in the Cloudflare
-> dashboard for the `tonydefazio.com` zone (and leaving Security > Bots >
-> "Block AI Scrapers and Crawlers" off too). Nothing in this repo can override
-> it. Verify with `curl -s https://nopeak.tonydefazio.com/robots.txt` — this
-> repo's `public/robots.txt` should be the whole response, with no managed
-> preamble above it.
->
-> **If the dashboard will not load**, the same setting is reachable over the
-> API at `PATCH /zones/{zone_id}/settings/robots_txt_management`. Confirmed
-> 2026-08-12 to be a real route on this zone — it answers `9109 Unauthorized`
-> rather than `7000 No route`, which is the difference between "wrong scope"
-> and "wrong URL". The machine's cached wrangler OAuth token cannot do it:
-> wrangler's scope set tops out at `zone (read)` and is not extensible by
-> re-running `wrangler login`. It needs an API token with zone-settings write,
-> and minting one is itself a dashboard trip, so this is a shortcut for the
-> next time rather than a way out of the first. Zone and account ids come from
-> `wrangler whoami` and `GET /zones?name=tonydefazio.com`; they are
-> deliberately not written down here.
+**That policy is in effect as of 2026-08-13**, verified on the wire rather than
+assumed — the live `robots.txt` is byte-identical to `public/robots.txt`, and
+ClaudeBot, GPTBot, CCBot, PerplexityBot and Googlebot user-agents all fetch
+`/methods` with a 200. Same for `kernel.tonydefazio.com`, which shares the zone.
+
+It was **not** in effect from 2026-08-10 to 2026-08-13, and the override was
+invisible from this repo, so keep the mechanism in mind rather than assuming it
+cannot come back:
+
+> ⚠ **Two Cloudflare edge features silently void `public/robots.txt`.**
+> *Managed robots.txt* (AI Crawl Control) **prepends** a block to the file with
+> `Content-Signal: ai-train=no` and per-agent `Disallow: /` for ClaudeBot,
+> GPTBot, CCBot, Google-Extended, Bytespider, Amazonbot, Applebot-Extended,
+> meta-externalagent and CloudflareBrowserRenderingCrawler. Those named groups
+> are more specific than our `User-agent: *`, so they win. Separately, *Security
+> > Bots > "Block AI Scrapers and Crawlers"* acts **before** `robots.txt` is
+> ever read. Both are dashboard settings on the `tonydefazio.com` zone, and
+> nothing in this repo can override either.
+
+**Verifying takes two checks, not one**, because those two features fail
+differently — a clean `robots.txt` proves nothing about the edge block sitting
+in front of it:
+
+```sh
+diff <(curl -s https://nopeak.tonydefazio.com/robots.txt) public/robots.txt
+curl -s -o /dev/null -w '%{http_code}\n' \
+  -A 'Mozilla/5.0 (compatible; ClaudeBot/1.0; +claudebot@anthropic.com)' \
+  https://nopeak.tonydefazio.com/methods
+```
+
+Empty diff and `200`. Either one alone can pass while the policy is off.
+
+If the dashboard will not load, the managed-robots.txt setting is also reachable
+at `PATCH /zones/{zone_id}/settings/robots_txt_management` — confirmed a real
+route on this zone (it answers `9109 Unauthorized`, not `7000 No route`, which
+is the difference between wrong scope and wrong URL). The machine's cached
+wrangler OAuth token cannot do it: wrangler's scopes top out at `zone (read)`
+and `wrangler login` will not widen them. It needs an API token with
+zone-settings write, and minting one is itself a dashboard trip. Zone and
+account ids come from `wrangler whoami` and `GET /zones?name=tonydefazio.com`;
+they are deliberately not written down here.
 
 Code layout: `src/core/` is the algorithm (pure functions — `cluster.ts`,
 `mscore.ts`, `errorModel.ts`, `peaks.ts`, `format.ts`) plus the input and
