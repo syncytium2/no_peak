@@ -25,17 +25,66 @@
 > unresolved and untested — as it was on 2026-08-11, since an author's blessing
 > never addressed it.
 >
-> **Asked on 2026-08-13, both open:** the Endocrine Society, for permission or
-> for a statement that none is needed; and the University of Michigan library,
-> for whether the institutional license already permits publishing values
-> derived this way. Record both answers here. **Withdraw the data if either
-> says no.**
+> Two requests are open with the parties who can actually answer. **The ledger
+> is the next section — update it there, not here.** Withdraw the data if
+> either says no.
 >
 > One lesson worth keeping, because it cost a fortnight: the recommendation
 > below said author blessing "addresses the relational risk," and that was
 > right — but a blessing that is never written down addresses nothing, because
 > it cannot be produced later. Get the artifact at the time or do not make the
 > claim.
+
+## The request ledger
+
+Every ask, dated, with what came back. **This is the file's live state; keep it
+current and put outcomes here rather than in prose elsewhere.** The point of the
+ledger is that the last round of this produced a claim with no artifact behind
+it, and the fix for that is not "remember better" — it is writing down each
+request when it is made rather than after it is answered.
+
+| # | Date | Asked | For | Outcome |
+|---|---|---|---|---|
+| 1 | 2026-08-11 | An author of the paper | Blessing to digitize the figures | Given informally. **No artifact kept**, so unverifiable; the claim built on it was withdrawn 2026-08-13. |
+| 2 | 2026-08-13 | An author of the paper | Permission on the record, and the underlying values | **Declined to be the grantor** — correctly: it is the copyright holder's question. No objection to the use. Did not offer raw data. Suggested generating test data by hand instead. |
+| 3 | 2026-08-13 | OUP, `journals.permissions@oup.com` | Permission, or a statement that none is needed | Automated reply routing to RightsLink. **Resubmitted in-thread the same day** invoking their own human-review clause. Their stated turnaround is 10 working days. **OPEN.** |
+| 4 | 2026-08-13 | U-M library, `library.collections@umich.edu` | Whether the institutional licence already permits publishing values derived this way | **OPEN.** The likelier and faster of the two: they can read the actual agreement, which no one outside it can. |
+
+Drafts of 2, 3 and 4 are not committed — they are correspondence, not code. What
+belongs here is the date, the ask and the answer.
+
+### What the attempts have established so far
+
+- **There is no category for this request.** OUP's permissions platform handles
+  figures, images, tables and text; extracting the numbers behind a figure is
+  not among them, and the automated reply's own escape clause — resubmit "where
+  your reuse/content is not available within our automatic permissions
+  platform" — is the only route to a human. That is not an obstacle so much as
+  evidence for what this document argues below: *the whole permissions
+  apparatus is built around the image.* Being unable to file the request is a
+  finding about the field, and it is worth quoting the next time this comes up.
+- **An author may have more standing than request 2 assumed.** OUP's automated
+  reply states that OUP authors "may reuse their own articles in full or part in
+  other works without direct permission from OUP," subject to full credit, no
+  Open Access reuse and no commercial sponsorship. That is a reuse right held by
+  the authors, not something they can hand to a third party — so it does not
+  reverse request 2 — but it does sit awkwardly beside "that is a question for
+  the copyright holder," and request 3 asks OUP directly whether that route is
+  the cleaner one here.
+- **The copyright holder may not be OUP at all.** The article is from 1991 and
+  predates OUP's publication of *Endocrinology*; copyright may rest with the
+  Endocrine Society. Request 3 asks OUP to say which, because a redirect is a
+  fast and useful answer.
+
+### If both come back silent
+
+Ten working days on request 3 lapses around **2026-08-27**. Silence is not
+consent, but neither is it grounds to keep waiting indefinitely — decide then
+rather than letting it drift, and record the decision here. The fallback that
+costs nothing is already built: `data/synthetic/` generates records to this same
+paper's protocol, which is what request 2's respondent recommended. What it
+cannot replace is the published pulse calls, and that loss should be taken
+knowingly rather than by default.
 
 Researched 2026-08-11 across four passes, reading primary sources — the U.S.
 Reports, the Copyright Office's Compendium and regulations, EUR-Lex and CURIA —

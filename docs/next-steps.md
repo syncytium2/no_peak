@@ -183,10 +183,12 @@ first still stands unsupported and is the live half of this item:
   from all of the above; **do not reinstate it.** This item was right that the
   sentence was unverifiable, and the lesson is narrower than "get permission":
   *a blessing that is never written down addresses nothing, because it cannot be
-  produced later.* Requests are now open with the Endocrine Society (permission,
-  or a statement that none is needed) and the U-M library (whether the
-  institutional license already covers it) — record both answers in
-  `docs/figure-data-permissions.md` and withdraw the data if either says no.
+  produced later.* Two requests are now open — the journal's publisher, and the
+  U-M library on whether the institutional licence already covers it. They are
+  tracked in **the request ledger in `docs/figure-data-permissions.md`**, which
+  is where every ask and answer now goes, at the time it happens rather than
+  after. **Decide by 2026-08-27** if both are still silent; the ledger says what
+  the fallback costs.
 
 **The live half is Johnson's approval**, which is still a public claim on the
 About page resting on a single line of hearsay in `docs/reference-code.md`

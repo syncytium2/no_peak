@@ -41,10 +41,12 @@ practice, precedented in peer-reviewed data papers; and no publisher has ever
 been recorded objecting to it. The **contractual question remains open and
 untested**, which that document says at length rather than glossing.
 
-Permission was requested from the Endocrine Society, and the University of
-Michigan library was asked whether the institutional license already covers
-publishing values derived this way — both on 2026-08-13. **Update this section
-when either answers**, and withdraw the data if the answer is no.
+Two requests are open as of 2026-08-13 — the journal's publisher, and the
+University of Michigan library on whether the institutional licence already
+covers publishing values derived this way. **The request ledger in
+[`docs/figure-data-permissions.md`](../../docs/figure-data-permissions.md) is
+the live record**: dates, what was asked, what came back. Record outcomes there
+rather than here, and withdraw the data if either answers no.
 
 ### Reproducing the scoring in the app
 
