@@ -84,11 +84,14 @@ decisions in `docs/data-store-coordination_2026-08-14.md`, mechanism in
   stamps too. And **no_peak has no freshness hook armed** (§D below, still
   awaiting your approval), so nothing here would report a corrupted stamp.
 
-  Fix is `tools/revendor.py` in downLow — stamp on line 1 only, `--selftest`
-  asserting that a stamp-shaped body string survives untouched, and `VENDOR_SET`
-  cross-checked against the hook so it refuses to run when two lists disagree.
-  **Not ported yet.** Until it is, bump no_peak stamps by hand on line 1 and
-  never with a whole-file substitution.
+  ~~Fix is `tools/revendor.py` in downLow.~~ **Ported 2026-08-14 (`131edc5`)** as
+  `tools/revendor.py`, with two adaptations that were not optional: our stamps
+  sit on **line 2** behind a shebang in four of six files, so downLow's
+  line-1-only rewrite would have skipped them while reporting success; and
+  full-vs-short sha had to stop counting as staleness, or the gate would report
+  five files needing a bump on every run forever. `--selftest` carries the
+  prefix-nesting case and two negative controls proving both broken
+  implementations fail it.
 - **Closed 2026-08-14, both in downLow's canonical copy:** `scan()` now excludes
   a `NOISE_NAMES` set (`.DS_Store`, `Thumbs.db`, `desktop.ini`, `._*`), which
   covers the copy as well as the digest since `_copy_tree` iterates `scan()`;
@@ -192,7 +195,27 @@ implies all are actionable — at least three entries (the gitignored oracle
 data, the Igor package, the Webster PDF) are the second kind. Collapsing the
 two is how a repo talks itself into believing an unfixable problem is a to-do.
 
-### D. The freshness hook — **needs your approval, twice requested**
+### D. ~~The freshness hook — needs your approval, twice requested~~ **APPROVED AND ARMED 2026-08-14 — `131edc5`**
+
+> **Closed.** Approved on the third asking, together with porting
+> `tools/revendor.py`. Both families are checked at the marked point in
+> `.claude/hooks/session-start.sh` — murderboard (5 files) and downLow
+> (`tools/data_root.py`) — every line wrapped in `|| true`. Verified in both
+> directions before being trusted: silent and exit 0 when current, and correctly
+> reporting `data_root.py` stale when run with `--refresh`.
+>
+> **It paid on the first dry run**, in a way worth recording: `revendor.py`
+> found that `tools/fetch_paper.py` differs from murderboard upstream by one
+> word — `hand-organized` where upstream says `hand-organised`. That is your
+> American-English call of 2026-08-12, deliberately applied to a vendored file,
+> and a faithful re-vendor would have reverted it silently. Both locally adapted
+> files (`fetch_paper.py`, `data_root.py`) are declared and are **reported,
+> never overwritten**.
+>
+> The warnings below still apply and are the reason this stayed open so long —
+> read them before filing a stale verdict as noise.
+
+*Original entry, kept because its cautions are still live:*
 
 A `SessionStart` hook running `tools/murderboard_freshness.sh` against the
 vendored-doc set. The `downLow` repo has it approved and armed; this repo does
