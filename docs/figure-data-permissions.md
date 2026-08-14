@@ -75,6 +75,14 @@ folder holds the saying of it.** Neither substitutes for the other, and the
 reason both exist is row 1 — a permission that was real, was never written down,
 and could not be produced when it was needed.
 
+⚠ **That folder sits on the same determination as `reference/`** — that the
+Dropbox member folder is private, confirmed by the owner on 2026-08-14 (see
+`AGENTS.md`, "The store, and the one rule attached to it"). The rule there names
+`reference/` as first out if the folder is ever shared or re-pointed. **Third-
+party email quoting named people belongs in that same review and the rule does
+not mention it**, so the folder's own README says so. Anyone applying the rule
+will be looking at `reference/` and would not think of a darkroom subfolder.
+
 ### ⭐ The print copy is the way out, and it was there the whole time
 
 **Established 2026-08-14 by the U-M Copyright Librarian, and it is the most
