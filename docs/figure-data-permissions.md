@@ -118,14 +118,16 @@ opposite of the position this document exists to establish, which is one that
 can be stated out loud. Recorded here because it will occur to the next reader
 too.
 
-**The logistics have a real answer: don't do the scanning, order it.** U-M's
-Document Delivery carries a **"request to have a small portion scanned"** route,
-and using that rather than the ordinary *Article* request is the entire trick.
-The Article form is fulfilled from whatever is fastest, which for a journal with
-a live subscription is the licensed electronic copy — the exact provenance being
-escaped. The portion-scan route targets the library's *physical* holdings, so
-what comes back derives from the purchased bound volume. Two pages of a 1991
-volume is an ordinary ask, and it costs a web form rather than an afternoon.
+**The logistics have a real answer: don't do the scanning, order it.** The
+library holds the bound volume — *Endocrinology* v.129 1991 Sep, Offsite
+Shelving, call number Journals, barcode 39015023198461, on shelf — and its
+catalog record offers **"Request to have a small portion scanned"**, 1–5 days.
+Placing the request against that record means the scan is of *that object*,
+which is what makes the result derive from the library's purchased copy rather
+than from the subscription. Use that rather than a generic article request,
+which is fulfilled from whatever is fastest and would return the licensed
+electronic copy while looking like progress. It costs a web form rather than an
+afternoon in the stacks.
 
 Three things to get right on that request, all recorded with the filled form in
 the darkroom folder: say explicitly in the notes that it must come from the
@@ -134,9 +136,20 @@ line art read for pixel positions and a compressed 300 dpi scan is unusable; and
 leave the OCR checkbox alone, since its label is an accessibility attestation
 rather than a quality option.
 
+Three of the service's own policies bear on this. The scan **stays on a secure
+site for two weeks only**, so download it the day it arrives. Requests are
+**individually evaluated for copyright compliance**, and a refusal is offered as
+a physical loan instead — which answers the provenance question completely, so
+the fallback is fine either way. And **microform scanning is limited**: the
+holding is offsite, and a microform scan of line art read for pixel positions
+would likely be unusable even if supplied. The record shows a barcoded volume
+with a Journals call number, which reads as bound paper, but confirm from what
+arrives.
+
 **Then verify what arrives.** A scan of paper looks like paper — page edges,
-slight skew, print grain. If the publisher's typeset PDF turns up instead, the
-request silently failed and the provenance is exactly where it started.
+slight skew, print grain, the gutter shadow of a bound volume. If the
+publisher's clean typeset PDF turns up instead, something was fulfilled
+electronically and the provenance is exactly where it started.
 
 **Whether a library-made scan carries the print provenance is a question for the
 Copyright Librarian, not an assumption.** It should, since it derives from the
