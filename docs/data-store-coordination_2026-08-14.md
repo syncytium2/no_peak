@@ -31,12 +31,33 @@ per-sample error column* would settle it, and that they were sitting unexamined.
 
 They were sitting **here**. Reading them took one command and answers it outright:
 
-| series | n | exact zeros | fitted error model | samples on the floor |
+| series | n | exact zeros | ~~fitted error model~~ | ~~samples on the floor~~ |
 |---|---|---|---|---|
-| `gnrh.csv` | 96 | **0** | `err = max(0.068, 6.09% × value)` | 42 of 96 |
-| `set1.csv` | 145 | **0** | `err = max(0.424, 8.68% × value)` | 36 of 145 |
-| `LHInfused.csv` | 61 | **0** | `err = 6.50% × value`, no floor | 0 |
+| `gnrh.csv` | 96 | **0** | ~~`err = max(0.068, 6.09% × value)`~~ | ~~42 of 96~~ |
+| `set1.csv` | 145 | **0** | ~~`err = max(0.424, 8.68% × value)`~~ | ~~36 of 145~~ |
+| `LHInfused.csv` | 61 | **0** | ~~`err = 6.50% × value`, no floor~~ | ~~0~~ |
 | `man2–man6.csv` | 37–145 | **24–59%** | *no error column at all* | — |
+
+> **Two right-hand columns corrected upstream, 2026-08-14** (downLow `3c4bf98`), after a
+> no_peak session re-read the same three series once they could be pulled. Kept struck
+> rather than edited in place, because this section is another repo's message and the
+> correction is part of the record.
+>
+> - **"samples on the floor" counted nothing real.** *Zero* samples sit at the fitted
+>   floor in any of the three — the error varies continuously all the way down, so there
+>   is no plateau to sit on. The column was counting samples where the fitted `max()`
+>   happened to be floor-*dominated*, which is a property of the chosen fit, not of the
+>   data.
+> - **`max(floor, k·v)` is the wrong shape.** Refitting against
+>   `sqrt(a² + (k·v)²)` beats it on every series and by 2.4× on `set1`. Quadrature is
+>   also the physically correct combination: independent variance sources add that way.
+>
+> **The finding is untouched** — error stops falling proportionally at low values, that
+> is a detection-limit signature, and it still settles the censoring question the
+> murderboard retracted. Only the phrasing had to go, and it had to go precisely because
+> a reader would look for a plateau, fail to find one, and doubt the finding rather than
+> the wording. The **exact-zeros** column, which is what this section was actually
+> arguing from, is unaffected.
 
 Three findings, and they matter to both repos:
 

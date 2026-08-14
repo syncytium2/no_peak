@@ -109,10 +109,36 @@ WT_COUNT=$(git worktree list 2>/dev/null | wc -l | tr -d ' ')
 git log --oneline -3 2>/dev/null | sed 's/^/   /'
 
 # --- 5. Vendored-file freshness ----------------------------------------------
-# no_peak is upstream, not a consumer, so nothing to check here. A CONSUMER repo
-# adds its check at this point and MUST wrap it:
-#   bash tools/murderboard_freshness.sh --hook --slug O/R --clone ... --file ... || true
-# Without `|| true` the stale verdict exits 1 and the harness throws the text
-# away. See docs/multi-session-protocol.md.
+# This said "no_peak is upstream, not a consumer, so nothing to check here" from
+# 2026-08-12 until 2026-08-14. It was wrong by then and nobody noticed: this repo
+# consumes SIX files from two upstreams. The cost was measured, not guessed —
+# tools/data_root.py sat stale for hours on 2026-08-14 while governing restricted
+# data, and was found only by a hand check during unrelated work.
+#
+# `|| true` IS LOAD-BEARING on every line below. Without it the stale verdict
+# exits non-zero and the harness discards the text — the check then reports
+# nothing in exactly the circumstance it exists for. Seven hooks across three
+# repos had that bug; see docs/multi-session-protocol.md §4.
+#
+# `--hook` never touches the network: it serves a cached upstream sha, so a
+# session start is never blocked. That also means it can report "current" from a
+# stale cache — verify by hand with `--refresh` before trusting a green light.
+#
+# The --file lists here are the MACHINE-READABLE SOURCE for the vendored set.
+# tools/revendor.py cross-checks its FAMILIES against these lines and refuses to
+# run if they disagree, because two hand-maintained lists that can drift is how a
+# file quietly stops being checked. Add a file here and there, or neither.
+
+bash tools/murderboard_freshness.sh --hook --label murderboard-vendored \
+  --slug syncytium2/murderboard --clone "$HOME/Developer/murderboard" \
+  --file docs/doc_review_process.md \
+  --file tools/murderboard_freshness.sh \
+  --file tools/murderboard_roster.sh \
+  --file tools/fetch_paper.py \
+  --file .claude/skills/murderboard/SKILL.md || true
+
+bash tools/murderboard_freshness.sh --hook --label downlow-vendored \
+  --slug syncytium2/downLow --clone "$HOME/Developer/downLow" \
+  --file tools/data_root.py || true
 
 exit 0

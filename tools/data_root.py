@@ -1,5 +1,5 @@
 #!/usr/bin/env python3
-# vendored from syncytium2/downLow @ 27c52d4 — canonical THERE; do not edit here, re-copy and bump this stamp.
+# vendored from syncytium2/downLow @ 3c4bf98 — canonical THERE; do not edit here, re-copy and bump this stamp.
 """data_root — where the non-committed data lives, and how it gets to this machine.
 
 Four trees this project needs are gitignored for **rights**, not size, so they do not
@@ -576,20 +576,28 @@ def selftest() -> int:
         check("in sync, unmanifested is flagged",
               _verdict(files, files, None), "in sync (store unmanifested)")
 
-    # ⚠ LOCAL ADDITION — not in downLow's canonical copy, so a re-vendor DELETES it.
-    # It has already been lost once, on the 27c52d4 re-copy. Re-add it after every
-    # re-vendor, or better, get it adopted upstream so it stops being local.
-    #
-    # These two constants live in two repos, cannot be checked at runtime, and corrupt
-    # the store quietly if they drift. Two independently-passing selftests do not prove
-    # the copies agree — the only check that bites is each side asserting a value the
-    # other also asserts.
-    check("manifest name matches downLow's", MANIFEST, ".downlow-manifest.json")
-    check("reference is still held back from a bare push",
-          BY_NAME["reference"].default_synced, False)
-
     member = dropbox_member_root()
     print(f"  {'OK  ' if member else 'WARN'} dropbox member root: {member}")
+
+    # ---------------------------------------------------------------- #
+    # CROSS-REPO INVARIANTS. These assert values that no_peak's copy must also hold,
+    # and they live HERE, in the canonical file, for a reason that is not stylistic.
+    #
+    # no_peak added both of these locally to their vendored copy — correctly, and it
+    # did not survive. A re-vendor overwrites the file, so a local assertion is deleted
+    # by the next re-copy BY CONSTRUCTION, and a re-vendor is precisely when a
+    # disagreement between the two sides gets introduced. Their assertions were absent
+    # at the one moment they mattered most. Adopted into canonical at their request so
+    # they survive every re-copy in both directions.
+    #
+    # Neither can be caught by any check that looks only at this repo: both sides pass
+    # their own selftest while disagreeing, which is exactly what happened on
+    # 2026-08-14 when the two copies differed about which trees a bare --push moves.
+    check("wire format: MANIFEST is the shared name",
+          MANIFEST, ".downlow-manifest.json")
+    check("consent gate: reference is NOT in the default sync set",
+          BY_NAME["reference"].default_synced, False)
+
     print(f"\n{'FAILED' if bad else 'PASS'} — {bad} problem(s)")
     return 1 if bad else 0
 
