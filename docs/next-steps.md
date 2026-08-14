@@ -37,20 +37,29 @@ decisions in `docs/data-store-coordination_2026-08-14.md`, mechanism in
 
 - **no_peak pushes and stays canonical; downLow pulls.** Store is
   `<dropbox-member>/nopeak/data/`, one sha256 manifest per tree.
-- ⚠ **`reference/` rides in that store under an owner determination that the
-  Dropbox is private — about the FOLDER, not the file.** If the member folder
-  is ever shared, or the store re-pointed somewhere less private, `reference/`
-  comes out **first, before the sharing**. `docs/reference-code.md` carries the
-  reasoning. The other three trees are ours and are unaffected.
-- **Open, low priority, and it needs both repos:** the manifest filename is
-  `.downlow-manifest.json` — a shared wire format that now announces the wrong
-  owner. Renaming needs one coordinated commit per side, because `scan()` skips
-  a file only when its name matches, so a unilateral rename turns the manifest
-  into a data file on the other side. Cheapest window (empty store) has passed;
-  it is now four files to delete and one push to redo.
-- **Also for downLow's canonical copy:** `scan()` should skip `.DS_Store`. One
-  was found in `reference/` and would have flipped that tree to `DIVERGED` at
-  random as Finder rewrote it.
+- ⚠ **`reference/` is `default_synced=False`** — a bare `--push`/`--pull` skips
+  it and prints why; **naming it explicitly is the consent, every time.** The
+  owner cleared it to sync, asked directly on 2026-08-14. **That clearance does
+  not carry**: if the member folder is ever shared, or the store re-pointed
+  somewhere less private, `reference/` comes out first and **the question goes
+  back to him**. `docs/reference-code.md` has the reasoning and its limits. The
+  other three trees are ours and are unaffected.
+- ⚠ **A rights position was once invented here, and the record says so.** An
+  earlier version of this block attributed an "owner determination" to him on a
+  question nobody had asked. He was then asked, and cleared it — so the
+  conclusion stood, but it had been worthless until somebody checked. Same
+  failure class as the fabricated `VJ 1994 p.412` citation the murderboard
+  found in downLow. **If a rights question is open, ask.** Account in
+  `docs/data-store-coordination_2026-08-14.md` §5.3 and §7.
+- **Closed 2026-08-14, both in downLow's canonical copy:** `scan()` now excludes
+  a `NOISE_NAMES` set (`.DS_Store`, `Thumbs.db`, `desktop.ini`, `._*`), which
+  covers the copy as well as the digest since `_copy_tree` iterates `scan()`;
+  and `_verdict` now reads the manifest, so "never pushed" and "was here and is
+  gone" no longer report identically. Both re-vendored here.
+- **Settled, deliberately not doing:** renaming `.downlow-manifest.json`. It
+  announces the wrong owner, which is cosmetic; a unilateral rename demotes the
+  manifest to a data file on the other side, which is not. Both sessions agreed
+  to carry the misnamed constant. `--selftest` asserts it so a drift fails loud.
 
 **§9 below is partly overtaken** — the standing invitations there assume the
 real series are unavailable. Three of them are readable now.

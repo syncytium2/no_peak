@@ -120,14 +120,35 @@ is invented at a join and no interpulse interval is measured across one.
 manifest each. `tools/data_root.py` resolves it from Dropbox's own `info.json`,
 so it works on any machine and any OS without a hardcoded path.
 
-⚠ **`reference/` is Johnson's third-party code, and it is in that store under a
-determination about the FOLDER, not the file.** The license forbids providing
-the software to others; the owner determined on 2026-08-14 that this Dropbox is
-**private**, so syncing across his own machines is not that. **If that member
-folder is ever shared with a collaborator, or the store re-pointed somewhere
-less private, `reference/` comes out FIRST — before the sharing, not after.**
-The other three trees are ours and are unaffected. See
-`docs/reference-code.md`.
+⚠ **`reference/` is Johnson's third-party code — the only tree here we do not
+own — and it is `default_synced=False`.** A bare `--push`/`--pull` skips it and
+prints why. **Naming it explicitly is the consent, every time.** That is the
+owner's choice, not a session's, and it is deliberately a small friction: it
+puts a human in the loop on every movement of licensed material.
+
+It is cleared to sync. The owner was **asked directly on 2026-08-14** and
+cleared it: he works alone, and for this purpose a private member folder is
+equivalent to local disk. Two limits ride with that clearance:
+
+- **It does not carry.** It was given about a folder nobody else can see. If
+  that member folder is ever shared, or the store re-pointed somewhere less
+  private, `reference/` comes out **first** and the question **goes back to
+  him** — it is not a judgment call for a session to make.
+- **This is a University of Michigan enterprise team Dropbox.** A member folder
+  is private by default but team-administered, which is not the same as local
+  disk. The owner weighed that and cleared it anyway; do not re-derive the
+  conclusion from "it's private" without the second half.
+
+**Do not infer a rights position from a convenient premise and attribute it to
+the owner.** An earlier version of this section did exactly that — it asserted
+an "owner determination" on a question nobody had put to him. The conclusion
+happened to be right and it was still worthless, because a licence resting on an
+invented approval is worth nothing. If a rights question is open, ask; the cost
+of asking is a minute. The full account is in
+`docs/data-store-coordination_2026-08-14.md` §5.3 and §7.
+
+The other three trees are ours and are unaffected — do not reason about all four
+as one group. See `docs/reference-code.md`.
 
 ## Reading rather than running
 

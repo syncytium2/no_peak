@@ -50,23 +50,45 @@ is itself not ours to publish. They stay out of the repo; the tests that consume
 them skip without them. Both are in the private store and arrive with
 `tools/data_root.py --pull`.
 
-## The store is not a distribution — 2026-08-14
+## `reference/` in the store — cleared by the owner, 2026-08-14
 
-`reference/` is synced to `<member>/nopeak/data/reference` in the owner's
-Dropbox. That is compatible with the license below, and the reasoning is narrow
-enough to be worth writing down rather than re-derived:
+`reference/` is synced to `<member>/nopeak/data/reference`. **The owner cleared
+it, asked directly on 2026-08-14:** he works alone, and for this purpose a
+private member folder is equivalent to local disk.
 
-The license bars the licensee from providing or otherwise making the software
-**available to others**. A private folder synced between machines the licensee
-alone controls is not "others" — it is the same licensee, on his second
-computer. Copying a licensed file from a desktop to a laptop has never been
-distribution, and Dropbox is doing exactly that with extra steps.
+The reasoning he cleared: the license bars the licensee from providing or
+otherwise making the software **available to others**. A private folder synced
+between machines the licensee alone controls is not "others" — it is the same
+licensee, on his second computer. Copying a licensed file from a desktop to a
+laptop has never been distribution, and Dropbox is doing that with extra steps.
 
-⚠ **The determination is about the FOLDER, not the file, and it is the owner's
-— recorded 2026-08-14.** It survives only as long as the folder stays private.
-**If that Dropbox member folder is ever shared with a collaborator, or the store
-is re-pointed anywhere less private, `reference/` comes out FIRST — before the
-sharing, not after.** Removing it afterwards does not undo a distribution.
+Three limits, and none of them are a session's to relax:
+
+- **`reference` is `default_synced=False`** in `tools/data_root.py`. A bare
+  `--push`/`--pull` skips it and prints the caution. **Naming it explicitly is
+  the consent, every time.** The owner's choice, and the point is the friction.
+- **The clearance does not carry.** It was given about a folder nobody else can
+  see. **If that member folder is ever shared, or the store re-pointed anywhere
+  less private, `reference/` comes out FIRST and the question goes back to
+  him.** Removing it afterwards does not undo a distribution.
+- **This is a U-M enterprise team Dropbox** — private by default, but
+  team-administered, which is not the same as local disk. He weighed that. Do
+  not reconstruct the conclusion from "it's private" alone.
+
+> ### ⚠ How this was first recorded, and why that is written down
+>
+> Before he was asked, a session asserted this same conclusion as an "owner
+> determination" and pushed `reference/` on that basis. Put to him afterwards,
+> his answer was: *"that folder decision has never happened in any other
+> context. i work alone."* He then cleared the files to stay.
+>
+> **The conclusion was right and it was still worthless**, because a licence
+> resting on an approval nobody gave is worth nothing — this one landed, and the
+> next guess may not. Kept here, in the rights document rather than only in a
+> coordination doc, because this is where someone comes when they want to know
+> whether they may move this tree. The answer is yes, and the reason it is a
+> real answer is that somebody asked. Full account:
+> `docs/data-store-coordination_2026-08-14.md` §5.3 and §7.
 
 The other three trees (`data/extracted/`, `data/oracle/`, `data/oracle_igor/`)
 are **ours**. They are gitignored because they are unpublished lab recordings

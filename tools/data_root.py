@@ -1,5 +1,5 @@
 #!/usr/bin/env python3
-# vendored from syncytium2/downLow @ 4b12a3d — canonical THERE; do not edit here, re-copy and bump this stamp.
+# vendored from syncytium2/downLow @ 1a485cf — canonical THERE; do not edit here, re-copy and bump this stamp.
 """data_root — where the non-committed data lives, and how it gets to this machine.
 
 Four trees this project needs are gitignored for **rights**, not size, so they do not
@@ -14,14 +14,11 @@ Their absence is *silent*: `src/core/oracle.test.ts` and `igor-oracle.test.ts` s
 a green run means nothing (docs/reference-code.md says so). That is the failure this
 module exists to end.
 
-no_peak is the **pushing** side: the data is produced here and stays canonical here.
-downLow consumes it and pulls. Settled in docs/data-store-coordination_2026-08-14.md.
-
 The design, in one line: **Dropbox is the store, the repo path stays canonical.** `pull`
 materialises a tree into the exact gitignored path every existing call site already
-reads, so nothing downstream is rewritten. `push` publishes the other way. A manifest of
-sha256s travels with each tree, so a session can tell *stale* from *diverged* instead of
-overwriting and hoping.
+reads, so nothing downstream is rewritten and the vendored scorer is untouched. `push`
+publishes the other way. A manifest of sha256s travels with each tree, so a session can
+tell *stale* from *diverged* instead of overwriting and hoping.
 
 Finding Dropbox is done from Dropbox's own `info.json`, never from a hardcoded path.
 The user-facing root differs per OS and the mac form is a symlink:
@@ -36,6 +33,9 @@ The user-facing root differs per OS and the mac form is a symlink:
     python tools/data_root.py --push [NAME...]  repo   -> store
     python tools/data_root.py --path NAME       print one resolved path, for scripts
     python tools/data_root.py --selftest        prove the resolver and hashing work
+
+no_peak is the **pushing** side: the data is produced here and stays canonical here.
+downLow consumes it and pulls. Settled in docs/data-store-coordination_2026-08-14.md.
 
 `NOPEAK_DATA` (or `DOWNLOW_DATA`, honoured for parity with the other repo) overrides the
 store root; `--store` overrides it for one call.
@@ -67,13 +67,12 @@ for _stream in (sys.stdout, sys.stderr):
     except (AttributeError, OSError):
         pass
 
-# ⚠ SHARED FORMAT CONSTANT — both repos must use the identical string.
-# It is downLow-named because downLow wrote this module first, and that is the only
-# reason. Do NOT "fix" it to .nopeak-manifest.json here alone: `scan()` skips a file only
-# when its name equals MANIFEST, so a rename on one side turns the manifest into an
-# ordinary data file on the other — downLow would pull it into the repo tree and the two
-# digests would never agree again. A rename costs one coordinated commit per side and is
-# cheapest while the store is empty; see the coordination doc.
+# ⚠ SHARED WIRE FORMAT — both repos must use the identical string, and it is deliberately
+# NOT being renamed. It is downLow-named only because downLow wrote this module first.
+# `scan()` skips a file solely on exact name equality, so renaming on one side demotes the
+# manifest to an ordinary data file on the other, which then pulls it into the repo tree
+# and never agrees on a digest again. Settled 2026-08-14: a misnamed constant is cosmetic,
+# a broken wire format is not. Asserted in `--selftest` so a drift fails loudly.
 MANIFEST = ".downlow-manifest.json"
 
 
@@ -82,6 +81,10 @@ class Dataset:
     name: str
     repo_rel: str       # canonical path inside the repo (gitignored)
     what: str
+    # False = never moved by a bare --push/--pull; must be named explicitly.
+    # Reserved for material we do not own.
+    default_synced: bool = True
+    caution: str = ""
 
 
 DATASETS = [
@@ -93,7 +96,33 @@ DATASETS = [
     Dataset("oracle_igor", "data/oracle_igor",
             "Igor Pro Cluster output, the diff source for the do-while in cluster.ts"),
     Dataset("reference", "reference",
-            "Johnson's CLUST5.MPF / do_cluster.mpf and the Igor Cluster package"),
+            "Johnson's CLUST5.MPF / do_cluster.mpf and the Igor Cluster package",
+            default_synced=False,
+            caution=(
+                "THIRD-PARTY, and the only tree here we do not own. M.L. Johnson's\n"
+                "  license states the licensee 'shall not provide or otherwise make\n"
+                "  available' the software (no_peak/docs/reference-code.md).\n"
+                "\n"
+                "  This is a University of Michigan ENTERPRISE TEAM Dropbox. A member\n"
+                "  folder is private by default but team-administered, which is not the\n"
+                "  same as local disk.\n"
+                "\n"
+                "  CLEARED TO SYNC — owner, asked directly, 2026-08-14: he works alone,\n"
+                "  and for this purpose a private member folder is equivalent to local\n"
+                "  disk. reference/ may live in the store. That is the determination.\n"
+                "\n"
+                "  It is recorded here because an earlier note ASSERTED the same\n"
+                "  conclusion as an 'owner determination' before anyone asked him, and\n"
+                "  he replied: 'that folder decision has never happened in any other\n"
+                "  context. i work alone.' The conclusion happened to be right. The\n"
+                "  attribution was invented, and a licence resting on an invented\n"
+                "  approval is worth exactly nothing — which is why it now rests on an\n"
+                "  answer to a question actually put to him.\n"
+                "\n"
+                "  Still held back from a bare --push/--pull, by the owner's choice.\n"
+                "  Naming it is the consent, every time. If the member folder is ever\n"
+                "  shared, or the store re-pointed somewhere less private, this clearance\n"
+                "  does not carry — it was given about a folder nobody else can see.")),
 ]
 
 BY_NAME = {d.name: d for d in DATASETS}
@@ -142,23 +171,24 @@ def dropbox_member_root() -> Path | None:
 def store_root(override: str | None = None) -> Path:
     """`<member>/nopeak` — the store for data no_peak owns and downLow consumes.
 
-    NOT `<member>/downLow`. That was downLow's default until 2026-08-14 and it named
-    downLow as owner of recordings that are this repo's. Settled in
-    docs/data-store-coordination_2026-08-14.md: no_peak pushes and stays canonical,
-    downLow pulls, and the root is a namespace that already exists and already means
-    "no_peak's material" — `nopeak/` has held AutoDeconSoftware.zip, hypergeo.zip and the
-    Webster PDF since 2026-08-10.
+    NOT `<member>/downLow`. That was the default until 2026-08-14 and it named downLow
+    as owner of recordings that are no_peak's; downLow only consumes them. Settled with
+    the no_peak session in `no_peak/docs/data-store-coordination_2026-08-14.md`: no_peak
+    pushes and stays canonical, downLow pulls, and the root moves to a namespace that
+    already exists and already means "no_peak's material" — `nopeak/` has held
+    AutoDeconSoftware.zip, hypergeo.zip and the Webster PDF since 2026-08-10, and
+    `pulsexp_zip()` below already reaches into it.
 
-    Naming the folder for the repo that OWNS the data is accurate; the thing to avoid was
-    naming it for a repo that merely consumes it.
+    Naming the folder for the repo that OWNS the data is accurate; the thing to avoid
+    was naming it for a repo that merely consumes it.
 
-    ⚠ `reference/` (Johnson's CLUST5 / Igor Cluster) rides along under an owner
-    determination of 2026-08-14 that this Dropbox is private — syncing across the owner's
-    own machines is not "providing or otherwise making available" under the license.
-    **That determination is about the FOLDER, not the file.** If this member folder is
-    ever shared with a collaborator, or the store re-pointed somewhere less private,
-    `reference/` comes out FIRST — before the sharing, not after. The other three trees
-    are ours and are unaffected. See docs/reference-code.md.
+    Sibling of the `nopeak/` material that predates the store — `AutoDeconSoftware.zip`,
+    `hypergeo.zip` and the Webster PDF.
+
+    ⚠ `reference/` is cleared to sync but is still `default_synced=False`, so it must be
+    named explicitly every time — naming it is the consent. The clearance is the owner's,
+    given on 2026-08-14 when he was actually asked; an earlier note had asserted the same
+    conclusion in his name before anyone put it to him. See the `caution` on that Dataset.
     """
     explicit = override or os.environ.get("NOPEAK_DATA") or os.environ.get("DOWNLOW_DATA")
     if explicit:
@@ -181,12 +211,12 @@ def store_path(d: Dataset, override: str | None = None) -> Path:
 def pulsexp_zip(override: str | None = None) -> Path | None:
     """Johnson's Pulse_XP datasets, already in Dropbox as nopeak/AutoDeconSoftware.zip.
 
-    Not a managed tree — it is a zip that predates the store, reached through the existing
-    PULSEXP_DATA convention. Surfaced here so one command answers "where is it" on every
-    machine instead of two conventions living in two places.
+    Not a managed tree — it is a zip belonging to no_peak's folder, reached through the
+    existing PULSEXP_DATA convention. Surfaced here so one command answers "where is it"
+    on every machine instead of two conventions living in two places.
 
-    Resolved from the Dropbox member root, NOT from the store's parent: `--store` and the
-    env overrides relocate the managed trees, and inferring a sibling `nopeak/` from a
+    Resolved from the Dropbox member root, NOT from the store's parent: `--store` and
+    `DOWNLOW_DATA` relocate downLow's own trees, and inferring a sibling `nopeak/` from a
     relocated store reported this MISSING whenever the store was overridden.
     """
     roots: list[Path] = []
@@ -214,13 +244,30 @@ def sha256(path: Path) -> str:
     return h.hexdigest()
 
 
+# Files the OS writes into any folder it renders, which are not data and must never
+# reach a digest. `.DS_Store` is the one that bit: Finder rewrites it whenever a tree is
+# opened, on either side, so a hand-deleted copy reappears and flips that tree to
+# DIVERGED at random. Deleting it is not a fix; excluding it is. Reported by the no_peak
+# session 2026-08-14 after removing one from `reference/` before the first push.
+NOISE_NAMES = frozenset({".DS_Store", "Thumbs.db", "desktop.ini", "._.DS_Store"})
+
+
+def is_noise(p: Path) -> bool:
+    return p.name in NOISE_NAMES or p.name.startswith("._")
+
+
 def scan(tree: Path) -> dict[str, str]:
-    """Relative path -> sha256, for every file under `tree`. Manifest itself excluded."""
+    """Relative path -> sha256, for every file under `tree`.
+
+    Excludes the manifest itself and OS scratch files (see NOISE_NAMES) — anything
+    excluded here is invisible to `digest()` and therefore to the stale/diverged
+    comparison, which is exactly what we want for a file Finder recreates behind us.
+    """
     if not tree.is_dir():
         return {}
     out: dict[str, str] = {}
     for p in sorted(tree.rglob("*")):
-        if not p.is_file() or p.name == MANIFEST:
+        if not p.is_file() or p.name == MANIFEST or is_noise(p):
             continue
         out[p.relative_to(tree).as_posix()] = sha256(p)
     return out
@@ -256,15 +303,45 @@ def read_manifest(tree: Path) -> dict | None:
 
 # ---------------------------------------------------------------- the commands
 
-def _verdict(here: dict[str, str], there: dict[str, str]) -> str:
-    if not here and not there:
-        return "absent both sides"
+def _verdict(here: dict[str, str], there: dict[str, str],
+             manifest: dict | None = None) -> str:
+    """What the two sides mean together. `manifest` is the STORE's, and is load-bearing.
+
+    An empty store directory has two causes that need OPPOSITE responses — it was never
+    written (push it) or it was written and lost its contents (recover it) — and file
+    counts cannot tell them apart. The manifest can: `--push` always writes one, so its
+    presence is the record that a push happened and its `files` key is what should still
+    be there. Flagged by the no_peak session 2026-08-14, with the observation that the
+    ambiguity gets WORSE after the first push, not better.
+    """
+    pushed = manifest is not None
+    expected = (manifest or {}).get("files", {})
+
+    if not there:
+        if pushed:
+            # A manifest with no files beside it. The store lost them; the manifest names
+            # which, so this is a recovery and a --push from a stale repo would erase the
+            # only record of what is gone.
+            return (f"STORE EMPTIED - manifest lists {len(expected)} file(s), none present "
+                    f"-> RECOVER, do not push blind")
+        if here:
+            return "REPO ONLY   -> push (store never written)"
+        return "absent both sides - NEVER PUSHED, not lost"
+
+    # Store has files. If it also has a manifest, check the store against its own record
+    # before comparing sides at all — a store that disagrees with its manifest is damaged,
+    # and neither "pull" nor "push" is the right answer to that.
+    if pushed and there != expected:
+        missing = set(expected) - set(there)
+        extra = set(there) - set(expected)
+        altered = {k for k in set(there) & set(expected) if there[k] != expected[k]}
+        return (f"STORE DAMAGED - vs its own manifest: {len(missing)} missing, "
+                f"{len(extra)} unrecorded, {len(altered)} altered")
+
     if not here:
         return "STORE ONLY  -> pull"
-    if not there:
-        return "REPO ONLY   -> push"
     if here == there:
-        return "in sync"
+        return "in sync" if pushed else "in sync (store unmanifested)"
     only_here = set(here) - set(there)
     only_there = set(there) - set(here)
     changed = {k for k in set(here) & set(there) if here[k] != there[k]}
@@ -288,15 +365,28 @@ def cmd_status(override: str | None) -> int:
     print("-" * 92)
 
     for d in DATASETS:
+        store_tree = store_path(d, override)
         here = scan(root / d.repo_rel)
-        there = scan(store_path(d, override))
+        there = scan(store_tree)
         print(f"{d.name:<12} {len(here):>6} {len(there):>6}  "
-              f"{digest(here):<13} {digest(there):<13} {_verdict(here, there)}")
+              f"{digest(here):<13} {digest(there):<13} "
+              f"{_verdict(here, there, read_manifest(store_tree))}")
 
     print()
     zip_ = pulsexp_zip(override)
     print(f"pulsexp      {'found' if zip_ else 'MISSING'}  {zip_ or '(nopeak/AutoDeconSoftware.zip)'}")
     print("             unzip it and point PULSEXP_DATA at the Data/ folder inside")
+    print()
+    # Say what was searched, not only what was concluded. A bare "absent" reads as a fact
+    # about the world when it is only a fact about two directories — which is exactly how
+    # this session and the mac's both concluded on 2026-08-14 that the data was lost, when
+    # all four trees were sitting in no_peak's checkout the whole time.
+    print("SEARCHED ONLY these two locations, per dataset:")
+    print(f"  repo   {root}/<tree>")
+    print(f"  store  {store}/data/<tree>")
+    print("These trees are no_peak's; downLow consumes them. A no_peak checkout elsewhere")
+    print("on this machine is NOT inspected here — check it before concluding anything is")
+    print("lost. 'absent' above means absent from the two paths named, nothing more.")
     print()
     print("not managed here: data/digitized/, data/synthetic/ (both committed)")
     return 0
@@ -326,13 +416,28 @@ def _copy_tree(src: Path, dst: Path, force: bool) -> tuple[int, int]:
 
 
 def _selected(names: list[str]) -> list[Dataset]:
+    """Bare --push/--pull moves only what we own. Anything else must be named.
+
+    A tree we did not author should never travel because someone typed the short
+    form of a command. Naming it is the consent.
+    """
     if not names:
-        return DATASETS
+        held = [d for d in DATASETS if not d.default_synced]
+        for d in held:
+            print(f"HELD BACK: {d.name} — not moved by a bare --push/--pull.\n"
+                  f"  {d.caution}\n"
+                  f"  To move it anyway: data_root.py --push {d.name}\n", file=sys.stderr)
+        return [d for d in DATASETS if d.default_synced]
     bad = [n for n in names if n not in BY_NAME]
     if bad:
         raise SystemExit(f"data_root: unknown dataset(s) {', '.join(bad)}; "
                          f"known: {', '.join(BY_NAME)}")
-    return [BY_NAME[n] for n in names]
+    chosen = [BY_NAME[n] for n in names]
+    for d in chosen:
+        if d.caution:
+            print(f"⚠ {d.name} — named explicitly, so proceeding.\n"
+                  f"  {d.caution}\n", file=sys.stderr)
+    return chosen
 
 
 def cmd_transfer(direction: str, names: list[str], override: str | None, force: bool) -> int:
@@ -397,6 +502,17 @@ def selftest() -> int:
         check("copy writes both", (w, s), (2, 0))
         check("digests match after copy", digest(scan(b)), digest(files))
 
+        # OS scratch must be invisible to BOTH the digest and the copy. Finder
+        # recreates .DS_Store whenever a tree is browsed, on either side, so if it
+        # reached the digest a tree would flip to DIVERGED for having been looked at.
+        before = digest(scan(a))
+        (a / ".DS_Store").write_bytes(b"\x00finder")
+        (a / "sub" / "._one.csv").write_bytes(b"\x00resource fork")
+        check("noise does not change the digest", digest(scan(a)), before)
+        check("noise is not scanned", sorted(scan(a)), ["one.csv", "sub/two.csv"])
+        w2, _ = _copy_tree(a, b, force=False)
+        check("noise is not copied", (w2, (b / ".DS_Store").exists()), (0, False))
+
         w, s = _copy_tree(a, b, force=False)
         check("re-copy is a no-op", (w, s), (0, 2))
 
@@ -414,13 +530,38 @@ def selftest() -> int:
         w, _ = _copy_tree(a, b, force=True)
         check("--force overwrites", w, 1)
 
-        check("empty vs empty", _verdict({}, {}), "absent both sides")
-        check("store only", _verdict({}, files), "STORE ONLY  -> pull")
-        check("repo only", _verdict(files, {}), "REPO ONLY   -> push")
+        # The three states an empty store can be in. These are the point of the manifest:
+        # "never pushed" and "lost" print identically from file counts alone, and need
+        # opposite responses. Each must be provably distinguishable.
+        man = {"files": files, "digest": digest(files)}
+        check("empty store, no manifest = never pushed",
+              _verdict({}, {}, None), "absent both sides - NEVER PUSHED, not lost")
+        check("empty store, manifest present = LOST",
+              _verdict({}, {}, man).startswith("STORE EMPTIED"), True)
+        check("lost verdict names the count",
+              "2 file(s)" in _verdict({}, {}, man), True)
+        check("repo has it, store never written",
+              _verdict(files, {}, None), "REPO ONLY   -> push (store never written)")
+        check("repo has it, store lost it -> recover, not push",
+              _verdict(files, {}, man).startswith("STORE EMPTIED"), True)
 
-    # The manifest name is a wire format shared with downLow; a silent drift here is the
-    # one bug this module cannot detect at runtime, so assert it rather than trust it.
+        # A store that disagrees with its own manifest is damaged; neither push nor pull.
+        half = {k: files[k] for k in list(files)[:1]}
+        check("store missing a manifested file = DAMAGED",
+              _verdict(files, half, man).startswith("STORE DAMAGED"), True)
+        check("damaged beats a plain diverged reading",
+              "missing" in _verdict(files, half, man), True)
+
+        check("store only", _verdict({}, files, man), "STORE ONLY  -> pull")
+        check("in sync, manifested", _verdict(files, files, man), "in sync")
+        check("in sync, unmanifested is flagged",
+              _verdict(files, files, None), "in sync (store unmanifested)")
+
+    # Two constants shared with downLow that this module cannot detect drifting at
+    # runtime — a rename or a flipped flag would corrupt the store silently. Assert them.
     check("manifest name matches downLow's", MANIFEST, ".downlow-manifest.json")
+    check("reference is still held back from a bare push",
+          BY_NAME["reference"].default_synced, False)
 
     member = dropbox_member_root()
     print(f"  {'OK  ' if member else 'WARN'} dropbox member root: {member}")
