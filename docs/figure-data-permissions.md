@@ -31,9 +31,10 @@
 > Copyright Librarian read the licence and found that its constraints bind the
 > *electronic* copy only — read the numbers off the library's print volume and
 > no contract applies at all, leaving only copyright, which does not protect
-> facts. See "The print copy is the way out" in the ledger below. University IP
-> counsel is checking whether even that is necessary; expected week of
-> 2026-08-17.
+> facts. The rule is sharper still: the test is whether the content was obtained
+> **outside the subscription**, not whether it is paper. See "The print copy is
+> the way out" in the ledger below. **The scan is ordered.** University counsel
+> (Jack Bernard) is checking whether even that was necessary.
 >
 > Requests are tracked in the ledger. **The ledger is the next section — update
 > it there, not here.**
@@ -57,7 +58,9 @@ request when it is made rather than after it is answered.
 | 1 | 2026-08-11 | An author of the paper | Blessing to digitize the figures | Given informally. **No artifact kept**, so unverifiable; the claim built on it was withdrawn 2026-08-13. |
 | 2 | 2026-08-13 | An author of the paper | Permission on the record, and the underlying values | **Declined to be the grantor** — correctly: it is the copyright holder's question. No objection to the use. Did not offer raw data. Suggested generating test data by hand instead. |
 | 3 | 2026-08-13 | OUP, `journals.permissions@oup.com` | Permission, or a statement that none is needed | Automated reply routing to RightsLink. **Resubmitted in-thread the same day** invoking their own human-review clause. Their stated turnaround is 10 working days. **OPEN.** |
-| 4 | 2026-08-13 | U-M library, `library.collections@umich.edu` | Whether the institutional licence already permits publishing values derived this way | **Answered 2026-08-14** by the Copyright Librarian, who read the agreement. It does govern TDM, and the closest clause bars Authorized Users from distributing "any part of the Publications on any electronic network … other than the Secure Network". **But the constraint is contractual, and the contract only reaches the licensed electronic copy** — see below. Referred to the University's IP counsel; answer expected week of 2026-08-17. **PARTLY OPEN.** |
+| 4 | 2026-08-13 | U-M library, `library.collections@umich.edu` | Whether the institutional licence already permits publishing values derived this way | **Answered 2026-08-14** by the Copyright Librarian, who read the agreement. It governs TDM, and the closest clause bars Authorized Users from distributing "any part of the Publications on any electronic network … other than the Secure Network". **But the constraint is contractual and reaches only content obtained through the subscription** — see below. Referred to University counsel (Jack Bernard). **PARTLY OPEN.** |
+| 5 | 2026-08-14 | Same, four numbered questions | Provenance of a library scan; whether the earlier PDF extraction contaminates it; whether the licence reaches a derived table of facts; whether Document Delivery's fair-use notice bears on publishing | **Two answered the same day.** A library-made scan carries the clean provenance — handling the paper is irrelevant, obtaining it outside the subscription is the whole test. The earlier extraction does not carry forward, because extraction is not a restricted act. **The other two are with counsel.** |
+| 6 | 2026-08-14 | U-M Document Delivery | Scan of the bound volume, p. 1639 | **Submitted.** Portion-scan request against the physical holding: *Endocrinology* v.129 1991 Sep, barcode 39015023198461, Offsite Shelving, on shelf. Expected 1–5 days. |
 
 **The correspondence itself is not committed** — it is third-party email, it
 names real people, and it does not belong in a public repository. It is kept
@@ -65,8 +68,8 @@ outside the repo, in the darkroom folder:
 
     <Dropbox>/Richard DeFazio/darkroom/no_peak/2026-08-13_permissions-correspondence/
 
-That folder holds every draft sent, plus `REPLIES-RECEIVED.txt` with all three
-replies transcribed and their operative text quoted verbatim. Hold the split:
+That folder holds every draft sent, plus `REPLIES-RECEIVED.txt` with every
+reply transcribed and its operative text quoted verbatim. Hold the split:
 **this ledger records that something was said, dated, with the outcome; that
 folder holds the saying of it.** Neither substitutes for the other, and the
 reason both exist is row 1 — a permission that was real, was never written down,
@@ -84,6 +87,28 @@ subscription. **It does not attach to the paper on a library shelf.** In his
 words: if the numbers are read off the library's print volume, "you would not be
 subject to any contractual constraints. Your use would be governed purely by US
 copyright law, which would allow your use since facts are not copyrightable."
+
+**The operative test is how the content was obtained — not its medium, and not
+who handled it.** Asked on 2026-08-14 whether a library-made scan counts when
+you never touch the volume yourself, he was unambiguous: "it doesn't matter that
+you didn't handle the paper. The main consideration would be that you obtained
+the content **outside of the library's subscription** to the digital content, so
+your uses would not be subject to the terms the library signed as part of that
+subscription."
+
+Print versus electronic was only ever a proxy for that. State the rule the sharp
+way, because the proxy misleads in both directions: a library-made scan of the
+bound volume passes even though it arrives as a PDF, and printing the licensed
+PDF fails even though it produces paper. Same rule, both cases.
+
+**Extraction is not a restricted act either.** Asked whether the existing
+values, taken from the publisher's PDF, contaminate a later print-sourced
+version, he said — hedged as not legal advice — that he "wouldn't think that the
+earlier extraction would matter because I don't think the extraction itself
+violates anything in the agreement." That follows from the clause he quoted: it
+bars "display or **distribute**". Reading numbers off a figure is neither, so
+the restricted act is the publishing, and the publishing is what a print-sourced
+dataset changes.
 
 That collapses this entire question. Sections below spend thousands of words
 establishing that copyright is not the obstacle and that contract *might* be,
