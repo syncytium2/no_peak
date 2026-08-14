@@ -265,3 +265,43 @@ than from the condition — and the copies are where the scope then lives.
   Every copy is accurate; the gap is in what none of them mentions. Retractions
   are found by search — scope gaps only by asking *"what else is true for the
   same reason?"*, which has to be asked deliberately.
+
+| failure | what exists | how it is found |
+|---|---|---|
+| **retraction** (§6) | a wrong sentence, somewhere | `grep` — it has a trigger |
+| **scope gap** (§6.2) | nothing wrong at all | only by asking *"what else is true for the same reason?"* |
+
+That last cell is the whole problem: **a `grep` has a trigger; "what else?" does
+not.** Nothing in a day's work prompts the question, which is why it belongs in a
+file someone reads on purpose. Phrasing owed to the downLow session.
+
+### 6.3 Telling a peer "nothing moved" without running the check
+
+Third failure of the day, same day, and the shortest to describe.
+
+I told downLow that `469b813` had touched none of the files it vendors. **I had
+not run the check.** The commit changed `docs/reference-code.md`, which is
+vendored — and which was even on the stale list I would have checked against. It
+was found only because that session verified instead of trusting, one message
+after I had told *them* to verify rather than trust.
+
+Two separate defects, and the second is the durable one:
+
+1. **I asserted a verification I had not performed.** I had run that check
+   honestly two commits earlier, and carried the *habit* of the answer forward
+   without re-running it. A check is a claim about one commit; it does not age
+   into a general one.
+2. **The list I would have checked against was wrong anyway.** `next-steps.md`
+   said "seven", listed eight, and the real set is **ten** — the truth lives in
+   downLow's `.claude/settings.json` as `--file` flags on the freshness hook.
+   A hand-copied prose list of a machine-readable set, with nothing comparing
+   the two, drifting quietly for three days.
+
+**Where a list has a machine-readable source, cite the source and mark the prose
+as a snapshot** — the same disease as §6.2, one level down: the copy outlives its
+own accuracy because nothing connects it back to what it was copied from.
+
+And the practice that actually caught all three failures in this section, worth
+stating plainly since it is cheap: **verify the peer's claim before agreeing with
+it, including when the peer is you.** Both sessions did this today, and it paid
+both times.

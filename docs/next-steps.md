@@ -384,18 +384,34 @@ identical.
 
 ## Things to not undo by accident
 
-- **Seven of these files have a downstream consumer.** The `downLow` repo
-  (`~/Developer/downLow`, the learned-detector project) *vendors* copies of
-  `docs/validation-status.md`, `docs/reference-code.md`,
-  `docs/figure-data-permissions.md`, `data/digitized/README.md`,
-  `data/benchmark/truth.json`, `tools/score_benchmark.ts`,
-  `tools/score_against_truth.ts` and `tools/simulate_benchmark.py`. Its copies
-  carry a stamp naming the no_peak sha they came from, and a freshness check
-  compares that stamp against this repo's `main`. **no_peak is canonical for
-  all of them**; renaming or moving one silently breaks a consumer that cannot
-  see this repo's history. Tell that session — or leave the new path in a
-  commit message, which is the only channel that survives. Its own
-  `docs/vendoring.md` is the authority on the arrangement.
+- **Ten of these files have a downstream consumer**, and **this prose is not the
+  authoritative list.** The `downLow` repo (`~/Developer/downLow`, the
+  learned-detector project) vendors copies; its own
+  `.claude/settings.json` freshness hook carries the real set as `--file`
+  flags. **Read it there before relying on a count.** As of 2026-08-14:
+
+  ```
+  docs/reference-code.md          data/benchmark/truth.json
+  docs/figure-data-permissions.md tools/make_synthetic.py
+  docs/validation-status.md       tools/score_against_truth.ts
+  data/digitized/README.md        tools/score_benchmark.ts
+  data/synthetic/README.md        tools/simulate_benchmark.py
+  ```
+
+  Its copies carry a stamp naming the no_peak sha they came from, and the hook
+  compares that stamp against this repo's `main`. **no_peak is canonical for all
+  ten**; renaming or moving one silently breaks a consumer that cannot see this
+  repo's history. Tell that session — or leave the new path in a commit message,
+  which is the only channel that survives. Its `docs/vendoring.md` is the
+  authority on the arrangement.
+
+  ⚠ **This entry said "seven" and then listed eight, for an actual ten**, from
+  2026-08-11 until 2026-08-14 — missing `data/synthetic/README.md` and
+  `tools/make_synthetic.py`. It is a hand-copied list of a set that has a
+  machine-readable source, and nothing compared the two. A session then used it
+  to tell downLow that a commit had touched no vendored file, when it had
+  changed `docs/reference-code.md` — which was even on the short list. **Check
+  the hook, not this paragraph**, and see `docs/multi-session-protocol.md` §6.3.
 - **`tools/data_root.py` flows the other way — canonical in `downLow`**, and it
   is the only file that does. The stamp at its top names the downLow sha; fix
   bugs there and re-copy, do not patch it here. Two known items are listed in
