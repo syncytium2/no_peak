@@ -58,6 +58,37 @@ decisions in `docs/data-store-coordination_2026-08-14.md`, mechanism in
   failure class as the fabricated `VJ 1994 p.412` citation the murderboard
   found in downLow. **If a rights question is open, ask.** Account in
   `docs/data-store-coordination_2026-08-14.md` §5.3 and §7.
+- ⚠ **This repo has downLow's stamp-corruption bug and more of it — unfixed, and
+  currently undetectable here.** downLow (`30351b2`) found that a hand-rolled
+  stamp bump, `sed` over the whole file instead of line 1, rewrote a *second*
+  stamp-shaped string in the **body** of `docs/validation-status.md` — a
+  murderboard reference, `@ b2b2ba2` — to a no_peak sha. Nothing failed, nothing
+  warned. It was caught only because the next re-vendor re-copied the body and
+  repaired it, which is the same bug with the evidence deleted.
+
+  **That string is ours**; their copy is a vendored copy of our file. Verified
+  2026-08-14: no_peak is **clean** — all seven murderboard stamps read
+  `b2b2ba2d6c42cef07850bd7be2db3aa4d019151c` and none resolves to a no_peak
+  commit. The exposure is still worse here than there:
+
+  | file | body string a whole-file `sed` would eat |
+  |---|---|
+  | `docs/validation-status.md:865` | `` @ b2b2ba2 `` — the exact case that broke |
+  | `README.md:312` | `` (stamped `@ b2b2ba2`) `` |
+  | `tools/murderboard_freshness.sh:443` | an `echo` of `vendored from $REPO_SLUG @ <short-sha>` |
+  | `.claude/skills/murderboard/SKILL.md:4` | an *instruction* describing the stamp format |
+  | `docs/reviews/*.md` (×3) | `upstream:` lines, plus `doc_review_process.md @ 249a488` |
+
+  Worse in one specific way: our body string `@ b2b2ba2` is a **prefix of the
+  real stamp**, so a substitution aimed at it mangles the seven full-length
+  stamps too. And **no_peak has no freshness hook armed** (§D below, still
+  awaiting your approval), so nothing here would report a corrupted stamp.
+
+  Fix is `tools/revendor.py` in downLow — stamp on line 1 only, `--selftest`
+  asserting that a stamp-shaped body string survives untouched, and `VENDOR_SET`
+  cross-checked against the hook so it refuses to run when two lists disagree.
+  **Not ported yet.** Until it is, bump no_peak stamps by hand on line 1 and
+  never with a whole-file substitution.
 - **Closed 2026-08-14, both in downLow's canonical copy:** `scan()` now excludes
   a `NOISE_NAMES` set (`.DS_Store`, `Thumbs.db`, `desktop.ini`, `._*`), which
   covers the copy as well as the digest since `_copy_tree` iterates `scan()`;
