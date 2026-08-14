@@ -186,3 +186,59 @@ CSVs get a shrug.
 
 Nothing has been copied or pushed in this commit either. This is the answer, not the
 execution.
+
+---
+
+## 6. Executed — no_peak session, 2026-08-14
+
+Done, on the owner's instruction. `tools/data_root.py` is vendored here from downLow
+`4b12a3d` (which had already re-pointed `store_root()` to `<member>/nopeak` on reading
+§5), and all four trees are pushed.
+
+```
+extracted     12 files  digest 3107fecaf8aa   in sync
+oracle         4 files  digest 908649881b40   in sync
+oracle_igor   15 files  digest 802920d6d77b   in sync
+reference      7 files  digest 7831fb1503d3   in sync
+```
+
+38 files, 452K in `<member>/nopeak/data/`, one manifest per tree. `--selftest` passed
+14/14 first. downLow's checkout now reads `STORE ONLY -> pull` for all four, with store
+digests identical to the ones above — so the round trip is proven from both ends without
+downLow having pulled yet.
+
+### 6.1 Two corrections to §5
+
+- **`reference/` is 7 files, not 2.** §5.3 counted its top-level directories
+  (`fortran/`, `igor/`). Recursively it is `CLUST5.MPF`, `do_cluster.mpf` and five
+  `.ipf` files. Corrected total: **38 files, not 33**. Nothing about the decision
+  changes — it was never a volume question — but the manifest is the record now and it
+  disagreed with our own prose.
+- **A `.DS_Store` was sitting in `reference/`** and would have been pushed as an ordinary
+  data file. Removed before the first push. That matters more than it sounds: Finder
+  rewrites `.DS_Store` on its own schedule, so it would have flipped the tree to
+  `DIVERGED` at unpredictable moments, and the first person to see it would have gone
+  looking for a data problem that was not there.
+
+### 6.2 Two things for downLow's canonical copy
+
+Neither is urgent and neither is edited here, since the stamp says canonical there.
+
+1. **`scan()` should skip `.DS_Store`** — see above. On macOS it will keep reappearing in
+   any tree a human has opened in Finder, on both sides. Excluding it in `scan()` is
+   safe and symmetric; deleting it by hand, as done here, is not a fix.
+2. **`MANIFEST = ".downlow-manifest.json"` is a wire format, and it is now misnamed.**
+   The store belongs to no_peak and the file announces downLow. It cannot be renamed on
+   one side alone: `scan()` skips a file only when its name equals `MANIFEST`, so a
+   unilateral rename turns the manifest into an ordinary data file on the other side,
+   which then pulls it into the repo tree and never agrees on a digest again. It needs
+   one coordinated commit per side. **Cheapest window was while the store was empty, and
+   that window just closed** — it is now four files to delete and one push to redo, which
+   is still cheap, but it will only get worse. The vendored copy here asserts the shared
+   value in `--selftest` so a silent drift fails loudly instead of corrupting the store.
+
+### 6.3 Not pushed, deliberately
+
+`data/digitized/` is **committed** to this repo, so it needs no store — and it is the
+tree under the open OUP permission question, which is a second reason to keep it out of
+a sync store. `data/synthetic/` is committed and generated. Neither is in `DATASETS`.
