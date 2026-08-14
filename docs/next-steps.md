@@ -25,6 +25,36 @@ started the day).
 
 ---
 
+## Arrived 2026-08-14 — the gitignored data now syncs, and §9 is affected
+
+**Read this before concluding any data is missing.** The four gitignored trees
+(`data/extracted/`, `data/oracle/`, `data/oracle_igor/`, `reference/`) are in a
+private Dropbox store and arrive with `python3 tools/data_root.py --pull`.
+A downLow session spent a day treating them as unavailable and retracted a
+finding over it; the data was on this mac the whole time. Full account and the
+decisions in `docs/data-store-coordination_2026-08-14.md`, mechanism in
+`tools/data_root.py` (vendored from downLow — canonical there).
+
+- **no_peak pushes and stays canonical; downLow pulls.** Store is
+  `<dropbox-member>/nopeak/data/`, one sha256 manifest per tree.
+- ⚠ **`reference/` rides in that store under an owner determination that the
+  Dropbox is private — about the FOLDER, not the file.** If the member folder
+  is ever shared, or the store re-pointed somewhere less private, `reference/`
+  comes out **first, before the sharing**. `docs/reference-code.md` carries the
+  reasoning. The other three trees are ours and are unaffected.
+- **Open, low priority, and it needs both repos:** the manifest filename is
+  `.downlow-manifest.json` — a shared wire format that now announces the wrong
+  owner. Renaming needs one coordinated commit per side, because `scan()` skips
+  a file only when its name matches, so a unilateral rename turns the manifest
+  into a data file on the other side. Cheapest window (empty store) has passed;
+  it is now four files to delete and one push to redo.
+- **Also for downLow's canonical copy:** `scan()` should skip `.DS_Store`. One
+  was found in `reference/` and would have flipped that tree to `DIVERGED` at
+  random as Finder rewrote it.
+
+**§9 below is partly overtaken** — the standing invitations there assume the
+real series are unavailable. Three of them are readable now.
+
 ## Arrived 2026-08-12 — unnumbered, so the sections below keep their numbers
 
 Full detail for all of these is in `docs/validation-status.md`; this is the
@@ -350,6 +380,13 @@ identical.
   see this repo's history. Tell that session — or leave the new path in a
   commit message, which is the only channel that survives. Its own
   `docs/vendoring.md` is the authority on the arrangement.
+- **`tools/data_root.py` flows the other way — canonical in `downLow`**, and it
+  is the only file that does. The stamp at its top names the downLow sha; fix
+  bugs there and re-copy, do not patch it here. Two known items are listed in
+  the 2026-08-14 block above.
+- **`docs/reference-code.md` gained the store's rights reasoning on
+  2026-08-14**, and downLow vendors that file — so its copy is stale until
+  re-vendored. That is the freshness check working, not a problem to suppress.
 - **Another Claude session may be working in this same checkout**, sharing one
   working tree *and* one `.git`. Stage explicit paths; never `git add -A` or
   `commit -a`, which sweep up the other session's unfinished work. Before

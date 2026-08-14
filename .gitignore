@@ -4,13 +4,25 @@ dist/
 *.local
 .wrangler/
 
+# ---------------------------------------------------------------------------
+# The four trees below are NOT lost when they look empty. They are synced
+# through the owner's private Dropbox, not through git:
+#     python3 tools/data_root.py --status     # what is here vs in the store
+#     python3 tools/data_root.py --pull       # materialise them
+# Do not hand-copy them. See docs/data-store-coordination_2026-08-14.md.
+# ---------------------------------------------------------------------------
+
 # Third-party reference implementations — CLUST5 / do_cluster (M. L. Johnson)
 # and the Igor Pro Cluster package. We do not have redistribution rights, so
-# these stay on local disk and are never committed. See docs/reference-code.md.
+# these are never committed. They ARE in the private store, which is not a
+# distribution — and that holds only while the folder stays private. If it is
+# ever shared, this tree comes out first. See docs/reference-code.md.
 reference/
 
 # Real lab recordings and anything derived from them. Not ours to distribute:
 # the app ships simulated data instead (data/synthetic/, tools/make_synthetic.py).
+# Unlike reference/ above, these are OURS — gitignored by our choice, not by a
+# license. Do not reason about all four trees as one group.
 data/extracted/
 data/oracle/
 data/oracle_igor/

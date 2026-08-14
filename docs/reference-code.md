@@ -9,6 +9,14 @@ have redistribution rights for**. They are not committed here, and must not be.
 everything below works; without them, the port, the app, and the unit tests are
 unaffected.
 
+> **They are no longer only on local disk — 2026-08-14.** `reference/` now also
+> lives in the private Dropbox store at `<member>/nopeak/data/reference`, and
+> `python3 tools/data_root.py --pull reference` materialises it at the path
+> above on any of the owner's machines. **Nothing about the redistribution
+> position below has changed.** The store is reachable by the owner alone, and
+> that is the entire basis on which this tree is allowed in it — see
+> "The store is not a distribution" below.
+
 ## What still works without them
 
 - The app and the whole TypeScript core. Nothing at runtime reads `reference/`.
@@ -38,8 +46,33 @@ error. It does guard the output folder and missing waves.
 `data/oracle_igor/` are **gitignored and have never been committed**. They are
 printouts produced by running the Fortran and Igor on real lab data — results
 rather than source, and containing no algorithm code, but derived from data that
-is itself not ours to publish. They stay local; the tests that consume them skip
-without them.
+is itself not ours to publish. They stay out of the repo; the tests that consume
+them skip without them. Both are in the private store and arrive with
+`tools/data_root.py --pull`.
+
+## The store is not a distribution — 2026-08-14
+
+`reference/` is synced to `<member>/nopeak/data/reference` in the owner's
+Dropbox. That is compatible with the license below, and the reasoning is narrow
+enough to be worth writing down rather than re-derived:
+
+The license bars the licensee from providing or otherwise making the software
+**available to others**. A private folder synced between machines the licensee
+alone controls is not "others" — it is the same licensee, on his second
+computer. Copying a licensed file from a desktop to a laptop has never been
+distribution, and Dropbox is doing exactly that with extra steps.
+
+⚠ **The determination is about the FOLDER, not the file, and it is the owner's
+— recorded 2026-08-14.** It survives only as long as the folder stays private.
+**If that Dropbox member folder is ever shared with a collaborator, or the store
+is re-pointed anywhere less private, `reference/` comes out FIRST — before the
+sharing, not after.** Removing it afterwards does not undo a distribution.
+
+The other three trees (`data/extracted/`, `data/oracle/`, `data/oracle_igor/`)
+are **ours**. They are gitignored because they are unpublished lab recordings
+and things derived from them, which is a decision we can revisit whenever we
+like — not a license we are bound by. Do not reason about all four as one
+group; they sit in one directory and they do not share a posture.
 
 ## Permission for the port — 2026-08-10
 

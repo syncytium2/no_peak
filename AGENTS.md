@@ -106,6 +106,28 @@ is invented at a join and no interpulse interval is measured across one.
   `data/synthetic/` corresponds to no animal. They are deliberately similar in
   shape and must never be described interchangeably; `src/samples.test.ts`
   enforces the labeling.
+- **Four trees are gitignored and live in Dropbox, not in the clone.** If
+  `data/extracted/`, `data/oracle/`, `data/oracle_igor/` or `reference/` look
+  empty, they are not lost — run `python3 tools/data_root.py --status`, then
+  `--pull`. **Do not hand-copy them and do not conclude they are missing**; a
+  downLow session lost a day to exactly that on 2026-08-14 and retracted a
+  finding over it. no_peak pushes and stays canonical, downLow pulls. Full
+  account: `docs/data-store-coordination_2026-08-14.md`.
+
+## The store, and the one rule attached to it
+
+`<dropbox-member>/nopeak/data/` holds the four gitignored trees, one sha256
+manifest each. `tools/data_root.py` resolves it from Dropbox's own `info.json`,
+so it works on any machine and any OS without a hardcoded path.
+
+⚠ **`reference/` is Johnson's third-party code, and it is in that store under a
+determination about the FOLDER, not the file.** The license forbids providing
+the software to others; the owner determined on 2026-08-14 that this Dropbox is
+**private**, so syncing across his own machines is not that. **If that member
+folder is ever shared with a collaborator, or the store re-pointed somewhere
+less private, `reference/` comes out FIRST — before the sharing, not after.**
+The other three trees are ours and are unaffected. See
+`docs/reference-code.md`.
 
 ## Reading rather than running
 
