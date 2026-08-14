@@ -107,6 +107,25 @@ discover:
   that is a result worth stating on `/methods`, and if they do not, something is
   wrong that nobody would otherwise have caught.
 
+**⚠ Printing the licensed PDF and scanning the printout does NOT work.** It is
+the obvious shortcut, it was proposed, and it fails: the constraint follows the
+*provenance* of the copy, not its medium. The licence attached when the PDF was
+obtained through the subscription, and a printout of that PDF is still that
+copy, on paper. The library's bound volume is unencumbered because it was
+acquired by purchase under different terms — not because paper is special. A
+step whose only function is to obscure where a file came from is also the
+opposite of the position this document exists to establish, which is one that
+can be stated out loud. Recorded here because it will occur to the next reader
+too.
+
+**The logistics have a real answer, though: don't do the scanning.** Research
+libraries scan from print holdings on request, and two pages of a 1991 bound
+volume is an ordinary document-delivery ask. Whether a library-made scan of the
+print volume carries the print provenance is the question to put to the
+Copyright Librarian rather than to assume — it should, since it derives from the
+purchased copy rather than the licensed electronic one, but assuming is what
+went wrong the first time.
+
 **Do not start until counsel answers** (expected week of 2026-08-17). If the
 derived-facts argument holds regardless of source, the re-extraction is
 unnecessary; if it does not, this is the fix. What *is* worth doing now is
