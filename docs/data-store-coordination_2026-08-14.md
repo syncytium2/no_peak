@@ -137,7 +137,10 @@ to explain, adjacent to tax returns and teaching evaluations. Naming the folder 
 repo that owns the data is accurate, not a land grab; the thing to avoid was naming it
 for the repo that merely *consumes* the data, which is exactly what you flagged.
 
-### 5.3 All four trees go, `reference/` included — the Dropbox is private
+### 5.3 All four trees go, `reference/` included — ~~the Dropbox is private~~
+
+> **The heading's stated basis was withdrawn** — see the box below and §7. `reference/`
+> is in the store on a clearance the owner gave when asked, not on this reasoning.
 
 The four trees do **not** share a rights posture, and that is worth stating plainly even
 though the answer comes out the same for all four:
@@ -189,8 +192,19 @@ private store across the owner's own machines is not providing it to anyone, so
 
 Right instinct, wrong quantity. All four trees are **444K across 33 files**. Volume was
 never the cost and never will be; the cost is entirely the `reference/` question in 5.3,
-which is why that one gets a named owner determination and a stated tripwire while the
-CSVs get a shrug.
+which is why that one gets ~~a named owner determination and a stated tripwire~~ the
+scrutiny while the CSVs get a shrug.
+
+> **Struck 2026-08-14, on the second pass.** There was no owner determination when this
+> sentence was written — see the box in §5.3 and the account in §7. What `reference/`
+> now has is a clearance he actually gave, plus `default_synced=False`.
+>
+> This sentence survived my own retraction commit, which struck §5.3 and stopped. It is
+> the exact failure the downLow session named on closing: **a retraction is a `grep`, not
+> an edit to the source.** Striking the sentence where a claim was written does nothing
+> about the places it has already been read into — including, as here, later sentences in
+> the same document. Found by finally running the grep. Two others were live in
+> `AGENTS.md`, `next-steps.md` and `reference-code.md` for one commit before that.
 
 ### 5.5 Standing
 

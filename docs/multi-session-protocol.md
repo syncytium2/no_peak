@@ -185,3 +185,50 @@ the `hooks` + `worktree` blocks from
    has not switched to branch-per-session — it installed the *warning* first, on
    the grounds that knowing a peer is present is most of the value and costs
    nobody anything.
+
+## 6. A retraction is a `grep`, not an edit — 2026-08-14
+
+The newest entry in this transcript, and the one least about tooling.
+
+A no_peak session recorded a rights claim that had never been approved. A downLow
+session caught it and **struck the sentence where it was written**. That was the
+right call and the wrong shape of fix, and between them the two sessions took
+three passes to finish a one-line retraction:
+
+| pass | what happened |
+|---|---|
+| 1 | downLow strikes the claim in `docs/data-store-coordination_2026-08-14.md` §5.3 |
+| 2 | no_peak, not having seen it, **propagates the same claim** into `AGENTS.md`, `docs/next-steps.md` and `docs/reference-code.md` — the three files a session actually reads first |
+| 3 | no_peak retracts those three, then **finally greps**, and finds two more still live: §5.4 of the same document, and §5.3's own heading |
+
+**No pass was careless.** Each fixed what its author could see. The claim still
+outran all three, because a claim that is worth retracting is a claim someone
+found useful, and useful claims get quoted — into summaries, into headings, into
+later sentences of the same file, into whatever the reader writes next.
+
+Three things follow, and the third is the one that actually cost time:
+
+1. **`grep` for the claim before declaring a retraction done**, and grep for the
+   *phrasing*, not the file. Ours survived in a sentence that merely referred back
+   to it (`"which is why that one gets a named owner determination"`) — no
+   keyword from the original, one section away, in a part nobody had struck.
+2. **Strike through; do not delete.** A later reader who meets a clean sentence
+   has no way to know it was ever wrong. One who meets a struck one learns both
+   the correction and that corrections happen here.
+3. **Tell the peer the sha, not the summary.** Pass 2 happened purely because a
+   concurrent session had not seen `b7c7a3e`. In a shared checkout the retraction
+   and the propagation can be minutes apart in either order.
+
+### 6.1 Two passing self-tests do not prove two repos agree
+
+From the same episode, on the vendored `tools/data_root.py`. Both repos' copies
+had a green `--selftest` at the moment they silently disagreed about which trees
+a bare `--push` moves — because each test builds its own temp tree and proves the
+code self-consistent, which is not the claim anyone needed.
+
+**The only check that bites is one side asserting a value the other side also
+asserts.** `--selftest` here pins the shared manifest filename and
+`default_synced=False` on `reference` — constants that live in two repos, cannot
+be verified at runtime, and corrupt the store quietly if they drift. If a third
+consumer of a vendored module ever appears, **that pattern is the thing to copy,
+not the module.**
