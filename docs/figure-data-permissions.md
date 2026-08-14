@@ -59,8 +59,18 @@ request when it is made rather than after it is answered.
 | 3 | 2026-08-13 | OUP, `journals.permissions@oup.com` | Permission, or a statement that none is needed | Automated reply routing to RightsLink. **Resubmitted in-thread the same day** invoking their own human-review clause. Their stated turnaround is 10 working days. **OPEN.** |
 | 4 | 2026-08-13 | U-M library, `library.collections@umich.edu` | Whether the institutional licence already permits publishing values derived this way | **Answered 2026-08-14** by the Copyright Librarian, who read the agreement. It does govern TDM, and the closest clause bars Authorized Users from distributing "any part of the Publications on any electronic network … other than the Secure Network". **But the constraint is contractual, and the contract only reaches the licensed electronic copy** — see below. Referred to the University's IP counsel; answer expected week of 2026-08-17. **PARTLY OPEN.** |
 
-Drafts of 2, 3 and 4 are not committed — they are correspondence, not code. What
-belongs here is the date, the ask and the answer.
+**The correspondence itself is not committed** — it is third-party email, it
+names real people, and it does not belong in a public repository. It is kept
+outside the repo, in the darkroom folder:
+
+    <Dropbox>/Richard DeFazio/darkroom/no_peak/2026-08-13_permissions-correspondence/
+
+That folder holds every draft sent, plus `REPLIES-RECEIVED.txt` with all three
+replies transcribed and their operative text quoted verbatim. Hold the split:
+**this ledger records that something was said, dated, with the outcome; that
+folder holds the saying of it.** Neither substitutes for the other, and the
+reason both exist is row 1 — a permission that was real, was never written down,
+and could not be produced when it was needed.
 
 ### ⭐ The print copy is the way out, and it was there the whole time
 
