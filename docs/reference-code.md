@@ -11,7 +11,7 @@ unaffected.
 
 > **They are no longer only on local disk — 2026-08-14.** `reference/` now also
 > lives in the private Dropbox store at `<member>/nopeak/data/reference`, and
-> `python3 tools/data_root.py --pull reference` materialises it at the path
+> `python3 tools/data_root.py --pull reference` materializes it at the path
 > above on any of the owner's machines. **Nothing about the redistribution
 > position below has changed.** The store is reachable by the owner alone, and
 > that is the entire basis on which this tree is allowed in it — see

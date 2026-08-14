@@ -339,7 +339,7 @@ first.
 
 Asked properly, his first words were *"that folder decision has never happened in any
 other context. i work alone."* — which is what a person says when shown a decision
-attributed to them that they do not recognise.
+attributed to them that they do not recognize.
 
 ### 7.3 Why the precise version matters more than "it was fabricated"
 

@@ -72,11 +72,20 @@ FAMILIES = [
             "tools/fetch_paper.py": "fetch_paper.py",
             ".claude/skills/murderboard/SKILL.md": "skills/murderboard/SKILL.md",
         },
-        # Deliberately adapted here, so a body re-copy would REVERT an owner decision.
-        # `fetch_paper.py` says "hand-organized"; upstream says "hand-organised". That
-        # is the American-English house rule (owner's call, 2026-08-12), not drift.
-        # Found by this tool's first dry run, which is the whole reason it reports
-        # instead of overwriting.
+        # `fetch_paper.py` says "hand-organized"; upstream says "hand-organised".
+        #
+        # ⚠ Do NOT read that as the house rule being applied to vendored files. It is
+        # not applied consistently and probably was not a policy: `doc_review_process.md`
+        # still carries 21 British spellings (16 `colour`, 5 `centre` and friends) and
+        # `murderboard_freshness.sh` still says `behaviour`, both untouched. One file out
+        # of five was changed, which reads as an incidental edit that survived rather
+        # than a decision anyone made.
+        #
+        # Listed as adapted regardless, because the tool's job is to refuse to silently
+        # revert a local change — not to judge whether it was intentional. Whether
+        # vendored files should be Americanized AT ALL is an open question for the
+        # owner, and it is not free: it means re-applying the change on every re-copy,
+        # forever, in exchange for spelling in a file we do not own.
         "adapted": ["tools/fetch_paper.py"],
     },
     {
