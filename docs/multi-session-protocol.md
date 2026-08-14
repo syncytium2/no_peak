@@ -232,3 +232,36 @@ asserts.** `--selftest` here pins the shared manifest filename and
 be verified at runtime, and corrupt the store quietly if they drift. If a third
 consumer of a vendored module ever appears, **that pattern is the thing to copy,
 not the module.**
+
+### 6.2 A rule spreads; its scope does not
+
+The mirror of §6, from the same day, and the more expensive of the two.
+
+A rule was written — *if the Dropbox member folder is ever shared, `reference/`
+comes out first* — and it propagated cleanly into five places: `AGENTS.md`,
+`docs/reference-code.md`, `docs/next-steps.md`, the coordination doc, and the
+vendored `data_root.py` caution in another repo. Every copy faithful.
+
+Every copy also said **`reference/`**, because that was the example in the room
+when the rule was written. Meanwhile a third-party permissions correspondence
+folder was sitting in `<member>/darkroom/no_peak/` on exactly the same basis —
+other people's email, quoting named people at Michigan and at a publisher, two
+directories from the store. A third session spotted it and recorded it (`78b563c`)
+with the right diagnosis: *"anyone applying the rule would be looking at the data
+store and would have no reason to think of a darkroom subfolder."*
+
+**A rule stated as an instance propagates as that instance.** The condition was
+"this folder is private". The rule said "`reference/`". Every faithful copy
+narrowed it further, because each reader learns the scope from the example rather
+than from the condition — and the copies are where the scope then lives.
+
+- **State the condition, then enumerate**, rather than naming the one case that
+  prompted the rule. "Everything here on the strength of this folder's privacy —
+  currently A and B" survives a new B; "`reference/` comes out first" does not.
+- **Say the list is incomplete when it is.** Both known items were found by
+  sessions noticing in passing. Nobody has surveyed that member folder, and a
+  list that does not admit this reads as exhaustive to the next reader.
+- **The `grep` in §6 does not find this.** There is nothing wrong to grep for.
+  Every copy is accurate; the gap is in what none of them mentions. Retractions
+  are found by search — scope gaps only by asking *"what else is true for the
+  same reason?"*, which has to be asked deliberately.

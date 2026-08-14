@@ -71,6 +71,13 @@ Three limits, and none of them are a session's to relax:
   see. **If that member folder is ever shared, or the store re-pointed anywhere
   less private, `reference/` comes out FIRST and the question goes back to
   him.** Removing it afterwards does not undo a distribution.
+- ⚠ **`reference/` is not the only thing riding on that folder's privacy**, and
+  this document is the wrong place to look for the others. The permissions
+  correspondence in `<member>/darkroom/no_peak/` — third-party email quoting
+  named people at Michigan and at a publisher — sits on the same basis and is
+  two directories from the store, so a reader applying this section's rule would
+  never think of it. See `docs/figure-data-permissions.md`, and treat this list
+  as incomplete: it was assembled from what sessions happened to notice.
 - **This is a U-M enterprise team Dropbox** — private by default, but
   team-administered, which is not the same as local disk. He weighed that. Do
   not reconstruct the conclusion from "it's private" alone.

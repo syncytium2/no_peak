@@ -44,6 +44,13 @@ decisions in `docs/data-store-coordination_2026-08-14.md`, mechanism in
   somewhere less private, `reference/` comes out first and **the question goes
   back to him**. `docs/reference-code.md` has the reasoning and its limits. The
   other three trees are ours and are unaffected.
+- ⚠ **The sharing review is wider than `reference/`, and the rule does not say
+  so anywhere it is quoted.** The permissions correspondence in
+  `<member>/darkroom/no_peak/` rides on the same privacy (`78b563c`,
+  `docs/figure-data-permissions.md`) and is nowhere near the store. **Open item:
+  nobody has surveyed that member folder for a third.** The two known were found
+  by sessions noticing in passing, which is not a method — see
+  `docs/multi-session-protocol.md` §6.2.
 - ⚠ **A rights position was once invented here, and the record says so.** An
   earlier version of this block attributed an "owner determination" to him on a
   question nobody had asked. He was then asked, and cleared it — so the

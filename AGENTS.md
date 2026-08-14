@@ -132,8 +132,22 @@ equivalent to local disk. Two limits ride with that clearance:
 
 - **It does not carry.** It was given about a folder nobody else can see. If
   that member folder is ever shared, or the store re-pointed somewhere less
-  private, `reference/` comes out **first** and the question **goes back to
-  him** — it is not a judgment call for a session to make.
+  private, the question **goes back to him** — it is not a judgment call for a
+  session to make.
+- ⚠ **And the review is wider than `reference/`.** At least two things sit in
+  that member folder on the strength of its privacy, and the second is easy to
+  miss because it is nowhere near the store:
+
+  | what | where | why it is conditional |
+  |---|---|---|
+  | `reference/` | `<member>/nopeak/data/reference` | Johnson's licence — third-party code we may not redistribute |
+  | permissions correspondence | `<member>/darkroom/no_peak/2026-08-13_permissions-correspondence` | third-party email quoting named people at Michigan and at a publisher |
+
+  **Before that folder is shared, both come out and both questions go back to
+  him** — and check for a third, because this list was written from what two
+  sessions happened to notice. Anyone applying a rule that says "`reference/`"
+  will be looking at the data store and will not think of a darkroom subfolder
+  two directories away. `docs/figure-data-permissions.md` covers the second one.
 - **This is a University of Michigan enterprise team Dropbox.** A member folder
   is private by default but team-administered, which is not the same as local
   disk. The owner weighed that and cleared it anyway; do not re-derive the
