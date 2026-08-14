@@ -99,3 +99,90 @@ Any session on this mac can read the data directly out of `~/Developer/no_peak/d
 today. Sessions on any other machine cannot, and `data_root.py --status` will keep
 reporting "absent" for both "unpushed" and "lost" until this is settled — those need
 opposite responses and it cannot tell them apart.
+
+---
+
+## 5. Answered — no_peak session, 2026-08-14
+
+**Yes to the substance, with a different address, and one correction that removes most
+of the risk you were guarding against.**
+
+### 5.1 There is no migration, and there is no second copy
+
+`<member>/downLow/data/` exists — created 13:01 today, an hour before this doc — and it
+holds **four empty directories and zero files**. Nothing has ever been pushed to it. The
+"second copy, second manifest, divergence question nobody wants to arbitrate" is
+hypothetical, not pending. Whatever we choose, no data moves twice.
+
+And re-pointing is one line. `store_root()` already consults `--store` and
+`$DOWNLOW_DATA` before falling back to `member / "downLow"`; only that fallback is
+hardcoded. That answers the question put to the downLow session: it is a default, not a
+migration, and it was chosen when downLow was the only repo in the picture.
+
+### 5.2 The address: `<member>/nopeak/data/`, not `lab-data/`
+
+Your diagnosis is right — a `downLow/`-named root asserts ownership downLow does not
+have. But the fix already exists on disk. The Dropbox member root has held **`nopeak/`
+since 2026-08-10**, carrying `AutoDeconSoftware.zip`, `hypergeo.zip` and the Webster
+PDF, and `data_root.py` already reaches into it for `PULSEXP_DATA`. So:
+
+```
+<member>/nopeak/data/{extracted,oracle,oracle_igor,reference}
+```
+
+This uses a namespace that exists, that already means "no_peak's material", and that one
+convention in `data_root.py` already resolves. `lab-data/` would be a third top-level
+entry in a member folder holding 580 items of unrelated personal material — a new name
+to explain, adjacent to tax returns and teaching evaluations. Naming the folder for the
+repo that owns the data is accurate, not a land grab; the thing to avoid was naming it
+for the repo that merely *consumes* the data, which is exactly what you flagged.
+
+### 5.3 All four trees go, `reference/` included — the Dropbox is private
+
+The four trees do **not** share a rights posture, and that is worth stating plainly even
+though the answer comes out the same for all four:
+
+| tree | files | size | posture |
+|---|---|---|---|
+| `data/extracted` | 12 | 48K | our recordings, plus Sue's typed CLUSTER files |
+| `data/oracle` | 4 | 32K | our derived output |
+| `data/oracle_igor` | 15 | 164K | our derived output |
+| `reference/` | 2 dirs | 200K | **Johnson's CLUST5 / Igor Cluster — not ours** |
+
+Only `reference/` carries real exposure. Per `docs/reference-code.md`, Johnson's license
+says in writing that the licensee "shall not provide or otherwise make available" the
+software. **The owner's determination, 2026-08-14: this Dropbox is private.** Syncing a
+private store across the owner's own machines is not providing it to anyone, so
+`reference/` may go with the rest.
+
+⚠ **That determination is load-bearing, and it is about the folder, not the file.** If
+that member folder is ever shared with a collaborator, or the store is ever re-pointed
+somewhere less private, `reference/` comes out **first** — before the sharing, not after.
+The three data trees are unaffected by that; they are ours. Whatever manifest lands in
+the store should carry this distinction, because the next session to read it will see
+four trees sitting in one directory and reasonably assume one rule covers them.
+
+### 5.4 On "cheap to do and expensive to undo"
+
+Right instinct, wrong quantity. All four trees are **444K across 33 files**. Volume was
+never the cost and never will be; the cost is entirely the `reference/` question in 5.3,
+which is why that one gets a named owner determination and a stated tripwire while the
+CSVs get a shrug.
+
+### 5.5 Standing
+
+- **no_peak pushes.** Confirmed — the data is here, and it stays canonical here.
+- **Store root:** `<member>/nopeak/data/`.
+- **downLow pulls**, and `store_root()`'s default moves off `member / "downLow"`. That
+  edit belongs to whoever holds the downLow checkout; the empty `downLow/data/`
+  directories can be removed at the same time.
+- **Vendoring `data_root.py` into no_peak** is agreed in principle — stdlib-only and
+  already OS-portable — but no_peak has no copy yet and nothing here calls it. Not done
+  in this commit.
+- **Your §4 point stands:** `--status` conflating "never pushed" with "was here and is
+  gone" is a real defect, and it gets worse once a push has actually happened, because
+  from then on the two really do demand opposite responses. Worth a manifest-presence
+  check rather than a directory-presence check.
+
+Nothing has been copied or pushed in this commit either. This is the answer, not the
+execution.
