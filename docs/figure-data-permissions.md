@@ -118,19 +118,39 @@ opposite of the position this document exists to establish, which is one that
 can be stated out loud. Recorded here because it will occur to the next reader
 too.
 
-**The logistics have a real answer, though: don't do the scanning.** Research
-libraries scan from print holdings on request, and two pages of a 1991 bound
-volume is an ordinary document-delivery ask. Whether a library-made scan of the
-print volume carries the print provenance is the question to put to the
-Copyright Librarian rather than to assume — it should, since it derives from the
-purchased copy rather than the licensed electronic one, but assuming is what
-went wrong the first time.
+**The logistics have a real answer: don't do the scanning, order it.** U-M's
+Document Delivery carries a **"request to have a small portion scanned"** route,
+and using that rather than the ordinary *Article* request is the entire trick.
+The Article form is fulfilled from whatever is fastest, which for a journal with
+a live subscription is the licensed electronic copy — the exact provenance being
+escaped. The portion-scan route targets the library's *physical* holdings, so
+what comes back derives from the purchased bound volume. Two pages of a 1991
+volume is an ordinary ask, and it costs a web form rather than an afternoon.
 
-**Do not start until counsel answers** (expected week of 2026-08-17). If the
-derived-facts argument holds regardless of source, the re-extraction is
-unnecessary; if it does not, this is the fix. What *is* worth doing now is
-confirming the library holds the bound volume — the Copyright Librarian believes
-it does.
+Three things to get right on that request, all recorded with the filled form in
+the darkroom folder: say explicitly in the notes that it must come from the
+print volume and not the e-copy; ask for 400 dpi or better, because these are
+line art read for pixel positions and a compressed 300 dpi scan is unusable; and
+leave the OCR checkbox alone, since its label is an accessibility attestation
+rather than a quality option.
+
+**Then verify what arrives.** A scan of paper looks like paper — page edges,
+slight skew, print grain. If the publisher's typeset PDF turns up instead, the
+request silently failed and the provenance is exactly where it started.
+
+**Whether a library-made scan carries the print provenance is a question for the
+Copyright Librarian, not an assumption.** It should, since it derives from the
+purchased copy rather than the licensed one — but assuming is what went wrong
+the first time. So is the request form's own copyright notice, which conditions
+the reproduction on "private study, scholarship, or research": that governs the
+reproduction rather than facts extracted from it, but it trades a licence term
+for a delivery term and deserves an answer rather than a shrug.
+
+**Order the scan now; do not re-extract until counsel answers** (expected week
+of 2026-08-17). The two are independent. If the derived-facts argument holds
+regardless of source the scan was cheap and unnecessary, which is a far better
+outcome than learning in a week that print was needed and nothing had been
+ordered.
 
 **For the next paper, this is the rule:** if a figure needs digitizing and the
 article is licensed rather than open, read it off print from the start. It costs
