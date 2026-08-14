@@ -1,5 +1,5 @@
 #!/usr/bin/env python3
-# vendored from syncytium2/downLow @ 1a485cf — canonical THERE; do not edit here, re-copy and bump this stamp.
+# vendored from syncytium2/downLow @ 27c52d4 — canonical THERE; do not edit here, re-copy and bump this stamp.
 """data_root — where the non-committed data lives, and how it gets to this machine.
 
 Four trees this project needs are gitignored for **rights**, not size, so they do not
@@ -67,12 +67,6 @@ for _stream in (sys.stdout, sys.stderr):
     except (AttributeError, OSError):
         pass
 
-# ⚠ SHARED WIRE FORMAT — both repos must use the identical string, and it is deliberately
-# NOT being renamed. It is downLow-named only because downLow wrote this module first.
-# `scan()` skips a file solely on exact name equality, so renaming on one side demotes the
-# manifest to an ordinary data file on the other, which then pulls it into the repo tree
-# and never agrees on a digest again. Settled 2026-08-14: a misnamed constant is cosmetic,
-# a broken wire format is not. Asserted in `--selftest` so a drift fails loudly.
 MANIFEST = ".downlow-manifest.json"
 
 
@@ -111,18 +105,43 @@ DATASETS = [
                 "  and for this purpose a private member folder is equivalent to local\n"
                 "  disk. reference/ may live in the store. That is the determination.\n"
                 "\n"
-                "  It is recorded here because an earlier note ASSERTED the same\n"
-                "  conclusion as an 'owner determination' before anyone asked him, and\n"
-                "  he replied: 'that folder decision has never happened in any other\n"
-                "  context. i work alone.' The conclusion happened to be right. The\n"
-                "  attribution was invented, and a licence resting on an invented\n"
-                "  approval is worth exactly nothing — which is why it now rests on an\n"
-                "  answer to a question actually put to him.\n"
+                "  It is recorded here because an earlier note asserted the same\n"
+                "  conclusion as an 'owner determination' before anyone had asked him\n"
+                "  THIS question, and he replied: 'that folder decision has never\n"
+                "  happened in any other context. i work alone.'\n"
+                "\n"
+                "  The precise version, from the session that did it, because it is more\n"
+                "  useful than calling it fabrication: he HAD been asked one narrower\n"
+                "  question — is the member folder shared with anyone — and answered\n"
+                "  'treat the dropbox as private'. That answer was then widened into a\n"
+                "  determination about a third-party LICENCE, with a folder-not-file\n"
+                "  doctrine and a tripwire he never set, and 8 files were pushed on it.\n"
+                "  Not invention from nothing. Scope creep from a real answer, every\n"
+                "  sentence traceable to something he actually said — which is exactly\n"
+                "  why it does not feel like fabrication while you are doing it.\n"
+                "\n"
+                "  THE RULE WORTH KEEPING (no_peak's, and it is better than mine): when\n"
+                "  you write that someone determined something, point at the sentence\n"
+                "  where they did it. If you cannot, you are making the decision and\n"
+                "  signing their name.\n"
                 "\n"
                 "  Still held back from a bare --push/--pull, by the owner's choice.\n"
                 "  Naming it is the consent, every time. If the member folder is ever\n"
                 "  shared, or the store re-pointed somewhere less private, this clearance\n"
-                "  does not carry — it was given about a folder nobody else can see.")),
+                "  does not carry — it was given about a folder nobody else can see.\n"
+                "\n"
+                "  ⚠ AND `reference/` IS NOT THE WHOLE OF WHAT COMES OUT. This module\n"
+                "  manages one tree, so this caution names one tree, and that is exactly\n"
+                "  how the scope narrowed the first time: the condition is 'the member\n"
+                "  folder is private', and every copy of the rule wrote the EXAMPLE that\n"
+                "  was in the room instead. A reader takes the scope from the example.\n"
+                "  At least one other item sits under the same condition and outside this\n"
+                "  module — third-party permissions correspondence in\n"
+                "  <member>/darkroom/no_peak/ — and nobody has surveyed that member\n"
+                "  folder, so assume the list is incomplete. If the sharing question ever\n"
+                "  arises, the answer is NOT 'pull reference/ out' alone; it is a review\n"
+                "  of the folder against the condition. See no_peak docs/reference-code.md,\n"
+                "  which enumerates under the condition and marks its own list partial.")),
 ]
 
 BY_NAME = {d.name: d for d in DATASETS}
@@ -557,8 +576,14 @@ def selftest() -> int:
         check("in sync, unmanifested is flagged",
               _verdict(files, files, None), "in sync (store unmanifested)")
 
-    # Two constants shared with downLow that this module cannot detect drifting at
-    # runtime — a rename or a flipped flag would corrupt the store silently. Assert them.
+    # ⚠ LOCAL ADDITION — not in downLow's canonical copy, so a re-vendor DELETES it.
+    # It has already been lost once, on the 27c52d4 re-copy. Re-add it after every
+    # re-vendor, or better, get it adopted upstream so it stops being local.
+    #
+    # These two constants live in two repos, cannot be checked at runtime, and corrupt
+    # the store quietly if they drift. Two independently-passing selftests do not prove
+    # the copies agree — the only check that bites is each side asserting a value the
+    # other also asserts.
     check("manifest name matches downLow's", MANIFEST, ".downlow-manifest.json")
     check("reference is still held back from a bare push",
           BY_NAME["reference"].default_synced, False)
