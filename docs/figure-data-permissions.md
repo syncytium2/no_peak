@@ -28,7 +28,7 @@
 > never addressed it.
 >
 > **2026-08-14: there is a way out that needs no one's permission.** The U-M
-> Copyright Librarian read the licence and found that its constraints bind the
+> Copyright Librarian read the license and found that its constraints bind the
 > *electronic* copy only — read the numbers off the library's print volume and
 > no contract applies at all, leaving only copyright, which does not protect
 > facts. The rule is sharper still: the test is whether the content was obtained
@@ -58,8 +58,8 @@ request when it is made rather than after it is answered.
 | 1 | 2026-08-11 | An author of the paper | Blessing to digitize the figures | Given informally. **No artifact kept**, so unverifiable; the claim built on it was withdrawn 2026-08-13. |
 | 2 | 2026-08-13 | An author of the paper | Permission on the record, and the underlying values | **Declined to be the grantor** — correctly: it is the copyright holder's question. No objection to the use. Did not offer raw data. Suggested generating test data by hand instead. |
 | 3 | 2026-08-13 | OUP, `journals.permissions@oup.com` | Permission, or a statement that none is needed | Automated reply routing to RightsLink. **Resubmitted in-thread the same day** invoking their own human-review clause. Their stated turnaround is 10 working days. **OPEN.** |
-| 4 | 2026-08-13 | U-M library, `library.collections@umich.edu` | Whether the institutional licence already permits publishing values derived this way | **Answered 2026-08-14** by the Copyright Librarian, who read the agreement. It governs TDM, and the closest clause bars Authorized Users from distributing "any part of the Publications on any electronic network … other than the Secure Network". **But the constraint is contractual and reaches only content obtained through the subscription** — see below. Referred to University counsel (Jack Bernard). **PARTLY OPEN.** |
-| 5 | 2026-08-14 | Same, four numbered questions | Provenance of a library scan; whether the earlier PDF extraction contaminates it; whether the licence reaches a derived table of facts; whether Document Delivery's fair-use notice bears on publishing | **Two answered the same day.** A library-made scan carries the clean provenance — handling the paper is irrelevant, obtaining it outside the subscription is the whole test. The earlier extraction does not carry forward, because extraction is not a restricted act. **The other two are with counsel.** |
+| 4 | 2026-08-13 | U-M library, `library.collections@umich.edu` | Whether the institutional license already permits publishing values derived this way | **Answered 2026-08-14** by the Copyright Librarian, who read the agreement. It governs TDM, and the closest clause bars Authorized Users from distributing "any part of the Publications on any electronic network … other than the Secure Network". **But the constraint is contractual and reaches only content obtained through the subscription** — see below. Referred to University counsel (Jack Bernard). **PARTLY OPEN.** |
+| 5 | 2026-08-14 | Same, four numbered questions | Provenance of a library scan; whether the earlier PDF extraction contaminates it; whether the license reaches a derived table of facts; whether Document Delivery's fair-use notice bears on publishing | **Two answered the same day.** A library-made scan carries the clean provenance — handling the paper is irrelevant, obtaining it outside the subscription is the whole test. The earlier extraction does not carry forward, because extraction is not a restricted act. **The other two are with counsel.** |
 | 6 | 2026-08-14 | U-M Document Delivery | Scan of the bound volume, p. 1639 | **Submitted.** Portion-scan request against the physical holding: *Endocrinology* v.129 1991 Sep, barcode 39015023198461, Offsite Shelving, on shelf. Expected 1–5 days. |
 
 **The correspondence itself is not committed** — it is third-party email, it
@@ -89,7 +89,7 @@ will be looking at `reference/` and would not think of a darkroom subfolder.
 useful thing in this document.**
 
 Every contractual objection in the long analysis below — the OUP legal notice,
-the Endocrine Society site terms, the U-M licence — is a term of a *licence for
+the Endocrine Society site terms, the U-M license — is a term of a *license for
 the electronic copy*. It binds because the PDF was obtained through the
 subscription. **It does not attach to the paper on a library shelf.** In his
 words: if the numbers are read off the library's print volume, "you would not be
@@ -142,7 +142,7 @@ discover:
 
 **⚠ Printing the licensed PDF and scanning the printout does NOT work.** It is
 the obvious shortcut, it was proposed, and it fails: the constraint follows the
-*provenance* of the copy, not its medium. The licence attached when the PDF was
+*provenance* of the copy, not its medium. The license attached when the PDF was
 obtained through the subscription, and a printout of that PDF is still that
 copy, on paper. The library's bound volume is unencumbered because it was
 acquired by purchase under different terms — not because paper is special. A
@@ -189,7 +189,7 @@ Copyright Librarian, not an assumption.** It should, since it derives from the
 purchased copy rather than the licensed one — but assuming is what went wrong
 the first time. So is the request form's own copyright notice, which conditions
 the reproduction on "private study, scholarship, or research": that governs the
-reproduction rather than facts extracted from it, but it trades a licence term
+reproduction rather than facts extracted from it, but it trades a license term
 for a delivery term and deserves an answer rather than a shrug.
 
 **Order the scan now; do not re-extract until counsel answers** (expected week
@@ -390,7 +390,7 @@ measurement data specifically.
 ## Contract is the real constraint, and it is unresolved
 
 > **Read the print-copy finding above before this section.** Everything here is
-> a term of a licence for the *electronic* copy. None of it attaches to the
+> a term of a license for the *electronic* copy. None of it attaches to the
 > printed volume, so extracting from print removes this whole section's risk
 > rather than resolving it. What follows is why the risk is real when you work
 > from a licensed PDF — which is how these eight series were in fact obtained.

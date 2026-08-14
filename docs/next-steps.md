@@ -284,7 +284,7 @@ first still stands unsupported and is the live half of this item:
   sentence was unverifiable, and the lesson is narrower than "get permission":
   *a blessing that is never written down addresses nothing, because it cannot be
   produced later.* Two requests are now open — the journal's publisher, and the
-  U-M library on whether the institutional licence already covers it. They are
+  U-M library on whether the institutional license already covers it. They are
   tracked in **the request ledger in `docs/figure-data-permissions.md`**, which
   is where every ask and answer now goes, at the time it happens rather than
   after. **Decide by 2026-08-27** if both are still silent; the ledger says what
