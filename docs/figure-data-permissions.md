@@ -1,7 +1,9 @@
 # Digitizing data from a published figure: where the permissions question lands
 
-> **Status, 2026-08-13 — the author route closed, and it closed correctly.**
+> **Status, 2026-08-14 — a route exists that needs nobody's permission. Read
+> the 08-14 paragraph below first; the 08-13 history explains how we got there.**
 >
+> **2026-08-13 — the author route closed, and it closed correctly.**
 > This document's recommendation was "ask the authors." That was done, and the
 > answer was that **it is not an author's question to answer**: permission
 > belongs to the copyright holder. No objection was raised to the data being
@@ -25,9 +27,16 @@
 > unresolved and untested — as it was on 2026-08-11, since an author's blessing
 > never addressed it.
 >
-> Two requests are open with the parties who can actually answer. **The ledger
-> is the next section — update it there, not here.** Withdraw the data if
-> either says no.
+> **2026-08-14: there is a way out that needs no one's permission.** The U-M
+> Copyright Librarian read the licence and found that its constraints bind the
+> *electronic* copy only — read the numbers off the library's print volume and
+> no contract applies at all, leaving only copyright, which does not protect
+> facts. See "The print copy is the way out" in the ledger below. University IP
+> counsel is checking whether even that is necessary; expected week of
+> 2026-08-17.
+>
+> Requests are tracked in the ledger. **The ledger is the next section — update
+> it there, not here.**
 >
 > One lesson worth keeping, because it cost a fortnight: the recommendation
 > below said author blessing "addresses the relational risk," and that was
@@ -48,10 +57,56 @@ request when it is made rather than after it is answered.
 | 1 | 2026-08-11 | An author of the paper | Blessing to digitize the figures | Given informally. **No artifact kept**, so unverifiable; the claim built on it was withdrawn 2026-08-13. |
 | 2 | 2026-08-13 | An author of the paper | Permission on the record, and the underlying values | **Declined to be the grantor** — correctly: it is the copyright holder's question. No objection to the use. Did not offer raw data. Suggested generating test data by hand instead. |
 | 3 | 2026-08-13 | OUP, `journals.permissions@oup.com` | Permission, or a statement that none is needed | Automated reply routing to RightsLink. **Resubmitted in-thread the same day** invoking their own human-review clause. Their stated turnaround is 10 working days. **OPEN.** |
-| 4 | 2026-08-13 | U-M library, `library.collections@umich.edu` | Whether the institutional licence already permits publishing values derived this way | **OPEN.** The likelier and faster of the two: they can read the actual agreement, which no one outside it can. |
+| 4 | 2026-08-13 | U-M library, `library.collections@umich.edu` | Whether the institutional licence already permits publishing values derived this way | **Answered 2026-08-14** by the Copyright Librarian, who read the agreement. It does govern TDM, and the closest clause bars Authorized Users from distributing "any part of the Publications on any electronic network … other than the Secure Network". **But the constraint is contractual, and the contract only reaches the licensed electronic copy** — see below. Referred to the University's IP counsel; answer expected week of 2026-08-17. **PARTLY OPEN.** |
 
 Drafts of 2, 3 and 4 are not committed — they are correspondence, not code. What
 belongs here is the date, the ask and the answer.
+
+### ⭐ The print copy is the way out, and it was there the whole time
+
+**Established 2026-08-14 by the U-M Copyright Librarian, and it is the most
+useful thing in this document.**
+
+Every contractual objection in the long analysis below — the OUP legal notice,
+the Endocrine Society site terms, the U-M licence — is a term of a *licence for
+the electronic copy*. It binds because the PDF was obtained through the
+subscription. **It does not attach to the paper on a library shelf.** In his
+words: if the numbers are read off the library's print volume, "you would not be
+subject to any contractual constraints. Your use would be governed purely by US
+copyright law, which would allow your use since facts are not copyrightable."
+
+That collapses this entire question. Sections below spend thousands of words
+establishing that copyright is not the obstacle and that contract *might* be,
+untested and unresolved. Re-extracting from print removes the untested half
+rather than winning the argument — which is worth far more, because an argument
+you do not have to make cannot be lost.
+
+**What it would cost.** The eight committed series were extracted from the
+licensed PDF: `tools/digitize_webster1991.py` runs `pdfimages` on it. Doing this
+properly means scanning the bound volume — the tool wants 400 dpi line art, and
+its page selection is hardcoded to the PDF's page 5, so it needs a flag — and
+re-reading the traces from that scan. Two consequences to plan for rather than
+discover:
+
+- **The committed CSVs will change**, and the byte-identical regeneration
+  guarantee this repo leans on dies with them. Regenerate, re-verify, and say so.
+- **It buys a real check for free.** An independent second extraction of the
+  same printed figures is the only test of digitization accuracy this project
+  has ever had a way to run. Record the agreement between the PDF-derived and
+  print-derived values as a quality number; if they agree within the line width,
+  that is a result worth stating on `/methods`, and if they do not, something is
+  wrong that nobody would otherwise have caught.
+
+**Do not start until counsel answers** (expected week of 2026-08-17). If the
+derived-facts argument holds regardless of source, the re-extraction is
+unnecessary; if it does not, this is the fix. What *is* worth doing now is
+confirming the library holds the bound volume — the Copyright Librarian believes
+it does.
+
+**For the next paper, this is the rule:** if a figure needs digitizing and the
+article is licensed rather than open, read it off print from the start. It costs
+a walk to the stacks and removes the only genuinely unresolved risk in this
+entire document.
 
 ### What the attempts have established so far
 
@@ -76,7 +131,12 @@ belongs here is the date, the ask and the answer.
   Endocrine Society. Request 3 asks OUP to say which, because a redirect is a
   fast and useful answer.
 
-### If both come back silent
+### If the remaining requests come back silent
+
+> **The print-copy route makes this section much less important than it was.**
+> It does not depend on anyone answering: re-extracting from the bound volume
+> needs no permission and no reply. Silence from OUP is now an inconvenience
+> rather than a decision point.
 
 Ten working days on request 3 lapses around **2026-08-27**. Silence is not
 consent, but neither is it grounds to keep waiting indefinitely — decide then
@@ -233,6 +293,12 @@ right in machine-recorded toll data, and the CJEU has never ruled on scientific
 measurement data specifically.
 
 ## Contract is the real constraint, and it is unresolved
+
+> **Read the print-copy finding above before this section.** Everything here is
+> a term of a licence for the *electronic* copy. None of it attaches to the
+> printed volume, so extracting from print removes this whole section's risk
+> rather than resolving it. What follows is why the risk is real when you work
+> from a licensed PDF — which is how these eight series were in fact obtained.
 
 Contract can restrict what copyright permits, and this is where the actual risk
 sits. Reichman & Uhlir's standing argument about scientific data in the US is
