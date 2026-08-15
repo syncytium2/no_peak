@@ -22,7 +22,10 @@ recovers a trace *and* that paper's own pulse call for it — an answer key this
 project cannot manufacture, though it records what a detector reported rather
 than what the animal secreted.
 
-    python3 tools/digitize_webster1991.py path/to/webster1991.pdf
+    python3 tools/digitize_webster1991.py [path/to/webster1991.pdf]
+
+The path is optional: with none given the scan is found in Dropbox, which the
+three machines this runs on mount at three different paths. See `find_pdf`.
 
 Requires pdfimages (poppler), numpy, pillow, scipy.
 
@@ -55,6 +58,7 @@ the number of circles found in each panel must equal the pulse count printed
 inside that panel.
 """
 
+import os
 import subprocess
 import sys
 import tempfile
@@ -98,6 +102,11 @@ PANELS = [
 ]
 
 RING = dict(area=(140, 230), side=(11, 21), fill=0.60)
+
+# A record is at the resolution limit when its median ink-run height is at least
+# this fraction of its whole data range. See the long note in read_panel: the
+# measured values are 0.52/0.54/2.00 against 0.05-0.16, a 3x gap either side.
+FLAT_RATIO = 0.30
 
 
 # ---- small helpers ----------------------------------------------------------
@@ -237,13 +246,43 @@ def read_panel(ink, p, scale, ring_xy, ring_r=14):
                 return min(r[0] for r in rr), max(r[1] for r in rr)
         return None
 
+    # A record whose whole data range is a few line widths carries no edge
+    # information anywhere, and offering both edges there is actively harmful:
+    # on a flat thick line every ink run spans the same two edges and every
+    # measured midpoint is the same band center, so both-top and both-bottom
+    # each cost half a line width while ALTERNATING costs zero. The sawtooth is
+    # then the global optimum of the objective below, and the optimizer returns
+    # it correctly. Collapse to the run midpoint instead, which is what the two
+    # edges average to and the only thing the panel actually says.
+    #
+    # The test is per RECORD, not per sample. A tall run at one sample means
+    # either a thick flat line or a steep limb, and the limbs are exactly what
+    # the shortest path was written to resolve — a per-sample rule would fire on
+    # every pulse. Line width is a property of the printing and roughly constant
+    # across a panel, so the median run height measures it, and comparing that
+    # to the record's range separates the two cases cleanly. Measured on the
+    # 400 dpi scan: 0.52, 0.54 and 2.00 for the three affected records against
+    # 0.05-0.16 for the other five, so the threshold sits in a 3x gap and is not
+    # a tuned constant.
+    at_sample = [None if i in pulse_at else read(at(i)) for i in range(n)]
+    sample_mid = [None if r is None else val(T + (r[0] + r[1]) / 2) for r in at_sample]
+    heights = [val(r[0] + T) - val(r[1] + T) for r in at_sample if r is not None]
+    seen = [m for m in sample_mid if m is not None] + list(pulse_at.values())
+    span_v = (max(seen) - min(seen)) if seen else 0.0
+    flat = bool(heights) and span_v > 0 and float(np.median(heights)) >= FLAT_RATIO * span_v
+
     cand = []
     for i in range(n):
         if i in pulse_at:
             cand.append([pulse_at[i]])
             continue
-        r = read(at(i))
-        cand.append([None] if r is None else sorted({val(r[0] + T), val(r[1] + T)}, reverse=True))
+        r = at_sample[i]
+        if r is None:
+            cand.append([None])
+        elif flat:
+            cand.append([sample_mid[i]])
+        else:
+            cand.append(sorted({val(r[0] + T), val(r[1] + T)}, reverse=True))
 
     mids = []
     for i in range(n - 1):
@@ -278,7 +317,7 @@ def read_panel(ink, p, scale, ring_xy, ring_r=14):
     for i in (0, n - 1):
         if values[i] is None:
             values[i] = values[1] if i == 0 else values[n - 2]
-    return values, sorted(pulse_at)
+    return values, sorted(pulse_at), flat
 
 
 # ---- main -------------------------------------------------------------------
@@ -306,12 +345,13 @@ def main(pdf):
         if len(found) != p["pulses"]:
             problems.append(f"{p['key']}: found {len(found)} circles, panel prints {p['pulses']}")
 
-        values, pulse_idx = read_panel(ink, p, scale, found)
-        series[p["key"]] = (p, values, pulse_idx)
+        values, pulse_idx, flat = read_panel(ink, p, scale, found)
+        series[p["key"]] = (p, values, pulse_idx, flat)
         tops.setdefault(p["hormone"], []).append(top_value)
         print(f"{p['key']:24s} resid={resid:.4f} top={top_value:6.2f} {p['unit']:7s} "
               f"pulses={len(found):2d}/{p['pulses']:2d} "
-              f"range {min(values):.2f}-{max(values):.2f}")
+              f"range {min(values):.2f}-{max(values):.2f}"
+              f"{'  BELOW LINE WIDTH - read as midpoints' if flat else ''}")
 
     # the four panels of each hormone are calibrated independently; if the axis
     # reading were wrong they would not agree on where the box top falls
@@ -356,9 +396,22 @@ def write(series):
     truth = ["# Pulses marked with an open circle in the published figures.",
              "# These are the authors' own CLUSTER calls, not ours.",
              "series,pulse_index,time_min,value"]
-    for key, (p, values, pulse_idx) in series.items():
+    flat_note = (
+        "#\n"
+        "# ⚠ THIS RECORD IS AT THE FIGURE'S RESOLUTION LIMIT. Its entire data range\n"
+        "# is comparable to the printed line's own thickness, so the trace carries no\n"
+        "# information about where within that line the value falls. Every sample is\n"
+        "# therefore the midpoint of the ink run, not a reading of one of its edges.\n"
+        "# Treat the LEVEL as measured and the sample-to-sample VARIATION as absent:\n"
+        "# it is a flat trace, and any pulse analysis run on it is analyzing line\n"
+        "# width. Until 2026-08-15 this file instead alternated between the two edges\n"
+        "# of the line, which produced a regular sawtooth that looked like data.\n"
+    )
+    for key, (p, values, pulse_idx, flat) in series.items():
         with (OUT / f"webster1991_{key}.csv").open("w") as f:
             f.write(banner.format(**p))
+            if flat:
+                f.write(flat_note)
             f.write("time,value,error\n")
             for i, v in enumerate(values):
                 f.write(f"{i * p['dt']},{v:.3f},{max(p['floor'], p['cv'] * v):.4f}\n")
@@ -367,7 +420,52 @@ def write(series):
     (OUT / "webster1991_pulses.csv").write_text("\n".join(truth) + "\n")
 
 
+def find_pdf(explicit=None):
+    """The Webster scan, on whichever machine this is running on.
+
+    Resolution order: an explicit argument, then $WEBSTER_PDF, then `nopeak/` in
+    Dropbox. Never a hardcoded path: the two workstations and the laptop mount
+    Dropbox in three different places and are often all in use at once, so a
+    literal path is wrong on at least two of them.
+
+    The Dropbox root comes from `data_root.dropbox_member_root()`, which reads
+    Dropbox's own `info.json` rather than guessing — that is already how this
+    project finds `AutoDeconSoftware.zip`, and it is why the macOS
+    symlink-vs-CloudStorage distinction never has to be reasoned about. Note
+    there is no `~/Dropbox` on the macOS boxes; a probe of that path reports the
+    folder missing when the file is present, which has cost this project real
+    time more than once.
+    """
+    if explicit:
+        p = Path(explicit).expanduser()
+        if not p.is_file():
+            sys.exit(f"no such file: {p}")
+        return p
+    env = os.environ.get("WEBSTER_PDF")
+    if env:
+        p = Path(env).expanduser()
+        if not p.is_file():
+            sys.exit(f"$WEBSTER_PDF is set but is not a file: {p}")
+        return p
+
+    sys.path.insert(0, str(Path(__file__).resolve().parent))
+    from data_root import dropbox_member_root
+    member = dropbox_member_root()
+    if member is None:
+        sys.exit("could not locate Dropbox from info.json; pass the PDF path or set "
+                 "$WEBSTER_PDF")
+    hits = sorted(p for p in (member / "nopeak").glob("*.pdf")
+                  if "webster" in p.name.lower())
+    if not hits:
+        sys.exit(f"no Webster PDF in {member / 'nopeak'}; pass the path or set $WEBSTER_PDF")
+    if len(hits) > 1:
+        sys.exit("several candidates, name one explicitly:\n  "
+                 + "\n  ".join(str(p) for p in hits))
+    return hits[0]
+
+
 if __name__ == "__main__":
-    if len(sys.argv) != 2:
-        sys.exit(__doc__.strip().splitlines()[0] + "\n\nusage: digitize_webster1991.py <pdf>")
-    main(Path(sys.argv[1]).expanduser())
+    if len(sys.argv) > 2:
+        sys.exit(__doc__.strip().splitlines()[0]
+                 + "\n\nusage: digitize_webster1991.py [pdf]   (found in Dropbox if omitted)")
+    main(find_pdf(sys.argv[1] if len(sys.argv) == 2 else None))

@@ -93,12 +93,21 @@ FAMILIES = [
         "slug": "syncytium2/downLow",
         "clone": Path.home() / "Developer" / "downLow",
         "ref": "main",
-        "files": ["tools/data_root.py"],
+        "files": ["tools/data_root.py", "tools/review_digitization.py"],
         # Adapted on purpose (NOPEAK_DATA, this repo's not-managed-here list, the
         # extracted description, and two cross-repo assertions in --selftest). A body
         # re-copy DELETES those every time — it already did once, on the 27c52d4
         # re-vendor. Reported, never applied silently.
-        "adapted": ["tools/data_root.py"],
+        #
+        # review_digitization.py is adapted for a different reason and it is not
+        # cosmetic: upstream reaches sideways into a sibling no_peak/ checkout for
+        # the digitizer, and reads downLow's own vendored copy of data/digitized/.
+        # Run unmodified here it would render this repo's canonical CSVs against
+        # nothing, or downLow's stale ones — which is exactly what happened on
+        # 2026-08-15, when a review page came back showing pre-fix values after the
+        # digitizer had already been corrected. The local copy imports its sibling
+        # and reads this repo's data/. A body re-copy deletes that; re-apply it.
+        "adapted": ["tools/data_root.py", "tools/review_digitization.py"],
     },
 ]
 
@@ -165,10 +174,20 @@ def body_of(text: str, is_json: bool) -> str:
 
 
 def hook_files(label: str) -> list[str]:
-    """The set as the freshness gate sees it — the machine-readable source of truth."""
+    """The set as the freshness gate sees it — the machine-readable source of truth.
+
+    Continuations are joined FIRST. The hook writes one invocation across several
+    backslash-continued lines, so a line-at-a-time scan finds `--label` on one line
+    and every `--file` on later ones, matches neither, and returns nothing. That is
+    how this returned [] for both families from the day it was written until
+    2026-08-15 — and an empty list is indistinguishable from "no hook", which the
+    callers then treat as nothing to check. The cross-check written to stop a file
+    silently dropping out of the gate was itself silently doing nothing.
+    """
     if not HOOK.is_file():
         return []
-    for line in HOOK.read_text().split("\n"):
+    joined = HOOK.read_text().replace("\\\n", " ")
+    for line in joined.split("\n"):
         if f"--label {label}" in line and "--file" in line:
             return re.findall(r"--file (\S+)", line)
     return []
@@ -182,6 +201,13 @@ def run(check_only: bool) -> int:
     rc = 0
     for fam in FAMILIES:
         hooked = hook_files(fam["label"])
+        if not hooked and HOOK.is_file():
+            print(f"revendor: the freshness hook lists no files for {fam['label']}.",
+                  file=sys.stderr)
+            print("  Either the label is missing from .claude/hooks/session-start.sh or"
+                  " this parser no longer understands it. Not treating that as agreement:"
+                  " an empty list used to pass silently.", file=sys.stderr)
+            return 1
         if hooked and sorted(hooked) != sorted(fam["files"]):
             print(f"revendor: {fam['label']} disagrees with the freshness hook.", file=sys.stderr)
             print(f"  only in this file: {sorted(set(fam['files']) - set(hooked))}", file=sys.stderr)

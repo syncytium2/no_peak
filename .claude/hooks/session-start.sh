@@ -139,6 +139,7 @@ bash tools/murderboard_freshness.sh --hook --label murderboard-vendored \
 
 bash tools/murderboard_freshness.sh --hook --label downlow-vendored \
   --slug syncytium2/downLow --clone "$HOME/Developer/downLow" \
-  --file tools/data_root.py || true
+  --file tools/data_root.py \
+  --file tools/review_digitization.py || true
 
 exit 0

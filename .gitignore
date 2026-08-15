@@ -28,6 +28,13 @@ data/oracle/
 data/oracle_igor/
 *.pxp
 
+# tools/review_digitization.py's QA page. It embeds CROPS OF THE PUBLISHED
+# FIGURE, not just the numbers read off it — the article is not open access,
+# data/digitized/README.md declines to redistribute it, and the contractual
+# question in docs/figure-data-permissions.md is open. The numbers are
+# measurements and travel; the pixels are the publisher's and stay here.
+review/
+
 # build/run residue
 param_list.Rdata
 __pycache__/

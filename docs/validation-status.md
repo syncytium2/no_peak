@@ -209,27 +209,45 @@ consistency check, not independent validation. See `data/digitized/README.md`; p
 **Result.** At the paper's own settings (one-point windows, t = 3.2 for GnRH and
 2.32 for LH, original Fortran) and supplied with the assay error the hormones
 actually had — a CV plus a floor at the detection limit — the port recovers **67
-of 70 published pulses with one false positive: 96% sensitivity, 99% precision.**
-Six of the eight panels match exactly, including both records the paper reports
-as pulse-free. The three misses are all in one LH record (#9009), whose pulses are the smallest
-in absolute terms.
+of 70 published pulses with no false positives: 96% sensitivity, 100%
+precision.** Six of the eight panels match exactly, including both records the
+paper reports as pulse-free. The three misses are all in one LH record (#9009),
+whose pulses are the smallest in absolute terms.
+
+⚠ **These figures were re-derived on 2026-08-15 and several moved.** Three of the
+eight traces had been dominated by a digitization artifact — the reader
+alternated between the two edges of the printed line, producing a sawtooth (see
+`tools/digitize_webster1991.py`, `FLAT_RATIO`). The sole false positive this
+section used to report was in one of those records, so precision went 99% → 100%,
+the GnRH arm went 1 false positive → 0, and the zero-slack line below moved with
+them. Nothing here rests on the artifact now, but no number in this section
+should be compared against a copy of this document older than that date.
 
 **Two constants in that error model are fitted, and they buy the precision, not
 the sensitivity.** The CV (8%) and the GnRH floor (0.06 pg/min) are not in the
 paper. Sweeping the floor at cv = 0.08: sensitivity is 96% at every value from 0
-to 0.06, while precision runs 45% (floor 0), 83% (0.03), 99% (0.05–0.06), 100%
-(≥0.07). Both free constants sit at the joint optimum. An earlier draft of this
-section said "the result is not sensitive to it" — true of the number that could
-not move, and silent about the one that could.
+to 0.06 and falls above it (94% at 0.07–0.08, 91% at 0.10), while precision runs
+65% (floor 0), 96% (0.03), 100% (0.05–0.06). Both free constants sit at the joint
+optimum. An earlier draft of this section said "the result is not sensitive to
+it" — true of the number that could not move, and silent about the one that could.
 
 The un-fitted half is the LH arm, whose floor is the paper's own published assay
 sensitivity of 0.45 ng/ml: **35 of 38**, stable across CVs from 4% to 8%; its zero
 false-positive count, however, holds only from about 7.8% upward and so still
-leans on the fitted CV. The GnRH arm with its fitted floor is 32 of 32 with 1 false
-positive.
+leans on the fitted CV. The GnRH arm with its fitted floor is 32 of 32 with no
+false positives.
 
-Matching allows one sample of slack; at zero slack the total is 66 of 70 with 2
-false positives (94% / 97%), so the headline does not rest on the tolerance.
+Matching allows one sample of slack; at zero slack the total is 66 of 70 with 1
+false positive (94% / 99%), so the headline does not rest on the tolerance.
+
+⚠ **"A CV plus a floor" reduces to "a floor" over most of this corpus.** 395 of
+the 536 samples (74%) have their reconstructed error pinned exactly at the floor,
+so the proportional term never engages for them: all 61 of #8058's LH samples,
+all 73 of both #8058 and #9009 GnRH, 68 of 73 for #8067 GnRH. For those records
+CLUSTER received a *constant* per-sample error, which is a materially different
+input from a proportional one, and the sensitivity of the result to the CV is
+correspondingly concentrated in the minority of samples that clear the floor.
+Reported by the downLow session, 2026-08-15.
 
 What this is evidence *for* is therefore narrower than "the port is faithful":
 the Fortran variant already reproduces CLUST5 exactly at defaults, and the
@@ -524,7 +542,7 @@ In the ratio those two pull in **opposite directions**: the ratio rises either
 because the half-life got longer (VJ: errors up) or because the interval got
 shorter (VJ: errors down). A monotone trend in the ratio therefore cannot be
 read as either rule reproducing. That the ratio is also how VJ state their
-adequacy rule is a tension in the source, not a licence to use it as a test.
+adequacy rule is a tension in the source, not a license to use it as a test.
 
 Decomposed on the same corpus:
 

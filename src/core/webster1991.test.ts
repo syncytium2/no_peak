@@ -153,6 +153,13 @@ describe("Webster et al. 1991, digitized", () => {
     }
     // and the spread is not marginal: from finding none to a flood of extras
     expect(Math.min(...results.map((r) => r.hit))).toBe(0);
-    expect(Math.max(...results.map((r) => r.extra))).toBeGreaterThan(50);
+    // 44 as measured, all from Global SE, against 0 for the assay's own error.
+    // This bound was >50 until 2026-08-15 and it was partly counting a
+    // digitization artifact: three records alternated between the two edges of
+    // the printed line, and the resulting sawtooth was itself detectable. The
+    // claim under test is unaffected — no substitute model reproduces the paper
+    // and the spread is still two orders of magnitude — but the old number
+    // cannot be restored without restoring the artifact.
+    expect(Math.max(...results.map((r) => r.extra))).toBeGreaterThan(30);
   });
 });
