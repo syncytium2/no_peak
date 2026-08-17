@@ -291,6 +291,78 @@ answer to "what did Webster's analysis use" is that the paper does not say, and
 `next-steps.md` §3's banner stays up. Recorded here so the next person does not
 re-read the same nine pages hoping.
 
+### The free check came back, and the digitization holds
+
+**2026-08-17.** The section above promised that re-extracting from print "buys a
+real check for free … the only test of digitization accuracy this project has
+ever had a way to run." That check has now been run, by
+[`tools/crosscheck_webster_print.py`](../tools/crosscheck_webster_print.py). It
+reads the eight series off the library scan and compares them to the committed
+CSVs. **It writes nothing to `data/digitized/`** — it is an instrument, not a
+re-extraction, and the standing instruction to wait for counsel is untouched.
+
+The two readings share no pixels: different scan, different page decomposition,
+different panel geometry, an independently solved axis, a different circle test.
+All they share is the printed figure. So the spread between them is the
+measurement.
+
+**The pulse calls — the part that cannot be manufactured — come back 70 of 72
+identical.** Three of the five marked panels reproduce the paper's own CLUSTER
+marks at exactly the same sample indices. The other two each move a single mark
+by one sample: `fig3b_thx_8067_gnrh` 31→32 and `fig4a_thx_9013_gnrh` 24→25. The
+answer key this dataset exists for is therefore reproducible from an
+independent scan, which is a far stronger statement than "we read it carefully."
+
+**The values agree inside the printed line.** For the five records not already
+flagged as being at the figure's resolution limit, the median disagreement is
+**0.26 line widths** — worst 0.34 — or 1.5% of each record's range. The figure
+does not distinguish anything below its own line width, so the two readings
+agree to the limit of what the page can say. That is the quality number this
+document asked for, and on its own terms it is a pass.
+
+Two honest qualifications:
+
+- **There is a systematic ~2% scale difference**, not just noise. The print
+  reading puts the GnRH box top at 3.06 against 2.99, and the LH box top at
+  31.77 against 31.12 — both about 2% high, consistently, which is why the
+  per-record bias runs one way. It is a calibration difference between two
+  readings of the same axis, well inside the line width, but it is a bias rather
+  than scatter and should be described that way.
+- **The three flat records disagree most**, up to 1.16 line widths on
+  `fig4b_thx_9009_gnrh`. That is not a new problem and not a contradiction: those
+  are the records whose own banner already says their sample-to-sample variation
+  is line width rather than data. Two readings of a thick flat line disagreeing
+  by about a line width is exactly what that banner predicts. It is corroboration
+  of the warning, not a failure of it.
+
+One sample of `fig4a_thx_9013_lh` could not be read from the print scan and is
+excluded from that record's comparison.
+
+**What re-extraction would actually cost, corrected.** The estimate above was a
+flag and a re-measure. It is more, and all of it traces to one fact — the print
+scan is heavier-inked:
+
+1. `pdfimages` returns fragments, so the page must be composited with
+   `pdftoppm`.
+2. **Ring interiors do not scale.** The page is placed 1.36× larger, but the
+   heavier ink keeps the open circles' white centres at roughly the same area
+   instead of 1.36² larger, so size alone no longer separates a pulse ring from
+   the counter of a letter in the panel title — they overlap. The cross-check
+   keeps rings by whether the ink around them belongs to the trace, which a
+   title letter never does. That returns the printed pulse count exactly in all
+   five panels, and it is a better discriminator than size on either scan.
+3. **The tick marks are nearly swallowed.** The axis line is thick enough that
+   minor ticks clear it by two or three pixels, so the tool's fixed tick strip
+   cannot see them. Ticks are found instead by protrusion relative to the axis's
+   own edge, and the scale is solved as the tick lattice's period, pooled across
+   the four panels that share an axis. Guessing which multiple each tick sits at
+   does not work: a doubled scale puts every tick on an even multiple and fits
+   exactly as well, and cross-panel agreement cannot break that tie because a
+   doubled axis is equally consistent across all four panels.
+
+None of that is a reason not to re-extract. It is a reason not to budget an
+afternoon for it.
+
 ### What the attempts have established so far
 
 - **There is no category for this request.** OUP's permissions platform handles
