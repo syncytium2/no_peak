@@ -33,7 +33,9 @@
 > no contract applies at all, leaving only copyright, which does not protect
 > facts. The rule is sharper still: the test is whether the content was obtained
 > **outside the subscription**, not whether it is paper. See "The print copy is
-> the way out" in the ledger below. **The scan is ordered.** University counsel
+> the way out" in the ledger below. **The scan arrived 2026-08-17 and it passes
+> the provenance test** — see "The scan arrived, and what it does and does not
+> settle" below. University counsel
 > (Jack Bernard) is checking whether even that was necessary.
 >
 > Requests are tracked in the ledger. **The ledger is the next section — update
@@ -60,7 +62,7 @@ request when it is made rather than after it is answered.
 | 3 | 2026-08-13 | OUP, `journals.permissions@oup.com` | Permission, or a statement that none is needed | Automated reply routing to RightsLink. **Resubmitted in-thread the same day** invoking their own human-review clause. Their stated turnaround is 10 working days. **OPEN.** |
 | 4 | 2026-08-13 | U-M library, `library.collections@umich.edu` | Whether the institutional license already permits publishing values derived this way | **Answered 2026-08-14** by the Copyright Librarian, who read the agreement. It governs TDM, and the closest clause bars Authorized Users from distributing "any part of the Publications on any electronic network … other than the Secure Network". **But the constraint is contractual and reaches only content obtained through the subscription** — see below. Referred to University counsel (Jack Bernard). **PARTLY OPEN.** |
 | 5 | 2026-08-14 | Same, four numbered questions | Provenance of a library scan; whether the earlier PDF extraction contaminates it; whether the license reaches a derived table of facts; whether Document Delivery's fair-use notice bears on publishing | **Two answered the same day.** A library-made scan carries the clean provenance — handling the paper is irrelevant, obtaining it outside the subscription is the whole test. The earlier extraction does not carry forward, because extraction is not a restricted act. **The other two are with counsel.** |
-| 6 | 2026-08-14 | U-M Document Delivery | Scan of the bound volume, p. 1639 | **Submitted.** Portion-scan request against the physical holding: *Endocrinology* v.129 1991 Sep, barcode 39015023198461, Offsite Shelving, on shelf. Expected 1–5 days. |
+| 6 | 2026-08-14 | U-M Document Delivery | Scan of the bound volume, p. 1639 | **Delivered 2026-08-17, and it is the print volume.** Verified against the four tests this file set: no OUP download watermark, physical-scan artifacts throughout, ~490 dpi effective (400 was asked), and the whole article rather than the one page requested. **CLOSED.** See the next-but-one section. |
 
 **The correspondence itself is not committed** — it is third-party email, it
 names real people, and it does not belong in a public repository. It is kept
@@ -202,6 +204,92 @@ ordered.
 article is licensed rather than open, read it off print from the start. It costs
 a walk to the stacks and removes the only genuinely unresolved risk in this
 entire document.
+
+### The scan arrived, and what it does and does not settle
+
+**2026-08-17.** `<Dropbox>/Richard DeFazio/nopeak/webster scanned by document
+delivery-UM library.pdf`, 10 pages, 1.8 MB. The section above said to verify
+what arrives rather than assume. Here is that verification, run against the
+licensed 2008 PDF sitting beside it in the same folder as a control.
+
+**It is the print volume. Four independent signs, and they agree.**
+
+1. **No OUP watermark.** The licensed copy carries "Downloaded from
+   academic.oup.com/endo/article/129/3/1635/2535570 by University of Michigan
+   Business School Library user on 11 August 2026" down the outer margin of all
+   nine pages. The new scan has it on none. This is the single most decisive
+   check and it is a one-liner: `pdftotext … | grep -c academic.oup.com`.
+2. **It looks like paper**, which is what this file predicted. Black page-edge
+   bars, per-page dimensions that vary by up to 4% (a fresh crop each sheet,
+   against the licensed file's uniform ones), the left margin of the Fig. 3
+   caption shaved by the gutter, and visibly heavier ink.
+3. **The production chain is new.** Created 2026-08-17 11:53, PDF 1.7, no
+   producer string. The licensed copy is ABBYY FineReader, created 2008, later
+   rewritten by iTextSharp — a publisher's own retro-digitization, which is
+   worth knowing: *both* files are scans of print, so "it is a scan" was never
+   the test. Provenance was, exactly as the section above says.
+4. **It carries the library's own cover page**, the copyright notice discussed
+   below, which the licensed copy has no reason to carry.
+
+**Resolution beat the request.** The ask was 400 dpi or better. Measuring the
+one object whose printed size is fixed — the 0–6 h panel box on p. 1639 — it is
+808 px in the licensed 400 dpi file and 992 px in the new scan, so about **490
+dpi effective, 23% more pixels across the same trace**. Ignore what
+`pdfimages -list` reports for this file (360 ppi); that is computed from how the
+image is placed on the page and is wrong here. Measure a known object instead.
+
+**They sent the whole article, not the single page requested** — pp. 1635–1643.
+So Fig. 4 on p. 1639 and everything else is in hand, and no second request is
+needed. Page 1640's photomicrographs even came through as 8-bit grayscale JPEG
+2000 while the line-art pages stayed bitonal, which is the scanner doing the
+right thing unasked.
+
+**One real catch, and it will break the tool.** The scanner wrote p. 1639 as
+**13 separate images** — an MRC segmentation: a base layer plus per-panel
+sub-images plus masks — rather than one page bitmap. **The base layer has the
+data traces stripped out of it**; they live in the sub-images. So:
+
+- `tools/digitize_webster1991.py` runs `pdfimages -f 5 -l 5` and expects exactly
+  one page image. Against this file that returns fragments, and the page index
+  shifts by one anyway because of the cover page. **It will not fail loudly — it
+  will find a page-shaped image with no traces on it.**
+- The fix is `pdftoppm -r <dpi>` to composite the layers, or read the panel
+  sub-images directly, which are clean per-column crops and arguably easier.
+  Either way **the hardcoded panel geometry must be re-measured**; it was
+  measured off the licensed scan and none of it transfers.
+- Trace lines are relatively fatter: 0.71% of panel width against 0.62%. Small,
+  but it is the same ambiguity as the line-edge problem already known to this
+  project, so **re-derive the edge convention rather than carrying over the old
+  constants** — the extra 23% of pixels is there to spend on exactly that.
+
+**The delivery notice, which is the one new legal wrinkle.** Page 1 is U-M's
+"NOTICE CONCERNING COPYRIGHT RESTRICTIONS": the copy is provided "for the
+purposes of private study, scholarship, or research," and "if you use the copy
+for a different purpose, such as posting on a course website, the copyright
+analysis that supported making the copy does not apply." That is request 5's
+fourth question, now sitting in the file rather than in the abstract, and it is
+**still with counsel**. Two things follow, and they are different things:
+
+- **Do not post this PDF anywhere**, and do not commit it. Nothing here changes
+  that; the repo already gitignores it and should keep doing so.
+- **Extracted values are a separate question**, and the notice governs the
+  reproduction rather than facts taken from it — which is the Copyright
+  Librarian's position on the license clause too, for the same reason. That is
+  the reading, it is the same reading this whole file rests on, and counsel has
+  not answered yet. **Re-extract when they do**, per the standing instruction
+  above; the scan being in hand does not itself lift that.
+
+**What it does not settle: the assay-error question is untouched.** The scan was
+read for it, since it was cheap to do so. The Methods are identical in substance
+to the licensed copy, and on per-sample error the paper says only, for GnRH,
+sensitivity 0.07 pg/tube, 50% displacement at 6.1 ± 0.2 pg/tube, samples run in
+duplicate, and an intraassay variation "assessed by median variance ratio of
+assay replicates" averaging 0.02 ± 0.01 — reference 25 being Duddleson, Midgley
+& Niswender 1972. **A median variance ratio is not a CV and not a per-sample
+error model**, and no per-sample error appears anywhere in the paper. So the
+answer to "what did Webster's analysis use" is that the paper does not say, and
+`next-steps.md` §3's banner stays up. Recorded here so the next person does not
+re-read the same nine pages hoping.
 
 ### What the attempts have established so far
 
