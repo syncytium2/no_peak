@@ -9,7 +9,7 @@
             "type": "command",
             "command": "bash .claude/hooks/session-start.sh",
             "timeout": 20,
-            "statusMessage": "Checking for concurrent sessions…"
+            "statusMessage": "Checking for concurrent sessions\u2026"
           }
         ]
       },
@@ -20,14 +20,28 @@
             "type": "command",
             "command": "bash .claude/hooks/session-start.sh",
             "timeout": 20,
-            "statusMessage": "Checking for concurrent sessions…"
+            "statusMessage": "Checking for concurrent sessions\u2026"
+          }
+        ]
+      }
+    ],
+    "PreToolUse": [
+      {
+        "matcher": "Bash",
+        "hooks": [
+          {
+            "type": "command",
+            "command": "bash .claude/hooks/no-heredoc-source.sh",
+            "timeout": 10
           }
         ]
       }
     ]
   },
   "worktree": {
-    "symlinkDirectories": ["node_modules"],
+    "symlinkDirectories": [
+      "node_modules"
+    ],
     "baseRef": "fresh",
     "bgIsolation": "worktree"
   }
