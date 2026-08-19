@@ -16,6 +16,7 @@ import { describe, expect, it } from "vitest";
 import { clusterMain } from "./cluster";
 import { parseSeries } from "./csv";
 import { DEFAULT_PARAMS, type ClusterParams, type ErrorModelType } from "./types";
+import { HAVE_DIGITIZED, NEEDS_DIGITIZED } from "../testing/haveDigitized";
 
 const DIR = "data/digitized";
 
@@ -84,7 +85,13 @@ function score(errorModel: ErrorModelType | "assay") {
   return { hit, missed, extra };
 }
 
-describe("Webster et al. 1991, digitized", () => {
+if (!HAVE_DIGITIZED) {
+  describe("Webster et al. 1991, digitized", () => {
+    it.skip(NEEDS_DIGITIZED, () => {});
+  });
+}
+
+describe.skipIf(!HAVE_DIGITIZED)("Webster et al. 1991, digitized", () => {
   it("carries all eight traces and the 70 published pulse calls", () => {
     const truth = publishedCalls();
     expect([...truth.values()].reduce((a, s) => a + s.size, 0)).toBe(70);

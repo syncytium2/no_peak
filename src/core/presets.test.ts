@@ -5,6 +5,7 @@ import { parseSeries } from "./csv";
 import { PRESETS, matchPreset } from "./presets";
 import { pulseFrequency } from "./timeUnits";
 import { DEFAULT_PARAMS } from "./types";
+import { HAVE_DIGITIZED } from "../testing/haveDigitized";
 
 const preset = (key: string) => PRESETS.find((p) => p.key === key)!;
 
@@ -43,7 +44,7 @@ describe("published presets", () => {
     }
   });
 
-  it("reproduces the published count straight from the preset", () => {
+  it.skipIf(!HAVE_DIGITIZED)("reproduces the published count straight from the preset", () => {
     // exactly what the app does when a user picks the dataset and the preset
     const s = parseSeries(readFileSync("data/digitized/webster1991_fig3b_thx_8067_gnrh.csv", "utf8"));
     expect(s.error).not.toBeNull(); // the file carries its reconstructed error

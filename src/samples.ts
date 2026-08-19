@@ -27,18 +27,40 @@ import gnrhCsv from "../data/synthetic/sim_gnrh_thx_ewe.csv?raw";
 import gnrhFastCsv from "../data/synthetic/sim_gnrh_thx_fast.csv?raw";
 import gnrhIntactCsv from "../data/synthetic/sim_gnrh_intact.csv?raw";
 
-import w91GnrhThx from "../data/digitized/webster1991_fig3b_thx_8067_gnrh.csv?raw";
-import w91GnrhFast from "../data/digitized/webster1991_fig4a_thx_9013_gnrh.csv?raw";
-import w91GnrhCon from "../data/digitized/webster1991_fig3a_con_8058_gnrh.csv?raw";
-import w91GnrhNone from "../data/digitized/webster1991_fig4b_thx_9009_gnrh.csv?raw";
-import w91LhThx from "../data/digitized/webster1991_fig3b_thx_8067_lh.csv?raw";
-import w91LhFast from "../data/digitized/webster1991_fig4a_thx_9013_lh.csv?raw";
-import w91LhCon from "../data/digitized/webster1991_fig3a_con_8058_lh.csv?raw";
-import w91LhOther from "../data/digitized/webster1991_fig4b_thx_9009_lh.csv?raw";
 import lhCsv from "../data/synthetic/sim_lh.csv?raw";
 import lhLongCsv from "../data/synthetic/sim_lh_long.csv?raw";
 import valuesOnlyCsv from "../data/synthetic/sim_values_only.csv?raw";
 import flatCsv from "../data/synthetic/sim_flat_control.csv?raw";
+
+/**
+ * The digitized records load through a glob rather than eight static imports,
+ * so that `data/digitized/` can be absent without breaking the build.
+ *
+ * Nothing here decides whether they ship. The tree is committed and present, so
+ * this resolves to exactly the eight strings the static imports used to give,
+ * and the built bundle is unchanged. What it buys is that removing them becomes
+ * one commit instead of a day's work — see `docs/digitized-suppression.md` for
+ * why that mattered enough to build, and for the steps.
+ *
+ * A static `import ... from "../data/digitized/x.csv?raw"` is a build error when
+ * the file is gone. A glob is not: it yields no key, the record is dropped from
+ * SAMPLES below, and the picker shows the simulated records alone.
+ *
+ * ⚠ `webster1991_pulses.csv` is excluded deliberately, and the exclusion has to
+ * stay. A bare `*.csv` matches it, and an eager glob bundles what it matches
+ * whether or not anything reads it — so the first version of this shipped the
+ * authors' pulse calls into the served bundle, 2.4 kB that eight static imports
+ * had never included. That file is the answer key: it is read from disk by the
+ * tests and by `tools/score_webster1991.ts`, and the app never displays it.
+ * Widening this pattern publishes it.
+ */
+const DIGITIZED_CSV = import.meta.glob(
+  ["../data/digitized/*.csv", "!../data/digitized/webster1991_pulses.csv"],
+  { eager: true, query: "?raw", import: "default" },
+) as Record<string, string>;
+
+const digitizedCsv = (file: string): string | undefined =>
+  DIGITIZED_CSV[`../data/digitized/${file}`];
 
 /**
  * Every digitized note has to name its source itself.
@@ -98,6 +120,14 @@ export interface Sample {
 
 const csv = (text: string) => () => parseSeries(text);
 
+/**
+ * A digitized record as written below: everything a Sample has except `load`,
+ * which cannot be written until we know the file is in the build. `sourceFile`
+ * is what makes that checkable — it is the only difference between these and
+ * the simulated records, which are generated and always present.
+ */
+type DigitizedRecord = Omit<Sample, "load"> & { sourceFile: string };
+
 // Group headings do a lot of work here. The simulated GnRH records were built
 // to the protocol of the same paper the digitized ones come from, so without an
 // explicit contrast in the heading they read as alternative takes on the same
@@ -107,7 +137,7 @@ const DIG_LH = "Real animals — peripheral LH, Webster et al. 1991";
 const PORTAL = "Simulated — GnRH model, no animal";
 const PERIPHERAL = "Simulated — LH model, no animal";
 
-export const SAMPLES: Sample[] = [
+const DIGITIZED: DigitizedRecord[] = [
   // ---- digitized from the published figures of Webster et al. 1991 ----------
   {
     key: "w91_gnrh_thx_8067",
@@ -126,7 +156,7 @@ export const SAMPLES: Sample[] = [
     valueLabel: "GnRH (pg/min)",
     citation:
       "Digitized from Webster JR, Moenter SM, Barrell GK, Lehman MN, Karsch FJ, Endocrinology 1991;129(3):1635-43 (PMID 1874193), Fig. 3B, ewe #8067. Read off the published figure; values are approximate to the width of a printed line. The error bars are RECONSTRUCTED, not measured: the figure prints none and the paper does not report its per-sample error, so the file supplies max(floor, 0.08 x value).",
-    load: csv(w91GnrhThx),
+    sourceFile: "webster1991_fig3b_thx_8067_gnrh.csv",
   },
   {
     key: "w91_gnrh_thx_9013",
@@ -143,7 +173,7 @@ export const SAMPLES: Sample[] = [
     valueLabel: "GnRH (pg/min)",
     citation:
       "Digitized from Webster JR, Moenter SM, Barrell GK, Lehman MN, Karsch FJ, Endocrinology 1991;129(3):1635-43 (PMID 1874193), Fig. 4A, ewe #9013. Read off the published figure; values are approximate to the width of a printed line. The error bars are RECONSTRUCTED, not measured: the figure prints none and the paper does not report its per-sample error, so the file supplies max(floor, 0.08 x value).",
-    load: csv(w91GnrhFast),
+    sourceFile: "webster1991_fig4a_thx_9013_gnrh.csv",
   },
   {
     key: "w91_gnrh_con_8058",
@@ -160,7 +190,7 @@ export const SAMPLES: Sample[] = [
     valueLabel: "GnRH (pg/min)",
     citation:
       "Digitized from Webster JR, Moenter SM, Barrell GK, Lehman MN, Karsch FJ, Endocrinology 1991;129(3):1635-43 (PMID 1874193), Fig. 3A, ewe #8058. Read off the published figure; values are approximate to the width of a printed line. The error bars are RECONSTRUCTED, not measured: the figure prints none and the paper does not report its per-sample error, so the file supplies max(floor, 0.08 x value).",
-    load: csv(w91GnrhCon),
+    sourceFile: "webster1991_fig3a_con_8058_gnrh.csv",
   },
   {
     key: "w91_gnrh_thx_9009",
@@ -177,7 +207,7 @@ export const SAMPLES: Sample[] = [
     valueLabel: "GnRH (pg/min)",
     citation:
       "Digitized from Webster JR, Moenter SM, Barrell GK, Lehman MN, Karsch FJ, Endocrinology 1991;129(3):1635-43 (PMID 1874193), Fig. 4B, ewe #9009. Read off the published figure; values are approximate to the width of a printed line. The error bars are RECONSTRUCTED, not measured: the figure prints none and the paper does not report its per-sample error, so the file supplies max(floor, 0.08 x value).",
-    load: csv(w91GnrhNone),
+    sourceFile: "webster1991_fig4b_thx_9009_gnrh.csv",
   },
   {
     key: "w91_lh_thx_8067",
@@ -196,7 +226,7 @@ export const SAMPLES: Sample[] = [
     valueLabel: "LH (ng/ml)",
     citation:
       "Digitized from Webster JR, Moenter SM, Barrell GK, Lehman MN, Karsch FJ, Endocrinology 1991;129(3):1635-43 (PMID 1874193), Fig. 3B, ewe #8067. Read off the published figure; values are approximate to the width of a printed line. The error bars are RECONSTRUCTED, not measured: the figure prints none and the paper does not report its per-sample error, so the file supplies max(floor, 0.08 x value).",
-    load: csv(w91LhThx),
+    sourceFile: "webster1991_fig3b_thx_8067_lh.csv",
   },
   {
     key: "w91_lh_thx_9013",
@@ -212,7 +242,7 @@ export const SAMPLES: Sample[] = [
     valueLabel: "LH (ng/ml)",
     citation:
       "Digitized from Webster JR, Moenter SM, Barrell GK, Lehman MN, Karsch FJ, Endocrinology 1991;129(3):1635-43 (PMID 1874193), Fig. 4A, ewe #9013. Read off the published figure; values are approximate to the width of a printed line. The error bars are RECONSTRUCTED, not measured: the figure prints none and the paper does not report its per-sample error, so the file supplies max(floor, 0.08 x value).",
-    load: csv(w91LhFast),
+    sourceFile: "webster1991_fig4a_thx_9013_lh.csv",
   },
   {
     key: "w91_lh_con_8058",
@@ -230,7 +260,7 @@ export const SAMPLES: Sample[] = [
     valueLabel: "LH (ng/ml)",
     citation:
       "Digitized from Webster JR, Moenter SM, Barrell GK, Lehman MN, Karsch FJ, Endocrinology 1991;129(3):1635-43 (PMID 1874193), Fig. 3A, ewe #8058. Read off the published figure; values are approximate to the width of a printed line. The error bars are RECONSTRUCTED, not measured: the figure prints none and the paper does not report its per-sample error, so the file supplies max(floor, 0.08 x value).",
-    load: csv(w91LhCon),
+    sourceFile: "webster1991_fig3a_con_8058_lh.csv",
   },
   {
     key: "w91_lh_thx_9009",
@@ -248,8 +278,11 @@ export const SAMPLES: Sample[] = [
     valueLabel: "LH (ng/ml)",
     citation:
       "Digitized from Webster JR, Moenter SM, Barrell GK, Lehman MN, Karsch FJ, Endocrinology 1991;129(3):1635-43 (PMID 1874193), Fig. 4B, ewe #9009. Read off the published figure; values are approximate to the width of a printed line. The error bars are RECONSTRUCTED, not measured: the figure prints none and the paper does not report its per-sample error, so the file supplies max(floor, 0.08 x value).",
-    load: csv(w91LhOther),
+    sourceFile: "webster1991_fig4b_thx_9009_lh.csv",
   },
+];
+
+const SIMULATED: Sample[] = [
   {
     key: "sim_gnrh_thx_ewe",
     group: PORTAL,
@@ -369,6 +402,20 @@ export const SAMPLES: Sample[] = [
       return { times, values, error: null, labels: null };
     },
   },
+];
+
+/**
+ * A digitized record ships only if its file is in the build. Absent one, the
+ * record is dropped rather than shipped broken — SAMPLE_GROUPS and the picker
+ * derive from this array, so its heading disappears with it and nothing
+ * downstream needs to know. The simulated records are unconditional.
+ */
+export const SAMPLES: Sample[] = [
+  ...DIGITIZED.flatMap((r): Sample[] => {
+    const text = digitizedCsv(r.sourceFile);
+    return text === undefined ? [] : [{ ...r, load: csv(text) }];
+  }),
+  ...SIMULATED,
 ];
 
 export const SAMPLE_GROUPS = [...new Set(SAMPLES.map((s) => s.group))];

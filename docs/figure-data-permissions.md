@@ -183,7 +183,11 @@ regenerated, unpublished or re-extracted on the strength of this reply**:
    that losing these costs a check, not a feature. But `data/digitized/` is
    wired into presets, tests, `/methods` and the exported artifacts, so
    "pull them" is a day of work and a visible change to the site, not a
-   `git rm`.
+   `git rm`. **Update 2026-08-19: that cost is now paid in advance.**
+   `docs/digitized-suppression.md` carries a built, tested, unthrown switch —
+   withdrawal is one commit and reversal is another. It changes nothing about
+   the decision itself, which is still open; it removes the cost of executing it
+   from the reasons for or against.
 2. **Whether to pursue the bound volume**, or to stop here and let the synthetic
    records carry the validation on their own.
 

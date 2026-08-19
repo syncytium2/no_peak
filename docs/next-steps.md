@@ -52,6 +52,13 @@ his, and had not been put to him when this was written. **Do not re-extract from
 the library scan** in the meantime; `tools/crosscheck_webster_print.py` stays an
 instrument and still writes nothing to `data/digitized/`.
 
+**A switch exists now for the first of the two decisions, and it is NOT thrown.**
+`docs/digitized-suppression.md` is the runbook: three no-op changes landed
+2026-08-19 so that withdrawing the eight records is one commit and reversing it
+is another, rather than a day's work either way. The data still ships and the
+site is unchanged. The CLUSTER presets are deliberately out of its scope, on the
+owner's instruction.
+
 ## Arrived 2026-08-14 — the gitignored data now syncs, and §9 is affected
 
 **Read this before concluding any data is missing.** The four gitignored trees

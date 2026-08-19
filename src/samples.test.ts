@@ -11,16 +11,24 @@ import { SAMPLES, SAMPLE_GROUPS, sampleCounts } from "./samples";
 import { runSegments } from "./core/segments";
 import { pulseFrequency } from "./core/timeUnits";
 import { DEFAULT_PARAMS } from "./core/types";
+import { HAVE_DIGITIZED } from "./testing/haveDigitized";
 
 describe("bundled samples", () => {
-  it("ships both the digitized records and the simulated ones", () => {
+  // Asserted in both states rather than skipped, because "the digitized records
+  // are gone" is a claim worth testing too: a suppression that half-worked, with
+  // a record still reachable through the picker, would otherwise pass quietly.
+  it("ships all eight digitized records, or none of them, and always the simulated", () => {
     const dig = SAMPLES.filter((s) => s.provenance === "digitized");
     const sim = SAMPLES.filter((s) => s.provenance === "simulated");
-    expect(dig).toHaveLength(8);
     expect(sim.length).toBeGreaterThan(0);
-    // the real records lead the picker
-    expect(SAMPLE_GROUPS[0]).toMatch(/^Real/);
-    expect(SAMPLES[0].provenance).toBe("digitized");
+    expect(dig).toHaveLength(HAVE_DIGITIZED ? 8 : 0);
+    if (HAVE_DIGITIZED) {
+      // the real records lead the picker
+      expect(SAMPLE_GROUPS[0]).toMatch(/^Real/);
+      expect(SAMPLES[0].provenance).toBe("digitized");
+    } else {
+      expect(SAMPLE_GROUPS.some((g) => g.startsWith("Real"))).toBe(false);
+    }
   });
 
   // The simulated GnRH records were built to the protocol of the same paper the

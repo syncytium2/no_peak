@@ -15,6 +15,7 @@ import { describe, expect, it } from "vitest";
 
 import { parseArgs, expandInputs, runFiles, summaryHeader } from "./cluster.ts";
 import { DEFAULT_PARAMS } from "../src/core/types.ts";
+import { HAVE_DIGITIZED } from "../src/testing/haveDigitized.ts";
 
 const CLI = fileURLToPath(new URL("./cluster.ts", import.meta.url));
 
@@ -146,7 +147,7 @@ describe("summaryHeader", () => {
 });
 
 describe("the program", () => {
-  it("writes one row per record, and a header row", () => {
+  it.skipIf(!HAVE_DIGITIZED)("writes one row per record, and a header row", () => {
     const csv = run(["data/digitized/webster1991_fig3b_thx_8067_gnrh.csv",
                      "data/digitized/webster1991_fig3b_thx_8067_lh.csv"]);
     expect(csv.split("\n")[0]).toContain("batch summary");
@@ -167,7 +168,7 @@ describe("the program", () => {
 
   // The anchors. These counts are the ones src/core/presets.test.ts asserts
   // against the library, and the ones the source papers report.
-  it("reproduces the paper's 11 GnRH pulses in the digitized THX ewe", () => {
+  it.skipIf(!HAVE_DIGITIZED)("reproduces the paper's 11 GnRH pulses in the digitized THX ewe", () => {
     const csv = run([
       "data/digitized/webster1991_fig3b_thx_8067_gnrh.csv",
       "--preset", "webster1991_gnrh",
@@ -180,7 +181,7 @@ describe("the program", () => {
     expect(dataRows(csv)[0].split(",")[3]).toBe("11");
   });
 
-  it("batches a directory under one setting, skipping what is not a series", () => {
+  it.skipIf(!HAVE_DIGITIZED)("batches a directory under one setting, skipping what is not a series", () => {
     // data/digitized holds eight records plus webster1991_pulses.csv, which is
     // that paper's pulse table rather than a time series.
     const csv = run(["data/digitized", "--preset", "webster1991_lh"]);

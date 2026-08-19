@@ -14,12 +14,21 @@
 //
 //   npx tsx tools/score_webster1991.ts
 
-import { readFileSync, readdirSync } from "node:fs";
+import { existsSync, readFileSync, readdirSync } from "node:fs";
 import { clusterMain } from "../src/core/cluster.ts";
 import { parseSeries } from "../src/core/csv.ts";
 import { DEFAULT_PARAMS, type ClusterParams, type ErrorModelType } from "../src/core/types.ts";
 
 const DIR = "data/digitized";
+
+// Fails here rather than three screens later with an unreadable stack. The tree
+// is committed today; docs/digitized-suppression.md covers the case where it is
+// deliberately not.
+if (!existsSync(`${DIR}/webster1991_pulses.csv`)) {
+  console.error(`${DIR}/ is not in this checkout, so there is nothing to score.`);
+  console.error("See docs/digitized-suppression.md.");
+  process.exit(1);
+}
 const MODELS: ErrorModelType[] = ["Local SD", "Local SE", "Global SD", "Global SE", "SQRT"];
 
 /**

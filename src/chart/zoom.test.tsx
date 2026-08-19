@@ -8,21 +8,7 @@ import { ClusterChart } from "./ClusterChart";
 import { runSegments } from "../core/segments";
 import { DEFAULT_PARAMS } from "../core/types";
 import { SAMPLES } from "../samples";
-
-const sample = SAMPLES.find((s) => s.key === "w91_gnrh_thx_9013")!;
-const series = sample.load();
-const run = runSegments(
-  [{ name: "x", values: series.values, times: series.times, error: series.error }],
-  // settings that actually find this record's pulses, so the test exercises
-  // a figure with something in it
-  { ...DEFAULT_PARAMS, nPeak: 1, nNadir: 1, tScoreUp: 1, tScoreDn: 1 }, sample.deltaT,
-);
-
-const draw = (xRange?: [number, number]) =>
-  renderToStaticMarkup(
-    <ClusterChart result={run.combined} showError showMscore xLabel="Time (min)"
-      yLabel="GnRH" svgRef={{ current: null }} timeUnit="min" xRange={xRange}
-      onXRangeChange={() => {}} />);
+import { HAVE_DIGITIZED, NEEDS_DIGITIZED } from "../testing/haveDigitized";
 
 /** x-axis tick labels, which reveal the visible domain. */
 const ticks = (html: string) =>
@@ -30,11 +16,53 @@ const ticks = (html: string) =>
     .map((m) => Number(m[1].replace(/,/g, "")))
     .filter((v) => Number.isFinite(v));
 
-describe("horizontal zoom", () => {
+if (!HAVE_DIGITIZED) {
+  describe("horizontal zoom", () => {
+    it.skip(NEEDS_DIGITIZED, () => {});
+  });
+}
+
+// Every assertion below is tied to the shape of this particular record — a 6 h
+// trace on a 5-min grid, with more than five pulses at these settings — so a
+// simulated record cannot stand in for it without rewriting the expectations.
+// When the digitized traces are absent the file skips instead.
+/**
+ * Built on first use, not at collection time. `describe.skipIf` still runs the
+ * suite body to register its tests — it only marks them skipped — so loading a
+ * digitized record there throws before the skip ever applies. Everything that
+ * touches the record has to wait until a test actually runs.
+ */
+function build() {
+  const sample = SAMPLES.find((s) => s.key === "w91_gnrh_thx_9013")!;
+  const series = sample.load();
+  const run = runSegments(
+    [{ name: "x", values: series.values, times: series.times, error: series.error }],
+    // settings that actually find this record's pulses, so the test exercises
+    // a figure with something in it
+    { ...DEFAULT_PARAMS, nPeak: 1, nNadir: 1, tScoreUp: 1, tScoreDn: 1 }, sample.deltaT,
+  );
+
+  const draw = (xRange?: [number, number]) =>
+    renderToStaticMarkup(
+      <ClusterChart result={run.combined} showError showMscore xLabel="Time (min)"
+        yLabel="GnRH" svgRef={{ current: null }} timeUnit="min" xRange={xRange}
+        onXRangeChange={() => {}} />);
+
+  return { run, draw };
+}
+
+let cached: ReturnType<typeof build> | undefined;
+const ctx = () => {
+  if (!cached) cached = build();
+  return cached;
+};
+
+describe.skipIf(!HAVE_DIGITIZED)("horizontal zoom", () => {
   it("narrows the axis to the requested window", () => {
     // Unzoomed, this 6 h record ticks on whole hours, so the axis promotes
     // itself to hours and reads 0…6 (see promoteTimeUnit). Zoomed to an hour,
     // the ticks are 10-minute marks and stay in minutes.
+    const { draw } = ctx();
     const all = ticks(draw());
     const win = ticks(draw([120, 180]));
     expect(Math.max(...all)).toBe(6);
@@ -43,6 +71,7 @@ describe("horizontal zoom", () => {
   });
 
   it("clips the data so nothing spills outside the axes", () => {
+    const { draw } = ctx();
     expect(draw([120, 180])).toMatch(/<clipPath id="plot-/);
     expect(draw([120, 180])).toMatch(/clip-path="url\(#plot-/);
   });
@@ -50,6 +79,7 @@ describe("horizontal zoom", () => {
   it("leaves every reported statistic untouched", () => {
     // the chart is a pure view of one result; zooming re-renders, it does not
     // re-analyze, so the summary object is the same one either way
+    const { run, draw } = ctx();
     const before = JSON.stringify(run.combined.summary);
     draw([120, 180]);
     draw();
@@ -66,6 +96,7 @@ describe("horizontal zoom", () => {
       [...html.matchAll(/<text[^>]*y="4\d\d"[^>]*>(-?[\d,]+)<\/text>/g)]
         .map((m) => Number(m[1].replace(/,/g, "")))
         .filter((v) => Number.isFinite(v));
+    const { draw } = ctx();
     const right = signedTicks(draw([300, 380]));
     expect(Math.max(...right)).toBeLessThanOrEqual(360);
     const left = signedTicks(draw([-40, 60]));
@@ -75,6 +106,7 @@ describe("horizontal zoom", () => {
   it("still draws the whole record when no window is set", () => {
     // In hours, the promoted unit for a 6 h record: first tick at the start,
     // last within reach of the end.
+    const { draw } = ctx();
     const t = ticks(draw());
     expect(Math.min(...t)).toBe(0);
     expect(Math.max(...t)).toBe(6);
