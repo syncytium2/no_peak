@@ -1,5 +1,16 @@
 # Real traces, digitized from published figures
 
+> ⚠ **Status, 2026-08-19 — the contractual question was answered, and it was
+> answered against the position below.** University counsel says a derived table
+> of values *is* "any part of the Publications" under the subscription license,
+> and these eight series were read off the licensed PDF. **Nothing has been
+> withdrawn**: what happens to this data is the owner's decision and has not been
+> put to him. Read
+> [`docs/figure-data-permissions.md`](../../docs/figure-data-permissions.md),
+> section "Counsel answered, and it goes the other way", before acting on
+> anything in this file — and **do not re-extract from the library scan**, which
+> carries a delivery-notice problem of its own.
+
 > **Not to be confused with [`data/synthetic/`](../synthetic/README.md).** The
 > simulated GnRH records there were built to this very paper's protocol, so they
 > look and read alike — but they are generated, correspond to no animal, and
@@ -38,15 +49,28 @@ So what remains is the position set out in
 its own and without a blessing on top of it: measurements are facts and carry no
 copyright (*Feist*); digitizing figures is routine and Cochrane-recommended
 practice, precedented in peer-reviewed data papers; and no publisher has ever
-been recorded objecting to it. The **contractual question remains open and
-untested**, which that document says at length rather than glossing.
+been recorded objecting to it. ~~The **contractual question remains open and
+untested**, which that document says at length rather than glossing.~~ **It was
+tested on 2026-08-19 and it came back against us**; see the banner at the top of
+this file. The *Feist* and precedent arguments in that document are untouched —
+they are about copyright, and the answer that landed is about contract.
 
-Two requests are open as of 2026-08-13 — the journal's publisher, and the
-University of Michigan library on whether the institutional licence already
-covers publishing values derived this way. **The request ledger in
+~~Two requests are open as of 2026-08-13~~ — the journal's publisher, and the
+University of Michigan library on whether the institutional license already
+covers publishing values derived this way. **The library request is answered as
+of 2026-08-19: it does not cover it.** The publisher has still not replied.
+**The request ledger in
 [`docs/figure-data-permissions.md`](../../docs/figure-data-permissions.md) is
 the live record**: dates, what was asked, what came back. Record outcomes there
-rather than here, and withdraw the data if either answers no.
+rather than here.
+
+⚠ **This file's own standing instruction was "withdraw the data if either
+answers no", and one of them has now answered no.** That instruction was written
+before there was an answer to weigh, and carrying it out is a visible change to
+the site and a day's work through presets, tests, `/methods` and the exported
+artifacts. **It is the owner's call and it has not been made** — it is written
+down here so that nobody discovers the trigger was hit and quietly does neither
+thing.
 
 ### Reproducing the scoring in the app
 

@@ -25,6 +25,33 @@ started the day).
 
 ---
 
+## Arrived 2026-08-19 — counsel answered on the figure data, and §1 is affected
+
+**Two decisions are now waiting on the owner, and they are the largest open
+items in this file.** University counsel answered the two questions left with
+them on 2026-08-14:
+
+- **A derived table of measured values *is* "any part of the Publications"**
+  under the subscription license. The argument that the eight digitized series
+  are facts rather than a part of the article was put to the people who could
+  answer it and rejected. This reaches data **already published** — the series in
+  `data/digitized/` were read off the licensed PDF and are in the repo, in
+  `src/samples.ts`, in the bundle on the live site and in every exported figure,
+  PDF and results CSV.
+- **The Document Delivery scan is not the clean source 2026-08-17 took it for.**
+  It escapes the license, as expected, but counsel expects OUP to read its
+  "private study, scholarship, or research" notice as covering extracted content
+  too.
+
+Full record, including what survives and what does not, in
+`docs/figure-data-permissions.md` → "Counsel answered, and it goes the other
+way". **Nothing has been withdrawn, regenerated or re-extracted on the strength
+of it.** The two decisions — what happens to the eight published series, and
+whether to pursue the bound volume itself, which neither answer touches — are
+his, and had not been put to him when this was written. **Do not re-extract from
+the library scan** in the meantime; `tools/crosscheck_webster_print.py` stays an
+instrument and still writes nothing to `data/digitized/`.
+
 ## Arrived 2026-08-14 — the gitignored data now syncs, and §9 is affected
 
 **Read this before concluding any data is missing.** The four gitignored trees
@@ -283,12 +310,15 @@ first still stands unsupported and is the live half of this item:
   from all of the above; **do not reinstate it.** This item was right that the
   sentence was unverifiable, and the lesson is narrower than "get permission":
   *a blessing that is never written down addresses nothing, because it cannot be
-  produced later.* Two requests are now open — the journal's publisher, and the
-  U-M library on whether the institutional license already covers it. They are
-  tracked in **the request ledger in `docs/figure-data-permissions.md`**, which
-  is where every ask and answer now goes, at the time it happens rather than
-  after. **Decide by 2026-08-27** if both are still silent; the ledger says what
-  the fallback costs.
+  produced later.* ~~Two requests are now open — the journal's publisher, and the
+  U-M library on whether the institutional license already covers it.~~ **The
+  library answered on 2026-08-19, via University counsel: it does not cover it,
+  and a derived table of values counts as part of the publication.** The
+  publisher has still not replied. Both are tracked in **the request ledger in
+  `docs/figure-data-permissions.md`**, which is where every ask and answer now
+  goes, at the time it happens rather than after. ~~**Decide by 2026-08-27** if
+  both are still silent~~ — **the decision is live now and is not about silence**;
+  see the 2026-08-19 block at the top of this file.
 
 **The live half is Johnson's approval**, which is still a public claim on the
 About page resting on a single line of hearsay in `docs/reference-code.md`
