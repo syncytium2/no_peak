@@ -123,9 +123,10 @@ to change what the app reports).
 picker; `sim_gnrh_thx_ewe` loads by default so the app never opens blank. Real
 lab recordings are NOT bundled and NOT committed — see `docs/reference-code.md`.
 
-`data/digitized/` holds eight REAL hormone records, read off the published
-figures of Webster et al. 1991
-(`tools/digitize_webster1991.py`). Those figures mark every pulse that paper's
+`data/digitized/` holds eight REAL hormone records, read off the printed
+figures of Webster et al. 1991 — from the U-M library's scan of the bound print
+volume, not the publisher's PDF
+(`tools/digitize_webster_print.py`). Those figures mark every pulse that paper's
 own CLUSTER run identified, so the set carries a ground truth nobody here
 supplied — the only such data in the project. The article itself is NOT
 redistributed; only the numbers.
@@ -274,7 +275,7 @@ do not have redistribution rights for. `reference/` is gitignored; see
 `data/oracle/`, `data/oracle_igor/` — real lab recordings and output derived
 from them. Keep them locally to run the oracle tests and regenerate oracles;
 without them those suites skip. Committed: `data/synthetic/` and `data/benchmark/` (simulated, ours) and
-`data/digitized/` (real, read off a published figure; the rights position is
+`data/digitized/` (real, read off a printed figure; the rights position is
   in `docs/figure-data-permissions.md` and rests on no author's permission —
   see its banner).
 

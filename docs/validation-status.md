@@ -208,11 +208,21 @@ consistency check, not independent validation. See `data/digitized/README.md`; p
 
 **Result.** At the paper's own settings (one-point windows, t = 3.2 for GnRH and
 2.32 for LH, original Fortran) and supplied with the assay error the hormones
-actually had — a CV plus a floor at the detection limit — the port recovers **67
-of 70 published pulses with no false positives: 96% sensitivity, 100%
-precision.** Six of the eight panels match exactly, including both records the
-paper reports as pulse-free. The three misses are all in one LH record (#9009),
-whose pulses are the smallest in absolute terms.
+actually had — a CV plus a floor at the detection limit — the port recovers **68
+of 70 published pulses with no false positives: 97% sensitivity, 100%
+precision.** Six of the eight panels match exactly, including all three records
+the paper reports as pulse-free. The two misses are one pulse each in two LH
+records, #9013 and #9009, whose marked pulses are the smallest in absolute
+terms.
+
+⚠ **These figures were re-derived again on 2026-08-19, when the traces were
+re-read from the library's print-volume scan** — a provenance change, not an
+accuracy one, forced by counsel's answer on the license (see
+`docs/figure-data-permissions.md`). Everything in this section moved slightly.
+The total went 67 → 68 of 70, the fitted GnRH floor went 0.06 → 0.07 pg/min by
+the same sweep re-run on the new reading, and the zero-slack line below stopped
+costing anything. **Do not compare any number here against a copy of this
+document from before that date.**
 
 ⚠ **These figures were re-derived on 2026-08-15 and several moved.** Three of the
 eight traces had been dominated by a digitization artifact — the reader
@@ -224,26 +234,36 @@ them. Nothing here rests on the artifact now, but no number in this section
 should be compared against a copy of this document older than that date.
 
 **Two constants in that error model are fitted, and they buy the precision, not
-the sensitivity.** The CV (8%) and the GnRH floor (0.06 pg/min) are not in the
-paper. Sweeping the floor at cv = 0.08: sensitivity is 96% at every value from 0
-to 0.06 and falls above it (94% at 0.07–0.08, 91% at 0.10), while precision runs
-65% (floor 0), 96% (0.03), 100% (0.05–0.06). Both free constants sit at the joint
-optimum. An earlier draft of this section said "the result is not sensitive to
-it" — true of the number that could not move, and silent about the one that could.
+the sensitivity.** The CV (8%) and the GnRH floor (0.07 pg/min) are not in the
+paper. Sweeping the floor at cv = 0.08 on the current reading: sensitivity is
+97% at every value from 0.03 to 0.10, while false positives run 2–3 at 0.03, 1
+from 0.04 to 0.06, and 0 from 0.07 up. The fitted value is the low edge of that
+zero plateau, chosen the same way its predecessor was. The CV is pinned from
+above instead: sensitivity falls to 96% past 0.08. An earlier draft of this
+section said "the result is not sensitive to it" — true of the number that could
+not move, and silent about the one that could.
+
+⚠ **The floor's upper constraint disappeared with the re-reading, and that is
+worth noticing rather than glossing.** Against the licensed-PDF reading,
+sensitivity *fell* above a floor of 0.06 (94% at 0.07–0.08, 91% at 0.10), which
+is what pinned the old value from above. On the print-scan reading it does not
+fall at all across the swept range, so the floor is now fixed by precision
+alone. The constant moved because the data did.
 
 The un-fitted half is the LH arm, whose floor is the paper's own published assay
-sensitivity of 0.45 ng/ml: **35 of 38**, stable across CVs from 4% to 8%; its zero
-false-positive count, however, holds only from about 7.8% upward and so still
-leans on the fitted CV. The GnRH arm with its fitted floor is 32 of 32 with no
-false positives.
+sensitivity of 0.45 ng/ml: **36 of 38**, stable across CVs from 4% to 8% (37 of
+38 at the lower end); its zero false-positive count, however, holds only from
+about 7.8% upward and so still leans on the fitted CV. The GnRH arm with its
+fitted floor is 32 of 32 with no false positives.
 
-Matching allows one sample of slack; at zero slack the total is 66 of 70 with 1
-false positive (94% / 99%), so the headline does not rest on the tolerance.
+Matching allows one sample of slack; on this reading it buys nothing, since at
+zero slack the total is the same 68 of 70 with no false positives. The headline
+does not rest on the tolerance at all now, where before it rested on it a little.
 
-⚠ **"A CV plus a floor" reduces to "a floor" over most of this corpus.** 395 of
-the 536 samples (74%) have their reconstructed error pinned exactly at the floor,
+⚠ **"A CV plus a floor" reduces to "a floor" over most of this corpus.** 387 of
+the 536 samples (72%) have their reconstructed error pinned exactly at the floor,
 so the proportional term never engages for them: all 61 of #8058's LH samples,
-all 73 of both #8058 and #9009 GnRH, 68 of 73 for #8067 GnRH. For those records
+all 73 of both #8058 and #9009 GnRH, 69 of 73 for #8067 GnRH. For those records
 CLUSTER received a *constant* per-sample error, which is a materially different
 input from a proportional one, and the sensitivity of the result to the CV is
 correspondingly concentrated in the minority of samples that clear the floor.

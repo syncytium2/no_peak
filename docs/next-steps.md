@@ -51,20 +51,26 @@ other uses" — a disclaimer, not a restriction. Content obtained outside the
 subscription is not reached by the terms the library signed, so what governs is
 copyright alone, and facts are not copyrightable.
 
-**The path: re-extract the eight series from the library scan, retire the
-PDF-derived values rather than keep both, publish.** Nothing has been
-re-extracted, withdrawn or regenerated — that is the owner's go-ahead and the
-work is not trivial (`digitize_webster1991.py` against the scanner's MRC layers,
-the panel geometry re-measured, heavier ink closing the pulse circles).
-`tools/crosscheck_webster_print.py` remains an instrument and still writes
-nothing to `data/digitized/`.
+**Done the same day.** All eight series were re-read from the library scan by
+the new `tools/digitize_webster_print.py --write`, and the PDF-derived values
+were retired rather than kept alongside. **Nothing this project publishes now
+derives from the licensed copy.** `tools/digitize_webster1991.py` is superseded
+and refuses to write.
 
-⚠ **What is NOT cured: the currently committed series.** They came off the
-licensed PDF, and the first answer above still reaches them. The route to
-*replacing* them is open; until the replacement lands their position is
-unchanged. **Buying or borrowing a physical copy is moot** — the scan suffices.
-For the record, it was also not easy: AbeBooks has no listing, and the
-specialist back-issue dealer closed on 2026-01-01.
+Three things moved and all are written up in `docs/figure-data-permissions.md` →
+"The re-extraction, and what it changed": the 08-17 reading's ~2% scale error
+turned out to be its own (Figs. 3 and 4 are printed at different reductions, and
+it fitted one axis across both); the fitted GnRH error floor moved 0.06 → 0.07
+pg/min, re-fitted by the sweep `validation-status.md` specifies; and scoring
+improved to **68 of 70 published pulses with no false positives**, now
+independent of the matching slack. 218 tests pass.
+
+⚠ **The live site still serves the old values.** `dist/` deliberately still
+matches what is deployed; a redeploy is the owner's call.
+
+**Buying or borrowing a physical copy is moot** — the scan sufficed. For the
+record it was also not easy: AbeBooks has no listing, and the specialist
+back-issue dealer closed on 2026-01-01.
 
 **A suppression switch exists and is NOT thrown.** `docs/digitized-suppression.md`
 is the runbook: three no-op changes landed 2026-08-19 so that withdrawing the

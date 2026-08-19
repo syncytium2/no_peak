@@ -13,18 +13,19 @@ full record is in [`figure-data-permissions.md`](figure-data-permissions.md) →
 "Counsel answered, and it goes the other way". **The decision to throw this
 switch is the owner's and has not been made.**
 
-⚠ **Its likely use changed later the same day, and this file was written before
-that.** The Copyright Librarian retracted the answer that had made the Document
-Delivery scan look encumbered, which opens a route that ends in **replacement
-rather than withdrawal**: re-read the eight series off the library scan, retire
-the PDF-derived ones, publish. See "Answer 4 was retracted" in that same
-document.
+⚠ **That reason is spent. The problem it was built for was solved by
+replacement, not withdrawal.** Later the same day the Copyright Librarian
+retracted the answer that had made the Document Delivery scan look encumbered,
+and the eight series were re-read from that scan; nothing this project publishes
+now derives from the licensed copy. See "Answer 4 was retracted" and "The
+re-extraction, and what it changed".
 
-That does not make this switch useless, and it is deliberately being left in
-place. Re-extraction is real work and may not land in one sitting; if the
-committed values have to come down while it is in flight, this is how, and
-reversing it is one command. **What it is no longer is the most likely
-outcome.** Do not read the runbook below as a plan.
+**So there is currently nothing to suppress on rights grounds, and this switch
+should not be thrown.** It is kept because it is built, tested and free to
+carry: the loader tolerates a missing `data/digitized/`, and five test files
+skip cleanly without it. If the tree ever has to come down — a fresh rights
+question, or a re-extraction in flight — the runbook below still works, and
+reversing it is one command. **Do not read it as a plan.**
 
 ## What the switch is
 

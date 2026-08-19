@@ -40,16 +40,21 @@ const MODELS: ErrorModelType[] = ["Local SD", "Local SE", "Global SD", "Global S
  *
  * The LH floor is the sensitivity the paper reports, 0.45 ng/ml. The GnRH assay
  * is quoted per tube (0.07 pg) rather than per unit of the reported rate, so
- * its floor cannot be converted without knowing the collection volumes; 0.06
+ * its floor cannot be converted without knowing the collection volumes; 0.07
  * pg/min is what best matches the published calls. The CV of 0.08 is not in the
  * paper either. BOTH are fitted, and both sit at the joint optimum of the score
- * — see docs/validation-status.md. Sensitivity is insensitive to them (96% at
- * every GnRH floor from 0 to 0.06); precision is not (45% -> 99% over the same
- * range). The LH arm, whose floor IS the paper's published assay sensitivity,
- * is the un-fitted result: 35/38 with no false positives.
+ * — see docs/validation-status.md. Sensitivity is insensitive to the floor
+ * (97% at every value from 0.03 to 0.10 on the current reading); precision is
+ * not (96% -> 100% over the same range). The LH arm, whose floor IS the paper's
+ * published assay sensitivity, is the un-fitted result.
+ *
+ * The GnRH floor was 0.06 until 2026-08-19, fitted against a reading of the
+ * publisher's PDF. The traces are now read from the library's print scan and
+ * the same sweep puts the optimum at 0.07 — see tools/digitize_webster_print.py
+ * for the sweep and why the constant moved.
  */
 const ASSAY = {
-  gnrh: { cv: 0.08, floor: 0.06 },   // floor inferred
+  gnrh: { cv: 0.08, floor: 0.07 },   // floor inferred
   lh: { cv: 0.08, floor: 0.45 },     // floor as published
 };
 

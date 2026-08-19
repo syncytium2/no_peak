@@ -1,20 +1,39 @@
-"""Independent second extraction of Webster 1991 Figs 3-4 from the U-M library
-print-volume scan, for comparison against the committed PDF-derived CSVs.
+"""Read Webster 1991 Figs 3-4 off the U-M library's print-volume scan.
 
-**Writes nothing to data/digitized/.** This is an instrument for measuring how
-well the digitization holds up, not a re-extraction: docs/figure-data-permissions.md
-holds re-extraction until counsel answers, and nothing here anticipates that.
+**This is the extractor for data/digitized/.** It replaced
+tools/digitize_webster1991.py on 2026-08-19, and the reason is provenance, not
+accuracy: that tool reads the publisher's PDF, obtained through the library's
+electronic subscription, and University counsel confirmed that a derived table
+of values is "any part of the Publications" under the terms attached to that
+copy. This one reads the Document Delivery scan of the bound volume, which was
+obtained outside the subscription. See docs/figure-data-permissions.md.
 
-    python3 tools/crosscheck_webster_print.py [--json out.json]
+    python3 tools/digitize_webster_print.py            # read and report
+    python3 tools/digitize_webster_print.py --write    # regenerate the CSVs
+    python3 tools/digitize_webster_print.py --json out.json
 
-The two readings share no pixels -- different scan, different page
-decomposition, different panel geometry, an independently solved axis, a
-different circle test -- so the spread between them measures digitization
-accuracy, which is the only way this project has ever had to measure it.
+Run without --write it also diffs what it read against what is committed, which
+is now a regeneration check: the committed CSVs should come back out of the scan
+unchanged.
 
-As of 2026-08-17 it reports: 70 of the paper's 72 marked pulses at identical
-sample indices, and a median disagreement of 0.26 printed line widths across the
-five records not already flagged as being at the figure's resolution limit.
+--- what the two readings said about each other ------------------------------
+
+Before the replacement this file was an instrument rather than the extractor,
+and the diff it printed was the only measurement of digitization accuracy this
+project has ever had a way to make. The two readings shared no pixels: different
+scan, different page decomposition, different panel geometry, an independently
+solved axis, a different circle test. Recorded here because the comparison
+cannot be run again once the committed files come from this side of it.
+
+  - 68 of the paper's 70 marked pulses at identical sample indices; the other
+    two each moved by one sample.
+  - Median disagreement 0.8% of each record's range, 0.18 printed line widths,
+    across the five records not at the figure's resolution limit.
+  - The three flat records disagree by up to 1.2 line widths, which is what
+    their own banner predicts rather than a new problem.
+
+The 08-17 version of this file reported 1.5% and 0.26 line widths. The
+difference is the axis calibration below, not a change in the scan.
 
 --- why this is not just a --page flag ---------------------------------------
 
@@ -244,53 +263,118 @@ def tick_rows(ink, top, bottom, left, look=34, gap=6, frac=0.0):
     return [y for y, d in cl if d >= frac * dmax]
 
 
-major_ticks = tick_rows          # name kept where it is called
+def tick_depths(ink, top, bottom, left, look=34, gap=6):
+    """Every tick as (row, protrusion depth), the row taken at full protrusion.
 
-
-def fit_lattice(panels, ticks, lo=45.0, hi=260.0, tol=0.13):
-    """Pixels per minor interval, as the tick lattice's own period.
-
-    The figure prints a tick at every minor interval measured up from the zero
-    line, so the ticks lie on a lattice anchored at the axis. Sweeping the
-    period and counting how many ticks fall on it measures that lattice
-    directly, which is what the gaps between adjacent ticks only approximate --
-    a tick detected twice, or a stray, puts a short gap into the set and drags
-    a median estimate down, while it merely fails to score here.
-
-    Ties go to the LARGEST period. Half a period also passes through every tick
-    and so always ties on count; the true one is the coarsest lattice that still
-    explains them.
-
-    The four panels of a hormone share one printed axis -- all four GnRH records
-    are portal GnRH on 0-1-2, all four LH records presampling LH on 0-10-20 --
-    so their ticks are scored against one period, which is both steadier than
-    any single panel and the honest model of the page.
+    Same measurement as `tick_rows`, keeping the depth and centring the row on
+    the rows that actually reach the tick's own maximum rather than on the whole
+    detected group. A heavy scan frays the far end of a tick; the frayed rows
+    are shallower, so they drag a group's midpoint but not this one.
     """
-    best = None
-    u = lo
-    while u <= hi:
-        hits = 0
-        for p in panels:
-            for t in ticks[p["key"]]:
-                d = (p["bottom"] - t) / u
-                if d > 0.5 and abs(d - round(d)) < tol:
-                    hits += 1
-        if best is None or (hits, u) > (best[0], best[1]):
-            best = (hits, u)
-        u += 0.1
-    return best[1], best[0]
+    L = int(left)
+    sl = ink[top:bottom, L - look:L + 6]
+    xl = np.array([(np.flatnonzero(r).min() if r.any() else 10 ** 6) for r in sl])
+    real = xl[xl < 10 ** 6]
+    if not len(real):
+        return []
+    base = int(np.bincount(real).argmax())
+    depth = np.where(xl < 10 ** 6, base - xl, -1)
+    hit = np.flatnonzero(depth >= 3)
+    if not len(hit):
+        return []
+    out = []
+    for g in _group(list(hit), gap):
+        seg = depth[min(g):max(g) + 1]
+        d = int(seg.max())
+        core = np.flatnonzero(seg >= d - 2) + min(g)
+        out.append(((core.min() + core.max()) / 2 + top, d))
+    return out
 
 
-def solve_scales(panels, ticks):
-    out, report = {}, {}
-    for hormone in {p["hormone"] for p in panels}:
-        grp = [p for p in panels if p["hormone"] == hormone]
-        u, hits = fit_lattice(grp, ticks)
-        total = sum(len(ticks[p["key"]]) for p in grp)
-        for p in grp:
-            out[p["key"]] = grp[0]["minor"] / u
-        report[hormone] = (u, hits, total)
-    return out, report
+# A labelled tick protrudes about five times as far as a minor one (33-35 px
+# against 3-9 on this scan), so this threshold sits in a wide gap rather than
+# being tuned. The label digits are ~74 px clear of the axis and outside the
+# 34 px detection band, so they are not what is being measured.
+LABELLED_FRAC = 0.70
+
+
+def calibrate(ink, p):
+    """Scale and zero row for one panel, from its labelled ticks alone.
+
+    ⚠ **Calibrate per panel. Figures 3 and 4 are printed at different
+    reductions** -- Fig. 4's boxes are about 2% taller than Fig. 3's on the same
+    page, and its axes are scaled to match. An earlier version of this file fit
+    ONE lattice period across all four panels of a hormone, on the reasoning
+    that they share one printed axis. They do not: they share one *design*, laid
+    out twice at different sizes. That fit returned a compromise between the two
+    figures and was the whole of the systematic ~2% disagreement with the
+    licensed-scan reading. Per-panel calibration removes it and brings the four
+    panels' implied axis tops from a 3% spread onto 3.00 pg/min.
+
+    The minor ticks are not used. They clear this scan's heavy axis by two or
+    three pixels, and a lattice vote over them moved the two hormones in
+    opposite directions by up to 2% -- noise, not a bias worth correcting. The
+    labelled ticks are unambiguous, and zero-to-top is four minor intervals, so
+    the baseline is four times longer than any single gap.
+    """
+    rows = tick_depths(ink, p["top"] - 40, p["bottom"] + 40, p["left"])
+    if not rows:
+        return None
+    dmax = max(d for _, d in rows)
+    lab = sorted((y for y, d in rows if d >= LABELLED_FRAC * dmax), reverse=True)
+    step = 2 * p["minor"]                      # labelled every second minor
+    if len(lab) != 3:
+        return dict(scale=None, zero=None, n=len(lab), resid=None, step=step)
+    # rows run downwards, values upwards: row = zero - value * px_per_unit
+    v = np.array([0.0, step, 2 * step])
+    r = np.array(lab, dtype=float)
+    A = np.column_stack([np.ones(3), -v])
+    (zero, per_unit), *_ = np.linalg.lstsq(A, r, rcond=None)
+    resid = float(np.max(np.abs(A @ np.array([zero, per_unit]) - r)))
+    return dict(scale=float(1.0 / per_unit), zero=float(zero), n=3,
+                resid=resid, step=step, per_unit=float(per_unit))
+
+
+def solve_scales(ink, panels):
+    """Per-panel scale, with the axis top pooled across the panels that share it.
+
+    Two measurements are available and they are not equally good. A panel's box
+    height is a distance between two long straight rules, good to about a pixel
+    in 650. The gap between labelled ticks is 210 px measured between features
+    whose rows this scan reports to about +/-3, so 1.5% -- and the four panels
+    of one hormone duly disagree by 2-3% on it, which is more than the printed
+    page can actually differ.
+
+    So use each for what it is good at. The ticks fix ONE number per hormone,
+    the value at the box top, which every panel of that hormone shares because
+    they are the same axis drawn at different sizes. The box height then carries
+    the per-panel size. Pooling four noisy tick estimates into one shared
+    constant and reading the rest off the geometry beats trusting any single
+    panel's ticks.
+
+    This does not assume a round number anywhere. GnRH comes out at 3.02 +/-
+    0.03 pg/min, which is consistent with a designed 3.00 and is not snapped to
+    it; LH comes out near 31.3 ng/ml, which is no round number at all -- the box
+    top simply is not on a gridline there.
+    """
+    out, report, tops = {}, {}, {}
+    for p in panels:
+        c = calibrate(ink, p)
+        report[p["key"]] = c
+        if c and c["scale"] is not None:
+            height = p["bottom"] - p["top"]
+            c["top_from_ticks"] = height / c["per_unit"]
+            tops.setdefault(p["hormone"], []).append(c["top_from_ticks"])
+    pooled = {h: float(np.mean(v)) for h, v in tops.items()}
+    for p in panels:
+        c = report[p["key"]]
+        if c and c["scale"] is not None and p["hormone"] in pooled:
+            c = dict(c)
+            c["axis_top"] = pooled[p["hormone"]]
+            c["scale"] = c["axis_top"] / (p["bottom"] - p["top"])
+            report[p["key"]] = c
+        out[p["key"]] = c
+    return out, report, pooled
 
 
 # ---- rings -------------------------------------------------------------------
@@ -366,9 +450,22 @@ def read_panel(ink, p, scale, ring_xy, s, ring_r):
 
     span = R - L
     at = lambda t: L + span * t / (n - 1)
-    val = lambda ypix: (B - ypix) * scale
+    # Zero comes from the labelled ticks, not from the frame. The frame's bottom
+    # rule is the zero line, but it is drawn heavily enough here that which of
+    # its rows counts as "the line" moves the whole record by a few tenths of a
+    # percent; the tick fit measures the same quantity with a 4x longer lever.
+    zero = p.get("zero") or B
+    val = lambda ypix: (zero - ypix) * scale
     pulse_at = {int(round((cx - L) / (span / (n - 1)))): val(cy) for cy, cx in ring_xy}
-    offsets = [0] + [d for k2 in range(1, int(round(4 * s)) + 1) for d in (-k2, k2)]
+    # How far sideways a sample may be read when its own column carries no ink.
+    # The licensed-scan reader searched +/-4 px at 400 dpi; scaled here that is
+    # +/-5. That is not always enough: this scan's pulse circles are erased by a
+    # fixed radius that, at LH's ~18 px sample spacing, can swallow the whole
+    # neighbourhood of the sample NEXT to a pulse. Widening the search to half a
+    # sample interval recovers those from the trace either side, and cannot
+    # wander further than half a sample by construction.
+    reach = max(int(round(4 * s)), int(round(0.5 * span / (n - 1))))
+    offsets = [0] + [d for k2 in range(1, reach + 1) for d in (-k2, k2)]
 
     def read(px):
         for dx in offsets:
@@ -505,20 +602,50 @@ def main():
     print(f"rendered p.{PAGE} at {DPI} dpi -> {ink.shape[1]}x{ink.shape[0]}")
     print(f"panel boxes are {s:.4f}x the licensed scan; ~{DPI * s:.0f} dpi of paper\n")
 
-    ticks = {p["key"]: tick_rows(ink, p["top"] + 12, p["bottom"] - 18, p["left"])
-             for p in panels}
-    for k, t in ticks.items():
-        if len(t) < 2:
-            print(f"  !! {k}: {len(t)} ticks found")
-    scales, report = solve_scales(panels, ticks)
-    for h, (u, hits, total) in sorted(report.items()):
-        print(f"{h:5s} axis: {u:.1f} px per minor interval "
-              f"({hits}/{total} detected ticks on the lattice)")
+    cal, report, pooled = solve_scales(ink, panels)
+    for k in sorted(report):
+        c = report[k]
+        if c is None or c["scale"] is None:
+            print(f"  !! {k}: {0 if c is None else c['n']} labelled ticks found, expected 3")
+            continue
+        print(f"{k:24s} ticks: {c['per_unit']:7.2f} px per unit "
+              f"(resid {c['resid']:.1f} px) -> box top {c['top_from_ticks']:7.3f}")
+    # Pooling makes "the four panels agree on the axis top" true by
+    # construction, so the check moves to where it still means something: the
+    # four INDEPENDENT tick-derived tops, before they are pooled. That is the
+    # digitizer's own validator, applied to the last quantity each panel still
+    # measures on its own.
+    pre_spread = {}
+    for h, v in sorted(pooled.items()):
+        spread = [c["top_from_ticks"] for k, c in report.items()
+                  if c and c.get("top_from_ticks")
+                  and next(p for p in panels if p["key"] == k)["hormone"] == h]
+        pre_spread[h] = (max(spread) - min(spread)) / v
+        print(f"{h:5s} axis top pooled over {len(spread)} panels: {v:.3f} "
+              f"+/- {np.std(spread):.3f} ({pre_spread[h]:.1%} spread before pooling)")
     print()
 
     tops, series, problems = {}, {}, []
     for p in panels:
-        scale = scales[p["key"]]
+        c = cal[p["key"]]
+        if c is None or c["scale"] is None:
+            problems.append(f"{p['key']}: axis calibration failed "
+                            f"({0 if c is None else c['n']} labelled ticks, expected 3)")
+            continue
+        scale = c["scale"]
+        # Scale comes from the labelled ticks; ZERO DOES NOT. The bottom frame
+        # rule is the zero line by the figure's own design, and `build_panels`
+        # already derives it carefully -- measuring the rule's weight on the top
+        # frame, where nothing can merge with it, and stepping back that far.
+        # The tick fit's intercept lands on the rule's centre instead, half a
+        # rule-weight lower, which is invisible on a record ranging to 2 pg/min
+        # and moves a flat record sitting on the axis by half its whole range.
+        # Tried both against the independent licensed-scan reading: frame zero
+        # agrees to 0.17 printed line widths, tick zero to 0.21, and the worst
+        # record goes from 1.24 line widths to 2.49. Design convention wins.
+        if c["resid"] > 6.0:
+            problems.append(f"{p['key']}: labelled ticks are {c['resid']:.1f} px "
+                            f"off a straight line")
         top_value = scale * (p["bottom"] - p["top"])
         found = rings(ink, p)
         if len(found) != p["pulses"]:
@@ -540,12 +667,14 @@ def main():
               f"{f'  {values.count(None)} UNREAD' if None in values else ''}"
               f"{'  FLAT' if flat else ''}")
 
-    for hormone, vals in tops.items():
-        spread = (max(vals) - min(vals)) / np.mean(vals)
-        print(f"\n{hormone} box-top agreement across 4 panels: {np.mean(vals):.2f} "
-              f"+/- {np.std(vals):.2f} (spread {spread:.1%})")
-        if spread > 0.05:
-            problems.append(f"{hormone}: panels disagree on the axis top by {spread:.1%}")
+    for hormone in sorted(pre_spread):
+        # Not the pooled tops -- those agree by construction and check nothing.
+        print(f"\n{hormone} independent tick-derived tops agree to "
+              f"{pre_spread[hormone]:.1%} across 4 panels")
+        if pre_spread[hormone] > 0.05:
+            problems.append(f"{hormone}: the four panels' own tick calibrations "
+                            f"disagree on the axis top by {pre_spread[hormone]:.1%}, "
+                            f"which is more than the page can differ")
 
     print("\nPROBLEMS:" if problems else "\nall validators pass")
     for q in problems:
@@ -555,8 +684,121 @@ def main():
         out.write_text(json.dumps(series, indent=1))
         print(f"wrote {out}")
     print()
+
+    if "--write" in sys.argv:
+        if problems:
+            print("refusing to write with validators failing")
+            return 1
+        n = write(panels, series)
+        print(f"wrote {n} files to {W.OUT}")
+        return 0
+
     compare(series)
     return 1 if problems else 0
+
+
+BANNER = (
+    "# DIGITIZED FROM A PUBLISHED FIGURE - not a raw laboratory record.\n"
+    "# Webster JR, Moenter SM, Barrell GK, Lehman MN, Karsch FJ.\n"
+    "# Endocrinology 1991;129(3):1635-43. PMID 1874193. {panel}, ewe #{animal}\n"
+    "# ({group}). {hormone} in {unit}, sampled every {dt} min for 6 h.\n"
+    "#\n"
+    "# SOURCE: the University of Michigan library's scan of the bound PRINT\n"
+    "# volume (Endocrinology v.129 1991 Sep), supplied by Document Delivery and\n"
+    "# obtained outside the publisher's electronic subscription. Read by\n"
+    "# tools/digitize_webster_print.py. This replaced a reading of the\n"
+    "# publisher's PDF on 2026-08-19; see docs/figure-data-permissions.md for\n"
+    "# why the source of the copy is the whole point.\n"
+    "#\n"
+    "# Values are approximate: they carry the figure's printed line width and\n"
+    "# the scan's resolution as error. The article is not redistributed - only\n"
+    "# these numbers, which are measurements. See data/digitized/README.md.\n"
+    "# Pulses identified in the paper: {pulses} (see webster1991_pulses.csv).\n"
+    "#\n"
+    "# COLUMN 3 (error) IS RECONSTRUCTED, NOT DIGITIZED. The figure prints no\n"
+    "# error bars, and the paper does not report what per-sample error it gave\n"
+    "# CLUSTER. This column is max({floor:g}, {cv:g} x value) — an assay-shaped\n"
+    "# error: a proportional term plus a floor at the detection limit. For LH\n"
+    "# that floor is the assay sensitivity the paper reports; for GnRH it was\n"
+    "# chosen to match the paper's own pulse calls, and is therefore fitted.\n"
+    "# It is supplied so the published settings are reproducible in the app,\n"
+    "# which needs a per-sample error the estimated models cannot stand in for.\n"
+)
+
+FLAT_NOTE = (
+    "#\n"
+    "# ⚠ THIS RECORD IS AT THE FIGURE'S RESOLUTION LIMIT. Its entire data range\n"
+    "# is comparable to the printed line's own thickness, so the trace carries no\n"
+    "# information about where within that line the value falls. Every sample is\n"
+    "# therefore the midpoint of the ink run, not a reading of one of its edges.\n"
+    "# Treat the LEVEL as measured and the sample-to-sample VARIATION as absent:\n"
+    "# it is a flat trace, and any pulse analysis run on it is analyzing line\n"
+    "# width. Until 2026-08-15 this file instead alternated between the two edges\n"
+    "# of the line, which produced a regular sawtooth that looked like data.\n"
+)
+
+TRUTH_HEAD = [
+    "# Pulses marked with an open circle in the published figures.",
+    "# These are the authors' own CLUSTER calls, not ours.",
+    "# Read off the U-M library's print-volume scan by",
+    "# tools/digitize_webster_print.py -- see any series file for the provenance.",
+    "series,pulse_index,time_min,value",
+]
+
+
+# The GnRH error floor is FITTED, not published, and it had to be re-fitted for
+# this reading. The criterion is the one docs/validation-status.md already sets
+# out: sweep it with the CV and take the joint optimum of sensitivity and
+# precision against the paper's own 70 marked pulses.
+#
+# Against the licensed-PDF reading that optimum was 0.06 pg/min, pinned from
+# above because sensitivity FELL past it (96% to 0.06, then 94%, then 91%).
+# Against this reading sensitivity does not fall at all across 0.03-0.10, so
+# that upper pin is gone, and the optimum is set by precision alone: extras run
+# 2-3 at 0.03, 1 at 0.04-0.06, and 0 from 0.07 up. 0.07 is the low edge of the
+# zero-extra plateau, chosen the same way 0.06 was.
+#
+# At cv = 0.08, floor = 0.07: 68 of 70 published pulses matched, 0 false
+# positives -- 97% sensitivity, 100% precision.
+#
+# ⚠ This is the one number here that was tuned, and moving it moves the third
+# column of every GnRH file. It is recorded in the file headers as fitted, and
+# it must not be nudged to make a particular record come out at a particular
+# count. It moved because the data changed source, and it was re-fitted by
+# sweeping, not by aiming.
+FITTED_FLOOR = {"GnRH": 0.07}
+
+
+def write(panels, series):
+    """Regenerate data/digitized/ from this reading.
+
+    Same format and the same reconstructed error column as the reading it
+    replaces, so nothing downstream has to change shape. What changes is the
+    numbers, the fitted GnRH floor, and the source line above them.
+    """
+    W.OUT.mkdir(parents=True, exist_ok=True)
+    truth = list(TRUTH_HEAD)
+    n = 0
+    for p in panels:
+        s = series.get(p["key"])
+        if s is None:
+            continue
+        values = s["values"]
+        if any(v is None for v in values):
+            raise SystemExit(f"{p['key']}: unread samples, refusing to write")
+        floor = FITTED_FLOOR.get(p["hormone"], p["floor"])
+        with (W.OUT / f"webster1991_{p['key']}.csv").open("w") as f:
+            f.write(BANNER.format(**dict(p, floor=floor)))
+            if s["flat"]:
+                f.write(FLAT_NOTE)
+            f.write("time,value,error\n")
+            for i, v in enumerate(values):
+                f.write(f"{i * p['dt']},{v:.3f},{max(floor, p['cv'] * v):.4f}\n")
+        n += 1
+        for i in s["pulses"]:
+            truth.append(f"{p['key']},{i},{i * p['dt']},{values[i]:.3f}")
+    (W.OUT / "webster1991_pulses.csv").write_text("\n".join(truth) + "\n")
+    return n + 1
 
 
 if __name__ == "__main__":

@@ -97,16 +97,26 @@ from a window containing the pulse, so a clean tall pulse inflates its own error
 and hides itself. On ewe #8067, published 11 pulses, Local SD finds **0**.
 
 The error column is `max(floor, 0.08 x value)`. For LH the floor is the assay
-sensitivity the paper reports (0.45 ng/ml); for GnRH it is 0.06 pg/min, chosen
+sensitivity the paper reports (0.45 ng/ml); for GnRH it is 0.07 pg/min, chosen
 to match this paper's own calls and therefore **fitted**. The file header says
 so. Nothing about that column was read off the figure — the figure prints no
 error bars.
 
+**The GnRH floor was 0.06 until 2026-08-19**, fitted against the reading of the
+publisher's PDF. Re-reading the traces from the print scan moved it to 0.07 by
+the same sweep — see the sweep summary below and
+`tools/digitize_webster_print.py`. It is the one tuned number here, and it was
+re-fitted by sweeping rather than by aiming at a particular record's count.
+
 Regenerate with:
 
 ```
-python3 tools/digitize_webster1991.py path/to/webster1991.pdf
+python3 tools/digitize_webster_print.py --write
 ```
+
+⚠ Not `tools/digitize_webster1991.py`. That one reads the publisher's licensed
+PDF, and it now refuses to write for that reason — see its docstring and
+`docs/figure-data-permissions.md`.
 
 ## Why this data is worth having
 
@@ -207,37 +217,42 @@ sample count puts the circles on whole-numbered sample positions, which picks
 `npx tsx tools/score_webster1991.ts`, and pinned in
 `src/core/webster1991.test.ts`.
 
+**These numbers were recomputed on 2026-08-19** against the print-scan reading;
+the licensed-PDF reading gave 67 of 70 with 1 false positive.
+
 At the paper's own settings — one-point windows, t = 3.2 for GnRH and 2.32 for
 LH, original Fortran — and supplying an assay-shaped error (a CV plus a floor at
-the detection limit), the port recovers **67 of the 70 published pulses with 1
-false positive: 96% sensitivity, 99% precision.**
+the detection limit), the port recovers **68 of the 70 published pulses with no
+false positives: 97% sensitivity, 100% precision.**
 
 **Read those two numbers differently, because they are not equally earned.**
 Two constants in that error model are not taken from the paper: the CV (8%) and
-the GnRH floor (0.06 pg/min). Sweeping them shows sensitivity is *insensitive*
-to both — 96% holds for every GnRH floor from 0 to 0.06 — so the sensitivity is
-not purchased by the fit. Precision is: it runs 45% at a zero floor, 83% at the
-bottom of the range this file previously called defensible, and reaches 99% only
-at the fitted value. Both free constants sit at the joint optimum.
+the GnRH floor (0.07 pg/min). Sweeping them shows sensitivity is *insensitive*
+to the floor — 97% holds at every value from 0.03 to 0.10 — so the sensitivity
+is not purchased by the fit. Precision is: false positives run 2–3 at a floor of
+0.03, 1 from 0.04 to 0.06, and 0 from 0.07 up. The fitted value is the low edge
+of that zero plateau. Sensitivity does constrain the CV, falling from 97% to 96%
+above 0.08.
 
 The un-fitted half of the result is the LH arm, whose floor **is** the paper's
-own published assay sensitivity (0.45 ng/ml): **35 of 38 pulses**, stable across CVs from 4% to 8%. (Its
-false-positive count is not equally stable: zero holds only from about 7.8%
-upward, so that half still leans on the fitted CV). The GnRH arm, with the fitted
-floor, is 32 of 32 with 1 false positive. If one number is quoted, quote the LH
-arm — nothing in it was tuned.
+own published assay sensitivity (0.45 ng/ml): **36 of 38 pulses**, stable across
+CVs from 4% to 8% (37 of 38 at the lower end). Its false-positive count is not
+equally stable: zero holds only from about 7.8% upward, so that half still leans
+on the fitted CV. The GnRH arm, with the fitted floor, is 32 of 32 with no false
+positives. If one number is quoted, quote the LH arm — nothing in its floor was
+tuned.
 
 Matching allows a one-sample slack, because at this sampling rate the peak of a
-two-sample pulse is ambiguous. At zero slack the result is 66 of 70 with 2 false
-positives — 94% sensitivity, 97% precision — so the headline does not depend on
-the tolerance. Six of
-the eight panels match exactly. The single false positive falls in one of the
-three records the paper reports as pulse-free (#8058 GnRH); the other two are
-clean.
+two-sample pulse is ambiguous. **On this reading the slack no longer buys
+anything: at zero slack the result is identical, 68 of 70 with no false
+positives.** On the previous reading it was 66 of 70 with 2 false positives, so
+the headline used to depend a little on the tolerance and now does not.
 
-The three misses are all in one LH record (#9009), whose pulses are the smallest
-in absolute terms — a mean marked-pulse value of 5.2 ng/ml against 12.4 and 17.2
-in the other two LH records.
+**Six of the eight panels match the paper exactly**, including all three records
+the paper reports as pulse-free — the port finds nothing in them, as it should.
+The two misses are one pulse each in two LH records, #9013 and #9009. Both are
+records whose marked pulses are small in absolute terms, and #9009's are the
+smallest in the set.
 
 **The more useful result is what happens without the assay error.** The paper
 reports its window widths and t-scores but not what it supplied as the

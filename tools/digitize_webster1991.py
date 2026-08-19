@@ -1,5 +1,24 @@
 """Digitize the hormone traces from Webster et al. 1991, Figures 3 and 4.
 
+⚠⚠ SUPERSEDED 2026-08-19. DO NOT RUN THIS TO REGENERATE data/digitized/. ⚠⚠
+
+    The extractor is now tools/digitize_webster_print.py.
+
+This file reads the PUBLISHER'S PDF, obtained through the University's
+electronic subscription. University counsel confirmed that a derived table of
+measured values is "any part of the Publications" under the terms attached to
+that copy, so values produced here may not be published. The committed CSVs are
+now read from the library's scan of the bound PRINT volume, which was obtained
+outside the subscription and carries no such term. Running this with --write
+would quietly put the licensed reading back into a public repository, which is
+the exact thing that had to be undone. See docs/figure-data-permissions.md.
+
+It is kept, not deleted, for three reasons: its PANELS table, tick fit and
+flat-record rule are imported by the replacement and by downLow's
+tools/review_digitization.py; its docstring below is the clearest description of
+how the reading works; and deleting the losing side of a comparison is how a
+project forgets it ever made one.
+
     Webster JR, Moenter SM, Barrell GK, Lehman MN, Karsch FJ. Role of the
     thyroid gland in seasonal reproduction. III. Thyroidectomy blocks seasonal
     suppression of gonadotropin-releasing hormone secretion in sheep.
@@ -373,6 +392,22 @@ def main(pdf):
 
 
 def write(series):
+    # SUPERSEDED — see the module docstring. This reads the licensed PDF, and
+    # values from that copy may not be published, so writing them into
+    # data/digitized/ is blocked rather than merely discouraged. A docstring
+    # does not stop a tired person running the tool they have always run.
+    if os.environ.get("NP_ALLOW_LICENSED_WRITE") != "yes-i-understand":
+        sys.exit(
+            "REFUSING TO WRITE. This tool reads the publisher's licensed PDF, and\n"
+            "values derived from that copy may not be published (University counsel,\n"
+            "2026-08-19 — docs/figure-data-permissions.md).\n\n"
+            "The extractor for data/digitized/ is:\n"
+            "    python3 tools/digitize_webster_print.py --write\n\n"
+            "which reads the library's print-volume scan. If you genuinely need this\n"
+            "one to write — a private comparison, nothing committed — set\n"
+            "NP_ALLOW_LICENSED_WRITE=yes-i-understand and send the output somewhere\n"
+            "that is not the repository."
+        )
     banner = (
         "# DIGITIZED FROM A PUBLISHED FIGURE - not a raw laboratory record.\n"
         "# Webster JR, Moenter SM, Barrell GK, Lehman MN, Karsch FJ.\n"

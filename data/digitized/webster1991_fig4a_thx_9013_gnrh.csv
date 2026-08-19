@@ -2,91 +2,98 @@
 # Webster JR, Moenter SM, Barrell GK, Lehman MN, Karsch FJ.
 # Endocrinology 1991;129(3):1635-43. PMID 1874193. Fig 4A, ewe #9013
 # (thyroidectomized). GnRH in pg/min, sampled every 5 min for 6 h.
-# Values read off the printed trace by tools/digitize_webster1991.py and
-# are therefore approximate; they carry the figure's line width and the
-# scan's resolution as error. The article is not redistributed - only
+#
+# SOURCE: the University of Michigan library's scan of the bound PRINT
+# volume (Endocrinology v.129 1991 Sep), supplied by Document Delivery and
+# obtained outside the publisher's electronic subscription. Read by
+# tools/digitize_webster_print.py. This replaced a reading of the
+# publisher's PDF on 2026-08-19; see docs/figure-data-permissions.md for
+# why the source of the copy is the whole point.
+#
+# Values are approximate: they carry the figure's printed line width and
+# the scan's resolution as error. The article is not redistributed - only
 # these numbers, which are measurements. See data/digitized/README.md.
 # Pulses identified in the paper: 21 (see webster1991_pulses.csv).
 #
 # COLUMN 3 (error) IS RECONSTRUCTED, NOT DIGITIZED. The figure prints no
 # error bars, and the paper does not report what per-sample error it gave
-# CLUSTER. This column is max(0.06, 0.08 x value) — an assay-shaped
+# CLUSTER. This column is max(0.07, 0.08 x value) — an assay-shaped
 # error: a proportional term plus a floor at the detection limit. For LH
 # that floor is the assay sensitivity the paper reports; for GnRH it was
 # chosen to match the paper's own pulse calls, and is therefore fitted.
 # It is supplied so the published settings are reproducible in the app,
 # which needs a per-sample error the estimated models cannot stand in for.
 time,value,error
-0,1.509,0.1208
-5,0.528,0.0600
-10,0.086,0.0600
-15,0.104,0.0600
-20,0.252,0.0600
-25,0.860,0.0688
-30,0.031,0.0600
-35,0.067,0.0600
-40,1.918,0.1535
-45,0.288,0.0600
-50,0.147,0.0600
-55,0.172,0.0600
-60,1.138,0.0910
-65,0.135,0.0600
-70,0.098,0.0600
-75,0.129,0.0600
-80,0.911,0.0729
-85,0.245,0.0600
+0,1.094,0.0876
+5,1.094,0.0876
+10,0.083,0.0700
+15,0.134,0.0700
+20,0.037,0.0700
+25,0.852,0.0700
+30,0.443,0.0700
+35,0.037,0.0700
+40,1.921,0.1537
+45,1.099,0.0879
+50,0.046,0.0700
+55,0.060,0.0700
+60,1.135,0.0908
+65,0.697,0.0700
+70,0.023,0.0700
+75,0.028,0.0700
+80,0.908,0.0727
+85,0.240,0.0700
 90,1.390,0.1112
-95,0.313,0.0600
-100,0.049,0.0600
-105,1.366,0.1093
-110,0.380,0.0600
-115,0.117,0.0600
-120,1.142,0.0914
-125,0.215,0.0600
-130,0.601,0.0600
-135,0.515,0.0600
-140,0.963,0.0771
-145,0.589,0.0600
-150,0.368,0.0600
-155,2.105,0.1684
-160,0.491,0.0600
-165,0.528,0.0600
-170,1.164,0.0931
-175,0.282,0.0600
-180,1.282,0.1026
-185,0.411,0.0600
-190,1.910,0.1528
-195,0.380,0.0600
-200,0.135,0.0600
-205,1.472,0.1178
-210,0.687,0.0600
-215,0.313,0.0600
-220,1.758,0.1407
-225,0.374,0.0600
-230,0.245,0.0600
-235,0.221,0.0600
-240,1.448,0.1158
-245,0.215,0.0600
-250,0.985,0.0788
-255,0.399,0.0600
-260,0.215,0.0600
-265,0.491,0.0600
-270,0.978,0.0782
-275,0.123,0.0600
-280,0.380,0.0600
-285,0.705,0.0600
-290,0.061,0.0600
-295,0.141,0.0600
-300,0.037,0.0600
-305,0.092,0.0600
-310,0.037,0.0600
-315,0.092,0.0600
-320,0.147,0.0600
-325,0.795,0.0636
-330,0.209,0.0600
-335,0.166,0.0600
-340,0.838,0.0671
-345,0.460,0.0600
-350,0.092,0.0600
-355,1.090,0.0872
-360,0.632,0.0600
+95,0.905,0.0724
+100,0.051,0.0700
+105,1.368,0.1095
+110,1.034,0.0828
+115,0.111,0.0700
+120,0.887,0.0709
+125,1.142,0.0914
+130,0.217,0.0700
+135,0.596,0.0700
+140,0.965,0.0772
+145,0.790,0.0700
+150,0.342,0.0700
+155,2.120,0.1696
+160,1.395,0.1116
+165,0.503,0.0700
+170,1.167,0.0934
+175,0.286,0.0700
+180,1.288,0.1030
+185,0.416,0.0700
+190,1.927,0.1541
+195,0.388,0.0700
+200,0.143,0.0700
+205,1.485,0.1188
+210,1.048,0.0839
+215,0.282,0.0700
+220,1.775,0.1420
+225,1.182,0.0946
+230,0.125,0.0700
+235,0.143,0.0700
+240,1.463,0.1171
+245,0.217,0.0700
+250,0.998,0.0799
+255,0.744,0.0700
+260,0.069,0.0700
+265,0.707,0.0700
+270,0.990,0.0792
+275,0.129,0.0700
+280,0.494,0.0700
+285,0.715,0.0700
+290,0.065,0.0700
+295,0.143,0.0700
+300,0.051,0.0700
+305,0.102,0.0700
+310,0.051,0.0700
+315,0.102,0.0700
+320,0.152,0.0700
+325,0.809,0.0700
+330,0.226,0.0700
+335,0.175,0.0700
+340,0.861,0.0700
+345,0.485,0.0700
+350,0.106,0.0700
+355,1.118,0.0895
+360,1.118,0.0895

@@ -1,19 +1,20 @@
 # Digitizing data from a published figure: where the permissions question lands
 
-> **Status, 2026-08-19, second and current — the route is open, and the scan on
-> disk is the source.** Values re-read off the Document Delivery scan of the
-> bound volume are outside the subscription license, so the terms the library
-> signed do not reach them, and what governs is copyright alone, which does not
-> protect facts. **The path is: re-extract from that scan, retire the
-> PDF-derived series rather than keep both, publish.** Nothing has been
-> re-extracted yet — that is the owner's call and the work is not trivial.
+> **Status, 2026-08-19, third and current — DONE. The committed values now come
+> from the print scan.** All eight series were re-read from the U-M library's
+> Document Delivery scan of the bound volume and the PDF-derived values were
+> retired, not kept alongside. That content was obtained outside the
+> subscription, so the terms the library signed do not reach it, and what
+> governs is copyright alone, which does not protect facts. **Nothing published
+> by this project now derives from the licensed copy.**
 >
-> ⚠ **One thing today does NOT cure: the eight series currently committed and
-> served came off the licensed PDF**, and counsel's answer that derived values
-> are "any part of the Publications" still reaches those. Today reopens the
-> route to *replacing* them. Until the replacement lands they are what they were
-> this morning. See "Counsel answered, and it goes the other way" and the
-> correction that follows it.
+> The extractor is `tools/digitize_webster_print.py`.
+> `tools/digitize_webster1991.py`, which reads the licensed PDF, is superseded
+> and now **refuses to write**. See "The re-extraction, and what it changed"
+> below for what moved in the numbers.
+>
+> ⚠ **The site still serves the old values until it is redeployed.** The repo
+> and the bundle are updated; `dist/` deliberately still matches what is live.
 >
 > **Superseded, 2026-08-19, first — "counsel answered, and it goes against the
 > reading this file was built on."** Half right for about three hours. The
@@ -287,6 +288,55 @@ now well past its stated 10 working days; that request is no longer load-bearing
 but it is also not withdrawn. And a thank-you is owed — he corrected himself
 within the hour, unprompted, having already volunteered the Document Delivery
 route before he understood the question.
+
+### ⭐ The re-extraction, and what it changed
+
+**2026-08-19, the same day.** All eight series re-read from the library scan by
+`tools/digitize_webster_print.py --write`; the PDF-derived values retired. 218
+tests pass. What follows is what moved, because a source change that moved
+nothing would be the suspicious outcome.
+
+**The axis calibration was wrong, and fixing it was most of the work.** The
+08-17 instrument fit one tick lattice across the four panels of a hormone, on
+the reasoning that they share one printed axis. They share a *design*, not a
+size: **Figures 3 and 4 are printed at different reductions**, Fig. 4's boxes
+about 2% taller than Fig. 3's on the same page. One shared period returned a
+compromise between the two, and that was the whole of the "systematic ~2% scale
+difference" this file recorded on 08-17 as an open question. It was never a
+difference between the two scans; it was an error in the new reading.
+
+The reading now takes each panel's size from its box height — two long straight
+rules, good to about a pixel in 650 — and uses the labelled ticks only to fix
+one shared number per hormone, the value at the box top. The minor ticks are not
+used at all: they clear this scan's heavy axis by two or three pixels, and a
+vote over them moved the two hormones in opposite directions. Zero stays where
+the figure puts it, on the bottom frame rule.
+
+**Agreement with the licensed-PDF reading, which is the last time these two can
+ever be compared:** median 0.8% of each record's range, 0.18 printed line
+widths, across the five records not at the figure's resolution limit. The 08-17
+number was 1.5% and 0.26. **68 of the paper's 70 marked pulses fall at identical
+sample indices**; two move by one sample.
+
+**The fitted GnRH error floor moved from 0.06 to 0.07 pg/min.** It is the one
+tuned constant in the project, it has always been labelled as fitted, and it was
+re-fitted by re-running the sweep `docs/validation-status.md` already specifies —
+the joint optimum of sensitivity and precision against the paper's own 70 marks.
+On the new reading false positives go to zero at 0.07 and sensitivity no longer
+falls off above it, so the old upper constraint is gone and 0.07 is the low edge
+of the zero-false-positive plateau. **It was not nudged to make a record come
+out at a particular count**, and the sweep is recorded in the tool so the claim
+is checkable.
+
+**The scoring improved slightly**: 68 of 70 with no false positives (97%
+sensitivity, 100% precision) against 67 of 70 previously. It is now identical at
+zero matching slack, where before the headline leaned a little on the one-sample
+tolerance.
+
+**Everything downstream carries the new provenance**: the eight CSV headers name
+the library scan, the exported citation on every figure and results CSV says the
+values were read from the print volume and not the publisher's PDF, and
+`/methods`, the About page, `llms.txt` and the README say the same.
 
 ### ⭐ The print copy is the way out, and it was there the whole time
 

@@ -47,7 +47,7 @@ export const PRESETS: ParamPreset[] = [
       "sounds, because the Igor variant's t-score is not scale-invariant at one-point windows. " +
       "It also selects the Error Wave model, which uses the per-sample error column in the file. " +
       "The paper does not report what error it supplied, so the bundled records carry a " +
-      "RECONSTRUCTED one (CV 8%, floor 0.06 pg/min — the floor chosen to match this paper's own " +
+      "RECONSTRUCTED one (CV 8%, floor 0.07 pg/min — the floor chosen to match this paper's own " +
       "calls). Without a per-sample error the estimated models find nothing here, because at " +
       "one-point windows a pulse inflates its own error and hides itself.",
     params: {

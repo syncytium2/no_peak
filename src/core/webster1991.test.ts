@@ -21,7 +21,11 @@ import { HAVE_DIGITIZED, NEEDS_DIGITIZED } from "../testing/haveDigitized";
 const DIR = "data/digitized";
 
 /** Proportional CV plus a floor at the assay's detection limit. */
-const ASSAY = { gnrh: { cv: 0.08, floor: 0.06 }, lh: { cv: 0.08, floor: 0.45 } };
+// The GnRH floor is fitted, and it moved from 0.06 to 0.07 on 2026-08-19 when
+// the traces were re-read from the library's print scan. Same criterion as
+// before — the joint optimum of sensitivity and precision against the paper's
+// 70 marks — re-run on the new reading; see tools/digitize_webster_print.py.
+const ASSAY = { gnrh: { cv: 0.08, floor: 0.07 }, lh: { cv: 0.08, floor: 0.45 } };
 
 const SERIES = [
   "fig3a_con_8058_gnrh", "fig3a_con_8058_lh",
@@ -127,7 +131,7 @@ describe.skipIf(!HAVE_DIGITIZED)("Webster et al. 1991, digitized", () => {
 
   it("recovers the published pulses when given the assay's own error", () => {
     const s = score("assay");
-    expect(s.hit).toBeGreaterThanOrEqual(65);          // 67 of 70 as measured
+    expect(s.hit).toBeGreaterThanOrEqual(65);          // 68 of 70 as measured
     expect(s.extra).toBeLessThanOrEqual(3);
     const sensitivity = s.hit / (s.hit + s.missed);
     const precision = s.hit / (s.hit + s.extra);

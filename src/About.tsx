@@ -45,7 +45,7 @@ export function About({ onBack }: { onBack: () => void }) {
       </p>
       <ul>
         <li>
-          <strong>Real animals.</strong> Eight records read off the published figures of Webster et
+          <strong>Real animals.</strong> Eight records read off the printed figures of Webster et
           al. (1991) with an author&apos;s permission — four ewes, portal GnRH during collection and
           jugular LH from a fortnight earlier. These are measurements from actual sheep. What they
           carry is the pulse call <em>that paper&apos;s own CLUSTER run made</em>, marked on the
@@ -350,7 +350,7 @@ export function About({ onBack }: { onBack: () => void }) {
       <p>
         That paper reports its window widths and both t-scores, which is more than most do. Given
         those settings <em>and</em> an assay-shaped measurement error, this port recovers
-        67 of the 70 published pulses with one false positive — though two constants in
+        68 of the 70 published pulses with no false positives — though two constants in
         that error model were fitted, and they buy the precision rather than the
         sensitivity. Given only the settings the
         paper prints, and estimating the error from the data as any reader would have to, the same
