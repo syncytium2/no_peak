@@ -1,4 +1,4 @@
-<!-- vendored from syncytium2/murderboard @ b2b2ba2d6c42cef07850bd7be2db3aa4d019151c -->
+<!-- vendored from syncytium2/murderboard @ 729fb06aab7c180b77c4987a2588dfa90ccc8cc5 -->
 ---
 # canonical: syncytium2/murderboard skills/murderboard/SKILL.md
 # When vendoring, REPLACE this line with: vendored from https://github.com/syncytium2/murderboard @ <short-sha> — do NOT edit here; update by re-copying.
@@ -112,7 +112,14 @@ step 3 — if it did not, the fixes are not in the file you are about to ship.
 
 ## 7. Emit the run record, then let it be checked
 
-Write the report to `docs/reviews/<artifact-stem>_<YYYY-MM-DD>.md`, opening with this header:
+**Lead with the problem, not the ledger.** The record is a document deliverable like any
+other: open with what was at stake and — where the subject is visual — a figure showing
+it, then what was found, then what would validate it and how it generalises. The header
+and role ledger below are an **appendix**: required, checkable, and not the first thing a
+reader meets. A record ordered by process proves the roles ran and tells nobody what was
+learned (see *The run record is a deliverable* in the process file).
+
+Write the report to `docs/reviews/<artifact-stem>_<YYYY-MM-DD>.md`, carrying this header:
 
 ```markdown
 # Murderboard run — <artifact>

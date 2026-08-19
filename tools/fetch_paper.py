@@ -1,5 +1,5 @@
 #!/usr/bin/env python3
-# vendored from syncytium2/murderboard @ b2b2ba2d6c42cef07850bd7be2db3aa4d019151c
+# vendored from syncytium2/murderboard @ 729fb06aab7c180b77c4987a2588dfa90ccc8cc5
 """Fetch an open-access paper, cache it, and print its text — the murderboard's lit tool.
 
 WHY THIS EXISTS
@@ -133,7 +133,7 @@ def cache_dir():
     keeps a paper fetched once available everywhere.
 
     Sits BESIDE the curated library, never in it: these are machine-fetched copies with
-    hashed names, and mixing them into a hand-organized library would wreck it. Promote the
+    hashed names, and mixing them into a hand-organised library would wreck it. Promote the
     keepers with `--promote`.
 
     Override with $MURDERBOARD_PAPERS (or $IF2_PAPERS). Falls back to /tmp only when no
