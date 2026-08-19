@@ -1,5 +1,5 @@
 #!/usr/bin/env bash
-# vendored from syncytium2/murderboard @ b2b2ba2d6c42cef07850bd7be2db3aa4d019151c
+# vendored from syncytium2/murderboard @ 729fb06aab7c180b77c4987a2588dfa90ccc8cc5
 # murderboard_freshness.sh — is this repo's VENDORED murderboard current with upstream?
 #
 # THE GAP THIS CLOSES. `doc_review_process.md` step 0 tells a reviewer to confirm the
@@ -61,8 +61,22 @@ TTL="${MURDERBOARD_TTL:-43200}"          # 12h
 NET_CAP="${MURDERBOARD_NET_CAP:-6}"      # max seconds for the upstream lookup
 
 # Where a local clone might live (offline fallback). $MURDERBOARD_REPO wins.
-CLONE_CANDIDATES="
-${MURDERBOARD_REPO:-}
+#
+# TWO LISTS, and the split is load-bearing. CLONE_CANDIDATES holds paths somebody
+# ASSERTED are the upstream for the slug in play — $MURDERBOARD_REPO, or --clone.
+# DEFAULT_CLONE_CANDIDATES holds GUESSES, and every guess is a murderboard path.
+#
+# They must not be merged. --label/--slug generalize this gate to any vendoring
+# family, but the guesses never generalized with them: consulted for a slug that is
+# not murderboard, they resolve against murderboard's HEAD and the gate returns a
+# confident verdict about a repository it never looked at. That is worse than an
+# error, because it manufactures the confidence it exists to supply. So the guesses
+# are consulted ONLY when the slug actually names this repo; for any other family an
+# unreachable upstream stays unreachable, and the caller gets "cannot determine"
+# (exit 2), which is true.
+DEFAULT_SLUG="syncytium2/murderboard"
+CLONE_CANDIDATES="${MURDERBOARD_REPO:-}"
+DEFAULT_CLONE_CANDIDATES="
 $HOME/Documents/murderboard
 $HOME/Developer/murderboard
 $HOME/murderboard
@@ -79,6 +93,9 @@ fetch_paper.py
 tools/murderboard_freshness.sh
 tools/murderboard_roster.sh
 murderboard_roster.sh
+.claude/hooks/require-commit-before-message.sh
+tools/require_commit_before_message.sh
+require_commit_before_message.sh
 .claude/skills/murderboard/SKILL.md
 "
 
@@ -168,8 +185,13 @@ upstream_from_gh() {
 }
 
 upstream_from_clone() {
-  local d
-  for d in $CLONE_CANDIDATES; do
+  local d candidates="$CLONE_CANDIDATES"
+  # The built-in guesses are murderboard paths and are only admissible when the
+  # slug in play is murderboard. See the note at DEFAULT_CLONE_CANDIDATES: for any
+  # other family they would answer from the wrong repository.
+  [ "$REPO_SLUG" = "$DEFAULT_SLUG" ] && candidates="$candidates
+$DEFAULT_CLONE_CANDIDATES"
+  for d in $candidates; do
     [ -n "$d" ] && [ -d "$d/.git" ] || continue
     CAP "$NET_CAP" git -C "$d" rev-parse origin/main 2>/dev/null \
       | grep -o '^[0-9a-f]\{40\}$' && return 0
@@ -359,6 +381,33 @@ selftest() {
   else
     printf '  %sFAIL%s  %-34s (%s cache file(s); shared cache poisons both verdicts)\n' \
            "$RED" "$RST" "cache is keyed per upstream" "${n:-0}"; fails=$((fails+1))
+  fi
+
+  # The built-in clone guesses are murderboard paths. Consulted for another family
+  # they answer from the wrong repository — a confident verdict about a repo never
+  # looked at. Both directions must hold: admissible for our own slug, inadmissible
+  # for anyone else's. HOME is redirected so the guess list is real but hermetic.
+  ( git init -q --bare "$tmp/mb.git" 2>/dev/null
+    git init -q "$tmp/mbseed" 2>/dev/null
+    cd "$tmp/mbseed" || exit 1
+    git -c user.email=t@t -c user.name=t commit -q --allow-empty -m mb 2>/dev/null
+    git branch -M main 2>/dev/null
+    git remote add origin "$tmp/mb.git" 2>/dev/null
+    git push -q origin main 2>/dev/null
+    mkdir -p "$tmp/fakehome/Developer" 2>/dev/null
+    git clone -q "$tmp/mb.git" "$tmp/fakehome/Developer/murderboard" 2>/dev/null ) >/dev/null 2>&1
+  mkdir -p "$tmp/consumer" 2>/dev/null
+  printf 'x @ 1111111 x\n' > "$tmp/consumer/v.md"
+  own=$( cd "$tmp/consumer" && HOME="$tmp/fakehome" MURDERBOARD_NO_NET=1 MURDERBOARD_REPO= \
+         bash "$SELF" --slug "$DEFAULT_SLUG" --file v.md 2>&1 | grep -ci 'UNKNOWN\|cannot reach' )
+  other=$( cd "$tmp/consumer" && HOME="$tmp/fakehome" MURDERBOARD_NO_NET=1 MURDERBOARD_REPO= \
+           bash "$SELF" --slug other/family --file v.md 2>&1 | grep -ci 'UNKNOWN\|cannot reach' )
+  if [ "${own:-0}" -eq 0 ] && [ "${other:-0}" -ge 1 ]; then
+    printf '  %sPASS%s  %-34s (guesses used for own slug, refused for others)\n' \
+           "$GRN" "$RST" "clone guesses are slug-scoped"
+  else
+    printf '  %sFAIL%s  %-34s (own=%s other=%s; a foreign slug resolved against murderboard)\n' \
+           "$RED" "$RST" "clone guesses are slug-scoped" "${own:-?}" "${other:-?}"; fails=$((fails+1))
   fi
 
   echo
