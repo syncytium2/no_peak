@@ -1,15 +1,19 @@
 # Real traces, digitized from published figures
 
-> ⚠ **Status, 2026-08-19 — the contractual question was answered, and it was
-> answered against the position below.** University counsel says a derived table
-> of values *is* "any part of the Publications" under the subscription license,
-> and these eight series were read off the licensed PDF. **Nothing has been
-> withdrawn**: what happens to this data is the owner's decision and has not been
-> put to him. Read
-> [`docs/figure-data-permissions.md`](../../docs/figure-data-permissions.md),
-> section "Counsel answered, and it goes the other way", before acting on
-> anything in this file — and **do not re-extract from the library scan**, which
-> carries a delivery-notice problem of its own.
+> ⚠ **Status, 2026-08-19 — these eight files need to be replaced, and the
+> replacement is now cleared.** University counsel says a derived table of values
+> *is* "any part of the Publications" under the subscription license, and **these
+> series were read off the licensed PDF**, which is the copy that license
+> reaches. The fix is to re-read them from the library's Document Delivery scan
+> of the bound volume — obtained outside the subscription, so the license does
+> not reach it — and to **retire these files rather than keep both sets**.
+>
+> **Nothing has been re-extracted or withdrawn yet**; that is the owner's call
+> and the work is not trivial. Until it happens, treat everything here as
+> provisional. Read
+> [`docs/figure-data-permissions.md`](../../docs/figure-data-permissions.md) —
+> "Counsel answered, and it goes the other way", then "Answer 4 was retracted" —
+> before acting on anything in this file.
 
 > **Not to be confused with [`data/synthetic/`](../synthetic/README.md).** The
 > simulated GnRH records there were built to this very paper's protocol, so they
@@ -65,12 +69,19 @@ the live record**: dates, what was asked, what came back. Record outcomes there
 rather than here.
 
 ⚠ **This file's own standing instruction was "withdraw the data if either
-answers no", and one of them has now answered no.** That instruction was written
-before there was an answer to weigh, and carrying it out is a visible change to
-the site and a day's work through presets, tests, `/methods` and the exported
-artifacts. **It is the owner's call and it has not been made** — it is written
-down here so that nobody discovers the trigger was hit and quietly does neither
-thing.
+answers no", and one of them has now answered no.** The instruction was written
+before there was an answer to weigh, and it turns out to offer the wrong two
+choices: **the answer that landed does not call for withdrawal so much as for
+replacement.** These particular files are reached by the license because of
+where they were read from; the same eight series read off the library's scan of
+the bound volume are not. So the live options are re-extract and retire these,
+or withdraw and let [`data/synthetic/`](../synthetic/README.md) carry the
+validation alone — not "leave or pull".
+
+**It is the owner's call and it has not been made.** Written down here so that
+nobody discovers the trigger was hit and quietly does neither thing.
+`docs/digitized-suppression.md` carries a built, unthrown switch if these ever
+need to come down while a re-extraction is in flight.
 
 ### Reproducing the scoring in the app
 

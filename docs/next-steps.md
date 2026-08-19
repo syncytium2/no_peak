@@ -25,11 +25,13 @@ started the day).
 
 ---
 
-## Arrived 2026-08-19 — counsel answered on the figure data, and §1 is affected
+## Arrived 2026-08-19 — the rights question resolved, and §1 is affected
 
-**Two decisions are now waiting on the owner, and they are the largest open
-items in this file.** University counsel answered the two questions left with
-them on 2026-08-14:
+**Read the second half of this block; the first half was overtaken the same
+day.** Full record in `docs/figure-data-permissions.md` → "Counsel answered, and
+it goes the other way", then "Answer 4 was retracted".
+
+**Morning: University counsel answered the two questions left on 2026-08-14.**
 
 - **A derived table of measured values *is* "any part of the Publications"**
   under the subscription license. The argument that the eight digitized series
@@ -38,26 +40,38 @@ them on 2026-08-14:
   `data/digitized/` were read off the licensed PDF and are in the repo, in
   `src/samples.ts`, in the bundle on the live site and in every exported figure,
   PDF and results CSV.
-- **The Document Delivery scan is not the clean source 2026-08-17 took it for.**
-  It escapes the license, as expected, but counsel expects OUP to read its
-  "private study, scholarship, or research" notice as covering extracted content
-  too.
+- ~~**The Document Delivery scan is not the clean source 2026-08-17 took it
+  for.**~~ **Retracted at 3:56 PM the same day** by the Copyright Librarian who
+  gave it, after the owner sent him the notice itself. He had read the question
+  as being about OUP's language rather than the library's own.
 
-Full record, including what survives and what does not, in
-`docs/figure-data-permissions.md` → "Counsel answered, and it goes the other
-way". **Nothing has been withdrawn, regenerated or re-extracted on the strength
-of it.** The two decisions — what happens to the eight published series, and
-whether to pursue the bound volume itself, which neither answer touches — are
-his, and had not been put to him when this was written. **Do not re-extract from
-the library scan** in the meantime; `tools/crosscheck_webster_print.py` stays an
-instrument and still writes nothing to `data/digitized/`.
+**Afternoon: the route is open, and the scan already on disk is the source.**
+The delivery notice says "It is your responsibility to address copyright for any
+other uses" — a disclaimer, not a restriction. Content obtained outside the
+subscription is not reached by the terms the library signed, so what governs is
+copyright alone, and facts are not copyrightable.
 
-**A switch exists now for the first of the two decisions, and it is NOT thrown.**
-`docs/digitized-suppression.md` is the runbook: three no-op changes landed
-2026-08-19 so that withdrawing the eight records is one commit and reversing it
-is another, rather than a day's work either way. The data still ships and the
-site is unchanged. The CLUSTER presets are deliberately out of its scope, on the
-owner's instruction.
+**The path: re-extract the eight series from the library scan, retire the
+PDF-derived values rather than keep both, publish.** Nothing has been
+re-extracted, withdrawn or regenerated — that is the owner's go-ahead and the
+work is not trivial (`digitize_webster1991.py` against the scanner's MRC layers,
+the panel geometry re-measured, heavier ink closing the pulse circles).
+`tools/crosscheck_webster_print.py` remains an instrument and still writes
+nothing to `data/digitized/`.
+
+⚠ **What is NOT cured: the currently committed series.** They came off the
+licensed PDF, and the first answer above still reaches them. The route to
+*replacing* them is open; until the replacement lands their position is
+unchanged. **Buying or borrowing a physical copy is moot** — the scan suffices.
+For the record, it was also not easy: AbeBooks has no listing, and the
+specialist back-issue dealer closed on 2026-01-01.
+
+**A suppression switch exists and is NOT thrown.** `docs/digitized-suppression.md`
+is the runbook: three no-op changes landed 2026-08-19 so that withdrawing the
+eight records is one commit and reversing it is another. Built when withdrawal
+looked likely; now most useful as a bridge if the data ever has to come down
+while a re-extraction is in flight. The CLUSTER presets are deliberately out of
+its scope, on the owner's instruction.
 
 ## Arrived 2026-08-14 — the gitignored data now syncs, and §9 is affected
 

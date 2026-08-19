@@ -9,10 +9,22 @@ what it costs to execute.
 **Why there is a switch at all:** on 2026-08-19 University counsel answered that
 a derived table of measured values *is* "any part of the Publications" under the
 subscription license, and the eight series were read off the licensed PDF. The
-full record, including what that does and does not reach, is in
-[`figure-data-permissions.md`](figure-data-permissions.md) → "Counsel answered,
-and it goes the other way". **The decision to throw this switch is the owner's
-and has not been made.**
+full record is in [`figure-data-permissions.md`](figure-data-permissions.md) →
+"Counsel answered, and it goes the other way". **The decision to throw this
+switch is the owner's and has not been made.**
+
+⚠ **Its likely use changed later the same day, and this file was written before
+that.** The Copyright Librarian retracted the answer that had made the Document
+Delivery scan look encumbered, which opens a route that ends in **replacement
+rather than withdrawal**: re-read the eight series off the library scan, retire
+the PDF-derived ones, publish. See "Answer 4 was retracted" in that same
+document.
+
+That does not make this switch useless, and it is deliberately being left in
+place. Re-extraction is real work and may not land in one sitting; if the
+committed values have to come down while it is in flight, this is how, and
+reversing it is one command. **What it is no longer is the most likely
+outcome.** Do not read the runbook below as a plan.
 
 ## What the switch is
 

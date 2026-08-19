@@ -1,17 +1,30 @@
 # Digitizing data from a published figure: where the permissions question lands
 
-> **Status, 2026-08-19 — counsel answered, and the answer goes against the
-> reading this file was built on. Read "Counsel answered, and it goes the other
-> way" below before anything else here; everything dated 08-14 and 08-17 was
-> written under an assumption counsel has now rejected.** Two decisions follow
-> from it and **neither has been put to the owner yet**, so nothing has been
-> retracted, republished or removed on the strength of it.
+> **Status, 2026-08-19, second and current — the route is open, and the scan on
+> disk is the source.** Values re-read off the Document Delivery scan of the
+> bound volume are outside the subscription license, so the terms the library
+> signed do not reach them, and what governs is copyright alone, which does not
+> protect facts. **The path is: re-extract from that scan, retire the
+> PDF-derived series rather than keep both, publish.** Nothing has been
+> re-extracted yet — that is the owner's call and the work is not trivial.
+>
+> ⚠ **One thing today does NOT cure: the eight series currently committed and
+> served came off the licensed PDF**, and counsel's answer that derived values
+> are "any part of the Publications" still reaches those. Today reopens the
+> route to *replacing* them. Until the replacement lands they are what they were
+> this morning. See "Counsel answered, and it goes the other way" and the
+> correction that follows it.
+>
+> **Superseded, 2026-08-19, first — "counsel answered, and it goes against the
+> reading this file was built on."** Half right for about three hours. The
+> answer on the license stands; the answer on the delivery notice was retracted
+> the same afternoon, by the person who gave it, once he saw the notice itself.
 >
 > **Superseded, 2026-08-14 — "a route exists that needs nobody's permission."**
-> Kept because the reasoning is still half right: the print volume does escape
-> the license, which counsel confirmed. What it does not escape is the notice on
-> the Document Delivery scan, which nobody had an answer for when that line was
-> written.
+> Restored, in substance: the print copy is the way out, the Document Delivery
+> scan carries that provenance, and the notice on it is a disclaimer rather than
+> a restriction. What the 08-14 line got wrong is only that it needed no
+> checking.
 >
 > **2026-08-13 — the author route closed, and it closed correctly.**
 > This document's recommendation was "ask the authors." That was done, and the
@@ -46,8 +59,9 @@
 > the way out" in the ledger below. **The scan arrived 2026-08-17 and it passes
 > the provenance test** — see "The scan arrived, and what it does and does not
 > settle" below. ~~University counsel (Jack Bernard) is checking whether even
-> that was necessary.~~ **He answered on 2026-08-19: it was necessary, and it
-> was not sufficient.**
+> that was necessary.~~ **He answered on 2026-08-19: it was necessary. It is
+> also sufficient** — a first reading said otherwise and was retracted the same
+> day.
 >
 > Requests are tracked in the ledger. **The ledger is the next section — update
 > it there, not here.**
@@ -74,7 +88,8 @@ request when it is made rather than after it is answered.
 | 4 | 2026-08-13 | U-M library, `library.collections@umich.edu` | Whether the institutional license already permits publishing values derived this way | **Answered 2026-08-14** by the Copyright Librarian, who read the agreement. It governs TDM, and the closest clause bars Authorized Users from distributing "any part of the Publications on any electronic network … other than the Secure Network". **But the constraint is contractual and reaches only content obtained through the subscription** — see below. Referred to University counsel (Jack Bernard), who **answered 2026-08-19 that the clause does reach derived values**. **CLOSED, against us.** |
 | 5 | 2026-08-14 | Same, four numbered questions | Provenance of a library scan; whether the earlier PDF extraction contaminates it; whether the license reaches a derived table of facts; whether Document Delivery's fair-use notice bears on publishing | **Two answered the same day**, two on **2026-08-19** via counsel. (2) A library-made scan carries the clean provenance — handling the paper is irrelevant, obtaining it outside the subscription is the whole test. (1) "Any part of the Publications" **does** reach a derived table of values. (3) The earlier extraction **does** matter, correcting the 08-14 answer, but what you *use* is the operative test. (4) OUP would likely read the delivery notice as covering extracted content. **CLOSED.** See "Counsel answered" below. |
 | 6 | 2026-08-14 | U-M Document Delivery | Scan of the bound volume, p. 1639 | **Delivered 2026-08-17, and it is the print volume.** Verified against the four tests this file set: no OUP download watermark, physical-scan artifacts throughout, ~490 dpi effective (400 was asked), and the whole article rather than the one page requested. **CLOSED.** See the next-but-one section. |
-| 7 | 2026-08-19 | University counsel, via the Copyright Librarian | Answers to questions 1 and 4 of request 5 | **Answered.** Derived values are "any part of the Publications"; the delivery notice would likely be read as reaching extracted content. **CLOSED, and it reopens the underlying question rather than settling it.** A reply is owed; he offered email or a video consultation. |
+| 7 | 2026-08-19 | University counsel, via the Copyright Librarian | Answers to questions 1 and 4 of request 5 | **Answered.** Derived values are "any part of the Publications"; ~~the delivery notice would likely be read as reaching extracted content~~ **— that second half was retracted the same day, see row 8.** **CLOSED.** |
+| 8 | 2026-08-19 | Same, sending him the delivery notice itself | Whether Q4 had been read as asked — does the notice restrict use, or disclaim responsibility for it? | **Answered within the hour, and it reverses Q4.** He had taken the question to be about OUP's language rather than the library's own notice. The notice states the purpose the copy was made for and then says "It is your responsibility to address copyright for any other uses" — a **disclaimer, not a restriction**. His full answer to Q2 therefore applies to the scan in hand: obtained outside the subscription, so the license does not reach it. **CLOSED, and it opens the route.** A thank-you is owed. |
 
 **The correspondence itself is not committed** — it is third-party email, it
 names real people, and it does not belong in a public repository. It is kept
@@ -98,6 +113,12 @@ not mention it**, so the folder's own README says so. Anyone applying the rule
 will be looking at `reference/` and would not think of a darkroom subfolder.
 
 ### ⭐ Counsel answered, and it goes the other way
+
+⚠ **Answer 4 below was retracted the same afternoon, and with it the conclusion
+that the Document Delivery scan is encumbered. Read "Answer 4 was retracted"
+immediately after this section before acting on anything here.** The rest of
+this section stands: answer 1 is unchanged and still governs the values
+currently committed.
 
 **2026-08-19.** The two questions left with University counsel on 2026-08-14
 came back through the Copyright Librarian, who spoke with Jack Bernard that
@@ -141,36 +162,43 @@ the licensing terms. So a fix is available, and it is re-extraction *plus*
 retirement — not re-extraction alone, which is what 08-14's "the earlier
 extraction does not carry forward" was taken to mean.
 
-**Answer 4 is the catch, and it lands on the scan that arrived Monday.** The
-Document Delivery copy carries U-M's "private study, scholarship, or research"
-notice, and counsel expects OUP to read that as covering extracted content.
-**The delivery scan is therefore not the clean route this file took it for on
-08-17.** It escapes the subscription license, as answer 2 confirms, and lands
-under the delivery notice instead. The section below headed "The print copy is
-the way out" is right about the license and silent about this; read it with that
-correction in hand.
+~~**Answer 4 is the catch, and it lands on the scan that arrived Monday.**~~
+**Retracted — see the next section.** What it said: the Document Delivery copy
+carries U-M's "private study, scholarship, or research" notice, counsel expects
+OUP to read that as covering extracted content, and the delivery scan is
+therefore not the clean route this file took it for on 08-17.
 
-Two things about answer 4 that are worth keeping straight, because the
-difference between them is the difference between a closed door and an open one.
-It is a prediction of how the publisher would *interpret* language, not a
-statement that the notice binds. And the notice's own wording disclaims the
-copyright analysis that supported making the copy — "if you use the copy for a
-different purpose … the copyright analysis that supported making the copy does
-not apply" — rather than granting or withholding rights in facts read off it.
-**That distinction has not been put to him, and it should be rather than being
-resolved here.** The last time this project resolved a rights question by
-reasoning rather than asking, the conclusion had to be withdrawn from nineteen
-files.
+Two things about answer 4 were worth keeping straight, because the difference
+between them is the difference between a closed door and an open one. It is a
+prediction of how the publisher would *interpret* language, not a statement that
+the notice binds. And the notice's own wording disclaims the copyright analysis
+that supported making the copy — "if you use the copy for a different purpose …
+the copyright analysis that supported making the copy does not apply" — rather
+than granting or withholding rights in facts read off it. **That distinction had
+not been put to him, and it should be rather than being resolved here.** The
+last time this project resolved a rights question by reasoning rather than
+asking, the conclusion had to be withdrawn from nineteen files.
 
-**What nothing has been said against: the bound volume itself.** A physical loan
-or recall of *Endocrinology* v.129 1991 Sep from Offsite Shelving carries no
-subscription license — answer 2 — and no delivery notice, because no
-Document Delivery reproduction is involved. It is the route the Copyright
-Librarian described on 08-14 in its original, unmediated form, and neither
-answer today touches it. It costs a recall and time with the volume. The
-scanning section below notes that Document Delivery offers a physical loan as
-its own fallback when a request fails copyright review, so the mechanism is
-known to work.
+**It was put to him, and it was the whole thing.** Left in place above because
+the reasoning is the part worth keeping: the answer came from noticing that a
+sentence was about responsibility rather than permission, and asking, rather
+than from deciding which reading to prefer.
+
+~~**What nothing has been said against: the bound volume itself.**~~ **Moot as
+of the retraction**, but recorded because it remains the fallback if the scan
+proves unreadable for the panels that matter. A physical loan or recall of
+*Endocrinology* v.129 1991 Sep from Offsite Shelving carries no subscription
+license — answer 2 — and no delivery notice, because no Document Delivery
+reproduction is involved. The Copyright Librarian offered physical delivery
+unprompted on 2026-08-19, so the mechanism is available for the asking.
+
+**Buying a copy is moot too, and it was never as easy as it sounded.** Checked
+2026-08-19: AbeBooks has no listing for v.129, and Periodicals Service Company —
+the dealer publishers refer people to for exactly this — closed on 2026-01-01.
+Recorded so that "just buy the issue" is not re-proposed as the cheap option.
+Buying the *article* from OUP was never a route at all: a pay-per-view copy
+arrives under personal, non-commercial terms that prohibit redistribution, which
+is a fresh license rather than an escape from one.
 
 **What has to be decided, and by whom.** Two questions follow from this and both
 are the owner's. Neither has been put to him, and **nothing has been retracted,
@@ -188,33 +216,87 @@ regenerated, unpublished or re-extracted on the strength of this reply**:
    withdrawal is one commit and reversal is another. It changes nothing about
    the decision itself, which is still open; it removes the cost of executing it
    from the reasons for or against.
-2. **Whether to pursue the bound volume**, or to stop here and let the synthetic
-   records carry the validation on their own.
+2. ~~**Whether to pursue the bound volume**, or to stop here and let the
+   synthetic records carry the validation on their own.~~ **Overtaken by the
+   retraction** — the scan already on disk is a sufficient source, so the
+   question is now whether to spend the re-extraction, not how to obtain a copy.
 
 A third item is smaller and not a decision: **a reply is owed to Jeremy York.**
 He offered email or a video consultation. The question worth sending back is the
 one in answer 4 — whether the delivery notice governs the reproduction or is
 being read to govern facts derived from it, and whether a physical loan of the
-bound volume avoids the question entirely.
+bound volume avoids the question entirely. **Sent the same afternoon, and it is
+what produced the retraction below.**
 
 **What has not changed.** `tools/crosscheck_webster_print.py` remains an
 instrument rather than a re-extraction; it writes nothing to `data/digitized/`,
 and the cross-check result recorded below stands as a measurement of
-digitization accuracy regardless of how the rights question resolves. The
+digitization accuracy regardless of how the rights question resolves. ~~The
 standing instruction "do not re-extract until counsel answers" is now spent —
 counsel has answered — and is replaced by: **do not re-extract from the delivery
 scan at all until item 2 above is decided**, because answer 4 says that scan is
-not the clean source it was taken for.
+not the clean source it was taken for.~~ **Lifted by the retraction. The
+delivery scan is a clean source; re-extracting from it is now a question of
+effort and the owner's go-ahead, not of rights.**
+
+### ⭐ Answer 4 was retracted, and the route is open
+
+**2026-08-19, 3:56 PM — three hours after the section above.** The owner sent
+the Copyright Librarian the actual notice attached to the delivery scan and
+asked whether question 4 had been read as written. It had not. Verbatim in
+`REPLIES-RECEIVED.txt` entry 6; the operative part:
+
+> "I didn't understand that you were talking about the language from the digital
+> copy you received from the library … we note that we are providing the scan to
+> you for private study, scholarship, or research purposes. However, we also say
+> **'It is your responsibility to address copyright for any other uses.'** So it
+> is fine to use the copy for other purposes, you just need to know that you are
+> responsible for the decisions you make. In your situation, then, my full answer
+> under #2 applies."
+
+**The notice disclaims responsibility; it does not restrict use.** It states the
+purpose the copy was made for, then puts the copyright analysis for any other
+use on the requester. That is the reading the section above flagged as worth
+asking about rather than settling in-house — and the notice is U-M's own
+document, so the library's reading of it is the authoritative one, not a
+prediction about what a publisher might argue.
+
+**So answer 2 applies in full to the scan already on disk.** Values re-read off
+the Document Delivery copy were obtained outside the subscription, the terms the
+library signed do not reach them, and what governs is copyright alone — which
+does not protect facts. That is the position this document reached on 2026-08-14
+and has now been confirmed against the one document that was thought to
+complicate it.
+
+**The route, stated once, plainly:** re-extract the eight series from the
+library scan, **retire the PDF-derived values rather than keep both** (answer 3
+is untouched and that is what it requires), and publish. Nothing else is
+outstanding on rights.
+
+⚠ **What the retraction does NOT do is cure what is currently published.**
+Answer 1 stands: derived values are "any part of the Publications" for content
+obtained *through* the subscription, and the eight committed series came off the
+licensed PDF. Today reopens the route to *replacing* them. It does not make them
+retrospectively fine, and the replacement is not free — the re-extraction cost
+is written down in "The scan arrived" below, and it is the real remaining
+obstacle. **Until the replacement lands, the position on the committed data is
+exactly what it was this morning.**
+
+**Two smaller things worth keeping.** OUP has still never replied to request 3,
+now well past its stated 10 working days; that request is no longer load-bearing
+but it is also not withdrawn. And a thank-you is owed — he corrected himself
+within the hour, unprompted, having already volunteered the Document Delivery
+route before he understood the question.
 
 ### ⭐ The print copy is the way out, and it was there the whole time
 
-**Established 2026-08-14 by the U-M Copyright Librarian.** ⚠ **Read the section
-above first.** This section was the most useful thing in this document for five
-days. Counsel has since confirmed its central claim about the license and
-attached a condition it does not mention: the Document Delivery scan carries a
-delivery notice that is expected to reach extracted content. What survives here
-is the rule about provenance, which counsel restated word for word. What does
-not survive is the conclusion that a library-made scan ends the question.
+**Established 2026-08-14 by the U-M Copyright Librarian, and it held.** For one
+afternoon on 2026-08-19 this section was thought to be half wrong — that a
+library-made scan escaped the license but landed under the delivery notice. The
+person who said so retracted it the same day: the notice is a disclaimer, not a
+restriction. **Read this section as written.** Its central claim, that the test
+is provenance rather than medium, was restated by counsel word for word and has
+not been disturbed by anything since.
 
 Every contractual objection in the long analysis below — the OUP legal notice,
 the Endocrine Society site terms, the U-M license — is a term of a *license for
@@ -316,12 +398,12 @@ electronically and the provenance is exactly where it started.
 Copyright Librarian, not an assumption.** It should, since it derives from the
 purchased copy rather than the licensed one — but assuming is what went wrong
 the first time. So is the request form's own copyright notice, which conditions
-the reproduction on "private study, scholarship, or research": ~~that governs the
+the reproduction on "private study, scholarship, or research": that governs the
 reproduction rather than facts extracted from it, but it trades a license term
-for a delivery term and~~ it **deserved an answer rather than a shrug, and got
-one on 2026-08-19 — counsel expects OUP to read it as covering extracted
-content.** The instinct to ask was right and the guess appended to it was wrong;
-that is the whole reason the guess was written down as a guess.
+for a delivery term and **deserved an answer rather than a shrug. It got one on
+2026-08-19, and the guess written here was right** — the notice puts
+responsibility for other uses on the requester rather than forbidding them. The
+answer took two passes to arrive at; see "Answer 4 was retracted" above.
 
 ~~**Order the scan now; do not re-extract until counsel answers** (expected week
 of 2026-08-17).~~ **Both halves are spent. The scan arrived 2026-08-17; counsel
@@ -399,26 +481,32 @@ purposes of private study, scholarship, or research," and "if you use the copy
 for a different purpose, such as posting on a course website, the copyright
 analysis that supported making the copy does not apply." That is request 5's
 fourth question, now sitting in the file rather than in the abstract. ~~It is
-**still with counsel**.~~ **Answered 2026-08-19, and not the way the second
-bullet below guessed** — see "Counsel answered" above. Two things follow, and
-they are different things:
+**still with counsel**.~~ **Answered 2026-08-19, twice — the second answer
+retracting the first.** See "Answer 4 was retracted" above. Two things follow,
+and they are different things:
 
 - **Do not post this PDF anywhere**, and do not commit it. Nothing here changes
-  that; the repo already gitignores it and should keep doing so.
-- ~~**Extracted values are a separate question**, and the notice governs the
+  that; the repo already gitignores it and should keep doing so. The notice
+  makes the requester responsible for other uses, which is a reason to be
+  careful with the file itself, not a reason to be careful with facts read off
+  it.
+- **Extracted values are a separate question**, and the notice governs the
   reproduction rather than facts taken from it — which is the Copyright
-  Librarian's position on the license clause too, for the same reason. That is
-  the reading, it is the same reading this whole file rests on, and counsel has
-  not answered yet. **Re-extract when they do**, per the standing instruction
-  above; the scan being in hand does not itself lift that.~~
+  Librarian's position on the license clause too, for the same reason.
 
-  **Wrong on both limbs, 2026-08-19.** Counsel says the notice would likely be
-  read as applying to anything in the scan, extracted content included, and
-  separately that derived values *are* "any part of the Publications" under the
-  license. The reading this whole file rested on was put to the people who could
-  answer it, and they answered no. **Do not re-extract from this scan** until
-  the owner decides what happens next; the instruction it points at has been
-  replaced.
+  **Right on the limb that matters, 2026-08-19 — after a false alarm the same
+  day.** A first answer said the notice would likely be read as reaching
+  extracted content; it was retracted hours later by the person who gave it,
+  once he saw the notice itself. **The notice governs the reproduction and puts
+  responsibility for other uses on the requester.** So this bullet's reading was
+  correct, and the strike-through above it recorded a conclusion that did not
+  survive the afternoon.
+
+  The separate half is still true and still bites: derived values *are* "any
+  part of the Publications" under the license — but only for content obtained
+  through the subscription, which this scan was not. **Re-extracting from this
+  scan is clear on rights.** What is not settled is whether to spend the work;
+  see "Answer 4 was retracted" above.
 
 **What it does not settle: the assay-error question is untouched.** The scan was
 read for it, since it was cheap to do so. The Methods are identical in substance
