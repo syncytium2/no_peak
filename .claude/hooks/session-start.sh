@@ -108,6 +108,27 @@ WT_COUNT=$(git worktree list 2>/dev/null | wc -l | tr -d ' ')
 [ "${WT_COUNT:-1}" -gt 1 ] && git worktree list 2>/dev/null | sed 's/^/   worktree: /'
 git log --oneline -3 2>/dev/null | sed 's/^/   /'
 
+# --- 4b. The open TODO, in front of every session ----------------------------
+# `docs/next-steps.md` is the ranked record and is 800+ lines; nobody reads it on
+# the way past. This prints the SHORT list, so the two or three things actually
+# waiting cannot be lost between sessions again — which is what happened to the
+# vendor-gate thread on 2026-08-20 and is why this exists.
+#
+# HEADINGS ONLY, deliberately. Printing the whole file would bury the freshness
+# warnings below it, and a banner nobody finishes reading is the same as no
+# banner. The detail is one `cat` away and the file says where it lives.
+#
+# `|| true` on every line, per the contract at the top: a non-zero exit here
+# discards ALL of this hook's stdout, including §5.
+if [ -f docs/todo-now.md ]; then
+  TODO=$(grep -n '^## ' docs/todo-now.md 2>/dev/null | sed 's/^[0-9]*://' | sed 's/^## //' || true)
+  if [ -n "$TODO" ]; then
+    printf -- '--- OPEN TODO (docs/todo-now.md) ---------------------------------\n'
+    printf '%s\n' "$TODO" | sed 's/^/   • /'
+    printf '   read it: cat docs/todo-now.md\n'
+  fi
+fi
+
 # --- 5. Vendored-file freshness ----------------------------------------------
 # This said "no_peak is upstream, not a consumer, so nothing to check here" from
 # 2026-08-12 until 2026-08-14. It was wrong by then and nobody noticed: this repo

@@ -93,8 +93,15 @@ is invented at a join and no interpulse interval is measured across one.
 
 ## Before you change anything
 
-- **`docs/next-steps.md` is the ranked open-work list — read it first.** Some
-  items are blocked on the owner's decision rather than on effort.
+- **`docs/todo-now.md` is the short list of what is actually waiting**, and the
+  session-start hook prints its headings at you. Start there.
+  **`docs/next-steps.md` is the ranked open-work list** behind it and is the
+  real record. Some items are blocked on the owner's decision rather than on
+  effort; `todo-now.md` marks which.
+- **Do not act on the session-start banner's stale-vendor verdict.** It reads a
+  cache and has been wrong in both directions on the same day. Re-run that
+  family's `tools/murderboard_freshness.sh` line with `--refresh --verbose`
+  before believing it.
 - **Another agent may be working in this same checkout**, sharing one working
   tree and one `.git`. Commit by path — `git commit --only <path>...` — never
   `git add -A` or `commit -a`; the index is shared, so careful staging alone
