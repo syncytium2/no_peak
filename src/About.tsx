@@ -4,13 +4,27 @@
 
 import { BORN, BUILT, VERSION, longDate } from "./version";
 import { ContactForm } from "./Contact";
+import { ProblemFigure } from "./ProblemFigure";
 import { downloadText } from "./chart/export";
 import { TEMPLATE_CSV, TEMPLATE_NAME } from "./template";
 
-export function About({ onBack }: { onBack: () => void }) {
+// This page is where a cold start lands, so it opens with the figure and not
+// with prose: a reader who has never heard of pulse detection should be able to
+// see what the problem is before reading a word of it. Keep the figure first.
+export function About({ onOpenApp }: { onOpenApp: () => void }) {
   return (
     <div className="about">
-      <button onClick={onBack}>← Back to the app</button>
+      <ProblemFigure />
+
+      <p className="opennow">
+        <button className="primary" onClick={onOpenApp}>
+          Open the app →
+        </button>{" "}
+        <span>
+          Load your own record, or start from one of the bundled datasets. Nothing you load leaves
+          your browser.
+        </span>
+      </p>
 
       <h1>About no_peak</h1>
       <p className="cite">
@@ -759,7 +773,9 @@ export function About({ onBack }: { onBack: () => void }) {
       <ContactForm />
 
       <p style={{ marginTop: 32 }}>
-        <button onClick={onBack}>← Back to the app</button>
+        <button className="primary" onClick={onOpenApp}>
+          Open the app →
+        </button>
       </p>
     </div>
   );

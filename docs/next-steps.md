@@ -25,6 +25,52 @@ started the day).
 
 ---
 
+## Arrived 2026-08-21 — the site opens on About, and About opens with a figure
+
+State now: **220 tests pass** (17 files), `tsc -b` clean.
+
+Owner's instruction, verbatim: "cold start of the app should be the about page.
+the about page should lead with an image that a naive person could interpret
+that poses the problem. figure first always."
+
+Both halves are done.
+
+**Routing inverted.** `src/main.tsx` now renders `App` only on `#app`; every
+other hash, including the empty one, renders `About`. A cold start therefore
+lands on About. `#about` still resolves there, which is what keeps the six
+in-app links, the `index.html` prerender and `llms.txt` working — none of them
+had to change targets, only descriptions.
+
+**The lead figure is `src/ProblemFigure.tsx`,** and the thing worth knowing
+about it is that none of it is drawn by hand. It loads benchmark record `0129`
+(`data/benchmark/series/0129.csv`, committed, simulated, seed 20260810), runs
+`clusterMain` at default settings with the record's own error column, and draws
+what comes back: the trace, the six stretches CLUSTER reports, and the twelve
+onsets the simulator actually generated, each marked found or not by the credit
+rule in `tools/score_benchmark.ts`. Every number in its headline and caption —
+12, 6, 5 swallowed, 1 outside, 0 false positives — is counted from that run at
+page load, so the figure cannot drift into a claim the algorithm no longer
+supports. `src/ProblemFigure.test.ts` pins the counts and re-reads the onsets
+from `truth.json`, because the onsets are copied into the source rather than
+imported (importing `truth.json` would ship 200 answer keys to draw one figure).
+
+Why that record and not a prettier one: it is the honest headline of the whole
+project — CLUSTER recovers about half of what is there and invents nothing —
+made visible in a single picture, and the reader can check it because the record
+is in the repository. Five of its six misses arrive while an earlier pulse is
+still being reported and are counted with it; the caption says so, in words, in
+numbers computed from the run.
+
+An earlier draft washed the six detected stretches full-height in orange, the
+way `src/chart/ClusterChart.tsx` does. It swamped the record — six stretches
+cover most of six hours — so the detector's answer became a strip of bars below
+the trace, opposite the row of markers above it, which is the comparison the
+figure is actually making. Worth remembering if the figure is ever rebuilt: the
+wash is right for one or two pulses in a panel and wrong for six.
+
+This touches three items below, none of which it closes outright — see the
+dated notes on §3, §4 and §5.
+
 ## Arrived 2026-08-20 — the no-heredoc gate is live and verified, and §D is affected
 
 State now: **218 tests pass** (16 files), `tsc -b` clean, working tree clean,
@@ -515,6 +561,14 @@ the one in-page link the About page itself carries (`href="#concatenate"`).
 Fix: route to About when the hash matches any of its section ids, then scroll to
 it. Small change, and it unlocks six ids that currently exist for nothing.
 
+> **Half done 2026-08-21, and by accident rather than by design.** The routing
+> was inverted so a cold start lands on About (`#app` is the app, everything
+> else is About), which means `/#terms` no longer ejects the reader into the
+> analysis page — it renders the right page. It still does not *scroll*: the
+> browser resolves the fragment before React has rendered the section, so the
+> reader lands at the top of a 4,330-word page. The remaining work is the scroll
+> alone, and it is now the whole of this item.
+
 ## 4. The About page is a wall
 
 4,330 words, 23 sections, **no table of contents, no figures**, and headings
@@ -525,6 +579,12 @@ set, in order:
 1. Render a TOC from the ids that already exist (~15 lines).
 2. Add ids to the four `h2`s that lack them.
 3. Raise `h2` to ~17px in `--ink`, `h3` to 15px semibold.
+
+> **Amended 2026-08-21.** "No figures" is no longer true: the page opens with
+> one, before the title, and it is now the landing page of the site. The wall
+> behind it is unchanged — all three fixes above still stand, and the TOC is
+> worth more now than it was, because more readers will arrive at the top of
+> this page than ever arrived at it before.
 
 ## 5. Two figures would each replace ~300 words
 
@@ -539,6 +599,14 @@ Zero figures across 17,306 words of documentation. Two earn their place:
   0→5→11→17 against Fortran flat at 11. Readers will not believe that claim
   from prose, and the supporting table currently lives only in
   `docs/validation-status.md`, which the About reader never sees.
+
+> **Amended 2026-08-21.** A third figure landed first, and neither of these two
+> is it: `src/ProblemFigure.tsx` leads the About page with what a detector
+> misses, not with how CLUSTER works or how the Igor t-score moves with scale.
+> Both of the above are still open and still worth their words. What the lead
+> figure settles is the *method* question this item raised — it is generated
+> from the code path it describes, at page load, with its numbers counted from
+> the run rather than typed into the caption. Build the other two the same way.
 
 ## 6. `docs/validation-status.md` has a damaged tail
 

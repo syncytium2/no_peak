@@ -18,6 +18,18 @@ user's machine.** Figures are publication-grade SVG (vector) with 4× PNG export
   Cloudflare OAuth). Custom domain is added in the Cloudflare dashboard —
   DNS for tonydefazio.com is Cloudflare-managed, nothing to do at Porkbun.
 
+**A cold start lands on About, not on the analysis page**, and About opens with
+a figure before it opens with a sentence. The tool is useless to a reader who
+does not yet know what pulse detection is for, and the figure —
+`src/ProblemFigure.tsx` — says it without prose: one benchmark record, the
+twelve pulses the simulator actually released into it, and the six CLUSTER
+reports. Nothing in it is drawn by hand; the trace, the detected stretches and
+every number in its headline come from a live `clusterMain` run at load, so the
+picture cannot drift away from the algorithm. `src/ProblemFigure.test.ts` pins
+the counts and re-reads the true onsets from `data/benchmark/truth.json`. Two
+hash routes: `#app` is the app, everything else is About (which keeps the
+`#about` links in the app, the prerender and `llms.txt` working). Figure first.
+
 `playwright-core` is a devDependency for **checking the running app in a real
 browser**, which the tests cannot do: it is how the horizontal-zoom overshoot
 was found and how the hour-axis promotion was confirmed on screen. Start
@@ -113,8 +125,9 @@ reporting layers around it (`igor.ts` reads Igor `.pxp`/`.ibw` binaries,
 owns the time base and pulse frequency); `src/chart/` the publication figure
 (custom SVG, palette validated with the dataviz six-checks validator);
 `src/App.tsx` the UI; `src/NumField.tsx` and `src/IgorPicker.tsx` its two
-non-trivial controls; `src/About.tsx` the about/citations page (hash route
-`#about`); `src/version.ts` the build stamp (`__APP_VERSION__` and
+non-trivial controls; `src/About.tsx` the about/citations page;
+`src/ProblemFigure.tsx` the figure that page opens with; `src/version.ts` the
+build stamp (`__APP_VERSION__` and
 `__BUILD_DATE__` are injected in `vite.config.ts`; bump `package.json` version
 to change what the app reports).
 

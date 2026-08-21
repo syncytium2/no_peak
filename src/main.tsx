@@ -4,7 +4,15 @@ import { App } from "./App";
 import { About } from "./About";
 import "./styles.css";
 
-/** Hash routing: #about is the only route, so the app stays a single bundle. */
+/**
+ * Hash routing, two routes, one bundle.
+ *
+ * A cold start lands on About, not on the analysis page: the tool is useless to
+ * a reader who does not yet know what pulse detection is for, and About opens
+ * with the figure that says so. The app itself is `#app`. `#about` still
+ * resolves here — it is what every in-app link and the prerendered `/#about`
+ * point at, and it must keep working.
+ */
 function Root() {
   const [hash, setHash] = useState(() => window.location.hash);
   useEffect(() => {
@@ -16,10 +24,10 @@ function Root() {
     return () => window.removeEventListener("hashchange", onHash);
   }, []);
 
-  return hash === "#about" ? (
-    <About onBack={() => (window.location.hash = "")} />
-  ) : (
+  return hash === "#app" ? (
     <App />
+  ) : (
+    <About onOpenApp={() => (window.location.hash = "#app")} />
   );
 }
 

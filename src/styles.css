@@ -923,6 +923,41 @@ body.dos .about a {
   padding: 24px 20px 64px;
 }
 
+/* The lead figure. It is the first thing on the landing page and carries its own
+   headline inside the SVG, so it has to survive being the only thing a reader
+   looks at: full column width, its own frame, caption directly beneath. */
+.leadfig {
+  margin: 0 0 18px;
+  padding: 0;
+}
+
+.leadfig svg {
+  display: block;
+  width: 100%;
+  height: auto;
+  border: 1px solid var(--grid);
+  border-radius: 8px;
+  background: var(--surface);
+}
+
+.leadfig figcaption p {
+  color: var(--ink-2);
+  margin: 12px 0 0;
+}
+
+.opennow {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  flex-wrap: wrap;
+  margin: 20px 0 8px;
+}
+
+.opennow span {
+  color: var(--muted);
+  font-size: 13px;
+}
+
 .about h1 {
   font-size: 26px;
   margin: 20px 0 4px;
