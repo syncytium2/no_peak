@@ -25,6 +25,95 @@ started the day).
 
 ---
 
+## Arrived 2026-08-20 — the no-heredoc gate is live and verified, and §D is affected
+
+State now: **218 tests pass** (16 files), `tsc -b` clean, working tree clean,
+`main` level with `origin/main` at `0f26e17`.
+
+**Nothing was merged, because there was nothing to merge.** The session opened
+with "merge to receive new hook". There is no such merge available here: the only
+branch, `vendor-no-heredoc-hook`, was squash-merged as PR #1 (`80301f6`) on
+2026-08-19. Both of its commits — the original vendor `8253da9` and the fail-open
+fix `4855be3` — are on `main`. Merging that branch today would deliver no hook and
+would only try to drag `.claude/skills/murderboard/SKILL.md` back to the older
+`b2b2ba2` stamp. Recorded because the branch still exists on the remote and will
+invite the same attempt again.
+
+**The gate fires in this repo.** This is the check interface2 insists on before
+trusting it, and it is not a formality: the gate blocked one of this session's own
+probe commands mid-run. Full matrix against `.claude/hooks/no-heredoc-source.sh`:
+
+| payload | expected | got |
+| --- | --- | --- |
+| heredoc writing `.m` | 2 | 2 |
+| heredoc writing `.py` | 2 | 2 |
+| `python3 - <<PY` writing `.py` | 2 | 2 |
+| `git commit -F -` heredoc | 0 | 0 |
+| plain `grep` | 0 | 0 |
+| heredoc writing `.m`, **no python on PATH** | 2 | 2 |
+
+The last row is the one that matters. This machine has only `python3` — no
+`python`, no `py` — which is exactly the configuration that made the gate fail
+open everywhere before `4855be3`. The degraded path (raw-payload scan when no
+interpreter resolves) blocks correctly and still lets `git commit -F -` through.
+
+⚠ **One caution about testing it.** A first attempt at that last row used
+`env -i PATH=/nonexistent`, which starved the hook of `grep` and returned 127 —
+an artifact of the harness, not a defect in the gate. A degraded-mode test has to
+remove *python only* and leave the rest of the toolchain reachable, or it measures
+its own sandbox. Nearly filed as a fail-open regression.
+
+**Upstream has moved, and no_peak has not received it.** interface2 landed
+`132b2121` on 2026-08-20 ("fix the no-heredoc PreToolUse gate for good, and make
+it self-heal"). Three things in it are not here:
+
+- a **fire test** in session-start that re-proves the gate blocks a known-bad
+  payload on every start — the part that makes the guarantee durable rather than
+  true-on-the-day-someone-checked;
+- a **self-heal** that repairs the `PreToolUse` wiring in `.claude/settings.json`
+  when it goes missing;
+- `tools/test_pretooluse_gate.sh`, which covers the wiring behaviors including the
+  case that matters — alarming when the hook is sabotaged to never block.
+
+Two things make this a **port rather than a copy**, and both are reasons not to
+re-vendor it blind. The paths differ: interface2 keeps the script at
+`tools/no-heredoc-source.hook.sh`, this repo at `.claude/hooks/no-heredoc-source.sh`.
+And interface2's self-heal exists because *its* `.claude/settings.json` is held on
+skip-worktree, so git can never deliver an update to it. **Ours is not**
+(`git ls-files -v .claude/` shows no skip-worktree or assume-unchanged flags), so
+here the self-heal is insurance, not the necessity it is there.
+
+**The reason it drifted: interface2 is an unregistered third vendor family.**
+`.claude/hooks/session-start.sh` §5 checks two families, murderboard and downLow.
+The no-heredoc hook is vendored from a third upstream that was never added, so its
+staleness has never once been checked — which is why the copy still carries the
+`@ a33c8ea9` stamp from a branch while interface2's canonical version has been on
+`main` since this morning. The content happens to be identical today; nothing in
+the repo would have told us if it were not. `tools/murderboard_freshness.sh`
+already generalizes over families via `--label/--slug/--clone/--file`, and
+`tools/revendor.py` already supports differing layouts via `remap`, so registering
+it needs no new machinery — only the two hand-maintained lists updated together,
+which `revendor.py` enforces.
+
+**Freshness, checked live with `--refresh` rather than off the cache:**
+
+- **murderboard: current** @ `729fb06`. The session-start banner reported it stale
+  against upstream `8bf89e5`. That was a **stale-cache false positive** — the
+  second caution in §D, firing exactly as §D warned it would. The banner is not
+  evidence; `--refresh` is.
+- **downLow: genuinely stale, and internally inconsistent.**
+  `tools/review_digitization.py` is stamped `0a21754` against upstream `36c862d`,
+  while `tools/data_root.py` in the same family is stamped `3c4bf98`. Two files of
+  one family at two different stamps is the condition §D's first caution says to
+  fix by bumping *every* stamp in the set. Note also that the cached banner named
+  `3c4bf98` as upstream and the live check named `36c862d`, so downLow moved again
+  between the two.
+
+**Open, and needing your call:** whether to port the interface2 fire test and
+register interface2 as a third vendor family, and whether to re-vendor downLow.
+Neither was done in this session.
+
+---
 ## Arrived 2026-08-19 — the rights question resolved, and §1 is affected
 
 **Read the second half of this block; the first half was overtaken the same
@@ -268,6 +357,26 @@ two is how a repo talks itself into believing an unfixable problem is a to-do.
 >
 > The warnings below still apply and are the reason this stayed open so long —
 > read them before filing a stale verdict as noise.
+>
+> **Amended 2026-08-20.** Three corrections to the block above, from a live
+> `--refresh` check rather than the session-start banner:
+>
+> - The downLow family is **two** files, not one: `tools/data_root.py` and
+>   `tools/review_digitization.py`. The text above predates the second.
+> - **downLow is stale right now**, and its two files carry *different* stamps
+>   (`0a21754` and `3c4bf98`, against upstream `36c862d`). That is the first
+>   caution below, live: bump every stamp in the set.
+> - **A third vendored family is not registered at all.** The no-heredoc
+>   PreToolUse gate at `.claude/hooks/no-heredoc-source.sh` comes from
+>   interface2 and is checked by nothing, so it has silently carried a
+>   branch-era stamp (`@ a33c8ea9`) while upstream moved on. Both hand-maintained
+>   lists — §5 of `.claude/hooks/session-start.sh` and `FAMILIES` in
+>   `tools/revendor.py` — would need the entry, and `revendor.py` refuses to run
+>   if they disagree. See the 2026-08-20 block at the top of this file.
+>
+> The alert-to-action worry at the end of this section is now measurable: of the
+> two families armed since 2026-08-14, this session's banner produced one true
+> stale verdict and one false one from the cache.
 
 *Original entry, kept because its cautions are still live:*
 
