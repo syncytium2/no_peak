@@ -48,16 +48,27 @@ export const TRUE_ONSETS = [
 function credit(onsets: number[], spans: { a: number; b: number }[], dt: number) {
   const used = new Set<number>();
   const found: boolean[] = [];
-  /** Missed, but lying inside a stretch already credited to an earlier pulse. */
-  const swallowed: boolean[] = [];
+  /**
+   * Which reported stretch each real pulse falls in, or -1 for the pulses the
+   * detector reports nothing for. This is containment, not credit: several
+   * onsets can share a stretch, and that is the case the figure exists to show.
+   *
+   * ⚠ Keeping this separate from `found` is the whole correction of 2026-08-21.
+   * The first published figure drew every uncredited pulse hollow, which put a
+   * "missed" marker over the tallest peak in the record — a peak the detector
+   * plainly did report, inside a stretch already credited to the pulse before
+   * it. The scoring rule was right and the picture was a lie. Score with
+   * `found`; draw with `inSpan`.
+   */
+  const inSpan: number[] = [];
   for (const o of onsets) {
     const inside = (s: { a: number; b: number }) => o >= s.a - dt && o <= s.b + dt;
     const i = spans.findIndex((s, ix) => !used.has(ix) && inside(s));
     if (i >= 0) used.add(i);
     found.push(i >= 0);
-    swallowed.push(i < 0 && spans.some(inside));
+    inSpan.push(spans.findIndex(inside));
   }
-  return { found, swallowed, falsePositives: spans.length - used.size };
+  return { found, inSpan, falsePositives: spans.length - used.size };
 }
 
 export function computeFigure() {
@@ -71,41 +82,58 @@ export function computeFigure() {
   // measure the error model rather than the detector.
   const run = clusterMain(times, values, { ...DEFAULT_PARAMS, errorModel: "Error Wave" }, error);
   const spans = run.peaks.map((p) => ({ a: times[p.iFirst], b: times[p.iLast] }));
-  const { found, swallowed, falsePositives } = credit(TRUE_ONSETS, spans, dt);
+  const { found, inSpan, falsePositives } = credit(TRUE_ONSETS, spans, dt);
+  /** How many real pulses fall inside each reported stretch. */
+  const perSpan = spans.map((_, ix) => inSpan.filter((i) => i === ix).length);
+  const unreported = TRUE_ONSETS.filter((_, i) => inSpan[i] < 0);
   return {
     times,
     values,
     dt,
     spans,
     found,
-    swallowed,
+    inSpan,
+    perSpan,
+    unreported,
     falsePositives,
     nTrue: TRUE_ONSETS.length,
     nFound: found.filter(Boolean).length,
-    nSwallowed: swallowed.filter(Boolean).length,
+    /** Stretches reporting one pulse where two or more happened. */
+    nRunTogether: perSpan.filter((n) => n > 1).length,
   };
+}
+
+/** Minutes into the record as "3 h 27 min", the way the axis reads it. */
+function hhmm(min: number) {
+  const h = Math.floor(min / 60);
+  const m = Math.round(min % 60);
+  return h ? `${h} h ${m} min` : `${m} min`;
 }
 
 // ---- layout -----------------------------------------------------------------
 
 const W = 760;
-const H = 392;
+const H = 410;
 const LEFT = 54;
 const RIGHT = 16;
 const TICK_Y = 92; // apex row for the "what really happened" markers
 const PLOT_TOP = 112;
-const PLOT_BOTTOM = 286;
-const STRIP_Y = 296; // the "what the method reported" bars, under the record
-const STRIP_H = 12;
+const PLOT_BOTTOM = 280;
+const STRIP_Y = 290; // the "what the method reported" bars, under the record
+const STRIP_H = 16;
 
-/** A downward marker: solid for a pulse the method found, hollow for one it missed. */
-function Marker({ x, found, y = TICK_Y }: { x: number; found: boolean; y?: number }) {
+/**
+ * A real pulse. Solid when the method reports a pulse covering it, hollow when
+ * it reports nothing there — which is a different statement from "credited", and
+ * the distinction this figure got wrong once already.
+ */
+function Marker({ x, reported, y = TICK_Y }: { x: number; reported: boolean; y?: number }) {
   const d = `M ${x - 6} ${y - 11} L ${x + 6} ${y - 11} L ${x} ${y} Z`;
   return (
     <path
       d={d}
-      fill={found ? FIG.inkPrimary : FIG.surface}
-      stroke={found ? FIG.inkPrimary : FIG.inkSecondary}
+      fill={reported ? FIG.inkPrimary : FIG.surface}
+      stroke={reported ? FIG.inkPrimary : FIG.inkSecondary}
       strokeWidth="1.5"
       strokeLinejoin="round"
     />
@@ -146,9 +174,11 @@ export function ProblemFigure() {
       <desc id="leadfig-desc">
         A simulated record of hormone concentration in blood sampled every {f.dt} minutes for{" "}
         {duration}. {f.nTrue} markers along the top show where a pulse of hormone was actually
-        released; {f.nFound} of them are solid, meaning the CLUSTER algorithm reported a pulse
-        there, and {f.nTrue - f.nFound} are hollow, meaning it did not. Orange bars beneath the
-        record mark the {f.spans.length} stretches the algorithm reports as a pulse.
+        released. Orange bars beneath the record are the {f.spans.length} stretches the CLUSTER
+        algorithm reports as a pulse, each labelled with the number of real pulses inside it:{" "}
+        {f.perSpan.join(", ")}. {f.nRunTogether} of them run two or more real pulses together and
+        report them as one. {f.unreported.length} real pulse falls where the algorithm reports
+        nothing at all, and its marker is hollow.
       </desc>
 
       <rect x="0" y="0" width={W} height={H} fill={FIG.surface} />
@@ -164,23 +194,24 @@ export function ProblemFigure() {
         when a pulse of hormone was actually released
       </text>
 
-      {/* leaders down to the trace for the pulses that were not reported */}
-      {TRUE_ONSETS.map((o, i) =>
-        f.found[i] ? null : (
-          <line
-            key={`lead${i}`}
-            x1={x(o)}
-            x2={x(o)}
-            y1={TICK_Y + 2}
-            y2={STRIP_Y + STRIP_H}
-            stroke={FIG.inkMuted}
-            strokeWidth="1"
-            strokeDasharray="2 4"
-          />
-        ),
-      )}
+      {/* A leader from every marker down to the bar row. All twelve, not just
+          the interesting ones: what the reader has to be able to see is which
+          bar each pulse lands on, and three markers standing over one bar is
+          the whole point. */}
       {TRUE_ONSETS.map((o, i) => (
-        <Marker key={`m${i}`} x={x(o)} found={f.found[i]} />
+        <line
+          key={`lead${i}`}
+          x1={x(o)}
+          x2={x(o)}
+          y1={TICK_Y + 2}
+          y2={STRIP_Y + STRIP_H}
+          stroke={f.inSpan[i] < 0 ? FIG.inkMuted : FIG.axis}
+          strokeWidth="1"
+          strokeDasharray="2 4"
+        />
+      ))}
+      {TRUE_ONSETS.map((o, i) => (
+        <Marker key={`m${i}`} x={x(o)} reported={f.inSpan[i] >= 0} />
       ))}
 
       {/* What the algorithm calls a pulse: a wash over the record, and a solid
@@ -207,6 +238,20 @@ export function ProblemFigure() {
             fill={FIG.pulse}
             opacity={0.85}
           />
+          {/* how many real pulses are inside this one reported pulse — dark on
+              the bar rather than white, which at 11px on this orange is not a
+              contrast anyone should have to squint at */}
+          <text
+            x={(x(s.a - f.dt / 2) + x(s.b + f.dt / 2)) / 2}
+            y={STRIP_Y + STRIP_H - 4}
+            fontFamily={FIG.font}
+            fontSize="11"
+            fontWeight="700"
+            fill={FIG.inkPrimary}
+            textAnchor="middle"
+          >
+            {f.perSpan[i]}
+          </text>
         </g>
       ))}
 
@@ -280,40 +325,55 @@ export function ProblemFigure() {
         />
       ))}
 
-      {/* legend */}
+      {/* legend, two rows: the bar entry has to explain its own numeral and
+          will not share a line with anything */}
       <g fontFamily={FIG.font} fontSize="12" fill={FIG.inkSecondary}>
-        <Marker x={LEFT + 6} y={H - 26} found />
-        <text x={LEFT + 18} y={H - 26}>
-          a real pulse the method found ({f.nFound})
+        <Marker x={LEFT + 6} y={H - 44} reported />
+        <text x={LEFT + 18} y={H - 44}>
+          a pulse that really happened ({f.nTrue})
         </text>
-        <Marker x={LEFT + 268} y={H - 26} found={false} />
-        <text x={LEFT + 280} y={H - 26}>
-          a real pulse it missed ({f.nTrue - f.nFound})
+        <Marker x={LEFT + 268} y={H - 44} reported={false} />
+        <text x={LEFT + 280} y={H - 44}>
+          one the method reports nothing for ({f.unreported.length})
         </text>
-        <rect
-          x={LEFT + 468}
-          y={H - 36}
-          width={16}
-          height={11}
-          rx="2"
-          fill={FIG.pulse}
-          opacity={0.85}
-        />
-        <text x={LEFT + 488} y={H - 26}>
-          reported as a pulse ({f.spans.length})
+        <rect x={LEFT + 2} y={H - 32} width={16} height={11} rx="2" fill={FIG.pulse} opacity={0.85} />
+        <text
+          x={LEFT + 10}
+          y={H - 23}
+          fontSize="10"
+          fontWeight="700"
+          fill={FIG.inkPrimary}
+          textAnchor="middle"
+        >
+          n
+        </text>
+        <text x={LEFT + 26} y={H - 22}>
+          one pulse as the method reports it ({f.spans.length}) — the number is how many real pulses
+          are inside
         </text>
       </g>
     </svg>
       <figcaption>
         <p>
-          <strong>That gap is the problem.</strong> The record above is
-          generated, so unlike any real experiment it comes with the answer attached:{" "}
-          {f.nTrue} pulses of hormone were released into it. CLUSTER — the algorithm no_peak
-          implements, running here at its default settings — reports {f.spans.length}.{" "}
-          {f.falsePositives === 0 && "It invents nothing: every stretch it reports contains a real pulse. "}
-          Of the {f.nTrue - f.nFound} it does not report separately, {f.nSwallowed} arrive while an
-          earlier pulse is still being reported and are counted with it, and{" "}
-          {f.nTrue - f.nFound - f.nSwallowed} falls where it reports no pulse at all.
+          <strong>That gap is the problem.</strong> The record above is generated, so unlike any
+          real experiment it comes with the answer attached: {f.nTrue} pulses of hormone were
+          released into it. CLUSTER — the algorithm no_peak implements, running here at its default
+          settings — reports {f.spans.length}.{" "}
+          {f.falsePositives === 0 &&
+            "It invents nothing, and it is not blind to the big ones: every stretch it reports contains a real pulse. "}
+          What it cannot do is separate pulses that arrive close together. {f.nRunTogether} of its{" "}
+          {f.spans.length} reported pulses cover two or three real ones and report them as one —
+          which is why the numbers on the bars add to {f.perSpan.reduce((a, b) => a + b, 0)} rather
+          than {f.spans.length}. {f.unreported.length === 1 ? "One pulse" : `${f.unreported.length} pulses`}{" "}
+          {f.unreported.length === 1 ? "falls" : "fall"} where it reports nothing at all, at{" "}
+          {f.unreported.map(hhmm).join(" and ")}.
+        </p>
+        <p>
+          Score that the way this project scores its benchmark — one reported pulse can be credited
+          to only one real one — and it is <strong>{f.nFound} of {f.nTrue}</strong> found with{" "}
+          {f.falsePositives} invented, which is about what CLUSTER manages across data with known
+          answers. The conservatism is the trade the algorithm is chosen for; the merging is the
+          price.
         </p>
         <p>
           Which is to say that counting hormone pulses is not reading bumps off a chart. The answer
@@ -325,8 +385,8 @@ export function ProblemFigure() {
           Record {FIG_RECORD} of the 200-record simulated benchmark in this repository
           (<code>data/benchmark</code>, seed 20260810), sampled every {f.dt} min. Detected live in
           your browser by the same code the app runs; the marked pulses are the simulator&apos;s own
-          onsets, credited by the rule in <code>tools/score_benchmark.ts</code>. Simulated: it
-          corresponds to no animal.
+          onsets, and the {f.nFound}-of-{f.nTrue} score is the credit rule in{" "}
+          <code>tools/score_benchmark.ts</code>. Simulated: it corresponds to no animal.
         </p>
       </figcaption>
     </figure>

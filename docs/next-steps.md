@@ -57,9 +57,34 @@ imported (importing `truth.json` would ship 200 answer keys to draw one figure).
 Why that record and not a prettier one: it is the honest headline of the whole
 project — CLUSTER recovers about half of what is there and invents nothing —
 made visible in a single picture, and the reader can check it because the record
-is in the repository. Five of its six misses arrive while an earlier pulse is
-still being reported and are counted with it; the caption says so, in words, in
-numbers computed from the run.
+is in the repository.
+
+> **Corrected the same day, and this is the part worth reading.** The first
+> version drew every uncredited pulse hollow and labelled the hollow markers
+> "a real pulse it missed". Five of that record's six uncredited pulses are not
+> missed at all: they lie inside a stretch the detector *did* report, which the
+> benchmark's rule had already credited to the pulse before them. So the figure
+> put a "missed" marker directly over the tallest peak in its own trace, under
+> an orange bar saying the detector had reported it. The owner needed one look:
+> "how could any algorithm miss the bigest peak?"
+>
+> Nothing was wrong with the scoring — `credit()` matches
+> `tools/score_benchmark.ts` and always did. What was wrong was drawing a
+> **scoring** distinction (credited / not credited, which is about counting)
+> as if it were a **detection** one (reported / not reported, which is about the
+> algorithm). The figure now separates them: `found` scores, `inSpan` draws.
+> Every real pulse the detector reports anything for is solid, the one it
+> reports nothing for is hollow, and each orange bar carries the number of real
+> pulses inside it — 2, 1, 1, 1, 3, 3 — so the merging is the thing the picture
+> shows rather than a footnote in the caption.
+>
+> The general lesson, and it is the one `validation-status.md` already teaches
+> in another form: a quantity that is correct for scoring is not automatically
+> the right quantity to draw. Both readings were "12 pulses, 6 reported"; only
+> one of them was true about the algorithm. A test now pins it —
+> `only calls a pulse unreported when no reported stretch covers it` — because
+> the defect was invisible in the code and obvious in the picture, which is
+> exactly the class of thing the README says to spend a minute in a browser on.
 
 An earlier draft washed the six detected stretches full-height in orange, the
 way `src/chart/ClusterChart.tsx` does. It swamped the record — six stretches
