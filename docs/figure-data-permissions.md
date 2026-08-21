@@ -90,7 +90,7 @@ request when it is made rather than after it is answered.
 | 5 | 2026-08-14 | Same, four numbered questions | Provenance of a library scan; whether the earlier PDF extraction contaminates it; whether the license reaches a derived table of facts; whether Document Delivery's fair-use notice bears on publishing | **Two answered the same day**, two on **2026-08-19** via counsel. (2) A library-made scan carries the clean provenance — handling the paper is irrelevant, obtaining it outside the subscription is the whole test. (1) "Any part of the Publications" **does** reach a derived table of values. (3) The earlier extraction **does** matter, correcting the 08-14 answer, but what you *use* is the operative test. (4) OUP would likely read the delivery notice as covering extracted content. **CLOSED.** See "Counsel answered" below. |
 | 6 | 2026-08-14 | U-M Document Delivery | Scan of the bound volume, p. 1639 | **Delivered 2026-08-17, and it is the print volume.** Verified against the four tests this file set: no OUP download watermark, physical-scan artifacts throughout, ~490 dpi effective (400 was asked), and the whole article rather than the one page requested. **CLOSED.** See the next-but-one section. |
 | 7 | 2026-08-19 | University counsel, via the Copyright Librarian | Answers to questions 1 and 4 of request 5 | **Answered.** Derived values are "any part of the Publications"; ~~the delivery notice would likely be read as reaching extracted content~~ **— that second half was retracted the same day, see row 8.** **CLOSED.** |
-| 8 | 2026-08-19 | Same, sending him the delivery notice itself | Whether Q4 had been read as asked — does the notice restrict use, or disclaim responsibility for it? | **Answered within the hour, and it reverses Q4.** He had taken the question to be about OUP's language rather than the library's own notice. The notice states the purpose the copy was made for and then says "It is your responsibility to address copyright for any other uses" — a **disclaimer, not a restriction**. His full answer to Q2 therefore applies to the scan in hand: obtained outside the subscription, so the license does not reach it. **CLOSED, and it opens the route.** A thank-you is owed. |
+| 8 | 2026-08-19 | Same, sending him the delivery notice itself | Whether Q4 had been read as asked — does the notice restrict use, or disclaim responsibility for it? | **Answered within the hour, and it reverses Q4.** He had taken the question to be about OUP's language rather than the library's own notice. The notice states the purpose the copy was made for and then says "It is your responsibility to address copyright for any other uses" — a **disclaimer, not a restriction**. His full answer to Q2 therefore applies to the scan in hand: obtained outside the subscription, so the license does not reach it. **CLOSED, and it opens the route.** Thanked, 2026-08-20. **Nothing is outstanding with the library.** |
 
 **The correspondence itself is not committed** — it is third-party email, it
 names real people, and it does not belong in a public repository. It is kept
@@ -285,9 +285,16 @@ exactly what it was this morning.**
 
 **Two smaller things worth keeping.** OUP has still never replied to request 3,
 now well past its stated 10 working days; that request is no longer load-bearing
-but it is also not withdrawn. And a thank-you is owed — he corrected himself
-within the hour, unprompted, having already volunteered the Document Delivery
-route before he understood the question.
+but it is also not withdrawn — **it is the only thing still open in this
+document.** And the owner thanked him on 2026-08-20, which closes the library
+side entirely: he corrected himself within the hour, unprompted, having already
+volunteered the Document Delivery route before he understood the question.
+
+That is worth recording as more than a courtesy. Three of the four answers this
+project acted on came from him rather than from its own reasoning, and the one
+time the reasoning here disagreed with an answer, the right move was to ask
+again rather than to pick a reading — which is what produced the retraction and
+the route.
 
 ### ⭐ The re-extraction, and what it changed
 
