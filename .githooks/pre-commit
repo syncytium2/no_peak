@@ -1,0 +1,25 @@
+#!/bin/sh
+# Commit gate — OPT-IN, enable with:  git config core.hooksPath .githooks
+#
+# It is opt-in on purpose. This repository is a shared checkout: another session
+# may be mid-commit in the same tree, and a hook that appears under someone
+# without their knowing is the wrong way to introduce a gate. `npm test` runs
+# the same rules for everyone regardless (tools/sapper.test.ts), so declining
+# this costs coverage at commit time, not coverage.
+#
+# sapper scans only the lines the commit ADDS. A gate that blocks you on
+# pre-existing lines in a file you touched is a gate that gets switched off.
+#
+# Bypass for one commit:  git commit --no-verify
+if command -v python3 >/dev/null 2>&1; then
+    exec python3 tools/sapper.py --staged
+elif command -v py >/dev/null 2>&1; then
+    exec py tools/sapper.py --staged
+else
+    echo "pre-commit: no python3 on PATH — sapper did NOT run." >&2
+    echo "This gate fails LOUD rather than open: see the fail-open history in" >&2
+    echo ".claude/hooks/no-heredoc-source.sh, which was installed and silent in" >&2
+    echo "seven repositories. Install python3, or commit with --no-verify and" >&2
+    echo "know that nothing checked the diff." >&2
+    exit 1
+fi

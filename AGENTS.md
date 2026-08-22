@@ -90,6 +90,15 @@ is invented at a join and no interpulse interval is measured across one.
 - **The port exposes exactly the seven error models Igor exposes.** Not an
   eighth. A new model would have no validation oracle. If a per-sample error is
   needed, put it in the data as a third column and use Error Wave.
+- **`python3 tools/sapper.py --all` — the mechanized half of the rules below.**
+  Four of the traps on this page now fire by themselves instead of relying on
+  anyone remembering them, `npm test` runs the scan and the selftest, and
+  `git config core.hooksPath .githooks` puts it on the staged diff at commit
+  time. `--list` prints the rule table; each rule cites the place the lesson was
+  already written down. Adding one: it must be mechanizable per line, it must
+  have already cost something, and it must carry fixtures proving it can fire.
+  Disputing one: `docs/todo-now.md`, which the session-start hook prints at you
+  — a rule you cannot correct is a rule that gets the gate switched off.
 
 ## Before you change anything
 

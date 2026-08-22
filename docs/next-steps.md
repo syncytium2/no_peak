@@ -25,6 +25,74 @@ started the day).
 
 ---
 
+## Arrived 2026-08-22 — sapper is here, ported not vendored, and it caught itself first
+
+Asked whether this repo had a sapper or a gotchas file. It had neither: the only
+occurrence of the word was inside `.claude/hooks/no-heredoc-source.sh`, in the
+comment explaining what sapper *cannot* catch. `.git/hooks/` held nothing but
+samples, so **nothing had ever inspected a commit here** — the two Claude Code
+hooks gate an agent's tool calls, not the repository's content.
+
+**Why it is a port and not a vendor, which is the load-bearing part.**
+interface2's `tools/sapper.sh` is 1,963 lines with 35 rules **inline as shell
+functions** — MATLAB `load()`, `exportgraphics`, `parfor`, its own data roots,
+its own retracted claims. Not one can fire on a TypeScript browser app, and
+there is no external rule file to swap. Copying it would install a gate that
+cannot fire, which is the exact failure its own header condemns. bugarach hit
+this wall first and its `tools/sapper.py` says so in line 1: *"ported pattern
+from interface2"*, 279 lines, rules as a declarative table. That is the
+template, and this follows it. **Consequence: `tools/sapper.py` carries no
+`vendored from … @ sha` stamp and is not a member of a vendor family** — there
+is no upstream copy for it to be stale against. What is shared is the shape.
+
+**The rules, seeded only from lessons this repo had already written down.**
+`SAP001` .ts extensions stripped in `src/core/` (AGENTS.md says outright that
+*no test will catch it* — which is why it is rule 001); `SAP002` an absolute
+home path in a tracked file, this repo being public; `SAP003` `git add -A` /
+`commit -a` in a script, the shared-checkout hazard; `SAP004` a left-behind
+`.only`. Three things were deliberately **not** made rules because a line regex
+is the wrong tool — the seven-error-model cap, the numbers that must agree
+across `index.html` / `llms.txt` / `/methods` / About, and heredoc-written
+sources — and the file says so, so the next person does not re-litigate it.
+
+**The first run failed, and reporting that is the point.** `--all` returned
+**61 BLOCK findings, and every one was the rule being wrong rather than the tree
+being dirty:**
+
+- `SAP001` fired on 35 lines, all in `src/core/*.test.ts`. Those are
+  legitimately extensionless — vitest resolves both forms and they are never
+  reached by the bare-`node` chain the rule protects. Every production file
+  already complied. **The rule fired on correct code and on nothing else.**
+- `SAP002` fired 24 times on **provenance citations** — "the University of
+  Michigan library's scan of the bound print volume" in the digitized records'
+  headers, in `samples.ts`, on `/methods`. Those strings are *required* to be
+  there by `data/digitized/README.md` and `samples.test.ts`. A rule cannot tell
+  an institution's name in a citation from a path on a laptop, so it no longer
+  tries: it matches a literal absolute home path and nothing else.
+- `SAP003` fired twice on `session-start.sh` — on the banner text warning
+  sessions off `git add -A`. Firing on the warning about a thing is not
+  catching the thing.
+
+All three were narrowed before the gate ever ran on a commit, and each carries
+the reason inline so the exclusion is not mistaken for an oversight later. Then
+the gate was proved to fire end to end rather than assumed to: a probe file with
+a stripped extension was staged, `--staged` blocked it and exited 1, and the
+probe was removed. That is this repo's own rule about the heredoc gate —
+*verify it can fire before trusting it* — applied to the new one.
+
+**Opt-in at commit time, mandatory in the suite.** `.githooks/pre-commit` is
+enabled per-clone with `git config core.hooksPath .githooks`; a hook that
+appears under a peer session without their knowing is the wrong way to introduce
+a gate in a shared checkout. `tools/sapper.test.ts` runs the scan and the
+selftest under `npm test`, so declining the hook costs coverage at commit time,
+not coverage. The hook **fails loud** if python3 is missing rather than exiting
+0, which is the `4855be3` lesson from the heredoc gate.
+
+Rule complaints go in `docs/todo-now.md`, not a new feedback directory:
+interface2 built one because it needed an un-losable surface, and this repo
+already has one that prints at every session start. Two hand-maintained lists
+that can disagree is the failure the vendor gate already fights.
+
 ## Arrived 2026-08-22 — the Fortran is the default, and what that cost
 
 State now: **222 tests pass** (17 files), `tsc -b` clean, version **0.3.0**.
