@@ -76,11 +76,19 @@ literal one** — CLUST5's DNS pass reads the window sizes swapped, a COMMON-blo
 declaration bug, and the port follows Igor instead. Symmetric windows, which is
 the default and every shipped preset, match exactly.
 
-⚠ `data/oracle/` is gitignored and lives in the Dropbox store. The six new
-listings are on this machine only until `python3 tools/data_root.py --push`
-runs, and until then the widened suite **skips** on any other checkout rather
-than failing. That is the designed behavior, but it means a green `npm test`
-elsewhere does not mean these seven configurations were checked.
+⚠ `data/oracle/` is gitignored and lives in the Dropbox store. **Pushed
+2026-08-22**: `python3 tools/data_root.py --push oracle` — 12 files written, 4
+already current, 4 → 16, store and repo digests both `9fd44726befb`. The push
+was purely additive and was checked to be so first: 12 repo-only files, **0
+store-only**, 0 differing, so no `--force` and nothing overwritten. `oracle` was
+named explicitly rather than pushing bare, so `reference/` — the third-party
+tree that needs consent every time — was not touched, and its digest is
+unchanged.
+
+Still true, and the reason to keep this note: another checkout does not have
+these until it runs `--pull`, and until it does the widened suite **skips**
+rather than fails. A green `npm test` elsewhere does not mean these seven
+configurations were checked.
 
 **The lead figure was re-picked**, not left to drift: record 0129 reports 10 of
 its 12 under the Fortran and stops posing a problem, so the figure now draws
