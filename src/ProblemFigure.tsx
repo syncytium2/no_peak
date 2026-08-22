@@ -19,22 +19,29 @@ import { clusterMain } from "./core/cluster";
 import { parseSeries } from "./core/csv";
 import { DEFAULT_PARAMS } from "./core/types";
 import { FIG } from "./chart/palette";
-import recordCsv from "../data/benchmark/series/0129.csv?raw";
+import recordCsv from "../data/benchmark/series/0119.csv?raw";
 
 /** Which benchmark record is drawn, for the caption and the test. */
-export const FIG_RECORD = "0129";
+export const FIG_RECORD = "0119";
 
 /**
- * The pulse onsets the simulator generated for record 0129, in minutes —
- * `records["0129"].true_onsets` of `data/benchmark/truth.json`, seed 20260810.
+ * The pulse onsets the simulator generated for record 0119, in minutes —
+ * `records["0119"].true_onsets` of `data/benchmark/truth.json`, seed 20260810.
  *
  * Copied rather than imported: `truth.json` carries all 200 records, and
  * importing it would ship 200 answer keys to draw one figure. The test reads
- * the file from disk and fails if these twelve numbers ever stop matching it.
+ * the file from disk and fails if these nine numbers ever stop matching it.
+ *
+ * ⚠ The record changed with the default variant in 0.3.0. It was 0129, chosen
+ * against the Igor default; under the Fortran default that record reports 10 of
+ * its 12 and stops posing much of a problem. This one shows both ways the
+ * detector loses a pulse at once — three arriving together and reported as one,
+ * three it reports nothing for — which is the honest picture of what the method
+ * costs. If the default ever moves again, re-pick rather than let the figure
+ * quietly weaken: `computeFigure` decides what the picture says.
  */
 export const TRUE_ONSETS = [
-  15.7143, 54.8912, 89.3461, 133.8119, 163.7702, 207.1155, 236.5741, 248.1398, 275.2539, 308.3174,
-  321.9545, 354.2133,
+  9.623, 27.7731, 45.8578, 64.2365, 83.5203, 116.6622, 180.1382, 183.3778, 200.4287,
 ];
 
 /**
@@ -101,6 +108,12 @@ export function computeFigure() {
     /** Stretches reporting one pulse where two or more happened. */
     nRunTogether: perSpan.filter((n) => n > 1).length,
   };
+}
+
+/** "a", "a and b", "a, b and c" — the caption lists however many there are. */
+function list(items: string[]) {
+  if (items.length < 3) return items.join(" and ");
+  return `${items.slice(0, -1).join(", ")} and ${items[items.length - 1]}`;
 }
 
 /** Minutes into the record as "3 h 27 min", the way the axis reads it. */
@@ -361,12 +374,12 @@ export function ProblemFigure() {
           settings — reports {f.spans.length}.{" "}
           {f.falsePositives === 0 &&
             "It invents nothing, and it is not blind to the big ones: every stretch it reports contains a real pulse. "}
-          What it cannot do is separate pulses that arrive close together. {f.nRunTogether} of its{" "}
-          {f.spans.length} reported pulses cover two or three real ones and report them as one —
-          which is why the numbers on the bars add to {f.perSpan.reduce((a, b) => a + b, 0)} rather
-          than {f.spans.length}. {f.unreported.length === 1 ? "One pulse" : `${f.unreported.length} pulses`}{" "}
-          {f.unreported.length === 1 ? "falls" : "fall"} where it reports nothing at all, at{" "}
-          {f.unreported.map(hhmm).join(" and ")}.
+          It loses pulses two ways instead. Pulses that arrive close together are reported as one:{" "}
+          {f.nRunTogether} of its {f.spans.length} reported pulses {f.nRunTogether === 1 ? "covers" : "cover"}{" "}
+          more than one real pulse — up to {Math.max(...f.perSpan)} — which is why the numbers on
+          the bars add to {f.perSpan.reduce((a, b) => a + b, 0)} rather than {f.spans.length}. And{" "}
+          {f.unreported.length === 1 ? "one pulse falls" : `${f.unreported.length} pulses fall`} where
+          it reports nothing at all, at {list(f.unreported.map(hhmm))}.
         </p>
         <p>
           Score that the way this project scores its benchmark — one reported pulse can be credited

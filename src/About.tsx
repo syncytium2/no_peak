@@ -33,8 +33,9 @@ export function About({ onOpenApp }: { onOpenApp: () => void }) {
       <p className="lede">
         no_peak is a browser-based implementation of <strong>CLUSTER</strong>, the pulse-detection
         algorithm for endocrine time-series data developed by Johannes D. Veldhuis and Michael L.
-        Johnson. It is a faithful port of the Igor Pro implementation used in the Moenter Lab, with
-        the original Fortran available as a switchable mode.
+        Johnson. It runs the <strong>original Fortran</strong> — a faithful port of CLUST5 v6.01,
+        the program they published — and carries a port of the Igor Pro implementation used in the
+        Moenter Lab alongside it, for reproducing analyses done there.
       </p>
       <p>
         Your data runs entirely on your machine. There is no analytics, and no code path that

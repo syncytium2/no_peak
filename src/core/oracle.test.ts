@@ -50,6 +50,39 @@ function parsePeaks(file: string) {
 const HAVE_ORACLE =
   existsSync("data/extracted/gnrh.csv") && existsSync("data/oracle/gnrh_nn2_np2.lst");
 
+/**
+ * The matrix, widened 2026-08-22 when the Fortran became the default variant.
+ *
+ * It was one wave in two window settings, which was proportionate while this
+ * was the alternative path and is not once it is the one the app opens with:
+ * the Igor arm is checked on five waves across fifteen configurations
+ * (`igor-oracle.test.ts`), and the default deserves at least the same kind of
+ * coverage. Every row here is CLUST5 v6.01 compiled with gfortran and run for
+ * real — regenerate any of them with
+ *
+ *     bash tools/fortran/build_and_run.sh data/extracted/<wave>.csv <nNadir> <nPeak>
+ *
+ * ⚠ Only symmetric windows belong in this table. At nPeak != nNadir the port
+ * deliberately does NOT reproduce CLUST5 — see the asymmetric describe below,
+ * which pins that divergence rather than hiding it.
+ *
+ * ⚠ Still uncovered, and the reason is the harness rather than the port: the
+ * runner drives CLUST5's variance option 3 ("input from data file"), so it can
+ * only score waves that carry a per-sample SD column. `man3` and `null1` are
+ * value-only and are checked against Igor but never against the Fortran, and
+ * the Fortran's own estimated error models have never been scored at all.
+ * Recorded in docs/todo-now.md.
+ */
+const MATRIX = [
+  { wave: "gnrh", nNadir: 1, nPeak: 1 },
+  { wave: "gnrh", nNadir: 2, nPeak: 2 },
+  { wave: "gnrh", nNadir: 3, nPeak: 3 },
+  { wave: "set1", nNadir: 2, nPeak: 2 },
+  { wave: "set1", nNadir: 3, nPeak: 3 },
+  { wave: "LHInfused", nNadir: 1, nPeak: 1 },
+  { wave: "LHInfused", nNadir: 2, nPeak: 2 },
+];
+
 if (!HAVE_ORACLE) {
   describe("CLUST5 oracle", () => {
     it.skip("needs the undistributed data — see docs/reference-code.md", () => {});
@@ -119,3 +152,37 @@ if (HAVE_ORACLE) describe("CLUST5 oracle — asymmetric windows expose a documen
     expect(swapped.downs).toEqual(oracle.downs);
   });
 });
+
+// The widened matrix. The 2x2 gnrh case above keeps its own describe because it
+// checks the peak table statistic by statistic and the truncated-peak rule; this
+// one checks that the three point arrays — which are the algorithm's actual
+// output, everything else being derived from them — match CLUST5 on every wave
+// and window width available.
+if (HAVE_ORACLE)
+  describe.each(MATRIX)(
+    "CLUST5 oracle — $wave, nNadir=$nNadir nPeak=$nPeak",
+    ({ wave, nNadir, nPeak }) => {
+      const listing = `data/oracle/${wave}_nn${nNadir}_np${nPeak}.lst`;
+      const csv = `data/extracted/${wave}.csv`;
+      const have = existsSync(listing) && existsSync(csv);
+
+      it("matches the Fortran point for point", () => {
+        if (!have) {
+          expect.soft(have, `missing ${listing} — regenerate with build_and_run.sh`).toBe(true);
+          return;
+        }
+        const s = parseSeries(readFileSync(csv, "utf8"));
+        const oracle = parseListing(listing);
+        const r = clusterMain(
+          s.times ?? s.values.map((_, i) => i + 1),
+          s.values,
+          { ...DEFAULT_PARAMS, nNadir, nPeak, errorModel: "Error Wave", variant: "fortran" },
+          s.error!,
+        );
+        expect(oracle.ups.length).toBe(s.values.length);
+        expect(r.ups).toEqual(oracle.ups);
+        expect(r.downs).toEqual(oracle.downs);
+        expect(r.pulse).toEqual(oracle.pulse);
+      });
+    },
+  );

@@ -71,8 +71,38 @@ describe("scale invariance", () => {
     expect(hasScaleDependence(p({ variant: "igor", nPeak: 2, nNadir: 1 }))).toBe(true);
     // The Fortran path is sound at any window width.
     expect(hasScaleDependence(p({ variant: "fortran", nPeak: 1, nNadir: 1 }))).toBe(false);
-    // Wider windows dilute it enough not to be worth a warning.
-    expect(hasScaleDependence(p({ variant: "igor", nPeak: 2, nNadir: 2 }))).toBe(false);
+    expect(hasScaleDependence(p({ variant: "fortran", nPeak: 4, nNadir: 4 }))).toBe(false);
+    // ⚠ Two-point windows used to be exempt, on the ground that they dilute the
+    // effect. They do not dilute it enough: the case below is asserted directly
+    // in "wide windows do not make the Igor variant safe" — a pulse-free record
+    // at these very settings goes from 0 invented pulses to 16 on rescaling.
+    expect(hasScaleDependence(p({ variant: "igor", nPeak: 2, nNadir: 2 }))).toBe(true);
+    expect(hasScaleDependence(p({ variant: "igor", nPeak: 5, nNadir: 5 }))).toBe(true);
+  });
+
+  // The measurement behind widening that warning, kept so the claim in
+  // presets.ts and in the app's warning text cannot rot. Every pulse either
+  // record reports is spurious: make_synthetic.py generates them with the pulse
+  // amplitude set to nothing.
+  it("wide windows do not make the Igor variant safe on a pulse-free record", () => {
+    for (const file of ["sim_gnrh_intact", "sim_flat_control"]) {
+      const s = parseSeries(readFileSync(`data/synthetic/${file}.csv`, "utf8"));
+      const count = (k: number, variant: "igor" | "fortran") =>
+        clusterMain(
+          s.times!,
+          s.values.map((v) => v * k),
+          { ...DEFAULT_PARAMS, variant, errorModel: "Error Wave" },
+          s.error!.map((e) => e * k),
+        ).summary.nPeaks;
+
+      // at the two-point defaults the old rule called safe
+      expect(count(1, "igor")).toBe(0);
+      expect(count(10_000, "igor")).toBeGreaterThanOrEqual(14);
+      // the Fortran reports the same count whatever the units, which is the
+      // nominal cost of a t = 2 threshold rather than an artifact of scale
+      expect(count(10_000, "fortran")).toBe(count(1, "fortran"));
+      expect(count(0.01, "fortran")).toBe(count(1, "fortran"));
+    }
   });
 
   it("affects a pulse-free control too — false positives appear from rescaling", () => {

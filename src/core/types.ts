@@ -29,14 +29,26 @@ export interface ClusterParams {
   zeroTerminate: boolean;
   zero: number;
   /**
-   * Which reference implementation to reproduce. "igor" (default) matches
-   * ClusterMasterV4-1.ipf, the validation oracle. "fortran" matches the
-   * original CLUST5.MPF: pooled S sums NDF(I)*STDEV(I)**2 (Igor sums
-   * NDF[i]*STDEV[i]), and the pulse-assembly pass differs — loop 1200 marks
-   * NPEAK points per up-flag (Igor marks nPeak-1), the initial down-run sets
-   * only PULSE(1) (Igor fills and terminates the whole leading run), loop
+   * Which reference implementation to reproduce.
+   *
+   * "fortran" (default since 0.3.0) matches the original CLUST5.MPF v6.01, the
+   * program Veldhuis and Johnson published: pooled S sums NDF(I)*STDEV(I)**2,
+   * which is a variance, so the t-statistic is dimensionless and the pulse
+   * count does not depend on the units the data is written in.
+   *
+   * "igor" matches ClusterMasterV4-1.ipf, the Moenter lab's package and the
+   * oracle the port is tested against. It sums NDF[i]*STDEV[i] **unsquared**,
+   * so its t-statistic carries units of sqrt(data) and its pulse count moves
+   * with the scale of the record — see `hasScaleDependence` and
+   * docs/validation-status.md. The pulse-assembly pass also differs: loop 1200
+   * marks NPEAK points per up-flag (Igor marks nPeak-1), the initial down-run
+   * sets only PULSE(1) (Igor fills and terminates the whole leading run), loop
    * 1300 starts at the second point, and the backward zap runs to index 1
    * (Igor stops at 3).
+   *
+   * ⚠ The default moved from "igor" to "fortran" in 0.3.0 and results changed
+   * with it. Both paths stay, neither is corrected toward the other, and every
+   * export stamps which one produced it.
    */
   variant: "igor" | "fortran";
   /**
@@ -57,7 +69,7 @@ export const DEFAULT_PARAMS: ClusterParams = {
   errorValue: 1,
   zeroTerminate: false,
   zero: 0,
-  variant: "igor",
+  variant: "fortran",
   includeTruncated: true,
 };
 

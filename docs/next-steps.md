@@ -25,6 +25,74 @@ started the day).
 
 ---
 
+## Arrived 2026-08-22 — the Fortran is the default, and what that cost
+
+State now: **222 tests pass** (17 files), `tsc -b` clean, version **0.3.0**.
+
+Owner's decision, and the framing was his: ship the Fortran as the primary,
+authentic port and deal with the Igor side later.
+
+**What moved.** `DEFAULT_PARAMS.variant` is `"fortran"`; the "This app's
+defaults" preset moved with it (the two must always agree — `presets.test.ts`
+asserts `matchPreset(DEFAULT_PARAMS).key === "default"`); the Implementation
+picker leads with `Original Fortran (CLUST5 v6.01)` and labels the other
+`Igor port — lab compatibility`; the version is 0.3.0 because results changed.
+Exports already stamped `impl=`, so provenance was covered without new work.
+
+**The case for it, re-derived rather than quoted.** The Igor pooled S sums the
+per-point errors unsquared, so its t-statistic is not dimensionless. Measured at
+the **two-point defaults** — not the one-point windows the existing finding
+used — rescaling by 0.01 / 1 / 100 / 10,000:
+
+| record | Igor | Fortran |
+| --- | --- | --- |
+| `sim_gnrh_intact` (no pulses) | 0, 0, 6, **16** | 6, 6, 6, 6 |
+| `sim_flat_control` (no pulses) | 0, 0, 13, **14** | 7, 7, 7, 7 |
+| `sim_gnrh_thx_ewe` (11 pulses) | **0**, 11, 11, 11 | 11, 11, 11, 11 |
+
+Sixteen invented pulses in a record containing none, and a total detection
+failure at 0.01×. `hasScaleDependence()` was silent in every one of those cases;
+it now fires whenever Igor is selected, at any window width, and the app's
+warning says what it costs. `validation-status.md` is corrected — its "mild at
+the two-point defaults" was measured on the pulsatile record alone.
+
+**The uncomfortable half, which is not yet fully paid for.** Igor's zero on the
+pulse-free controls is an artifact of that same unsquared pooling. The Fortran's
+6 and 7 are roughly the nominal cost of a `t = 2` threshold. So "CLUSTER is
+conservative and almost never invents" — About page, prerender, `llms.txt`,
+`/methods` — was measured where the artifact was doing part of the work. The
+lead figure, the app warning and the short-form prose were fixed; the long-form
+prose has had a minimal pass only. `todo-now.md` §0c.
+
+**Authenticity, which was the owner's actual question.** The Fortran oracle was
+one wave in two window settings, against the Igor arm's five waves across
+fifteen configurations. CLUST5 v6.01 was rebuilt with gfortran and re-run to
+give **three waves × seven symmetric window settings**, and the port matches
+every one point for point. Two named gaps remain, both recorded rather than
+rounded off: `build_and_run.sh` drives variance option 3 only, so the value-only
+waves (`man3`, `null1`) and the Fortran's own estimated error models are
+unscored; and **at asymmetric windows the port is a corrected port, not a
+literal one** — CLUST5's DNS pass reads the window sizes swapped, a COMMON-block
+declaration bug, and the port follows Igor instead. Symmetric windows, which is
+the default and every shipped preset, match exactly.
+
+⚠ `data/oracle/` is gitignored and lives in the Dropbox store. The six new
+listings are on this machine only until `python3 tools/data_root.py --push`
+runs, and until then the widened suite **skips** on any other checkout rather
+than failing. That is the designed behavior, but it means a green `npm test`
+elsewhere does not mean these seven configurations were checked.
+
+**The lead figure was re-picked**, not left to drift: record 0129 reports 10 of
+its 12 under the Fortran and stops posing a problem, so the figure now draws
+0119 — 9 pulses, 4 reported, three of them run together into one bar and three
+reported not at all. Both failure modes in one picture. The record is named in
+`FIG_RECORD` and pinned by test; if the default ever moves again, re-pick.
+
+**The DOS skin is its own checkbox now.** It fired on `variant === "fortran"`,
+which was a fine joke while Fortran was the alternative and a bad one the moment
+it became the default — the app would have booted green-on-black and every
+exported figure would have looked like a 1988 console.
+
 ## Arrived 2026-08-21 — the site opens on About, and About opens with a figure
 
 State now: **220 tests pass** (17 files), `tsc -b` clean.

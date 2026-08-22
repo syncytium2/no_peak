@@ -84,11 +84,14 @@
           page returns exactly what the reference implementations return.
         </p>
         <p>
-          Two implementations ship side by side, selectable in the UI: <strong>Igor</strong>, a port
-          of the Igor Pro <code>ClusterMaster</code> package used in the Moenter lab, and
-          <strong>Fortran</strong>, a port of Johnson's original CLUST5 v6.01 console program. They
-          differ in the form of the pooled variance and in the pulse-assembly loop bounds, and the
-          switch exists so results from either lineage can be reproduced.
+          Two implementations ship side by side, selectable in the UI. The default is
+          <strong>Fortran</strong>, a port of Johnson's original CLUST5 v6.01 console program —
+          the one the published method describes, and the one whose pooled variance makes the
+          t-statistic dimensionless, so a record's pulse count does not change with the units it
+          is written in. <strong>Igor</strong>, a port of the Igor Pro <code>ClusterMaster</code>
+          package used in the Moenter lab, is kept for reproducing analyses done there; it pools
+          the errors unsquared and its count does move with scale, which the app warns about
+          whenever it is selected. They also differ in the pulse-assembly loop bounds.
         </p>
 
         <h2>How it was validated</h2>

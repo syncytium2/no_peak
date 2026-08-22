@@ -88,6 +88,28 @@ _Last updated: 2026-08-12 (v0.2.0)._ Open work is in
   height, largest %, mean %, area, and increase. The only difference is the
   extra 18th peak, which is the deliberate `includeTruncated` behavior.
   Regenerate with `tools/fortran/build_and_run.sh`.
+
+  **Widened 2026-08-22, when this variant became the default.** One wave in two
+  window settings was proportionate for the alternative path and not for the
+  one the app opens with. CLUST5 was rebuilt and re-run to give **three waves ×
+  seven symmetric window settings** — `gnrh` at 1×1, 2×2, 3×3; `set1` at 2×2,
+  3×3; `LHInfused` at 1×1, 2×2 — and the port matches every one point for
+  point on the up flags, the down flags and the pulse array. That is still
+  short of the Igor arm's 5 waves × 15 configurations, and short in a specific,
+  named way: `build_and_run.sh` drives CLUST5's variance option 3 ("input from
+  data file"), so it can only score waves carrying a per-sample SD column.
+  `man3` and `null1` are value-only and have **never** been scored against the
+  Fortran, and the Fortran's own estimated error models have never been scored
+  at all. `docs/todo-now.md` §0 carries it.
+
+  ⚠ **At asymmetric windows the port is a corrected port, not a literal one.**
+  CLUST5 declares `COMMON /MISC/` as `(…,NNADIR,NPEAK)` in UPS but
+  `(…,NPEAK,NNADIR)` in DNS, so its downs pass reads the two window sizes
+  swapped. The port follows Igor and does not swap. Symmetric windows — the
+  default, the presets, and nearly all real use — are unaffected and match
+  exactly; `nPeak != nNadir` does not. The divergence is pinned by its own case
+  in `oracle.test.ts` rather than smoothed over, and whether to reproduce the
+  bug is an open question in `todo-now.md` §0b.
 - **Unit tests** (`npm test` — 194 at the time of writing), in three kinds:
   - hand-computed t-statistics on small series, worked out on paper;
   - synthetic series with unambiguous answers (flat baseline of 1s with two
@@ -342,6 +364,31 @@ positives. The effect dilutes as the windows widen, because `S` then averages
 over more points: at the two-point defaults it is mild, at one-point windows it
 is severe. One-point windows are not exotic — they are what Webster et al. 1991
 specifies, and what the shipped presets use.
+
+> **Corrected 2026-08-22: "at the two-point defaults it is mild" is true of a
+> record with pulses in it and false of one without.** The dilution above was
+> measured on `sim_gnrh_thx_ewe` only. Re-measured at the two-point defaults
+> across the same 0.01 / 1 / 100 / 10,000 rescaling:
+>
+> | record | Igor | Fortran |
+> | --- | --- | --- |
+> | `sim_gnrh_intact` (no pulses) | 0, 0, 6, **16** | 6, 6, 6, 6 |
+> | `sim_flat_control` (no pulses) | 0, 0, 13, **14** | 7, 7, 7, 7 |
+> | `sim_gnrh_thx_ewe` (11 pulses) | **0**, 11, 11, 11 | 11, 11, 11, 11 |
+>
+> Sixteen invented pulses in a record containing none, and — at 0.01× — a total
+> detection failure on a record with eleven, both at window widths the old rule
+> called safe. `hasScaleDependence()` required `nPeak + nNadir <= 3` on the
+> strength of the mild-at-two-point reading, so **the app was silent in exactly
+> these cases**. It now fires for the Igor variant at any width. Pinned by
+> `wide windows do not make the Igor variant safe on a pulse-free record` in
+> `src/core/scale-invariance.test.ts`.
+>
+> The same numbers cut the other way too, and the honesty section below has not
+> yet been reworked to say so: the Fortran's 6 and 7 on records containing no
+> pulses are the nominal cost of a `t = 2` threshold, while Igor's 0 is an
+> artifact of the unsquared pooling. "CLUSTER almost never invents" was measured
+> where that artifact was doing part of the work. `todo-now.md` §0c.
 
 Consequences applied:
 

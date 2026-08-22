@@ -24,25 +24,26 @@ describe("the About page's lead figure", () => {
     expect(rec.params.n_true_pulses).toBe(TRUE_ONSETS.length);
   });
 
-  it("still shows a detector reporting half of what happened, and inventing none", () => {
+  it("still shows a detector reporting under half of what happened, and inventing none", () => {
     const f = computeFigure();
-    expect(f.nTrue).toBe(12);
-    expect(f.spans).toHaveLength(6);
-    expect(f.nFound).toBe(6);
+    expect(f.nTrue).toBe(9);
+    expect(f.spans).toHaveLength(4);
+    expect(f.nFound).toBe(4);
     expect(f.falsePositives).toBe(0);
   });
 
   // The defect of 2026-08-21, kept as a test because it was invisible in the
-  // code and obvious in the picture: eleven of the twelve real pulses lie
-  // inside a stretch the detector reports, and the first version of the figure
-  // drew five of those as "missed" — one of them over the tallest peak in the
-  // record. Only a pulse the detector reports NOTHING for may be drawn hollow.
+  // code and obvious in the picture. On the record the figure drew then, the
+  // uncredited pulses mostly lay INSIDE a stretch the detector had reported,
+  // and drawing them "missed" put that mark over the tallest peak in the trace.
+  // Only a pulse the detector reports NOTHING for may be drawn hollow, and that
+  // holds whichever record and whichever variant the figure is built on.
   it("only calls a pulse unreported when no reported stretch covers it", () => {
     const f = computeFigure();
-    expect(f.perSpan).toEqual([2, 1, 1, 1, 3, 3]);
-    expect(f.perSpan.reduce((a, b) => a + b, 0)).toBe(11);
-    expect(f.nRunTogether).toBe(3);
-    expect(f.unreported).toHaveLength(1);
+    expect(f.perSpan).toEqual([1, 1, 1, 3]);
+    expect(f.perSpan.reduce((a, b) => a + b, 0)).toBe(6);
+    expect(f.nRunTogether).toBe(1);
+    expect(f.unreported).toHaveLength(3);
     // every marker drawn solid is one the detector really did report
     f.inSpan.forEach((ix, i) => {
       if (ix >= 0) {

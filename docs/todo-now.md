@@ -9,6 +9,43 @@ When an item closes, strike it here and record the detail in `next-steps.md`.
 
 ---
 
+## 0. Fortran is the default now — three calls left, all yours (2026-08-22)
+
+The switch shipped: `DEFAULT_PARAMS.variant` is `"fortran"`, the picker leads
+with it, the DOS skin is its own checkbox, and the Igor scale warning fires
+whenever Igor is selected. Account in `next-steps.md`, `Arrived 2026-08-22`.
+Three things were deliberately **not** decided, and each needs you rather than
+another session:
+
+- **a. Is `t = 2` still the right default?** At the two-point defaults the
+  Fortran reports **7 pulses in a record containing none** (`sim_flat_control`)
+  and 5 in `sim_gnrh_intact`. That is the nominal cost of a t = 2 threshold, not
+  a defect — Igor's 0 was the artifact — but it is a poor thing for a default to
+  do to a first upload. Keeping the literature's t = 2 is defensible; so is
+  moving to 2.5. **Ask for the sweep before deciding**: sensitivity and FDR
+  across t on the committed benchmark, both variants, one table.
+- **b. Should the `fortran` variant reproduce CLUST5's COMMON-block bug?**
+  CLUST5 declares `COMMON /MISC/` as `(…,NNADIR,NPEAK)` in UPS and
+  `(…,NPEAK,NNADIR)` in DNS, so its downs pass reads the two window sizes
+  **swapped**. The port follows Igor there and does not swap, which means that
+  at `nPeak != nNadir` it is a *corrected* port, not a literal one. Symmetric
+  windows — the default and nearly all real use — are unaffected and match
+  exactly. If "literal authentic port" is the claim, this is the one place it is
+  not true. Pinned by the asymmetric case in `src/core/oracle.test.ts`.
+- **c. The honesty prose still describes the Igor path.** "Conservative, almost
+  never invents" appears on the About page, in `index.html`'s prerender, in
+  `llms.txt` and on `/methods`. It was measured where the conservatism was
+  partly an artifact of unsquared pooling. The lead figure and the app warning
+  were fixed; the long-form prose has had only a minimal pass and wants a
+  proper one.
+
+Also left: the Fortran oracle covers waves that carry a per-sample SD column,
+because `tools/fortran/build_and_run.sh` drives CLUST5's variance option 3 only.
+`man3` and `null1` are value-only and have never been scored against the
+Fortran, and neither have the Fortran's own estimated error models. Harness
+work, not a decision — but it is the gap between "authentic on 3 waves × 7
+window settings" and "authentic".
+
 ## 1. The vendored heredoc gate is watched by nothing — needs a decision
 
 `.claude/hooks/no-heredoc-source.sh` is vendored from **interface2**, a third

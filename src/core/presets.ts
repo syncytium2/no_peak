@@ -30,9 +30,14 @@ export const PRESETS: ParamPreset[] = [
     key: "default",
     label: "This app's defaults",
     cite: "",
-    note: "Two-point windows and t = 2, the settings the Igor package opens with.",
+    note:
+      "Two-point windows and t = 2 — the settings both reference implementations open with — " +
+      "run against the original Fortran, CLUST5 v6.01. The Fortran is the default because its " +
+      "pooled variance makes the t-score dimensionless: the same record expressed in pg/ml and " +
+      "in ng/ml gives the same pulses. The Igor package's does not, and is one selection away " +
+      "for reproducing work done in it.",
     params: {
-      nPeak: 2, nNadir: 2, tScoreUp: 2, tScoreDn: 2, variant: "igor",
+      nPeak: 2, nNadir: 2, tScoreUp: 2, tScoreDn: 2, variant: "fortran",
       errorModel: "Local SD",
     },
   },
@@ -98,9 +103,23 @@ export function matchPreset(p: ClusterParams): ParamPreset | undefined {
  * invariant.
  *
  * The narrower the windows the fewer terms there are in S and the worse it
- * bites; at one-point windows it is severe. Two-point windows and above it is
- * usually mild, so the warning is not worth showing for the common case.
+ * bites; at one-point windows it is severe.
+ *
+ * ⚠ This used to require `nPeak + nNadir <= 3`, on the ground that two-point
+ * windows dilute it enough not to be worth a warning. That was measured on a
+ * record with pulses in it, and it does not hold on one without. Measured
+ * 2026-08-22 at the two-point defaults, rescaling by 0.01 / 1 / 100 / 10,000:
+ *
+ *     sim_gnrh_intact   (no pulses)   igor  0, 0, 6, 16     fortran  6 every time
+ *     sim_flat_control  (no pulses)   igor  0, 0, 13, 14    fortran  7 every time
+ *     sim_gnrh_thx_ewe  (11 pulses)   igor  0, 11, 11, 11   fortran  11 every time
+ *
+ * Sixteen invented pulses in a record containing none, and a total detection
+ * failure at 0.01x, both inside the window widths the old rule called safe. So
+ * the warning now fires for the Igor variant at any width: since 0.3.0 that
+ * variant is a deliberate selection rather than the default, and what it costs
+ * should be said every time it is selected.
  */
 export function hasScaleDependence(p: ClusterParams): boolean {
-  return p.variant === "igor" && p.nPeak + p.nNadir <= 3;
+  return p.variant === "igor";
 }

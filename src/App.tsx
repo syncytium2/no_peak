@@ -288,8 +288,12 @@ export function App() {
     );
   }, []);
 
-  // Original Fortran mode gets the MS-DOS terminal chrome it ran under
-  const dos = params.variant === "fortran";
+  // The MS-DOS terminal chrome the original program ran under. It used to fire
+  // whenever the Fortran variant was selected, which was a fine joke while
+  // Fortran was the alternative and a bad one from 0.3.0, when it became the
+  // default: the app would boot green-on-black and every exported figure would
+  // look like a 1988 console. It is its own choice now, and off by default.
+  const [dos, setDos] = useState(false);
   useEffect(() => {
     document.body.classList.toggle("dos", dos);
     return () => document.body.classList.remove("dos");
@@ -433,8 +437,8 @@ export function App() {
                   setParams((p) => ({ ...p, variant: e.target.value as "igor" | "fortran" }))
                 }
               >
-                <option value="igor">Igor port (validated)</option>
-                <option value="fortran">Original Fortran (CLUST5)</option>
+                <option value="fortran">Original Fortran (CLUST5 v6.01)</option>
+                <option value="igor">Igor port — lab compatibility</option>
               </select>
             </label>
             <div className="loadbtns">
@@ -662,13 +666,16 @@ export function App() {
           </div>
           {hasScaleDependence(params) && (
             <p className="warn">
-              <strong>These settings depend on your units.</strong> The Igor implementation pools
-              the per-point errors without squaring them, so its t-score is not dimensionless: the
-              same record expressed in ng/ml and in pg/ml gives different pulse counts at the same
-              threshold. Narrow windows make it worse, and one-point windows make it severe. Switch{" "}
-              <strong>Implementation</strong> to the original Fortran, whose pooled variance is
-              scale-invariant, before reproducing a published threshold.{" "}
-              <a href="#about">Details</a>
+              <strong>You have selected the Igor implementation, and its results depend on your
+              units.</strong>{" "}
+              It pools the per-point errors without squaring them, so its t-score is not
+              dimensionless: the same record expressed in ng/ml and in pg/ml gives different pulse
+              counts at the same threshold. Narrow windows make it worse and one-point windows make
+              it severe, but it is not confined to those — at these two-point defaults, a rescaled
+              pulse-free record goes from 0 invented pulses to 16. Use this to reproduce an
+              analysis done in the Igor package. For anything else, and before reproducing a
+              published threshold, switch <strong>Implementation</strong> back to the original
+              Fortran, whose pooled variance is scale-invariant. <a href="#about">Details</a>
             </p>
           )}
 
@@ -697,6 +704,10 @@ export function App() {
                 onChange={(e) => setParams((p) => ({ ...p, includeTruncated: e.target.checked }))}
               />
               Count a final pulse cut off by the end of the record
+            </label>
+            <label>
+              <input type="checkbox" checked={dos} onChange={(e) => setDos(e.target.checked)} />
+              Green terminal, the way CLUST5 looked
             </label>
           </div>
 

@@ -42,11 +42,22 @@ instantly, without moving anyone's data — plus the measurement work below.
 
 Two implementations ship side by side and are switchable in the UI:
 
-- `igor` — a port of the Igor Pro `ClusterMaster` package used in the Moenter
-  lab. The default, and the validation oracle.
 - `fortran` — a port of Johnson's original CLUST5 v6.01 Fortran 77 console
-  program. Differs in the form of the pooled variance and in the pulse-assembly
-  loop bounds.
+  program. **The default since 0.3.0** (2026-08-22). Its pooled S sums the
+  per-point errors squared, which is a proper variance, so the t-statistic is
+  dimensionless and the pulse count does not move with the units the record is
+  written in. Checked point for point against CLUST5 compiled with gfortran, on
+  three waves at one-, two- and three-point symmetric windows. One deliberate
+  divergence, at asymmetric windows only: CLUST5's downs pass reads the two
+  window sizes swapped, a COMMON-block declaration bug, and the port does not
+  reproduce it.
+- `igor` — a port of the Igor Pro `ClusterMaster` package used in the Moenter
+  lab, and the oracle the rest of the port is tested against (75/75 checks).
+  Kept for reproducing analyses done in that package. It sums the per-point
+  errors **unsquared**, so its t-statistic carries units of sqrt(data) and its
+  pulse count depends on the scale of the record: at the app's own two-point
+  defaults, a pulse-free record rescaled by 10,000 goes from 0 reported pulses
+  to 16. Selecting it raises a warning in the UI saying so.
 
 ## How it was validated
 
