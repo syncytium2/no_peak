@@ -88,6 +88,22 @@ selftest under `npm test`, so declining the hook costs coverage at commit time,
 not coverage. The hook **fails loud** if python3 is missing rather than exiting
 0, which is the `4855be3` lesson from the heredoc gate.
 
+**Enabled on the owner's checkout 2026-08-22**, at his instruction, with
+`git config core.hooksPath .githooks`; `git config --unset core.hooksPath`
+undoes it. That setting lives in `.git/config`, which is never committed, so
+this line records a fact about *one checkout* and not about the repository —
+every other clone still has the file and not the wiring. `extensions.worktreeConfig`
+is unset here, so any linked worktree created off this `.git` inherits it, which
+matters because `.claude/settings.json` gives background agents their own.
+
+Proved on a real commit rather than on a manual `--staged` run: a probe file
+with a stripped extension was staged, `git commit` **exited 1 and HEAD did not
+move**, and the probe was removed. The first attempt at that check read `$?`
+after a pipe and so measured `tail` rather than `git commit` — it printed
+"exit 0" beside "blocked" and was re-run properly. Worth keeping: it is the
+same shape as every failure in this file, a check's output standing in for the
+thing's condition.
+
 Rule complaints go in `docs/todo-now.md`, not a new feedback directory:
 interface2 built one because it needed an un-losable surface, and this repo
 already has one that prints at every session start. Two hand-maintained lists
