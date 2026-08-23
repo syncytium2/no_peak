@@ -1,5 +1,5 @@
-<!-- vendored from syncytium2/murderboard @ 729fb06aab7c180b77c4987a2588dfa90ccc8cc5 -->
 ---
+# vendored from syncytium2/murderboard @ 729fb06aab7c180b77c4987a2588dfa90ccc8cc5 — do NOT edit here; update by re-copying.
 # canonical: syncytium2/murderboard skills/murderboard/SKILL.md
 # When vendoring, REPLACE this line with: vendored from https://github.com/syncytium2/murderboard @ <short-sha> — do NOT edit here; update by re-copying.
 name: murderboard
