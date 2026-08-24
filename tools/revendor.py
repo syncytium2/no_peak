@@ -115,10 +115,15 @@ FAMILIES = [
 def stamp_line_index(text: str, is_json: bool) -> int | None:
     """Which single line may carry the stamp — and never more than one.
 
-    Line 1, except that an interpreter shebang must stay first, so a `#!`-led file
-    carries the stamp on line 2. JSON has no comments, so it uses a `_vendored` key.
-    Everything else in the file is body content and is left alone, however
-    stamp-shaped it looks.
+    Four positions, each forced by a format that will not take a comment on line 1:
+
+      * line 1 normally;
+      * line 2 when line 1 is a `#!` shebang, which must stay first;
+      * the `"_vendored"` key's line in JSON, which has no comments;
+      * inside YAML frontmatter when line 1 is `---`. Added 2026-08-23 (murderboard
+        #29). `SKILL.md` is this case, and treating it as a line-1 file is not
+        harmless: line 0 is the `---` fence, carries no stamp, so `bump_stamp`
+        silently did nothing and the copy sat unbumped behind a passing gate.
     """
     lines = text.split("\n")
     if is_json:
@@ -128,7 +133,66 @@ def stamp_line_index(text: str, is_json: bool) -> int | None:
         return None
     if not lines:
         return None
+    if lines[0].strip() == "---":
+        for i in range(1, len(lines)):
+            if lines[i].strip() == "---":       # end of frontmatter
+                break
+            if STAMP_RE.search(lines[i]):
+                return i
+        return 1                                # frontmatter, not yet stamped
     return 1 if lines[0].startswith("#!") else 0
+
+
+def recopy_with_stamp(local: str, up: str, is_json: bool) -> str:
+    """Upstream's content carrying the local stamp line. NOT `local prefix + upstream`.
+
+    Fixes a live corruption, found 2026-08-23 by running this tool against a real
+    consumer instead of only its own fixtures (murderboard #29). The old
+    reconstruction kept everything up to and including the stamp line and appended
+    upstream whole, which repeats upstream's own opening lines whenever the stamp is
+    not on line 1. Reproduced here, today, on `tools/murderboard_freshness.sh`:
+
+        1  #!/usr/bin/env bash
+        2  # vendored from syncytium2/murderboard @ fae0eca
+        3  #!/usr/bin/env bash          <- upstream's, back again
+        4  # murderboard_freshness.sh — is this repo's VENDORED murderboard current…
+
+    The second `#!` is an inert comment, so the file still runs and `--selftest` still
+    passes — nothing anywhere reports it. For a YAML file it is worse than cosmetic: a
+    second `---` reopens the frontmatter block and swallows the body as metadata.
+
+    The stamp is an INSERTED line, so re-copying puts it back into upstream at the
+    position upstream reserves for it, rather than splicing two prefixes together.
+    """
+    i = stamp_line_index(local, is_json)
+    llines = local.split("\n")
+    if i is None or i >= len(llines) or not STAMP_RE.search(llines[i]):
+        return up                                   # nothing to preserve
+    stamp_line = llines[i]
+    j = stamp_line_index(up, is_json)
+    if j is None:                                   # e.g. JSON with no _vendored key yet
+        j = 1
+    ulines = up.split("\n")
+    j = min(j, len(ulines))
+    return "\n".join(ulines[:j] + [stamp_line] + ulines[j:])
+
+
+def misplaced_stamp_line(text: str, is_json: bool) -> int | None:
+    """A stamp the freshness gate WILL see but this writer would never touch. 1-based.
+
+    `murderboard_freshness.sh` scans the first five lines for a stamp; this writer
+    touches one. A stamp in between is green to the gate and invisible here, so the
+    copy drifts forever behind a passing check. Report it; never treat it as
+    "nothing to do".
+    """
+    eligible = stamp_line_index(text, is_json)
+    lines = text.split("\n")
+    if eligible is not None and eligible < len(lines) and STAMP_RE.search(lines[eligible]):
+        return None
+    for i, line in enumerate(lines[:5]):
+        if i != eligible and STAMP_RE.search(line):
+            return i + 1
+    return None
 
 
 def bump_stamp(text: str, new: str, is_json: bool) -> str:
@@ -189,7 +253,12 @@ def hook_files(label: str) -> list[str]:
     joined = HOOK.read_text().replace("\\\n", " ")
     for line in joined.split("\n"):
         if f"--label {label}" in line and "--file" in line:
-            return re.findall(r"--file (\S+)", line)
+            # A path lifted out of a JSON settings file arrives wearing the enclosing
+            # quote and a trailing comma — `…/session-start.sh",`. Compared raw it
+            # "disagrees" with the configured path over punctuation, and noise like that
+            # is what gets a check switched off. Harmless here while the hook is a shell
+            # script; kept so it stays correct if the invocation ever moves into JSON.
+            return [t.strip("\\\"',") for t in re.findall(r"--file (\S+)", line)]
     return []
 
 
@@ -224,7 +293,7 @@ def run(check_only: bool) -> int:
         _git(clone, "fetch", "-q", "origin")
         new = _git(clone, "rev-parse", "--short", fam["ref"]).stdout.strip()
 
-        recopied, bumped, missing, held = [], [], [], []
+        recopied, bumped, missing, held, misplaced = [], [], [], [], []
         for rel in fam["files"]:
             up_rel = fam.get("remap", {}).get(rel, rel)
             r = _git(clone, "show", f"{fam['ref']}:{up_rel}")
@@ -234,6 +303,13 @@ def run(check_only: bool) -> int:
             up, p = r.stdout, ROOT / rel
             is_json = rel.endswith(".json")
             loc = p.read_text()
+
+            # Gated but unbumpable: the gate reads a stamp this writer will never
+            # touch, so the copy would drift behind a green check. An error, not a skip.
+            bad_line = misplaced_stamp_line(loc, is_json)
+            if bad_line is not None:
+                misplaced.append(f"{rel} (stamp on line {bad_line})")
+                continue
             # A stamp recording the FULL sha is current when upstream resolves to a
             # short form of the same commit. Rewriting it would be pure churn, and
             # churn is what gets a check switched off (next-steps §D names that as the
@@ -244,9 +320,7 @@ def run(check_only: bool) -> int:
                     # Locally adapted: report the drift, never overwrite the adaptation.
                     held.append(rel)
                 else:
-                    i = stamp_line_index(want, is_json) or 0
-                    wl = want.split("\n")
-                    want = "\n".join(wl[:i + 1]) + "\n" + up
+                    want = recopy_with_stamp(want, up, is_json)
                     recopied.append(rel)
             elif want != loc:
                 bumped.append(rel)
@@ -259,6 +333,11 @@ def run(check_only: bool) -> int:
         print(f"  stamp bumped only:    {len(bumped)} file(s)")
         if held:
             print(f"  !! body differs but file is LOCALLY ADAPTED — merge by hand: {held}")
+            rc = 1
+        if misplaced:
+            print("  !! STAMP IN THE WRONG PLACE — the gate sees it, this tool will not\n"
+                  f"     touch it, so it stays unbumped behind a green check: {misplaced}",
+                  file=sys.stderr)
             rc = 1
         if missing:
             print(f"  !! not found upstream: {missing}", file=sys.stderr)
@@ -323,6 +402,43 @@ def selftest() -> int:
     plain = "# nothing to see\nbody\n"
     check("unstamped file is unchanged", bump_stamp(plain, "ffffff1", False), plain)
 
+    # 5b. YAML FRONTMATTER, and 5c THE RE-COPY RECONSTRUCTION. Both added 2026-08-23
+    #     (murderboard #29), both found by running this tool against a real consumer
+    #     rather than against its own fixtures. The fixtures below were all green while
+    #     the tool was corrupting files.
+    fm = ("---\n"
+          "# vendored from syncytium2/murderboard @ aaaaaaa — do NOT edit.\n"
+          "name: murderboard\n---\n\nBody mentioning @ b2b2ba2.\n")
+    check("frontmatter stamp is found", stamp_line_index(fm, False), 1)
+    outfm = bump_stamp(fm, "ffffff1", False)
+    check("frontmatter stamp IS rewritten", "ffffff1" in outfm.split("\n")[1], True)
+    check("body stamp below the frontmatter survives", "@ b2b2ba2" in outfm, True)
+    check("a stamp outside the eligible line is REPORTED",
+          misplaced_stamp_line("# a\n# b\n# vendored @ aaaaaaa\nbody\n", False), 3)
+    check("a correctly placed stamp is not flagged", misplaced_stamp_line(fm, False), None)
+
+    # THE LIVE ONE. Reproduced on tools/murderboard_freshness.sh before the fix: the
+    # re-copy returned a file with TWO shebangs, the second inert, so it still ran and
+    # --selftest still passed. Nothing anywhere reported it.
+    up_sh = "#!/usr/bin/env bash\n# CANONICAL SOURCE: upstream — edit HERE.\necho hello\n"
+    loc_sh = ("#!/usr/bin/env bash\n# vendored from syncytium2/murderboard @ aaaaaaa\n"
+              "# CANONICAL SOURCE: upstream — edit HERE.\necho OLD\n")
+    got_sh = recopy_with_stamp(loc_sh, up_sh, False)
+    check("re-copy keeps exactly one shebang", got_sh.count("#!/usr/bin/env bash"), 1)
+    check("re-copy keeps the local stamp", "@ aaaaaaa" in got_sh, True)
+    check("re-copy takes upstream's body",
+          "echo hello" in got_sh and "echo OLD" not in got_sh, True)
+    check("re-copy is idempotent", recopy_with_stamp(got_sh, up_sh, False), got_sh)
+    check("and its body then matches upstream", body_of(got_sh, False), up_sh)
+
+    up_fm = "---\nname: murderboard\n---\n\nBody.\n"
+    loc_fm = ("---\n# vendored from syncytium2/murderboard @ aaaaaaa\n"
+              "name: murderboard\n---\n\nOLD body.\n")
+    got_fm = recopy_with_stamp(loc_fm, up_fm, False)
+    check("frontmatter re-copy keeps exactly two --- fences",
+          got_fm.split("\n").count("---"), 2)
+    check("frontmatter re-copy is idempotent", recopy_with_stamp(got_fm, up_fm, False), got_fm)
+
     # 6. PROVE THE FIXTURES HAVE POWER. The bug each guards against must fail it — a
     #    test that cannot fail is the thing this file exists because of. Pattern owed
     #    to the downLow session.
@@ -339,6 +455,17 @@ def selftest() -> int:
           "@ b2b2ba2;" in whole_file_sub(nest, "ffffff1"), False)
     check("a line-1-only implementation FAILS the shebang fixture",
           "ffffff1" in line1_only(sh, "ffffff1"), False)
+
+    def prefix_splice(local, up, is_json):    # the reconstruction that shipped here
+        i = stamp_line_index(local, is_json) or 0
+        return "\n".join(local.split("\n")[:i + 1]) + "\n" + up
+
+    check("prefix-splicing FAILS the shebang fixture",
+          prefix_splice(loc_sh, up_sh, False).count("#!/usr/bin/env bash"), 2)
+    check("prefix-splicing FAILS the frontmatter fixture",
+          prefix_splice(loc_fm, up_fm, False).split("\n").count("---"), 3)
+    check("a line-1-only stamp_line_index FAILS the frontmatter fixture",
+          "ffffff1" in line1_only(fm, "ffffff1"), False)
 
     # 7. Full-vs-short sha is not staleness. Without this the gate reports five files
     #    needing a bump on every run, forever — and noise is what gets a check ignored.
