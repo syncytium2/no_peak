@@ -695,6 +695,17 @@ not the same permission as redistributing — kept wherever this project keeps
 such things. Until then it is unverifiable by anyone reading the repo, including
 a reviewer who might reasonably ask.
 
+> **Reworded 2026-08-25, still open.** The About page read "This port is made
+> with Michael Johnson's approval." On the owner's instruction it now reads that
+> we are grateful to him for allowing us to port his Fortran code, and adds a
+> fact the repo had never recorded: **he has not yet seen the port itself**, so
+> nothing in the app carries his endorsement. That is a better sentence — it
+> claims a narrower thing and it stops a reader inferring that the author has
+> looked at the output — but **it rests on the same single report, now made
+> twice by the same person, and the artifact §1 asks for still does not exist.**
+> Do not read the rewording as a close. Detail in `docs/reference-code.md`,
+> "Permission for the port".
+
 ⚠ **Do not treat the Webster outcome as a template for this one.** They are
 different in kind: the Webster claim was about *data facts* a publisher owns,
 and an author had no standing to grant it. Johnson's approval is about *his own

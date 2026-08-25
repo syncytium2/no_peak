@@ -61,8 +61,8 @@ export function About({ onOpenApp }: { onOpenApp: () => void }) {
       <ul>
         <li>
           <strong>Real animals.</strong> Eight records read off the printed figures of Webster et
-          al. (1991) with an author&apos;s permission — four ewes, portal GnRH during collection and
-          jugular LH from a fortnight earlier. These are measurements from actual sheep. What they
+          al. (1991), from the University of Michigan library&apos;s scan of the bound print volume
+          — four ewes, portal GnRH during collection and jugular LH from two weeks earlier. These are measurements from actual sheep. What they
           carry is the pulse call <em>that paper&apos;s own CLUSTER run made</em>, marked on the
           printed trace. That is a published answer, but an answer about what a detector
           reported, not about what the animal secreted. They are approximate to the width
@@ -356,11 +356,11 @@ export function About({ onOpenApp }: { onOpenApp: () => void }) {
       <h3 id="reporting">Report your error model, not just the five parameters</h3>
       <p>
         This used to be advice on principle. It is now a measurement. The app bundles eight real
-        hormone records digitized, with an author&apos;s permission, from the figures of a 1991
-        study that used this same algorithm — figures which mark every pulse that study&apos;s own
-        analysis identified, 70 in all. That is an answer key, not ground truth about
-        secretion — and because the study used this same algorithm, agreeing with it
-        shows consistency between implementations rather than independent validation.
+        hormone records digitized from the printed figures of a 1991 study that used this same
+        algorithm — figures that mark every pulse that study&apos;s own analysis identified, 70 in
+        all. That is an answer key, not ground truth about secretion — and because the study used
+        this same algorithm, agreeing with it shows consistency between implementations rather
+        than independent validation.
       </p>
       <p>
         That paper reports its window widths and both t-scores, which is more than most do. Given
@@ -435,11 +435,12 @@ export function About({ onOpenApp }: { onOpenApp: () => void }) {
         — CLUSTER, the deconvolution family, AutoDecon, and a long run of methodological writing on
         parameter estimation and confidence intervals in biological data, including his editorship
         of the <em>Numerical Computer Methods</em> volumes of{" "}
-        <em>Methods in Enzymology</em>. There was never a separate software paper for CLUSTER; the
-        program was distributed directly by the authors, and the field cites the 1986 paper below
-        as the citation for the program itself. This port is made with Michael Johnson&apos;s
-        approval, and exists because that software was shared openly and kept working for four
-        decades. Any errors in the translation are ours, not theirs.
+        <em>Methods in Enzymology</em>. CLUSTER never had a separate software paper; the authors
+        distributed it directly, and the field cites the 1986 paper below for the program itself.
+        We are grateful to Michael Johnson for allowing us to port his Fortran code. He has not
+        yet seen the port itself, so nothing here carries his endorsement. This port exists
+        because that software was shared openly and kept working for four decades. Any errors in
+        the translation are ours, not theirs.
       </p>
 
       <h2>Key references</h2>

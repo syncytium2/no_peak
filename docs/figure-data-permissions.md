@@ -43,6 +43,21 @@
 > `tools/digitize_webster1991.py`, and four public pages. **Do not reinstate
 > it.**
 >
+> ⚠ **"Every file that carried it" was wrong when written, and stayed wrong for
+> twelve days.** `src/About.tsx` kept the claim in two places — the "Two kinds of
+> bundled data" list and the "Report your error model" section — and was still
+> serving both to the public when checked on **2026-08-25**, not merely in the
+> tree: the bundle the live site was serving that day (`index-D3TcnDlv.js`) was
+> fetched and grepped, and both occurrences were in it. They are now replaced
+> with the print-volume provenance the rest of the repo uses. The two survivors
+> were on the most-read page of the app, and `src/samples.ts` had meanwhile been
+> updated to point readers here for "why no claim of an author's permission
+> appears anywhere here" — so the repo was citing its own thoroughness while the
+> claim was live one file away. This is the failure `docs/multi-session-protocol.md`
+> §6 already names: **a retraction is a grep, not an edit to the source.** The
+> grep that would have caught it had to match `author&apos;s permission`, the
+> JSX entity form, which is why searching for the plain apostrophe found nothing.
+>
 > The eight traces remain in [`data/digitized/`](../data/digitized/README.md).
 > They now rest on the analysis below and nothing else, which is the honest
 > position and, on this document's own reasoning, a sufficient one: copyright
