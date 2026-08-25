@@ -697,14 +697,16 @@ a reviewer who might reasonably ask.
 
 > **Reworded 2026-08-25, still open.** The About page read "This port is made
 > with Michael Johnson's approval." On the owner's instruction it now reads that
-> we are grateful to him for allowing us to port his Fortran code, and adds a
-> fact the repo had never recorded: **he has not yet seen the port itself**, so
-> nothing in the app carries his endorsement. That is a better sentence — it
-> claims a narrower thing and it stops a reader inferring that the author has
-> looked at the output — but **it rests on the same single report, now made
-> twice by the same person, and the artifact §1 asks for still does not exist.**
-> Do not read the rewording as a close. Detail in `docs/reference-code.md`,
-> "Permission for the port".
+> we are grateful to him for allowing us to port his Fortran code — a narrower
+> claim, and one that stops a reader inferring the author has looked at the
+> output. The page does **not** say he has not seen it; that fact is recorded in
+> `docs/reference-code.md` and deliberately not published. What the page carries
+> instead is a status note under the version line: *This is a preliminary
+> version, still under review.*
+>
+> **The rewording is not a close.** It rests on the same single report, now made
+> twice by the same person, and the artifact §1 asks for still does not exist.
+> Detail in `docs/reference-code.md`, "Permission for the port".
 
 ⚠ **Do not treat the Webster outcome as a template for this one.** They are
 different in kind: the Webster claim was about *data facts* a publisher owns,

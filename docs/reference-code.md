@@ -115,8 +115,17 @@ approval, not merely on the argument that algorithms are uncopyrightable.
 > **He has not seen the port — the owner, 2026-08-25.** Asked whether the app
 > was ready to show Michael Johnson, the owner's instruction was that the About
 > page "should say we are grateful to Mike for allowing us to port the fortran
-> code. he has not yet seen the port itself." The page now says exactly that,
-> and says the consequence out loud: nothing in the app carries his endorsement.
+> code. he has not yet seen the port itself."
+>
+> **The page thanks him. It does not say he has not seen it**, and the
+> distinction is deliberate: told a first draft that spelled out "nothing here
+> carries his endorsement," the owner's answer was "there's no need for that at
+> this time. Just indicate this is a preliminary version still under review."
+> So the About page carries a status note under the version line — *This is a
+> preliminary version, still under review* — and the Credit paragraph carries
+> the thanks and nothing more. **The fact that he has not seen it is recorded
+> here, not published.** If the About page ever needs to state it, that is a new
+> instruction and not something to infer from this paragraph.
 >
 > **This does not close `next-steps.md` §1**, and it is worth being precise
 > about why. §1 asks for a dated record of the grant *from the grantor* — who

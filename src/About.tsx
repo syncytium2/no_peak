@@ -30,6 +30,7 @@ export function About({ onOpenApp }: { onOpenApp: () => void }) {
       <p className="cite">
         Version {VERSION} · built {longDate(BUILT)} · born {longDate(BORN)}
       </p>
+      <p className="note">This is a preliminary version, still under review.</p>
       <p className="lede">
         no_peak is a browser-based implementation of <strong>CLUSTER</strong>, the pulse-detection
         algorithm for endocrine time-series data developed by Johannes D. Veldhuis and Michael L.
@@ -437,10 +438,9 @@ export function About({ onOpenApp }: { onOpenApp: () => void }) {
         of the <em>Numerical Computer Methods</em> volumes of{" "}
         <em>Methods in Enzymology</em>. CLUSTER never had a separate software paper; the authors
         distributed it directly, and the field cites the 1986 paper below for the program itself.
-        We are grateful to Michael Johnson for allowing us to port his Fortran code. He has not
-        yet seen the port itself, so nothing here carries his endorsement. This port exists
-        because that software was shared openly and kept working for four decades. Any errors in
-        the translation are ours, not theirs.
+        We are grateful to Michael Johnson for allowing us to port his Fortran code. This port
+        exists because that software was shared openly and kept working for four decades. Any
+        errors in the translation are ours, not theirs.
       </p>
 
       <h2>Key references</h2>
