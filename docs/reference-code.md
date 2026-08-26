@@ -106,7 +106,37 @@ group; they sit in one directory and they do not share a posture.
 ## Permission for the port — 2026-08-10
 
 **Michael L. Johnson has approved use of his Fortran code for this port.**
-Reported by R.A. DeFazio, 2026-08-10.
+
+> **The primary record exists as of 2026-08-25, and this claim no longer rests
+> on hearsay.** It stood on one line here — *"Reported by R.A. DeFazio,
+> 2026-08-10"* — for two weeks, which is what `next-steps.md` §1 tracked. The
+> email thread has now been transcribed to the darkroom:
+>
+>     <Dropbox>/Richard DeFazio/darkroom/no_peak/2026-08-10_johnson-port-approval/
+>
+> **What was asked**, 2026-08-10 10:09 AM — our own words, which is what fixes
+> the scope: *"I'm wondering if it is ok for me to port your FORTRAN code into a
+> web app for people to run the original version. I've also ported our Igor Pro
+> version of your code that we've been using in Sue Moenter's lab."*
+>
+> **What came back**, the same day at 2:27 PM: approval, unconditional, in one
+> sentence, signed. **His reply is quoted verbatim in the darkroom folder and
+> deliberately not here** — the rule `figure-data-permissions.md` set for the
+> paper author's reply applies to his: third-party email naming real people does
+> not go in a public repository. This file records *that* it was said, dated and
+> scoped; that folder holds the saying of it.
+>
+> The thread also carries the provenance of the source: Johnson sent the lab
+> `CLUST5.MPF` himself on 2016-06-16, on request, for the stated purpose of
+> porting it to another language, along with a description of how the UPS/DNS
+> scans work.
+
+**Scope, precisely.** What was asked was (a) porting the Fortran into a web app
+and (b) the existing Igor Pro port. That is what his reply answers. He
+granted no license text and named no terms, and **he was not asked about
+redistributing his original Fortran source**. Porting is not the same permission
+as redistributing, and whether `reference/` may ship `CLUST5.MPF` itself is a
+separate question this record does not answer.
 
 What that settles: the port itself. This project reads `CLUST5.MPF`,
 reimplements its algorithm in TypeScript, and ships that — with the author's

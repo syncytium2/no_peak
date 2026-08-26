@@ -104,8 +104,12 @@ before filing, fixing, or believing any stale verdict. This is `next-steps.md`
 Do not read this file as the whole list. `docs/next-steps.md` is the ranked
 record; these three have been waiting longest:
 
-- **§1** Michael Johnson's approval of the port has no dated primary record.
-  (The Webster 1991 rights half is **closed** as of 2026-08-19 — do not reopen.)
+- ~~**§1** Michael Johnson's approval of the port has no dated primary record.~~
+  **CLOSED 2026-08-25** — the email was found and transcribed to the darkroom;
+  `docs/reference-code.md` records the ask, the date and the scope, and points
+  at the darkroom for his reply itself. The
+  scope caveat survives: it covers **porting**, not redistributing his Fortran
+  source. (The Webster 1991 rights half closed 2026-08-19 — do not reopen.)
 - **§2** The repo's `robots.txt` policy is not what the edge serves; it is a
   Cloudflare dashboard setting on the zone, and now a live decision.
 - **What per-sample assay error did Webster 1991 actually use?** The digitized

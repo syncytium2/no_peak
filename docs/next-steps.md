@@ -657,11 +657,33 @@ deploy` runs tests, builds and deploys, and does **not** push.
 
 ---
 
-## 1. Two consent claims had no primary record — **one is closed, one is not**
+## 1. Two consent claims had no primary record — **both are now closed**
+
+> **CLOSED 2026-08-25.** The live half — Johnson's approval — now has its dated
+> primary record. The email thread was transcribed to
+> `<darkroom>/no_peak/2026-08-10_johnson-port-approval/REPLIES-RECEIVED.txt`,
+> and `docs/reference-code.md` § *Permission for the port* records the ask, the
+> date and the scope. **Asked** 2026-08-10 10:09 AM whether it was "ok for me to
+> port your FORTRAN code into a web app" — our own words; **granted**
+> unconditionally the same day at 2:27 PM. **His reply is quoted verbatim in the
+> darkroom and deliberately not in the repo**, per the rule
+> `figure-data-permissions.md` set for the paper author's reply: third-party
+> email naming real people does not go in a public repository.
+>
+> The scope caveat this section drew still stands and is now written where the
+> claim lives: the grant covers **porting**, not redistributing his original
+> Fortran source. Whether `reference/` may ship `CLUST5.MPF` itself is a separate
+> question and is **not** closed by this.
+>
+> Note what closed it, because it is the whole lesson of this section: not an
+> argument that the permission was probably fine, but **someone going and finding
+> the email.** The permission had been real since 2026-08-10. What was missing
+> for two weeks was the record of it.
 
 The repo made two public statements about identifiable people's consent, and
-neither had a dated primary artifact behind it. The second is now withdrawn; the
-first still stands unsupported and is the live half of this item:
+neither had a dated primary artifact behind it. Both are now resolved — the
+second by withdrawal, the first by evidence. The history is kept below because
+the failure mode is the point:
 
 - *"This port is made with Michael Johnson's approval"* (`src/About.tsx`). The
   only record is a line in `docs/reference-code.md`: "Reported by R.A. DeFazio,
@@ -687,9 +709,11 @@ first still stands unsupported and is the live half of this item:
   both are still silent~~ — **the decision is live now and is not about silence**;
   see the 2026-08-19 block at the top of this file.
 
-**The live half is Johnson's approval**, which is still a public claim on the
+~~**The live half is Johnson's approval**, which is still a public claim on the
 About page resting on a single line of hearsay in `docs/reference-code.md`
-("Reported by R.A. DeFazio, 2026-08-10"). What is needed is what was needed
+("Reported by R.A. DeFazio, 2026-08-10").~~ **Closed 2026-08-25 — see the block
+at the top of this section. The rest of this paragraph is kept as written,
+because it is the description of the gap that the email then filled.** What is needed is what was needed
 before: a dated note of who granted what, when, and for what scope — porting is
 not the same permission as redistributing — kept wherever this project keeps
 such things. Until then it is unverifiable by anyone reading the repo, including
