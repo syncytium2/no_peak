@@ -17,6 +17,12 @@ dist/
 # these are never committed. They ARE in the private store, which is not a
 # distribution — and that holds only while the folder stays private. If it is
 # ever shared, this tree comes out first. See docs/reference-code.md.
+#
+# SETTLED 2026-08-26, by the owner: "We should not share the Fortran code."
+# This is no longer only an inference from the license — it is a decision. Not
+# distributed in any form, on any surface: no commit, no release asset, no
+# bundling, no one-off copy for someone who asks. Johnson's 2026-08-10 approval
+# covered PORTING and does not reach this; do not read it as reaching this.
 reference/
 
 # Real lab recordings and anything derived from them. Not ours to distribute:

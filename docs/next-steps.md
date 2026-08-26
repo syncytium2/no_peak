@@ -672,8 +672,13 @@ deploy` runs tests, builds and deploys, and does **not** push.
 >
 > The scope caveat this section drew still stands and is now written where the
 > claim lives: the grant covers **porting**, not redistributing his original
-> Fortran source. Whether `reference/` may ship `CLUST5.MPF` itself is a separate
-> question and is **not** closed by this.
+> Fortran source. ~~Whether `reference/` may ship `CLUST5.MPF` itself is a separate
+> question and is **not** closed by this.~~ **That separate question was decided
+> the next day, 2026-08-26, by the owner: "We should not share the Fortran code."
+> `CLUST5.MPF` and `do_cluster` are not distributed in any form, on any surface.**
+> Nothing had to be undone — `reference/` had never been committed and appears
+> nowhere in `git log --all`. Recorded in full in `docs/reference-code.md`
+> § *Permission for the port*, and in the `.gitignore` rule itself.
 >
 > Note what closed it, because it is the whole lesson of this section: not an
 > argument that the permission was probably fine, but **someone going and finding

@@ -138,6 +138,30 @@ redistributing his original Fortran source**. Porting is not the same permission
 as redistributing, and whether `reference/` may ship `CLUST5.MPF` itself is a
 separate question this record does not answer.
 
+> **DECIDED, 2026-08-26 — the owner: "We should not share the Fortran code."**
+> That closes the separate question above, and it closes it the same way the
+> license and the `.gitignore` already pointed. **`CLUST5.MPF` and `do_cluster`
+> are not distributed by this project, in any form, on any surface.** No commit,
+> no release asset, no bundling into the app, no attachment to a paper, no
+> "just this once" for a colleague who asks.
+>
+> **Nothing had to be undone to comply.** Checked the same day: `reference/` has
+> never been committed, appears nowhere in `git log --all`, and no Fortran source
+> exists anywhere in the repository's history. The `.gitignore` rule and the
+> private-store posture had held from the start. This is a decision *recorded*,
+> not a leak *cleaned up*.
+>
+> What remains permitted and unchanged: **reading** the source to port it,
+> **describing** what it does, and **naming** its specifics in prose — the
+> `COMMON /MISC/` declaration-order bug in `docs/igor-validation.md` and
+> `docs/validation-status.md` is analysis, not redistribution, and stays. The
+> line is between *saying what the code does* and *handing someone the code*.
+>
+> **Re-asking him would not reopen this.** If Johnson were ever to offer
+> redistribution rights explicitly, that would be a new decision for the owner
+> and not something a session may infer from his 2026-08-10 approval, which was
+> about porting and nothing else.
+
 What that settles: the port itself. This project reads `CLUST5.MPF`,
 reimplements its algorithm in TypeScript, and ships that — with the author's
 approval, not merely on the argument that algorithms are uncopyrightable.
