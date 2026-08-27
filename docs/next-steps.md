@@ -25,6 +25,78 @@ started the day).
 
 ---
 
+## Arrived 2026-08-27 — a badge that says what it covers, a CITATION.cff, and two questions
+
+External advice, evaluated rather than applied. It asked for CI over the tests
+that already exist, and for a `CITATION.cff` here and in `colonel_kernel`. Both
+asks were sound. One of them, taken literally, would have hung a green **CI**
+badge over a run that checks none of what this repo exists to claim.
+
+**The measurement the rest of this rests on.** Vitest against a
+tracked-files-only tree — `git archive HEAD | tar -x` into a scratch directory,
+`node_modules` symlinked in — collects **144 tests. Here it collects 231.** The
+87 that vanish are `src/core/oracle.test.ts` and `src/core/igor-oracle.test.ts`,
+which read `data/extracted/`, `data/oracle/` and `data/oracle_igor/`. All three
+are gitignored, and both suites already degrade to a single `it.skip`
+placeholder when the data is absent. On a GitHub runner it always is.
+
+**What landed.**
+
+- `.github/workflows/unit.yml` — `npm ci`, `npm test`, `npm run build`, on push
+  to `main` and on pull requests. Named **unit tests**, not CI. Its last step
+  prints which of the three data trees were missing into the run's own summary,
+  so the gap shows on the run and not only in a comment nobody opens.
+- `.nvmrc` at `24`. **There was no Node pin anywhere** — no `engines`, no
+  `.nvmrc`, and `wrangler.jsonc` carries only a `compatibility_date`, so the
+  advice's "pin it to the version the Cloudflare build already uses" had nothing
+  to point at. It matters: `scripts/cluster.test.ts` spawns
+  `node scripts/cluster.ts` and leans on unflagged type stripping, so a runner
+  at 20 fails that suite outright. 24 is the LTS floor; this machine runs newer.
+- `CITATION.cff`, with Veldhuis & Johnson 1986 as a structured `references:`
+  entry rather than prose, since that is the form Zenodo and citation tooling
+  can actually read. No `version:` or `date-released:` on purpose — there is no
+  release, and a version there would be a second hand-maintained copy of
+  `package.json`'s, which is the failure `todo-now.md` opens by warning about.
+- README: the badge, a pointer on the `npm test` bullet, and a closing *Citing,
+  and what the badge covers* section.
+
+Playwright was deliberately left out. `playwright-core` is a devDependency and
+the README describes driving the running app with it, but nothing about that is
+scripted, and a job that skips is the thing this repo keeps arguing against.
+
+`npm run deploy` remains the only check of parity against Igor and CLUST5, and
+always was. The badge does not change that; it is only now honest about it.
+
+**Open, and the owner's — not effort.**
+
+1. **May `data/oracle/*.lst` be committed?** This is the one change that would
+   let CI check parity, and it is a permissions question, not an engineering
+   one. The listings are CLUST5's **output on our inputs**, not Johnson's
+   source. `a5e4108` settled the source — not distributed, in any form, on any
+   surface — and says outright that the 2026-08-10 approval covers *porting* and
+   does not reach redistribution. Whether it reaches the program's output on our
+   own data is not an inference to make here, in either direction. If yes, the
+   badge could mean what a reader assumes it means. If no, its wording is
+   load-bearing permanently. `data/extracted/` is a separate question with a
+   different answer available: those are real lab recordings, gitignored by our
+   choice rather than by anyone's license.
+2. **One author name form, and one ORCID decision, across the four repos.**
+   They disagree today: `bugarach`'s `CITATION.cff` says `Richard`,
+   `murderboard`'s says `Tony` and its `.zenodo.json` says `"DeFazio, Tony"`.
+   The new file here says `Richard`, matching `LICENSE` ("Richard Anthony
+   DeFazio"). `murderboard` omits ORCID *on purpose*, with a comment saying to
+   add it to both files together if ever wanted. Settle it before any DOI is
+   minted anywhere — a DOI makes the form permanent, public, and other people's
+   reference lists.
+
+The `colonel_kernel` half is delivered as `docs/handoff-from-no_peak_2026-08-27.md`,
+committed on that repo's `main` at `23d9d9d`. It carries the same two questions
+plus one of its own — a Zenodo DOI is minted per release, and that repo's README
+says it is "not versioned for release" — and it corrects a premise of the
+advice: a Zenodo account already exists and already minted `murderboard`'s
+concept DOI, so registering is not a step, and a second account would split the
+estate's DOIs across two owners.
+
 ## Arrived 2026-08-22 — sapper is here, ported not vendored, and it caught itself first
 
 Asked whether this repo had a sapper or a gotchas file. It had neither: the only

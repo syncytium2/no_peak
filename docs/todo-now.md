@@ -112,6 +112,12 @@ record; these three have been waiting longest:
   source. (The Webster 1991 rights half closed 2026-08-19 — do not reopen.)
 - **§2** The repo's `robots.txt` policy is not what the edge serves; it is a
   Cloudflare dashboard setting on the zone, and now a live decision.
+- **May `data/oracle/*.lst` be committed?** CLUST5's output on our inputs, not
+  Johnson's source. It is the only thing that would let the new `unit tests`
+  badge cover parity instead of skipping it — 144 tests run on a clone, 231
+  here. Alongside it, one author name form and one ORCID decision across the
+  four repos, before any DOI is minted. Both in the `Arrived 2026-08-27` block
+  of `next-steps.md`; the `colonel_kernel` half is that repo's `23d9d9d`.
 - **What per-sample assay error did Webster 1991 actually use?** The digitized
   records ship a reconstructed column and the app banners it. downLow's evidence
   (`3c4bf98`) says the *shape* may be wrong — `sqrt(a² + (k·v)²)` beats
