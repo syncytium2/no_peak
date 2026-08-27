@@ -1,0 +1,87 @@
+name: unit tests
+
+# WHAT THIS BADGE MEANS, AND WHAT IT DOES NOT.
+#
+# Green here means the tests that can run on the committed tree passed and that
+# `tsc -b && vite build` is clean. It does NOT mean the port still matches Igor
+# or CLUST5.
+#
+# Those checks live in src/core/oracle.test.ts and src/core/igor-oracle.test.ts.
+# They read data/extracted/, data/oracle/ and data/oracle_igor/, and all three
+# are gitignored: the lab recordings are not ours to distribute, and Johnson's
+# Fortran is not distributed at all (.gitignore says why, docs/reference-code.md
+# carries the decision). Both suites auto-skip when the data is absent, which on
+# a runner is always. Measured 2026-08-27: 231 tests collect here with the data
+# present, 144 on a tracked-files-only tree -- 87 parity tests replaced by two
+# `it.skip` placeholders.
+#
+# So this workflow is called "unit tests" and not "CI". A badge reading CI over
+# a run that never once compared the port against its reference would
+# manufacture exactly the confidence this repo exists to earn. The parity check
+# is still `npm run deploy`, which runs the full 231 on a machine that has the
+# data.
+#
+# The last step prints which of the three trees were absent, so the gap shows on
+# the run itself and not only in this comment.
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+
+permissions:
+  contents: read
+
+concurrency:
+  group: unit-${{ github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  unit:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      # node-version-file rather than a literal, so .nvmrc stays the single
+      # place the version lives. It pins 24 (Active LTS) because
+      # scripts/cluster.test.ts spawns `node scripts/cluster.ts` and leans on
+      # Node stripping the types with no loader and no dependency -- unflagged
+      # only from 22.18 / 23.6 on. A runner at 20 fails that suite outright.
+      # Dev machines currently run newer; 24 is the floor this checks.
+      - uses: actions/setup-node@v4
+        with:
+          node-version-file: .nvmrc
+          cache: npm
+
+      - run: npm ci
+
+      # tools/sapper.test.ts shells out to python3 and to `git ls-files`, so it
+      # needs both an interpreter and a real checkout. ubuntu-latest ships
+      # python3 and actions/checkout gives a git tree; if either stops being
+      # true, that suite fails rather than goes quiet, which is what we want.
+      - name: Test
+        run: npm test
+
+      # `tsc -b` catches what vitest cannot: vitest transpiles file by file and
+      # never type-checks the app.
+      - name: Build
+        run: npm run build
+
+      - name: Say what this run could not check
+        if: always()
+        run: |
+          {
+            echo "### Not checked by this run"
+            echo
+            echo "The oracle-parity suites read data that is not committed."
+            echo
+            for d in data/extracted data/oracle data/oracle_igor; do
+              if [ -d "$d" ]; then
+                echo "- \`$d\` — present"
+              else
+                echo "- \`$d\` — **absent**, so the suites that read it did not run"
+              fi
+            done
+            echo
+            echo "Parity against Igor and CLUST5 is checked by \`npm run deploy\`, on a machine that has the data."
+          } >> "$GITHUB_STEP_SUMMARY"

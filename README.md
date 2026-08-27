@@ -1,5 +1,7 @@
 # no_peak
 
+[![unit tests](https://github.com/syncytium2/no_peak/actions/workflows/unit.yml/badge.svg)](https://github.com/syncytium2/no_peak/actions/workflows/unit.yml)
+
 Port of the CLUSTER pulse-detection algorithm (Michael L. Johnson / Veldhuis-Johnson
 CLUSTER analysis for hormone pulsatility) to a client-side web app, validated
 against existing datasets.
@@ -10,7 +12,9 @@ user's machine.** Figures are publication-grade SVG (vector) with 4× PNG export
 ## App
 
 - `npm run dev` — local dev server
-- `npm test` — core algorithm tests (vitest)
+- `npm test` — core algorithm tests (vitest). 231 here; **144 on a fresh
+  clone**, because the oracle suites read data that is not committed. See
+  *Citing, and what the badge covers* at the end.
 - `npm run cluster` — the command line (see below)
 - `npm run build` — static bundle in `dist/`
 - `npm run deploy` — test + build + `wrangler deploy` (Cloudflare Workers,
@@ -332,3 +336,26 @@ methods section, a report. Run records live in `docs/reviews/`.
 
 Re-vendor by copying the files from upstream and updating the `@ <sha>` stamp in
 the first lines of each.
+
+## Citing, and what the badge covers
+
+`CITATION.cff` in the root carries the metadata; GitHub's **Cite this
+repository** button reads it. There is no DOI. **CLUSTER is not this project's
+algorithm** — the citation for the method, and the one the field uses for the
+program itself, is Veldhuis & Johnson 1986
+([10.1152/ajpendo.1986.250.4.E486](https://doi.org/10.1152/ajpendo.1986.250.4.E486)).
+Cite this port in addition only when the implementation rather than the method
+is what you mean.
+
+The badge at the top says **unit tests**, not CI, and the distinction is
+load-bearing. `.github/workflows/unit.yml` runs `npm test` and `npm run build`
+on the committed tree. The suites that compare this port against Igor and
+against CLUST5 — `src/core/oracle.test.ts` and `src/core/igor-oracle.test.ts` —
+read `data/extracted/`, `data/oracle/` and `data/oracle_igor/`, all three
+gitignored and none of them ours to distribute. Both suites auto-skip when the
+data is absent, which on a runner is always: 231 tests collect here, 144 there.
+So a green badge means the algorithm's own tests and the type-check passed. It
+does **not** mean parity with the reference implementations still holds. That
+check is `npm run deploy`, which runs the full set on a machine that has the
+data. The workflow prints which trees were missing into each run's summary, so
+the gap is visible on the run and not only in this paragraph.
