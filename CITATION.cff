@@ -1,0 +1,63 @@
+cff-version: 1.2.0
+title: >-
+  no_peak: a browser port of the CLUSTER pulse-detection
+  algorithm
+message: >-
+  CLUSTER is not this project's algorithm. If you use this
+  software, cite Veldhuis and Johnson 1986 — listed under
+  `references` below, and the citation the field uses for the
+  program itself — and cite this port as well only if the
+  implementation, not the method, is what you are pointing at.
+type: software
+authors:
+  - family-names: DeFazio
+    given-names: Richard
+license: MIT
+repository-code: 'https://github.com/syncytium2/no_peak'
+url: 'https://nopeak.tonydefazio.com'
+abstract: >-
+  A client-side browser implementation of CLUSTER, the
+  Veldhuis–Johnson moving-window pooled-t algorithm for
+  detecting pulses in endocrine time series. Uploaded data
+  never leaves the reader's machine: there is no server, no
+  account and no analytics. The port follows two reference
+  implementations — Michael Johnson's CLUST5 Fortran and the
+  Igor Pro Cluster package — and can run as either, since the
+  two disagree; neither reference implementation is
+  redistributed here. Output is checked against the
+  originals' own listings on data that is not public, so the
+  parity suites are absent from a clone; docs/validation-status.md
+  is the honest accounting of what has and has not been
+  checked, and /methods is the standalone algorithm
+  reference. A preliminary version, still under review.
+keywords:
+  - pulse detection
+  - hormone pulsatility
+  - endocrinology
+  - time series
+  - CLUSTER
+  - research software
+  - reproducibility
+references:
+  - type: article
+    title: >-
+      Cluster analysis: a simple, versatile, and robust
+      algorithm for endocrine pulse detection
+    authors:
+      - family-names: Veldhuis
+        given-names: Johannes D.
+      - family-names: Johnson
+        given-names: Michael L.
+    journal: American Journal of Physiology
+    year: 1986
+    month: 4
+    volume: 250
+    issue: '4 Pt 1'
+    start: E486
+    end: E493
+    doi: 10.1152/ajpendo.1986.250.4.E486
+    notes: 'PMID 3008572'
+# No `version:` or `date-released:` on purpose. There is no release, and a
+# version here would be a second hand-maintained copy of package.json's — the
+# two-lists-that-disagree failure this repo already fights in the vendor gate.
+# Add both together, from the tag, if a release is ever cut.
