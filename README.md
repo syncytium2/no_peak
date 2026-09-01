@@ -248,6 +248,15 @@ provenance travels with the numbers.
   on the accepted generative model and emits calibrated posteriors instead of
   point estimates. Includes kill criteria and the client-side constraint.
 
+- `docs/custard-comparison-2026-09-01.md` — a third detector scored on
+  `data/benchmark` with our own hit rule: custard, from the `interface2`
+  calcium repository. Recorded here because this is where you would look for
+  "has anything else been run on the benchmark?", and deliberately kept off the
+  site, for reasons the note gives. The harness lives in `interface2`. Its one
+  finding about *this* project: custard divides by within-window scatter rather
+  than by an assay error model, and that is where it loses — a negative control
+  for the error model, obtained without arguing for it.
+
 ## reference/ — NOT in this repository
 
 The original Fortran and the Igor Pro Cluster package are third-party code we
