@@ -1,4 +1,5 @@
 #!/bin/sh
+# instrument: retrieval
 # Commit gate — OPT-IN, enable with:  git config core.hooksPath .githooks
 #
 # It is opt-in on purpose. This repository is a shared checkout: another session

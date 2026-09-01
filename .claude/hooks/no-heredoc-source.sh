@@ -1,4 +1,5 @@
 #!/usr/bin/env bash
+# instrument: retrieval
 # vendored from interface2 @ a33c8ea9 — do NOT edit here; edit the canonical original (interface2 tools/no-heredoc-source.hook.sh) and re-copy.
 # no-heredoc-source.hook.sh — PreToolUse(Bash) gate: BLOCK writing source files
 # through a shell heredoc.

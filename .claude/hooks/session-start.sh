@@ -1,4 +1,5 @@
 #!/usr/bin/env bash
+# instrument: retrieval
 # session-start.sh — tell a starting session what it is walking into.
 #
 # WHY THIS EXISTS. On 2026-08-12 two sessions worked this repo's single checkout

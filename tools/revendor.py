@@ -1,4 +1,5 @@
 #!/usr/bin/env python3
+# instrument: propagation
 """revendor — re-copy vendored files and bump their stamps, without corrupting them.
 
 Ported from downLow's `tools/revendor.py` (2026-08-14, their `30351b2`/`2a68c61`), after

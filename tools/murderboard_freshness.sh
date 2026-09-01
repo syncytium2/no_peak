@@ -1,4 +1,5 @@
 #!/usr/bin/env bash
+# instrument: propagation
 # vendored from syncytium2/murderboard @ 729fb06aab7c180b77c4987a2588dfa90ccc8cc5
 # murderboard_freshness.sh — is this repo's VENDORED murderboard current with upstream?
 #
