@@ -25,6 +25,45 @@ started the day).
 
 ---
 
+## Arrived 2026-09-03 — when did nopeak.tonydefazio.com first serve? Nobody recorded it
+
+The `tonydefazio.com` session asked: its landing page now carries a *First
+published* date on every tile, and no_peak was the only destination of six it
+could not source. Pinned here so it is not re-derived from scratch, and because
+`colonel_kernel` is in exactly the same position.
+
+**What this site publishes is repo birth, not page birth — and it says so.**
+`src/version.ts` hard-codes `BORN = "2026-08-07"`, its comment calling it "the
+date of the first commit". It renders three ways: `since 2026-08-07` in the
+header stamp (`App.tsx:314`), `first commit 2026-08-07` in the footer
+(`App.tsx:1127`), and `born 7 August 2026` on About (`About.tsx:31`). The
+footer's label is exact. **About's "born" is not**, under the convention the
+estate settled on 2026-09-02 — page birth, labelled *First published*. It is the
+same defect murderboard is fixing by changing the word rather than the date. All
+three are React-rendered, so nothing that does not run JavaScript sees any of
+them, which is why the asking session reported no stamp at all.
+
+**Earliest sourced evidence the host served the public: 2026-08-10.** Commit
+`8e5e2d9`, whose body reads *"Live check 2026-08-10: the edge prepends a managed
+block … and named user-agent groups beat our `User-agent: *` allow."* Our
+`public/robots.txt`, added two days earlier at `a5d753c`, was observed being
+served on the zone. That is a **lower bound, not a birthday**: the true first
+serve is somewhere in 2026-08-07…08-10, and nobody wrote it down.
+
+**Cloudflare cannot narrow it.** `wrangler deployments list --name no-peak` and
+`wrangler versions list` each return exactly **10** records — a retention
+window, not a history. The oldest is `2026-08-12T16:07:09.750Z`, version
+`9202a585-7a92-4dc7-bacc-564a01641d4c`. Deploys demonstrably preceded it, so
+**2026-08-12 must never be cited as a first-publish date**. The Wayback Machine
+holds **no captures** of the host at all (CDX query, empty result).
+
+**Open, and the owner's.** Whether to publish a *First published* stamp of our
+own, and whether 2026-08-10 is the date to put on it given that it is a bound
+rather than a record. As things stand the landing page would be the only place a
+publication date for this site appears — backwards, and its copy is the thing
+that goes stale when we redeploy. Correcting About's "born" label costs one word
+and does not wait on the date question.
+
 ## Arrived 2026-08-27 — a badge that says what it covers, a CITATION.cff, and two questions
 
 External advice, evaluated rather than applied. It asked for CI over the tests
