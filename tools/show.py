@@ -1,5 +1,8 @@
 #!/usr/bin/env python3
-# vendored from armory @ 9e62f10 -- do NOT edit here; edit the canonical original (armory tools/show.py) and re-copy.
+# vendored from syncytium2/armory @ 548f734. This file is a COPY; edits here are
+# overwritten whenever it is re-vendored. Its source repository is private, so there is
+# nowhere to send a patch: treat this file as read-only and raise anything you find as
+# an issue in THIS repository.
 """show — put a file where the human will actually see it, and say where it went.
 
 THE FAILURE THIS EXISTS TO END
@@ -12,8 +15,8 @@ anthropics/claude-code#76739 — open, `has repro`, labelled macos + windows + v
 maintainer response, filed at CLI 2.1.207 and still failing at extension 2.1.252.
 
 That is the estate's "can the alarm ring?" family: a check that reports success while
-doing nothing. A bugarach session narrated **six** figures as seen across a long working
-session; the user only found out because he opened a deployed site himself. The session
+doing nothing. One session narrated **six** figures as seen across a long working
+session; the user only found out by opening a deployed site himself. The session
 briefing gate — *"a visual finding? render the figure and show it"* — was satisfied every
 time by a call that did nothing, so nothing failed anywhere in that loop.
 
@@ -27,49 +30,56 @@ gate resting on this one is falsifiable; a gate resting on the send channel is n
 
 Never say a figure was shown on the strength of a call returning success. Print the path.
 
+THIS FILE IS VENDORED. EDITING IT IS AN ESTATE EDIT, NOT A REPO EDIT
+--------------------------------------------------------------------
+Copies of this file are installed in other repositories, each stamped with the commit it
+was taken at. That stamp covers the consumer direction only. The reverse is not written
+anywhere and is the one that bites: **changing this original does not update them.** They
+are pins. Re-vendoring is a separate decision, and it belongs to whoever is running the
+vendor pass rather than to whoever edits this file.
+
+A pin can also be stranded rather than merely stale — pushed to a consumer on a branch that
+was never merged, so the copy exists in the repository and not in anyone's working tree.
+Do not infer from an index that a consumer HAS this file; check the consumer.
+
 WHERE IT GOES
 -------------
-`<dropbox>/darkroom/<project>/` — the convention already in use by bugarach, downLow,
-casebook, constellation and crossstream_memo, and the target of interface2's
-`if2_darkroom()` (102 callers). haruspex/tools/hx_paths.py says the rule outright:
-*"Never write a figure to a scratch or temp path: a human has to find it."*
+`<review root>/<project>/`, one folder per project, resolved at runtime — by default a
+Dropbox folder the maintainer's machines already sync, or anywhere `ARMORY_DARKROOM`
+points. The rule it exists to keep: **never write a figure to a scratch or temp path,
+because a human has to find it.** A path under /tmp satisfies the code and not the reader.
 
 THE ROOT IS RESOLVED, NEVER SPELLED
 -----------------------------------
-`dropbox_member_root()` is downLow/tools/data_root.py's, unchanged in behaviour: it reads
-Dropbox's own `info.json`, which names the real local path, so the macOS
-cloud-mount-vs-symlink distinction never has to be reasoned about and Windows needs no
-second branch. Business account first — that is the one holding darkroom.
+`dropbox_member_root()` reads Dropbox's own `info.json`, which names the real local path,
+so the macOS cloud-mount-vs-symlink distinction never has to be reasoned about and Windows
+needs no second branch. Business account first — that is the one holding the review folder.
 
-⚠ This matters beyond convenience. The member folder contains the user's name. **All 26
-of the files armory flags as carrying a personal path are re-derivations of this
-resolver that spelled it out instead of reading it** — including three copies inside
-interface2 alone (`export_response_ratios.py`, `export_mean_sd_proportions.py`,
-`export_stats_frame.py`, each building the root from `Path.home()` and two literal
-folder names), and `fetch_paper.py`, which was deleted from its origin repo for exactly
-that and appears here three times over. haruspex's own `dropbox()` hardcodes it via
-DROPBOX_REL and is why hx_paths.py is on the list.
+⚠ This matters beyond convenience: **the member folder contains the user's name.** Every
+file that has ever leaked a personal path here did it the same way — by spelling that root
+out from `Path.home()` plus literal folder names instead of asking the system where it is.
+One such file was deleted from its own repository for exactly that.
 
-The literals are deliberately not quoted anywhere in this file. --selftest asserts it,
-by checking this source against the root it just resolved at runtime — so the check
-needs no copy of the name in order to look for it. That assertion went red on the first
-run of this module, against a docstring that had spelled the folder out while explaining
-not to.
+The literals are therefore not quoted anywhere in this file, and `--selftest` asserts it by
+checking this source against the root it resolved at runtime — so the check needs no copy
+of the name in order to look for one. That assertion went red on its first run, against a
+docstring that had spelled the folder out while explaining not to.
 
 So: resolve at runtime, hold it in memory, print it to the terminal, and write it to no
 file. This module records the path nowhere.
 
 USAGE
 -----
-    tools/show.py FIG.png                  copy to darkroom, open in the default viewer
+    tools/show.py FIG.png                  copy to the review folder, open in the viewer
     tools/show.py FIG.png --code           open as a tab in VS Code instead
     tools/show.py FIG.png --no-open        place it and print the path, open nothing
     tools/show.py A.png B.pdf              several at once
-    tools/show.py --where                  print the darkroom dir for this project
+    tools/show.py --where                  print the review folder for this project
     tools/show.py --selftest               prove the resolver and the copy work
 
     --project NAME    override the project folder (default: the git repo's name)
-    ARMORY_DARKROOM   env override for the darkroom root, for CI or a non-standard install
+    ARMORY_DARKROOM   the review folder to copy into. Set this on any machine that has
+                      no Dropbox install for the tool to read a default from.
 
 EXIT STATUS
 -----------
@@ -88,7 +98,7 @@ import subprocess
 import sys
 from pathlib import Path
 
-# --- the resolver: downLow/tools/data_root.py, behaviour unchanged -------------
+# --- the resolver ---------------------------------------------------------------
 
 
 def _info_json_candidates() -> list[Path]:
@@ -141,7 +151,8 @@ def project_name(override: str | None = None) -> str:
 def darkroom(project: str, create: bool = True) -> Path:
     """`<dropbox>/darkroom/<project>` — where things meant to be looked at go.
 
-    Same convention as haruspex's darkroom() and interface2's if2_darkroom().
+    One folder per project, so two projects sharing a checkout cannot overwrite
+    each other's output.
     """
     override = os.environ.get("ARMORY_DARKROOM")
     if override:
@@ -150,10 +161,11 @@ def darkroom(project: str, create: bool = True) -> Path:
         member = dropbox_member_root()
         if member is None:
             raise SystemExit(
-                "show: could not locate Dropbox from info.json.\n"
+                "show: no review folder configured.\n"
                 f"  looked in: {', '.join(str(p) for p in _info_json_candidates())}\n"
-                "  Set ARMORY_DARKROOM to the darkroom root, e.g.\n"
-                "    ARMORY_DARKROOM='<dropbox>/darkroom'"
+                "  Set ARMORY_DARKROOM to any directory you can open, e.g.\n"
+                "    ARMORY_DARKROOM=~/review\n"
+                "  (No Dropbox install was found for the tool to read a default from.)"
             )
         root = member / "darkroom"
     p = root / project
@@ -205,53 +217,191 @@ def open_with(path: Path, code: bool = False) -> tuple[bool, str]:
 # --- selftest -----------------------------------------------------------------
 
 
-def selftest() -> int:
-    """Prove the resolver and the copy work, without opening anything.
+def leaked_components(source: str, root: Path | None) -> list[str]:
+    """Components of `root` that appear verbatim in `source`.
 
-    mutation_check's rule: a selftest that cannot go red is decoration. Each check
-    below fails loudly on a wrong answer rather than reporting a green run.
+    The leak check carries no copy of the name it hunts for: it asks the root it just
+    resolved what it is made of, and looks for those. `Users`/`home` are every machine's,
+    and short components collide with ordinary words, so both are excluded.
     """
-    ok = True
+    if root is None:
+        return []
+    return sorted({part for part in root.parts
+                   if len(part) > 3 and part not in ("Users", "home") and part in source})
+
+
+def _write_info_json(home: Path, business: str | None, personal: str | None) -> None:
+    """Plant a Dropbox info.json under a fake HOME, in Dropbox's own schema."""
+    blob = {}
+    if business is not None:
+        blob["business"] = {"path": business, "is_team": True}
+    if personal is not None:
+        blob["personal"] = {"path": personal}
+    d = home / ".dropbox"
+    d.mkdir(parents=True, exist_ok=True)
+    (d / "info.json").write_text(json.dumps(blob), encoding="utf-8")
+
+
+def selftest() -> int:
+    """Prove the resolver, the placement and the leak check — on any machine.
+
+    RUNS WITHOUT DROPBOX, ON PURPOSE. The first version of this selftest asserted against
+    the real Dropbox root, so it could not run on a CI runner — and this tool is vendored
+    to eleven repositories. An instrument whose test only runs on one laptop is tier 0
+    wearing a tier 2 badge. Every check below builds its own fixture in a temp directory,
+    touches no network, and needs no Dropbox install.
+
+    It also used to print `OK`/`FAILED`. mutation_check.sh reduces the last line to
+    PASS/FAIL, `OK` matched neither, and a row aimed here would have scored ERROR
+    baseline-not-green — the tool could not have been mutation-checked at all. It prints
+    the contract now.
+
+    mutation_check's rule: a selftest that cannot go red is decoration. Each check asserts
+    behaviour, never that this file contains a string.
+
+    AND IT MUST SAY RED RATHER THAN DIE. Found by mutation on 2026-09-02: deleting the
+    `mkdir` in darkroom() made this selftest raise partway through, so it printed no verdict
+    at all and mutation_check read a stray `ok` line as the result — scoring MISSED for a
+    mutation that had in fact broken the tool completely. A crash is a failure and must be
+    reported as one, or the suite quietly stops covering exactly the breakages that are
+    severe enough to throw.
+    """
+    import tempfile
+
+    bad: list[str] = []
 
     def check(label: str, cond: bool, detail: str = "") -> None:
-        nonlocal ok
-        ok &= cond
-        print(f"  [{'PASS' if cond else 'FAIL'}] {label}{'  ' + detail if detail else ''}")
+        if not cond:
+            bad.append(label)
+        print(f"  {'ok  ' if cond else 'RED '} {label}{'  ' + detail if detail else ''}")
 
     print("show --selftest")
+    home_before = os.environ.get("HOME")
+    dk_before = os.environ.get("ARMORY_DARKROOM")
 
-    member = dropbox_member_root()
-    check("info.json names an existing member folder", member is not None and member.is_dir(),
-          "(path not printed: it contains the user's name)")
+    with tempfile.TemporaryDirectory() as td:
+        T = Path(td)
+        fake_home = T / "home"
+        biz = T / "biz-member"
+        per = T / "per-member"
+        for d in (fake_home, biz, per):
+            d.mkdir(parents=True)
 
-    proj = project_name()
-    check("project name derived", bool(proj), f"-> {proj}")
+        try:
+          try:
+            os.environ["HOME"] = str(fake_home)
+            os.environ.pop("ARMORY_DARKROOM", None)
 
-    try:
-        dk = darkroom(proj)
-        check("darkroom resolves and is writable", dk.is_dir() and os.access(dk, os.W_OK))
-    except SystemExit as exc:
-        check("darkroom resolves", False, str(exc).splitlines()[0])
-        return 1
+            _write_info_json(fake_home, str(biz), str(per))
+            check("resolves the member root from info.json", dropbox_member_root() == biz)
 
-    probe = dk / ".show-selftest"
-    try:
-        probe.write_text("probe\n", encoding="utf-8")
-        check("round-trips a file", probe.read_text(encoding="utf-8") == "probe\n")
-    finally:
-        probe.unlink(missing_ok=True)
+            # Both accounts present and both real: the business one holds darkroom.
+            check("prefers the business account over the personal one",
+                  dropbox_member_root() == biz)
 
-    # Check this source against the root just resolved, so the test carries no copy of
-    # the name it is looking for. Every path component of the member root is personal:
-    # the account holder's name is one of them.
+            # A path Dropbox names but that is not on this disk must not be returned:
+            # that is the difference between reading info.json and trusting it.
+            _write_info_json(fake_home, str(T / "does-not-exist"), str(per))
+            check("skips an account whose path is not on disk",
+                  dropbox_member_root() == per)
+
+            _write_info_json(fake_home, str(biz), None)
+            check("works with only a business account", dropbox_member_root() == biz)
+
+            (fake_home / ".dropbox" / "info.json").unlink()
+            check("returns None when Dropbox is not installed",
+                  dropbox_member_root() is None)
+
+            # darkroom(): the override, and the derived form.
+            os.environ["ARMORY_DARKROOM"] = str(T / "override")
+            check("ARMORY_DARKROOM overrides the resolved root",
+                  darkroom("proj") == T / "override" / "proj")
+            os.environ.pop("ARMORY_DARKROOM")
+
+            _write_info_json(fake_home, str(biz), None)
+            check("derives <member>/darkroom/<project>",
+                  darkroom("proj") == biz / "darkroom" / "proj")
+            check("creates the project folder", (biz / "darkroom" / "proj").is_dir())
+
+            # Without a root and without an override there is no safe guess to make.
+            (fake_home / ".dropbox" / "info.json").unlink()
+            try:
+                darkroom("proj")
+                check("refuses to guess a root when none can be resolved", False)
+            except SystemExit:
+                check("refuses to guess a root when none can be resolved", True)
+
+            # project_name(): derived from the git toplevel, so a consumer vendors this
+            # file unchanged rather than editing a constant per repo.
+            repo = T / "a-repo-name"
+            (repo / "sub").mkdir(parents=True)
+            for cmd in (["init", "-q"], ["config", "user.email", "s@e.invalid"],
+                        ["config", "user.name", "s"]):
+                subprocess.run(["git", "-C", str(repo), *cmd], capture_output=True)
+            cwd_before = Path.cwd()
+            try:
+                os.chdir(repo / "sub")
+                check("project name comes from the git toplevel, not the cwd",
+                      project_name() == "a-repo-name")
+                check("an explicit --project wins", project_name("other") == "other")
+            finally:
+                os.chdir(cwd_before)
+
+            # Placement: the file lands, and THE PATH IS PRINTED. The printed path is the
+            # delivery — a run that places the file silently has delivered nothing.
+            os.environ["ARMORY_DARKROOM"] = str(T / "out")
+            src = T / "fig.png"
+            src.write_bytes(b"\x89PNG\r\n\x1a\n")
+            import io
+            from contextlib import redirect_stdout
+            buf = io.StringIO()
+            with redirect_stdout(buf):
+                rc = main([str(src), "--no-open", "--project", "proj"])
+            printed = buf.getvalue().strip()
+            dest = T / "out" / "proj" / "fig.png"
+            check("places the file in the darkroom", rc == 0 and dest.is_file())
+            check("copies the bytes intact", dest.read_bytes() == src.read_bytes())
+            check("prints the absolute path it wrote", printed == str(dest))
+
+            # A file that is not there must fail, not be reported as delivered.
+            from contextlib import redirect_stderr
+            with redirect_stdout(io.StringIO()), redirect_stderr(io.StringIO()):
+                rc_missing = main([str(T / "nope.png"), "--no-open", "--project", "proj"])
+            check("a missing input is a failure, not a delivery", rc_missing == 1)
+            os.environ.pop("ARMORY_DARKROOM")
+
+            # The leak check itself must be shown to detect something, or "clean" is
+            # unearned. Plant a component and require it to be found.
+            planted = T / "Zq7-Member-Name"
+            check("the leak check finds a planted path component",
+                  leaked_components("root = Zq7-Member-Name/x", planted)
+                  == ["Zq7-Member-Name"])
+            check("the leak check ignores components not present",
+                  leaked_components("nothing here", planted) == [])
+          except Exception as exc:
+            check("ran to the end without raising", False, f"{type(exc).__name__}: {exc}")
+        finally:
+            if home_before is None:
+                os.environ.pop("HOME", None)
+            else:
+                os.environ["HOME"] = home_before
+            if dk_before is None:
+                os.environ.pop("ARMORY_DARKROOM", None)
+            else:
+                os.environ["ARMORY_DARKROOM"] = dk_before
+
+    # And this source, against the real root when there is one. On a runner there is not,
+    # and the planted-component check above is what carries the claim there.
+    real = dropbox_member_root()
     source = Path(__file__).resolve().read_text(encoding="utf-8")
-    leaked = sorted({part for part in (member.parts if member else ())
-                     if len(part) > 3 and part not in ("Users", "home") and part in source})
+    leaked = leaked_components(source, real)
     check("this source records no component of the resolved personal path",
-          not leaked, f"leaked: {leaked}" if leaked else "")
+          not leaked,
+          f"leaked: {leaked}" if leaked else ("(no Dropbox here — fixture check covers it)"
+                                              if real is None else ""))
 
-    print("OK" if ok else "FAILED")
-    return 0 if ok else 1
+    print("selftest:", "PASS" if not bad else "RED")
+    return 0 if not bad else 1
 
 
 # --- main ---------------------------------------------------------------------
