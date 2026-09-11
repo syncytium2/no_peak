@@ -28,8 +28,12 @@ started the day).
 ## Arrived 2026-09-11 — the landing page leads with ewe #9013, and the app opens on it
 
 State now: `tsc -b` clean and `npm run build` clean. In a fresh worktree without
-`data/oracle/`, 145 tests pass and the two oracle files skip. **Not deployed**:
-the live site serves the benchmark figure until `npm run deploy` runs.
+`data/oracle/`, 145 tests pass and the two oracle files skip; with it, all 234
+pass. **Deployed 2026-09-11** from `871d64f` and verified on the wire rather
+than from `dist/`: the live `index-*.js` is the one just built, the old figure's
+strings are gone from it, the landing page leads with the button and this
+figure, and the app opens on ewe #9013 at the Webster preset with no console
+errors.
 
 Owner's instruction, verbatim: "i'd like to lead the landing page with the ewe
 9013 data analyzed with the webster portal settings. i'd like the app to open
