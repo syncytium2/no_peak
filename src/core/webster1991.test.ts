@@ -17,6 +17,7 @@ import { clusterMain } from "./cluster";
 import { parseSeries } from "./csv";
 import { DEFAULT_PARAMS, type ClusterParams, type ErrorModelType } from "./types";
 import { HAVE_DIGITIZED, NEEDS_DIGITIZED } from "../testing/haveDigitized";
+import { matchCalls as match, publishedCalls as readCalls } from "../testing/webster1991Calls";
 
 const DIR = "data/digitized";
 
@@ -34,16 +35,7 @@ const SERIES = [
   "fig4b_thx_9009_gnrh", "fig4b_thx_9009_lh",
 ];
 
-function publishedCalls(): Map<string, Set<number>> {
-  const out = new Map<string, Set<number>>();
-  for (const s of SERIES) out.set(s, new Set());
-  for (const line of readFileSync(`${DIR}/webster1991_pulses.csv`, "utf8").split("\n")) {
-    if (!line || line.startsWith("#") || line.startsWith("series,")) continue;
-    const [series, idx] = line.split(",");
-    out.get(series)!.add(Number(idx));
-  }
-  return out;
-}
+const publishedCalls = () => readCalls(SERIES);
 
 const load = (key: string) => parseSeries(readFileSync(`${DIR}/webster1991_${key}.csv`, "utf8"));
 
@@ -55,19 +47,6 @@ const paperParams = (isGnRH: boolean, errorModel: ErrorModelType): ClusterParams
   variant: "fortran",
   errorModel,
 });
-
-/** One sample of slack: at this sampling rate a two-sample pulse has no single peak. */
-function match(found: number[], truth: Set<number>, slack = 1) {
-  const unused = new Set(truth);
-  let hit = 0;
-  for (const f of found) {
-    for (let d = 0; d <= slack; d++) {
-      if (unused.has(f - d)) { unused.delete(f - d); hit++; break; }
-      if (unused.has(f + d)) { unused.delete(f + d); hit++; break; }
-    }
-  }
-  return { hit, missed: unused.size, extra: found.length - hit };
-}
 
 function score(errorModel: ErrorModelType | "assay") {
   const truth = publishedCalls();

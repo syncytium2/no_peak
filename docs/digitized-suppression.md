@@ -52,6 +52,15 @@ file is the answer key; it is read from disk by the tests and by
 `score_webster1991.ts`, and the app never displays it. **Do not widen the
 pattern.**
 
+**Since 2026-09-11 two more things read the tree**, both through
+[`src/opening.ts`](../src/opening.ts): the About page's lead figure, which is
+ewe #9013, and the record the app opens on, which is the same. Neither needed
+new machinery. Without the tree, the lead figure renders nothing and the app
+opens on `sim_gnrh_thx_ewe` at the generic defaults, as it did before that
+date. [`src/LeadFigure.test.tsx`](../src/LeadFigure.test.tsx) pins the fallback
+with the tree present, and skips its other tests without it. The measured
+numbers below predate this and were not re-measured.
+
 ## To throw it
 
 ```sh

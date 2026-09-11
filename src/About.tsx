@@ -4,27 +4,32 @@
 
 import { BORN, BUILT, VERSION, longDate } from "./version";
 import { ContactForm } from "./Contact";
-import { ProblemFigure } from "./ProblemFigure";
+import { LeadFigure } from "./LeadFigure";
+import { opening } from "./opening";
 import { downloadText } from "./chart/export";
 import { TEMPLATE_CSV, TEMPLATE_NAME } from "./template";
 
-// This page is where a cold start lands, so it opens with the figure and not
-// with prose: a reader who has never heard of pulse detection should be able to
-// see what the problem is before reading a word of it. Keep the figure first.
+// This page is where a cold start lands. The way into the app comes first, for
+// the reader who already knows what they came for; then the figure, before any
+// prose, for the reader who does not. The figure is the record the app opens
+// on, at the settings it opens with, so clicking through shows the same picture.
+// Keep both above everything else.
 export function About({ onOpenApp }: { onOpenApp: () => void }) {
+  const figureShown = opening().real;
   return (
     <div className="about">
-      <ProblemFigure />
-
       <p className="opennow">
         <button className="primary" onClick={onOpenApp}>
           Open the app →
         </button>{" "}
         <span>
-          Load your own record, or start from one of the bundled datasets. Nothing you load leaves
-          your browser.
+          {figureShown && "It opens on the record below, at the same settings. "}
+          Load your own record, or pick one of the bundled datasets. Nothing you load leaves your
+          browser.
         </span>
       </p>
+
+      <LeadFigure />
 
       <h1>About no_peak</h1>
       <p className="cite">

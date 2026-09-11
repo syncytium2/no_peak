@@ -21,6 +21,7 @@ import { downloadPNG, downloadSVG, downloadText } from "./chart/export";
 import { IgorPicker } from "./IgorPicker";
 import { NumField } from "./NumField";
 import { SAMPLES, SAMPLE_GROUPS, sampleByKey, sampleCounts } from "./samples";
+import { opening } from "./opening";
 import { TEMPLATE_CSV, TEMPLATE_NAME } from "./template";
 
 const ERROR_MODELS: ErrorModelType[] = [
@@ -52,11 +53,16 @@ const looksLikeError = (name: string) =>
 
 const isIgor = (name: string) => /\.(pxp|ibw|bwav)$/i.test(name);
 
+/** `?demo` opens on the synthetic demo at the generic defaults instead. */
+const isDemo = () => new URLSearchParams(window.location.search).has("demo");
+
 export function App() {
   const [loaded, setLoaded] = useState<Loaded | null>(null);
   const [deltaT, setDeltaT] = useState(10);
   const [timeUnit, setTimeUnit] = useState<TimeUnit>("min");
-  const [params, setParams] = useState<ClusterParams>({ ...DEFAULT_PARAMS });
+  const [params, setParams] = useState<ClusterParams>(() =>
+    isDemo() ? { ...DEFAULT_PARAMS } : opening().params,
+  );
   // null means "follow the time unit"; typing in the field pins a custom label.
   const [xLabelOverride, setXLabelOverride] = useState<string | null>(null);
   const [yLabel, setYLabel] = useState("Concentration");
@@ -280,12 +286,12 @@ export function App() {
     }
   }
 
-  // ?demo auto-loads the synthetic demo; otherwise the bundled GnRH dataset
-  // loads by default so the page never opens blank.
+  // A cold start opens on the record the About page leads with, at the settings
+  // that figure was drawn with (src/opening.ts), so clicking through shows the
+  // same picture, and the page never opens blank. ?demo loads the synthetic
+  // demo instead.
   useEffect(() => {
-    loadSample(
-      new URLSearchParams(window.location.search).has("demo") ? "demo" : "sim_gnrh_thx_ewe",
-    );
+    loadSample(isDemo() ? "demo" : opening().sample.key);
   }, []);
 
   // The MS-DOS terminal chrome the original program ran under. It used to fire

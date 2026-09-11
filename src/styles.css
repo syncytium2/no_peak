@@ -923,12 +923,25 @@ body.dos .about a {
   padding: 24px 20px 64px;
 }
 
-/* The lead figure. It is the first thing on the landing page and carries its own
-   headline inside the SVG, so it has to survive being the only thing a reader
-   looks at: full column width, its own frame, caption directly beneath. */
+/* The lead figure. It sits under the app button at the top of the landing page
+   and has to survive being the only thing a reader looks at: headline above,
+   full column width, its own frame, caption directly beneath. The chart is the
+   app's own ClusterChart. */
 .leadfig {
   margin: 0 0 18px;
   padding: 0;
+}
+
+.leadfig .leadtitle {
+  font-size: 21px;
+  font-weight: 600;
+  line-height: 1.25;
+  margin: 0 0 4px;
+}
+
+.leadfig .leadsub {
+  color: var(--ink-2);
+  margin: 0 0 12px;
 }
 
 .leadfig svg {
@@ -950,7 +963,7 @@ body.dos .about a {
   align-items: center;
   gap: 12px;
   flex-wrap: wrap;
-  margin: 20px 0 8px;
+  margin: 0 0 20px;
 }
 
 .opennow span {

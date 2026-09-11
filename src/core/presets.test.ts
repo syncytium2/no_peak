@@ -110,7 +110,7 @@ describe("published presets", () => {
     expect(counts).toEqual([11, 11, 11, 11]);
   });
 
-  it("gives a different answer from the app's defaults, which is the point", () => {
+  it("gives a different answer from the generic defaults, which is the point", () => {
     // Where pulses are close together the window width decides how many
     // survive, so reproducing a published count needs that paper's windows —
     // which is why nPeak = 1 has to be typeable. On the well-separated record

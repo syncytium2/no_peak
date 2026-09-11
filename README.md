@@ -22,17 +22,19 @@ user's machine.** Figures are publication-grade SVG (vector) with 4× PNG export
   Cloudflare OAuth). Custom domain is added in the Cloudflare dashboard —
   DNS for tonydefazio.com is Cloudflare-managed, nothing to do at Porkbun.
 
-**A cold start lands on About, not on the analysis page**, and About opens with
-a figure before it opens with a sentence. The tool is useless to a reader who
-does not yet know what pulse detection is for, and the figure —
-`src/ProblemFigure.tsx` — says it without prose: one benchmark record, the
-twelve pulses the simulator actually released into it, and the six CLUSTER
-reports. Nothing in it is drawn by hand; the trace, the detected stretches and
-every number in its headline come from a live `clusterMain` run at load, so the
-picture cannot drift away from the algorithm. `src/ProblemFigure.test.ts` pins
-the counts and re-reads the true onsets from `data/benchmark/truth.json`. Two
-hash routes: `#app` is the app, everything else is About (which keeps the
-`#about` links in the app, the prerender and `llms.txt` working). Figure first.
+**A cold start lands on About, not on the analysis page.** About puts the
+button into the app first, then a figure before any prose. The figure,
+`src/LeadFigure.tsx`, is ewe #9013's portal GnRH from Webster et al. 1991,
+analyzed at the settings that paper states and drawn by the app's own
+`ClusterChart`: 21 pulses, at the places the paper marked. The app opens on the
+same record at the same settings. Both read `src/opening.ts`, which falls back
+to `sim_gnrh_thx_ewe` at the generic defaults if `data/digitized/` is ever
+withdrawn. Nothing in the figure is drawn by hand; every number in its caption
+comes from a live run at load. `src/LeadFigure.test.tsx` pins the counts and
+checks the pulse positions against the paper's calls, read from disk because
+the calls file never ships. Two hash routes: `#app` is the app, everything else
+is About (which keeps the `#about` links in the app, the prerender and
+`llms.txt` working). Button first, then the figure.
 
 `playwright-core` is a devDependency for **checking the running app in a real
 browser**, which the tests cannot do: it is how the horizontal-zoom overshoot
@@ -130,14 +132,17 @@ owns the time base and pulse frequency); `src/chart/` the publication figure
 (custom SVG, palette validated with the dataviz six-checks validator);
 `src/App.tsx` the UI; `src/NumField.tsx` and `src/IgorPicker.tsx` its two
 non-trivial controls; `src/About.tsx` the about/citations page;
-`src/ProblemFigure.tsx` the figure that page opens with; `src/version.ts` the
+`src/LeadFigure.tsx` the figure that page leads with; `src/opening.ts` the
+record and settings that figure and the app both open on; `src/version.ts` the
 build stamp (`__APP_VERSION__` and
 `__BUILD_DATE__` are injected in `vite.config.ts`; bump `package.json` version
 to change what the app reports).
 
 `src/samples.ts` bundles both kinds of dataset — see below. The **simulated** ones (`data/synthetic/`, made by
 `tools/make_synthetic.py`) via `?raw` imports and drives the "Sample data"
-picker; `sim_gnrh_thx_ewe` loads by default so the app never opens blank. Real
+picker. The app opens on ewe #9013, a digitized record (see `src/opening.ts`);
+`sim_gnrh_thx_ewe` is what it opens on if the digitized records are withdrawn,
+so either way it never opens blank. Real
 lab recordings are NOT bundled and NOT committed — see `docs/reference-code.md`.
 
 `data/digitized/` holds eight REAL hormone records, read off the printed

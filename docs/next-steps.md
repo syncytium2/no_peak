@@ -25,6 +25,61 @@ started the day).
 
 ---
 
+## Arrived 2026-09-11 — the landing page leads with ewe #9013, and the app opens on it
+
+State now: `tsc -b` clean and `npm run build` clean. In a fresh worktree without
+`data/oracle/`, 145 tests pass and the two oracle files skip. **Not deployed**:
+the live site serves the benchmark figure until `npm run deploy` runs.
+
+Owner's instruction, verbatim: "i'd like to lead the landing page with the ewe
+9013 data analyzed with the webster portal settings. i'd like the app to open
+with these as default as well. the button to go straight to the app should be
+at the top"
+
+**What moved.**
+
+- `src/opening.ts` names the record (`w91_gnrh_thx_9013`) and the preset
+  (`webster1991_gnrh`) once. The About page's figure and the app's opening
+  state both read it, so clicking through shows the picture just shown. Without
+  `data/digitized/` it falls back to `sim_gnrh_thx_ewe` at the generic defaults,
+  and the figure renders nothing.
+- `src/LeadFigure.tsx` replaces `src/ProblemFigure.tsx`. It draws the app's own
+  `ClusterChart`, and every number in its caption comes from a live run: 21
+  pulses, and the count under each estimated error model (0, 3, 1, 21, 0).
+- The "Open the app" button is the first thing on About.
+- `DEFAULT_PARAMS` did **not** move. It is still the command line's default,
+  and `?demo` still opens at it. Its preset is now labeled "Generic two-point
+  defaults"; "This app's defaults" stopped being true.
+
+**What the caption has to carry, and does.** The 21 of 21 is partly built in:
+the GnRH error floor (0.07 pg/min) was fitted to the paper's own 70 calls. The
+caption says so and quotes the counts with the error estimated instead.
+`src/LeadFigure.test.tsx` checks the 21 positions against
+`webster1991_pulses.csv`, read from disk. That file still never ships; the
+eight mentions of its name in the bundle are the data files' header comments,
+as before.
+
+**Two things seen only in the browser.** The record opens partway through a
+pulse, so the chart shades 0–10 min with no number, and a reader counts 22
+bands against a headline of 21. The caption now says why, and says it only
+while the run shows it. Second, `ClusterChart` keeps three 150-character lines
+of credit (`src/chart/ClusterChart.tsx:584`), so every digitized record's
+credit, in the app and in every export, stops at "so the file supplies",
+before the reconstruction formula it exists to carry. That predates this
+change and is **not fixed**. The landing figure sidesteps it by printing the
+citation in its caption.
+
+**Why the benchmark figure went.** Evaluated the same day, when the owner said
+it "by eye doesn't match the claim". It did not. Record 0119's three hollow
+"missed" markers are pulses of 0.37–0.78× basal that leave no bump. Two of the
+three pulses in its merged bar are 3.3 min apart at 5-min sampling, which no
+detector could separate. One solid marker's leader fell between two bars,
+because the credit rule widens a stretch by a full sample and the bars are drawn
+half a sample wider. Its general sentences were also false under the Fortran
+default: corpus sensitivity is 62.9% against the record's 44%, and FDR is 21.9%
+against "it invents nothing". If a benchmark figure returns, choose the record
+by a written screen, and draw with the tolerance you score with.
+
 ## Arrived 2026-09-03 — when did nopeak.tonydefazio.com first serve? Nobody recorded it
 
 The `tonydefazio.com` session asked: its landing page now carries a *First

@@ -186,10 +186,14 @@ when you have the code checked out rather than this URL.
 - https://nopeak.tonydefazio.com/#about — the same material inside the app,
   plus the file-format guide, a downloadable example CSV, and a contact form.
   Client-rendered, like the app. This is also what the bare address opens on: a
-  cold start lands here rather than on the analysis page, and the page leads
-  with a figure — one simulated benchmark record, the twelve pulses that were
-  actually released into it, and the six CLUSTER reports. The analysis app is at
-  https://nopeak.tonydefazio.com/#app.
+  cold start lands here rather than on the analysis page. The page leads with a
+  button into the app, then a figure: ewe #9013's portal GnRH from Webster et
+  al. 1991, read off the printed figure and analyzed at the settings that paper
+  states, which report the 21 pulses the paper marked. The caption says why that
+  agreement is partly built in: the paper does not report its per-sample error,
+  and with the error estimated from the data the same settings report anywhere
+  from 0 to 21. The analysis app is at https://nopeak.tonydefazio.com/#app and
+  opens on the same record at the same settings.
 
 ## Reuse
 

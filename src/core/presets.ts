@@ -28,11 +28,13 @@ export interface ParamPreset {
 export const PRESETS: ParamPreset[] = [
   {
     key: "default",
-    label: "This app's defaults",
+    label: "Generic two-point defaults",
     cite: "",
     note:
       "Two-point windows and t = 2 — the settings both reference implementations open with — " +
-      "run against the original Fortran, CLUST5 v6.01. The Fortran is the default because its " +
+      "run against the original Fortran, CLUST5 v6.01. They are the command line's defaults; " +
+      "the app itself opens on a Webster et al. 1991 record at that paper's settings, below. " +
+      "The Fortran is the default because its " +
       "pooled variance makes the t-score dimensionless: the same record expressed in pg/ml and " +
       "in ng/ml gives the same pulses. The Igor package's does not, and is one selection away " +
       "for reproducing work done in it.",
