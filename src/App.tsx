@@ -1125,7 +1125,8 @@ export function App() {
       <footer>
         <p>
           CLUSTER algorithm: Veldhuis &amp; Johnson; original Fortran by Michael L. Johnson.
-          TypeScript port validated against the Igor Pro implementation (ClusterMasterV4-1).{" "}
+          TypeScript port of the original Fortran (CLUST5 v6.01), checked against it point by point,
+          with a port of the Igor Pro implementation (ClusterMasterV4-1) validated against Igor.{" "}
           <a href="#about">About, citations &amp; other tools</a> ·{" "}
           <a href="/methods">Methods reference</a>
         </p>

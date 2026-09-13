@@ -151,8 +151,11 @@ for (const [model, t] of totals) {
       `  precision ${((t.hit / (t.hit + t.extra || 1)) * 100).toFixed(0).padStart(3)}%`,
   );
 }
+const detections = [...totals.values()].map((t) => t.hit + t.extra);
+const fewest = Math.min(...detections);
+const most = Math.max(...detections);
 console.log(
   "\nThe published settings alone do not reproduce the published result: the\n" +
-    "answer swings from none at all to 171 detections depending on the error model,\n" +
-    "the paper does not report. Supplying the assay's own error recovers it.",
+    `answer swings from ${fewest === 0 ? "none at all" : fewest} to ${most} detections depending on the error\n` +
+    "model, which the paper does not report. Supplying the assay's own error recovers it.",
 );

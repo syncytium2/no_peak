@@ -12,8 +12,9 @@ user's machine.** Figures are publication-grade SVG (vector) with 4× PNG export
 ## App
 
 - `npm run dev` — local dev server
-- `npm test` — core algorithm tests (vitest). 231 here; **144 on a fresh
-  clone**, because the oracle suites read data that is not committed. See
+- `npm test` — core algorithm tests (vitest). 237 with the private oracle
+  data; **148 on a fresh clone**, because the oracle suites read data that is
+  not committed. See
   *Citing, and what the badge covers* at the end.
 - `npm run cluster` — the command line (see below)
 - `npm run build` — static bundle in `dist/`
@@ -54,7 +55,7 @@ need to stay accurate:
 - `index.html` ships a static summary **inside** `#root`. React's
   `createRoot().render()` clears the container on mount (`clearContainer` sets
   `textContent = ''`), so it is replaced by the app and doubles as the loading
-  state. It also carries canonical/OpenGraph tags and a `SoftwareApplication`
+  state. It also carries canonical/OpenGraph tags and a `WebApplication`
   JSON-LD block.
 - `public/methods.html` + `public/methods.css` — the standalone **Methods &
   Algorithm Reference**, served at `/methods`. Plain static HTML, no framework,
@@ -149,20 +150,20 @@ lab recordings are NOT bundled and NOT committed — see `docs/reference-code.md
 figures of Webster et al. 1991 — from the U-M library's scan of the bound print
 volume, not the publisher's PDF
 (`tools/digitize_webster_print.py`). Those figures mark every pulse that paper's
-own CLUSTER run identified, so the set carries a ground truth nobody here
+own CLUSTER run identified, so the set carries an answer key nobody here
 supplied — the only such data in the project. The article itself is NOT
 redistributed; only the numbers.
 
-⚠ **The permissions question is open, not settled, and the repo said otherwise
-until 2026-08-13.** A claim that the records were used "with the permission of
+**The rights question was settled on 2026-08-19 by changing the source, not by
+anyone's permission.** A claim that the records were used "with the permission of
 one of the paper's authors" stood in eight CSV headers, `src/samples.ts` and so
 every exported figure and PDF, and four public pages — with no artifact behind
 it. An author was then asked directly and declined to be the grantor, correctly
 pointing to the copyright holder. The claim has been withdrawn everywhere; **do
-not reinstate it.** What the data rests on now is the analysis in
-`docs/figure-data-permissions.md` alone. Requests to the Endocrine Society and
-to the U-M library are open as of 2026-08-13. See its banner and
-`data/digitized/README.md`.
+not reinstate it.** On 2026-08-19 all eight series were re-read from the U-M
+library's scan of the print volume and the values read from the licensed PDF
+were retired, so nothing published here derives from that PDF. See the status
+banner in `docs/figure-data-permissions.md` and `data/digitized/README.md`.
 
 **Read `data/synthetic/README.md` before adding a dataset.** Every scale in a
 bundled dataset has to be traceable to a citation, recorded next to the
@@ -178,16 +179,18 @@ sampling interval and provenance note. Anything from that menu is tagged
 
 Port fidelity notes:
 - The **Implementation** selector switches the whole algorithm between the
-  Igor port (`variant: "igor"`, the default and the validation oracle) and the
-  original Fortran (`variant: "fortran"`). Fortran mode squares the error term
+  original Fortran (`variant: "fortran"`, the default since 0.3.0) and the Igor
+  port (`variant: "igor"`, kept for lab compatibility and validated against Igor
+  Pro). Fortran mode squares the error term
   in the pooled S (Igor sums `NDF*STDEV` unsquared), and uses a separate
   verbatim port of the CLUST5 pass-four assembly (`pulseAssemblyFortran`):
   NPEAK-wide loop-1200 marking (Igor's do-while marks max(1, nPeak−1)), `PULSE(1)`-only initial
   state, loop 1300 from the second point, backward zap down to index 1.
   In practice the zap canonicalizes both to the same runs for ordinary
   bounded pulses, so the visible difference comes from the variance form.
-  Fortran mode also switches the UI and figure to a green-phosphor MS-DOS
-  theme (`body.dos` in `styles.css`, `FIG_DOS` in `chart/palette.ts`).
+  A separate checkbox, off by default, switches the UI and figure to a
+  green-phosphor MS-DOS theme (`body.dos` in `styles.css`, `FIG_DOS` in
+  `chart/palette.ts`).
 - Peak/valley tables follow the Fortran reporting passes, including their
   inclusive-boundary loops. **Exception:** the Fortran drops a final pulse
   whose trailing nadir window doesn't fit in the record; `includeTruncated`
@@ -209,7 +212,7 @@ wanted is a column in a stats package.
 
 ```sh
 node scripts/cluster.ts records/ --preset webster1991_lh -o summary.csv
-node scripts/cluster.ts data/digitized/*.csv --n-peak 3 --t-up 2.5 > summary.csv
+node scripts/cluster.ts data/digitized/webster1991_fig*.csv --n-peak 3 --t-up 2.5 > summary.csv
 npm run cluster -- --help
 npm run cluster -- --list-presets
 ```
@@ -326,7 +329,10 @@ without them those suites skip. Committed: `data/synthetic/` and `data/benchmark
   `-v` prints the per-pulse listing those comparisons read). See
   **Command line** above.
 
-## Port plan (sketch)
+## Port plan, as first sketched (all of it done)
+
+This is the plan written before any code existed, kept as history; every item
+in it has been carried out.
 
 1. Implement the core in plain TypeScript (or Python service): UPorDN sliding
    pooled t-test, pulse assembly, peak/valley summarization, optional outlier
@@ -341,15 +347,17 @@ without them those suites skip. Committed: `data/synthetic/` and `data/benchmark
 
 `docs/doc_review_process.md`, `tools/murderboard_*.sh` and
 `.claude/skills/murderboard/SKILL.md` are **vendored** from
-`syncytium2/murderboard` (stamped `@ b2b2ba2`). Run `/murderboard <artifact>`
+`syncytium2/murderboard`; each vendored file carries its upstream stamp in its
+own header. Run `/murderboard <artifact>`
 before handing over any document deliverable — a figure, an explainer, a
 methods section, a report. Run records live in `docs/reviews/`.
 
 - `bash tools/murderboard_freshness.sh --verbose` — is the vendored copy current?
 - `bash tools/murderboard_roster.sh check <report>` — did every role actually run?
 
-Re-vendor by copying the files from upstream and updating the `@ <sha>` stamp in
-the first lines of each.
+Re-vendor with `python tools/revendor.py` (`--check` first to see what would
+change); it re-copies the files and bumps their stamps without touching
+stamp-shaped strings elsewhere.
 
 ## Citing, and what the badge covers
 
@@ -367,7 +375,7 @@ on the committed tree. The suites that compare this port against Igor and
 against CLUST5 — `src/core/oracle.test.ts` and `src/core/igor-oracle.test.ts` —
 read `data/extracted/`, `data/oracle/` and `data/oracle_igor/`, all three
 gitignored and none of them ours to distribute. Both suites auto-skip when the
-data is absent, which on a runner is always: 231 tests collect here, 144 there.
+data is absent, which on a runner is always: 237 tests pass with the data, 148 without.
 So a green badge means the algorithm's own tests and the type-check passed. It
 does **not** mean parity with the reference implementations still holds. That
 check is `npm run deploy`, which runs the full set on a machine that has the

@@ -43,7 +43,8 @@ citation.
 
 **Common flags**: `--n-peak` `--n-nadir` `--t-up` `--t-dn` `--min-peak`
 `--error-model` `--error-value` `--variant igor|fortran` `--preset` `--unit`
-`--interval` `-o` `-v` `--strict`. Defaults match the app's.
+`--interval` `-o` `-v` `--strict`. The defaults are the app's generic two-point
+defaults; the app itself opens on the Webster 1991 GnRH preset.
 
 ## Four things to get right before reporting a number
 

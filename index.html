@@ -27,7 +27,7 @@
         "@type": "WebApplication",
         "name": "no_peak",
         "url": "https://nopeak.tonydefazio.com/",
-        "description": "A browser implementation of the CLUSTER pulse-detection algorithm for endocrine time-series data (LH, GnRH, GH). A faithful port of the Igor Pro implementation, validated point-by-point against Igor Pro output and against the original Fortran program, and scored against simulated data with known pulse times. All computation runs in the browser; no data is ever transmitted.",
+        "description": "A browser implementation of the CLUSTER pulse-detection algorithm for endocrine time-series data (LH, GnRH, GH). By default it runs a port of the original Fortran program (CLUST5 v6.01), checked point by point against CLUST5 compiled with gfortran; a port of the Igor Pro package is selectable for reproducing analyses done in it and is validated against Igor Pro output. Both are scored against simulated data with known pulse times. All computation runs in the browser; no data is ever transmitted.",
         "applicationCategory": "Scientific analysis software",
         "applicationSubCategory": "Endocrine time-series pulse detection",
         "operatingSystem": "Any (runs entirely in the web browser)",
@@ -111,19 +111,22 @@
             <strong>Against known ground truth:</strong> scored on Johnson's own simulated datasets,
             which ship with their generating pulse times, the Fortran variant recovers 60.8% of 130
             true pulses with zero false positives — closely matching the ~58% Johnson published for
-            Cluster on the same data. Last re-derived 2026-08-12, reproducing the published
-            per-dataset counts exactly. Johnson's datasets cannot be redistributed, so this remains
+            Cluster on the same data. Re-derived 2026-08-12, reproducing no_peak's earlier totals
+            and per-dataset counts exactly; against Johnson's published per-dataset counts, the
+            Fortran variant is off by 6 in total. Johnson's datasets cannot be redistributed, so
+            this remains
             the one check on this page that a reader cannot re-run from the repository alone.
           </li>
-          <li><strong>194 unit tests</strong>, including t-statistics worked out by hand.</li>
+          <li><strong>More than 200 unit tests</strong>, including t-statistics worked out by hand.</li>
         </ul>
 
         <h2>What it does not do</h2>
         <p>
           CLUSTER is a specific, conservative detector, and this page reports it honestly rather
           than flattering it. On dense pulse trains it produces almost no false positives, but it
-          misses roughly 40% of true pulses; deconvolution methods such as AutoDecon recover ~98% on
-          the same data. Measurement against a purpose-built simulator also showed that CLUSTER's
+          misses roughly 40% of true pulses; Johnson's published AutoDecon run reports 128
+          detections against 130 true pulses on the same data, a count not scored for false
+          positives. Measurement against a purpose-built simulator also showed that CLUSTER's
           celebrated near-zero false-positive rate is partly a property of the benchmark: on sparse
           records the same code produces a 16–22% false-discovery rate. Use CLUSTER when you need to
           defend every pulse you report; use deconvolution when you need to count them.

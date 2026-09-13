@@ -87,9 +87,9 @@ const RECON_ERR =
   " Its error column is reconstructed, not read off the page: the figure has no error " +
   "bars and the paper does not say what error it gave CLUSTER, so the file supplies " +
   "max(floor, 8% of value) — the floor being the assay sensitivity the paper reports " +
-  "for LH, and a value fitted to that paper's own pulse calls for GnRH. Detection needs " +
-  "it: at one-point windows the estimated models let a pulse inflate its own error and " +
-  "hide itself.";
+  "for LH, and a value fitted to that paper's own pulse calls for GnRH. Detection depends " +
+  "on it: estimate the error from the data instead, and at one-point windows the pulse " +
+  "count swings widely with the estimator.";
 
 export interface Sample {
   key: string;

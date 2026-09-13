@@ -51,12 +51,14 @@ export const PRESETS: ParamPreset[] = [
       "Hypophyseal-portal GnRH in the ewe, 5-min fractions over 6 h, reported in pg/min. The " +
       "paper states a false positive rate of 1% for this combination. It selects the original " +
       "Fortran implementation, which is what existed in 1991 — and which matters more than it " +
-      "sounds, because the Igor variant's t-score is not scale-invariant at one-point windows. " +
+      "sounds, because the Igor variant's t-score is not scale-invariant, and at one-point " +
+      "windows badly so. " +
       "It also selects the Error Wave model, which uses the per-sample error column in the file. " +
       "The paper does not report what error it supplied, so the bundled records carry a " +
       "RECONSTRUCTED one (CV 8%, floor 0.07 pg/min — the floor chosen to match this paper's own " +
-      "calls). Without a per-sample error the estimated models find nothing here, because at " +
-      "one-point windows a pulse inflates its own error and hides itself.",
+      "calls). Without it, detection depends on which estimator is chosen: at one-point windows " +
+      "the local ones let a pulse inflate its own error and hide itself, and on ewe #9013 the " +
+      "count runs from 0 with Local SD to 21 with Global SE.",
     params: {
       nPeak: 1, nNadir: 1, tScoreUp: 3.2, tScoreDn: 3.2, variant: "fortran",
       errorModel: "Error Wave",

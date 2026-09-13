@@ -70,7 +70,7 @@ const USAGE = `no_peak — CLUSTER pulse detection from the command line
 Input is one or more CSV/TSV files, or directories of them. Each accepts
 value; time,value; or time,value,error columns, header row optional.
 
-Detection settings (the defaults are the app's):
+Detection settings (defaults are the app's generic two-point preset):
   --n-peak N            points in the test window            (${DEFAULT_PARAMS.nPeak})
   --n-nadir N           points in the baseline window        (${DEFAULT_PARAMS.nNadir})
   --t-up X              t-score for a significant increase   (${DEFAULT_PARAMS.tScoreUp})

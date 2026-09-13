@@ -25,7 +25,7 @@
     "headline": "Detecting hormone pulses with CLUSTER: algorithm, implementations, and measured performance",
     "name": "no_peak — Methods & Algorithm Reference",
     "url": "https://nopeak.tonydefazio.com/methods",
-    "dateModified": "2026-08-11",
+    "dateModified": "2026-09-12",
     "author": { "@type": "Person", "name": "Richard Anthony DeFazio" },
     "about": {
       "@type": "WebApplication",
@@ -129,17 +129,18 @@
     </li>
     <li>
       <strong>ClusterMasterV4-1.ipf</strong> — the Igor Pro port, and the
-      validation oracle for this project.
+      validation oracle for the <code>igor</code> variant.
     </li>
   </ul>
   <p>
     The Igor port and the original Fortran genuinely disagree in places, so
     no_peak's <strong>Implementation</strong> selector switches between them
-    rather than picking a winner. The pooled variance term differs (Igor sums the
-    standard deviations, the Fortran squares them first), and the pulse-assembly
-    pass marks a different number of points per up-flag. Selecting Fortran mode
-    also switches the interface to the green-phosphor terminal look the program
-    originally ran under.
+    rather than picking a winner. Since version 0.3.0 the default is the original
+    Fortran; the Igor port is one selection away. The pooled variance term differs
+    (Igor sums the standard deviations, the Fortran squares them first), and the
+    pulse-assembly pass marks a different number of points per up-flag. A separate
+    checkbox switches the interface to the green-phosphor terminal look the
+    program originally ran under.
   </p>
   <p>
     One deliberate departure from both: when a pulse is still in progress at the
@@ -168,11 +169,13 @@
     <li>
       <strong>The original Fortran declares its shared COMMON block in two
       different orders.</strong> Because COMMON matches by position and not by
-      name, the downward pass reads the two window sizes swapped. The two
-      implementations therefore agree whenever the windows are equal — which
-      covers the defaults — and diverge for asymmetric windows. CLUSTER8 carries
+      name, the downward pass reads the two window sizes swapped. The swap is
+      harmless when the windows are equal — which covers the defaults and the
+      presets — and changes the result when they are not. CLUSTER8 carries
       the identical asymmetry, so it is long-lived behavior in the Fortran
-      lineage rather than a slip in one version.
+      lineage rather than a slip in one version. no_peak's Fortran variant
+      does not reproduce the swap, so at asymmetric windows it is a corrected
+      port rather than a literal one.
     </li>
   </ul>
 
@@ -184,7 +187,7 @@
   <h3 id="validation-igor">1. Against Igor Pro</h3>
   <p>
     Fifteen runs spanning every error model, asymmetric window sizes, threshold
-    combinations and three datasets were executed in Igor and diffed point by
+    combinations and five datasets were executed in Igor and diffed point by
     point — error array, up flags, down flags, pulse array, t-score trace.
     <strong>75 of 75 checks pass.</strong>
   </p>
@@ -273,8 +276,9 @@
       comparison should be read as <em>conditional on dense pulse trains</em>.
       For sparse records — short sampling windows, or genuinely infrequent pulses
       — expect a materially higher false-positive rate and set thresholds
-      accordingly. Both variants reproduce their references exactly; this is a
-      property of the algorithm that the standard benchmarks do not expose.
+      accordingly. The Igor variant reproduces Igor exactly, and the Fortran
+      variant reproduces CLUST5 exactly at symmetric windows; this is a property
+      of the algorithm that the standard benchmarks do not expose.
     </p>
   </div>
   <p>
@@ -310,8 +314,9 @@
     ewes, portal GnRH during collection and jugular LH from a fortnight earlier.
     These are measurements from actual sheep, approximate to the width of a
     printed line. Each figure marks the pulses that paper's own CLUSTER run
-    identified, so these records carry a published, human-checked answer — an
-    answer about what a detector reported, not about what the animal secreted.
+    identified, so these records carry a published answer: that paper's own
+    CLUSTER call, which records what a detector reported, not what the animal
+    secreted.
   </p>
   <p>
     <strong>Simulated models.</strong> Generated from a seeded random number
@@ -327,8 +332,9 @@
     cleared far faster than a collection window, so its pulses are square bursts
     occupying one or two samples with no decay tail, while LH's half-life is long
     relative to the sampling interval and exponential clearance applies. A flat
-    negative control is included deliberately: a detector should find nothing in
-    it.
+    negative control is included deliberately: every pulse found in it is a false
+    positive, and at the generic two-point defaults (t = 2) the Fortran variant
+    reports 7, the nominal cost of that threshold.
   </p>
 
   <h3 id="quantities">What the reported quantities are called</h3>
@@ -398,7 +404,7 @@ node scripts/cluster.ts --list-presets</code></pre>
       <tr><td class="num">--min-peak</td><td class="num">0</td><td>Minimum data value for a pulse</td></tr>
       <tr><td class="num">--error-model</td><td class="num">Local SD</td><td>One of the seven models above; a file with an error column switches to Error Wave automatically</td></tr>
       <tr><td class="num">--error-value</td><td class="num">1</td><td>Value for Fixed, and SQRT's fallback for non-positive data</td></tr>
-      <tr><td class="num">--variant</td><td class="num">igor</td><td><code>igor</code> or <code>fortran</code> — see &ldquo;Which implementation you are running&rdquo;</td></tr>
+      <tr><td class="num">--variant</td><td class="num">fortran</td><td><code>igor</code> or <code>fortran</code> — see &ldquo;Which implementation you are running&rdquo;</td></tr>
       <tr><td class="num">--preset</td><td>—</td><td>A published parameter set, with its citation</td></tr>
       <tr><td class="num">--unit</td><td class="num">min</td><td><code>s</code>, <code>min</code>, <code>h</code>, or <code>samples</code></td></tr>
       <tr><td class="num">--interval</td><td class="num">1</td><td>Sampling interval, for files with no time column</td></tr>
@@ -442,7 +448,7 @@ node scripts/cluster.ts --list-presets</code></pre>
 
   <h2 id="privacy">Privacy is architectural, not a promise</h2>
   <p>
-    no_peak is a static bundle served from object storage. There is no
+    no_peak is a static bundle served as Cloudflare Workers assets. There is no
     server-side script, no database, no account, and no analytics. The algorithm
     is compiled into the page and runs on your own device, so there is no code
     path along which a loaded recording could be transmitted anywhere — the
