@@ -54,6 +54,9 @@ const MAIN_H = 300;
 const STRIP_H = 18;
 const GAP = 12;
 const AXIS_H = 44;
+/** Clearance between the axis title and the first credit line, which used to touch. */
+const CREDIT_GAP = 8;
+const CREDIT_LINE = 12;
 
 interface Run {
   start: number;
@@ -100,7 +103,13 @@ export function ClusterChart({
   const mainTop = showMscore ? mscoreTop + MSCORE_H + GAP : M.top;
   const stripTop = mainTop + MAIN_H + GAP;
   const axisTop = stripTop + 2 * STRIP_H + 6;
-  const CREDIT_H = credit ? 38 : 0;
+  // Every line of the credit, however many it takes. It used to stop at three,
+  // and each digitized citation needs four: the line cut off was the one saying
+  // the error bars are reconstructed, in every export. The figure grows instead.
+  const creditLines = credit
+    ? (credit.match(/.{1,150}(\s|$)/g) ?? []).map((l) => l.trim()).filter(Boolean)
+    : [];
+  const CREDIT_H = creditLines.length ? CREDIT_GAP + creditLines.length * CREDIT_LINE : 0;
   const H = axisTop + AXIS_H + CREDIT_H;
 
   const layout = useMemo(() => {
@@ -579,20 +588,19 @@ export function ClusterChart({
           {axisLabel}
         </text>
 
-        {/* source credit, wrapped over at most two lines */}
-        {credit &&
-          (credit.match(/.{1,150}(\s|$)/g) ?? []).slice(0, 3).map((line, i) => (
-            <text
-              key={`cr${i}`}
-              x={M.left}
-              y={axisTop + AXIS_H + 2 + i * 12}
-              fontSize="9"
-              fontFamily={P.font}
-              fill={P.inkMuted}
-            >
-              {line.trim()}
-            </text>
-          ))}
+        {/* source credit, whole, wrapped at 150 characters */}
+        {creditLines.map((line, i) => (
+          <text
+            key={`cr${i}`}
+            x={M.left}
+            y={axisTop + AXIS_H + CREDIT_GAP + i * CREDIT_LINE}
+            fontSize="9"
+            fontFamily={P.font}
+            fill={P.inkMuted}
+          >
+            {line}
+          </text>
+        ))}
 
         {/* the sweep in progress (never exported) */}
         {drag && !drag.pan && Math.abs(drag.to - drag.from) >= 8 && (

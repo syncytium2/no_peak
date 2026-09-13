@@ -88,9 +88,8 @@ export function LeadFigure() {
         yLabel={sample.valueLabel}
         svgRef={svgRef}
         timeUnit={sample.timeUnit}
-        // No in-figure credit: ClusterChart keeps three 150-character lines, which
-        // cuts this citation off before its reconstruction formula. The caption
-        // prints it whole instead.
+        // No in-figure credit: the caption prints the citation directly beneath,
+        // and four more lines inside the chart would only repeat it.
       />
       <figcaption>
         <p>

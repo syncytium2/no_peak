@@ -69,9 +69,12 @@ bands against a headline of 21. The caption now says why, and says it only
 while the run shows it. Second, `ClusterChart` keeps three 150-character lines
 of credit (`src/chart/ClusterChart.tsx:584`), so every digitized record's
 credit, in the app and in every export, stops at "so the file supplies",
-before the reconstruction formula it exists to carry. That predates this
-change and is **not fixed**. The landing figure sidesteps it by printing the
-citation in its caption.
+before the reconstruction formula it exists to carry. ~~That predates this
+change and is **not fixed**.~~ **Overtaken 2026-09-12: fixed.** The chart now
+draws every line and grows to hold them, with clearance under the axis title;
+`src/chart/credit.test.tsx` fails on the old code. The landing figure still
+prints the citation in its caption rather than in the chart, where it would
+only repeat.
 
 **Why the benchmark figure went.** Evaluated the same day, when the owner said
 it "by eye doesn't match the claim". It did not. Record 0119's three hollow
