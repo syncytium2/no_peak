@@ -102,7 +102,7 @@ before filing, fixing, or believing any stale verdict. This is `next-steps.md`
 ## Also open, and older — blocked on the owner, not on effort
 
 Do not read this file as the whole list. `docs/next-steps.md` is the ranked
-record; these three have been waiting longest:
+record; these are waiting on the owner:
 
 - ~~**§1** Michael Johnson's approval of the port has no dated primary record.~~
   **CLOSED 2026-08-25** — the email was found and transcribed to the darkroom;
@@ -110,16 +110,21 @@ record; these three have been waiting longest:
   at the darkroom for his reply itself. The
   scope caveat survives: it covers **porting**, not redistributing his Fortran
   source. (The Webster 1991 rights half closed 2026-08-19 — do not reopen.)
-- **§2** The repo's `robots.txt` policy is not what the edge serves; it is a
-  Cloudflare dashboard setting on the zone, and now a live decision.
+- ~~**§2** The repo's `robots.txt` policy is not what the edge serves; it is a
+  Cloudflare dashboard setting on the zone, and now a live decision.~~
+  **CLOSED 2026-08-13** (`dad60ba`) — the edge now serves the repo's file. One
+  question survives in §2: the policy was inherited, not decided.
 - **May `data/oracle/*.lst` be committed?** CLUST5's output on our inputs, not
   Johnson's source. It is the only thing that would let the new `unit tests`
-  badge cover parity instead of skipping it — 144 tests run on a clone, 231
-  here. Alongside it, one author name form and one ORCID decision across the
-  four repos, before any DOI is minted. Both in the `Arrived 2026-08-27` block
+  badge cover parity instead of skipping it: a clone skips the two oracle
+  files (current counts are in the newest `Arrived` block). Alongside it, one
+  author name form and one ORCID decision across the four repos, before any DOI
+  is minted. Both in the `Arrived 2026-08-27` block
   of `next-steps.md`; the `colonel_kernel` half is that repo's `23d9d9d`.
 - **What per-sample assay error did Webster 1991 actually use?** The digitized
   records ship a reconstructed column and the app banners it. downLow's evidence
   (`3c4bf98`) says the *shape* may be wrong — `sqrt(a² + (k·v)²)` beats
   `max(floor, k·v)` on every series. Not acted on; it touches a banner, eight
   dataset notes and every exported figure.
+- **Publish a *First published* date, and fix About's "born" label?** Open
+  question in the `Arrived 2026-09-03` block of `next-steps.md`.

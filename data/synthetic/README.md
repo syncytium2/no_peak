@@ -202,14 +202,17 @@ the GnRH preset carries the 5-min one's.
 ## The gap this directory used to have, and how it was closed
 
 Simulation shows what a detector does against a known answer; it cannot show how
-it behaves against the messiness of a real assay. That gap was closed on
-2026-08-11: one of the authors of Webster et al. 1991 gave permission, and the
-eight traces from that paper's Figs. 3–4 — including the pulses its own CLUSTER
-run marked — are digitized in [`data/digitized/`](../digitized/README.md).
+it behaves against the messiness of a real assay. That gap is closed: the eight
+traces from Figs. 3–4 of Webster et al. 1991, including the pulses its own
+CLUSTER run marked, are digitized in [`data/digitized/`](../digitized/README.md).
+Since 2026-08-19 they are read off the library's scan of the bound print
+volume, not the publisher's PDF.
 
-The reasoning about what that permission does and does not settle, including why
-copyright was never the obstacle and why the contractual question stays open, is
-in [`docs/figure-data-permissions.md`](../../docs/figure-data-permissions.md).
+What the records rest on, and what they do not, is set out in
+[`data/digitized/README.md`](../digitized/README.md) and
+[`docs/figure-data-permissions.md`](../../docs/figure-data-permissions.md).
+They rest on no author's permission; an earlier version of this paragraph said
+otherwise, and that claim was withdrawn on 2026-08-13.
 
 Nothing in *this* directory is digitized from any figure. Only the pulse heights
 and axis ranges printed in Figs. 3–4 were used, to scale a simulation — which

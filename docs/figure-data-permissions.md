@@ -64,9 +64,11 @@
 > They now rest on the analysis below and nothing else, which is the honest
 > position and, on this document's own reasoning, a sufficient one: copyright
 > was never the obstacle, the practice is routine and precedented, and no
-> publisher has ever been recorded objecting. The contractual question remains
+> publisher has ever been recorded objecting. ~~The contractual question remains
 > unresolved and untested — as it was on 2026-08-11, since an author's blessing
-> never addressed it.
+> never addressed it.~~ **Overtaken 2026-08-19 (`0f26e17`):** it was tested on
+> 2026-08-19 and came back against the PDF reading, and the same day the series
+> were re-read from print, as `data/digitized/README.md` now says.
 >
 > **2026-08-14: there is a way out that needs no one's permission.** The U-M
 > Copyright Librarian read the license and found that its constraints bind the
@@ -135,8 +137,10 @@ will be looking at `reference/` and would not think of a darkroom subfolder.
 ⚠ **Answer 4 below was retracted the same afternoon, and with it the conclusion
 that the Document Delivery scan is encumbered. Read "Answer 4 was retracted"
 immediately after this section before acting on anything here.** The rest of
-this section stands: answer 1 is unchanged and still governs the values
-currently committed.
+this section stands: answer 1 is unchanged ~~and still governs the values
+currently committed~~. **Overtaken 2026-08-19 (`0f26e17`):** the committed
+values were re-read from the print scan the same day, so answer 1 no longer
+reaches them; see "The re-extraction, and what it changed".
 
 **2026-08-19.** The two questions left with University counsel on 2026-08-14
 came back through the Copyright Librarian, who spoke with Jack Bernard that
@@ -219,8 +223,10 @@ arrives under personal, non-commercial terms that prohibit redistribution, which
 is a fresh license rather than an escape from one.
 
 **What has to be decided, and by whom.** Two questions follow from this and both
-are the owner's. Neither has been put to him, and **nothing has been retracted,
-regenerated, unpublished or re-extracted on the strength of this reply**:
+are the owner's. Neither has been put to him, and ~~**nothing has been retracted,
+regenerated, unpublished or re-extracted on the strength of this reply**~~
+(**Overtaken 2026-08-19 (`0f26e17`):** later the same day all eight series were
+re-extracted from the print scan and the PDF-derived values retired):
 
 1. **The eight published series.** Leave them up, pull them pending a clean
    re-extraction, or something in between. The tool does not fall over without
@@ -233,7 +239,9 @@ regenerated, unpublished or re-extracted on the strength of this reply**:
    `docs/digitized-suppression.md` carries a built, tested, unthrown switch —
    withdrawal is one commit and reversal is another. It changes nothing about
    the decision itself, which is still open; it removes the cost of executing it
-   from the reasons for or against.
+   from the reasons for or against. **Note 2026-08-19 (`0f26e17`):** the
+   committed values were replaced the same day by the reading from the print
+   scan; see "The re-extraction, and what it changed".
 2. ~~**Whether to pursue the bound volume**, or to stop here and let the
    synthetic records carry the validation on their own.~~ **Overtaken by the
    retraction** — the scan already on disk is a sufficient source, so the
@@ -297,8 +305,10 @@ obtained *through* the subscription, and the eight committed series came off the
 licensed PDF. Today reopens the route to *replacing* them. It does not make them
 retrospectively fine, and the replacement is not free — the re-extraction cost
 is written down in "The scan arrived" below, and it is the real remaining
-obstacle. **Until the replacement lands, the position on the committed data is
-exactly what it was this morning.**
+obstacle. ~~**Until the replacement lands, the position on the committed data is
+exactly what it was this morning.**~~ **Overtaken 2026-08-19 (`0f26e17`):** the
+replacement landed the same day; nothing committed now derives from the
+licensed PDF. See "The re-extraction, and what it changed" below.
 
 **Two smaller things worth keeping.** OUP has still never replied to request 3,
 now well past its stated 10 working days; that request is no longer load-bearing
@@ -484,8 +494,11 @@ of 2026-08-17).~~ **Both halves are spent. The scan arrived 2026-08-17; counsel
 answered 2026-08-19.** The reasoning was sound and the bet paid the other way:
 the derived-facts argument did *not* hold, so ordering the scan was right, and
 the scan turned out to carry a condition of its own, so it did not finish the
-job either. Current instruction is in "Counsel answered" above — **do not
-re-extract from the delivery scan** until the owner decides.
+job either. ~~Current instruction is in "Counsel answered" above — **do not
+re-extract from the delivery scan** until the owner decides.~~
+**Overtaken 2026-08-19 (`0f26e17`):** answer 4 was retracted that afternoon, and
+all eight series were re-extracted from the delivery scan the same day. See
+"The re-extraction, and what it changed".
 
 **For the next paper, this is the rule:** if a figure needs digitizing and the
 article is licensed rather than open, read it off print from the start. It costs
@@ -631,6 +644,9 @@ Two honest qualifications:
   per-record bias runs one way. It is a calibration difference between two
   readings of the same axis, well inside the line width, but it is a bias rather
   than scatter and should be described that way.
+  **Overtaken 2026-08-19 (`0f26e17`):** the difference was the new reading's own
+  calibration error; Figs. 3 and 4 are printed at different reductions. See
+  "The re-extraction, and what it changed".
 - **The three flat records disagree most**, up to 1.16 line widths on
   `fig4b_thx_9009_gnrh`. That is not a new problem and not a contradiction: those
   are the records whose own banner already says their sample-to-sample variation
@@ -703,6 +719,11 @@ costs nothing is already built: `data/synthetic/` generates records to this same
 paper's protocol, which is what request 2's respondent recommended. What it
 cannot replace is the published pulse calls, and that loss should be taken
 knowingly rather than by default.
+
+**Overtaken 2026-08-19 (`41b397f`):** the 2026-08-27 deadline is struck in
+`docs/next-steps.md` §1, which records that the question stopped being about
+silence once counsel answered. Request 3 is no longer load-bearing, and it is
+still open in the ledger above.
 
 Researched 2026-08-11 across four passes, reading primary sources — the U.S.
 Reports, the Copyright Office's Compendium and regulations, EUR-Lex and CURIA —
@@ -1015,8 +1036,10 @@ closed**, because permission is not an author's to give — which this section
 half-anticipated ("Author blessing is not a copyright license") without drawing
 the conclusion that an author might therefore decline to offer one at all.
 
-So the remaining routes are the two now in flight: the copyright holder, and the
-U-M library on the institutional license. RightsLink is still the wrong door for
+So the remaining routes are ~~the two now in flight: the copyright holder, and the
+U-M library on the institutional license~~. **Overtaken 2026-08-19 (`0f26e17`):**
+the library request closed on 2026-08-19 (ledger row 8), and the series were
+re-read from print that day; only request 3 in the ledger is still open. RightsLink is still the wrong door for
 the reasons above, so the Society was approached directly, and the request leads
 with the more answerable question — *does this require permission at all?* —
 rather than with the formal ask.

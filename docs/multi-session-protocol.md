@@ -61,6 +61,11 @@ reports, in order:
    sitting in a working tree, one disk failure from gone" failure.
 3. **Unpushed commits**, computed against cached remote-tracking refs.
 4. Worktree list and the last three commits.
+5. **The open TODO**: the `##` headings of `docs/todo-now.md`, and how to read
+   the file (added 2026-08-21, `c52ea17`).
+6. **Vendored-file freshness** for the murderboard and downLow families, from
+   a cached upstream sha and without touching the network (added 2026-08-14,
+   `131edc5`).
 
 Three implementation details are not optional, each learned by getting it wrong:
 

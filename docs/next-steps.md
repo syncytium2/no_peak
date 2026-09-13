@@ -6,6 +6,11 @@ below is either a defect someone found or a gap a review recorded, not a wish.
 State at handoff: 196 tests pass, `tsc -b` clean, `dist/` is byte-identical to
 what <https://nopeak.tonydefazio.com> serves, working tree clean.
 
+> **A 2026-08-13 snapshot, overtaken by the dated `Arrived` blocks below.** Its
+> state line and "otherwise unchanged" are no longer current; the newest state
+> is in the first `Arrived` block (2026-09-11 at this writing), and items closed
+> since carry their own strike and note.
+>
 > **Updated 2026-08-13.** State now: **218 tests pass**, `tsc -b` clean, working
 > tree clean, `main` pushed, and <https://nopeak.tonydefazio.com> **verified
 > current on the wire**, not from `dist/` mtimes. Since 2026-08-12 the core
@@ -24,6 +29,52 @@ and `docs/reviews/2026-08-11_expert_review.md` (the outside domain review that
 started the day).
 
 ---
+
+## Arrived 2026-09-12 — tidied for outside reviewers, and one framing question left
+
+State now: **237 tests pass** with the private oracle data, 148 pass and two
+oracle files skip without it; `tsc -b` and `npm run build` clean. Deployed from
+`6610db4` and verified on the wire: the served bundle is the build, and the
+landing page, the app's figure credit and the footer read as committed.
+
+Owner's instruction, verbatim: "push both. and clean up. let's get the site and
+the repo tidy for possible reviewers", and then "you should only work on nopeak.
+if you find something in other repos to clean leave a commit message or todo in
+that repo".
+
+**What landed.**
+
+- `0d6c0e0`: the custard comparison note, stranded on a local branch since
+  2026-09-01. Its `interface2` counterpart (`c48ca11a`) was pushed first so the
+  citation resolves. `interface2` got one TODO on that branch (`5fc4069d`)
+  saying the branch is cited from here and must be landed or kept.
+- `4a97511`: `ClusterChart` kept three lines of source credit, and every
+  digitized citation needs four, so each Webster figure and export lost the
+  reconstruction formula. Fixed, with a test that fails on the old code.
+- `6610db4`: public prose still described Igor as the default and the oracle,
+  gave the command line's default as `igor`, quoted 171 detections (116 since
+  the re-extraction), overstated what the estimated error models do on the
+  Webster records, and carried stale test counts. Corrected on the site, in
+  `llms.txt`, `/methods`, the README and `AGENTS.md`.
+- This commit: about twenty stale status statements across `docs/` and the data
+  READMEs, struck with notes rather than deleted.
+
+**Removed.** The `revendor-fixes` and `custard-comparison-record` worktrees and
+their local branches, both already on `main`.
+
+**Still open.**
+
+- **The "conservative detector / defend every pulse" framing** on the
+  prerender, `/methods`, `llms.txt` and About. Under the Fortran default the
+  broad corpus measures 62.9% sensitivity and 21.9% FDR, and the pulse-free
+  control yields 7 at the generic defaults. This is `todo-now.md` §0c, and it
+  is put to the owner rather than rewritten.
+- **`origin/vendor-no-heredoc-hook` was not deleted.** The session's permission
+  settings blocked deleting a remote branch. `main` holds everything the branch
+  did plus 13 lines, and both of its commits, which these docs cite, stay
+  reachable on GitHub through `refs/pull/1/head`, so deleting it loses nothing.
+- **The author name form** still differs across pages, as recorded in the
+  `Arrived 2026-08-27` block.
 
 ## Arrived 2026-09-11 — the landing page leads with ewe #9013, and the app opens on it
 
@@ -97,8 +148,9 @@ could not source. Pinned here so it is not re-derived from scratch, and because
 **What this site publishes is repo birth, not page birth — and it says so.**
 `src/version.ts` hard-codes `BORN = "2026-08-07"`, its comment calling it "the
 date of the first commit". It renders three ways: `since 2026-08-07` in the
-header stamp (`App.tsx:314`), `first commit 2026-08-07` in the footer
-(`App.tsx:1127`), and `born 7 August 2026` on About (`About.tsx:31`). The
+header stamp (`App.tsx:320`), `first commit 2026-08-07` in the footer
+(`App.tsx:1134`), and `born 7 August 2026` on About (`About.tsx:36`); line
+numbers updated 2026-09-12. The
 footer's label is exact. **About's "born" is not**, under the convention the
 estate settled on 2026-09-02 — page birth, labelled *First published*. It is the
 same defect murderboard is fixing by changing the word rather than the date. All
@@ -321,6 +373,10 @@ conservative and almost never invents" — About page, prerender, `llms.txt`,
 lead figure, the app warning and the short-form prose were fixed; the long-form
 prose has had a minimal pass only. `todo-now.md` §0c.
 
+**Overtaken 2026-09-11 (`871d64f`):** the lead figure this block refers to,
+here and below, was `src/ProblemFigure.tsx`. It was replaced by
+`src/LeadFigure.tsx`, ewe #9013 at the Webster 1991 settings.
+
 **Authenticity, which was the owner's actual question.** The Fortran oracle was
 one wave in two window settings, against the Igor arm's five waves across
 fifteen configurations. CLUST5 v6.01 was rebuilt with gfortran and re-run to
@@ -347,11 +403,13 @@ these until it runs `--pull`, and until it does the widened suite **skips**
 rather than fails. A green `npm test` elsewhere does not mean these seven
 configurations were checked.
 
-**The lead figure was re-picked**, not left to drift: record 0129 reports 10 of
+~~**The lead figure was re-picked**, not left to drift: record 0129 reports 10 of
 its 12 under the Fortran and stops posing a problem, so the figure now draws
 0119 — 9 pulses, 4 reported, three of them run together into one bar and three
 reported not at all. Both failure modes in one picture. The record is named in
-`FIG_RECORD` and pinned by test; if the default ever moves again, re-pick.
+`FIG_RECORD` and pinned by test; if the default ever moves again, re-pick.~~
+**Overtaken 2026-09-11 (`871d64f`):** replaced by `src/LeadFigure.tsx`, ewe
+#9013 at the Webster 1991 settings; there is no benchmark record left to re-pick.
 
 **The DOS skin is its own checkbox now.** It fired on `variant === "fortran"`,
 which was a fine joke while Fortran was the alternative and a bad one the moment
@@ -373,6 +431,10 @@ other hash, including the empty one, renders `About`. A cold start therefore
 lands on About. `#about` still resolves there, which is what keeps the six
 in-app links, the `index.html` prerender and `llms.txt` working — none of them
 had to change targets, only descriptions.
+
+> **Overtaken 2026-09-11 (`871d64f`):** replaced by `src/LeadFigure.tsx`, ewe
+> #9013 at the Webster 1991 settings. `src/ProblemFigure.tsx` and its test are
+> deleted; what follows describes them as they were.
 
 **The lead figure is `src/ProblemFigure.tsx`,** and the thing worth knowing
 about it is that none of it is drawn by hand. It loads benchmark record `0129`
@@ -606,8 +668,10 @@ decisions in `docs/data-store-coordination_2026-08-14.md`, mechanism in
   failure class as the fabricated `VJ 1994 p.412` citation the murderboard
   found in downLow. **If a rights question is open, ask.** Account in
   `docs/data-store-coordination_2026-08-14.md` §5.3 and §7.
-- ⚠ **This repo has downLow's stamp-corruption bug and more of it — unfixed, and
-  currently undetectable here.** downLow (`30351b2`) found that a hand-rolled
+- ⚠ ~~**This repo has downLow's stamp-corruption bug and more of it — unfixed, and
+  currently undetectable here.**~~ **Overtaken 2026-08-14 (`131edc5`):**
+  `tools/revendor.py` was ported and the freshness hook armed the same day; see
+  below and §D. downLow (`30351b2`) found that a hand-rolled
   stamp bump, `sed` over the whole file instead of line 1, rewrote a *second*
   stamp-shaped string in the **body** of `docs/validation-status.md` — a
   murderboard reference, `@ b2b2ba2` — to a no_peak sha. Nothing failed, nothing
@@ -629,8 +693,9 @@ decisions in `docs/data-store-coordination_2026-08-14.md`, mechanism in
 
   Worse in one specific way: our body string `@ b2b2ba2` is a **prefix of the
   real stamp**, so a substitution aimed at it mangles the seven full-length
-  stamps too. And **no_peak has no freshness hook armed** (§D below, still
-  awaiting your approval), so nothing here would report a corrupted stamp.
+  stamps too. And ~~**no_peak has no freshness hook armed** (§D below, still
+  awaiting your approval), so nothing here would report a corrupted stamp.~~
+  **Overtaken 2026-08-14 (`131edc5`):** §D was approved and the hook armed.
 
   ~~Fix is `tools/revendor.py` in downLow.~~ **Ported 2026-08-14 (`131edc5`)** as
   `tools/revendor.py`, with two adaptations that were not optional: our stamps
@@ -898,7 +963,7 @@ not the same permission as redistributing — kept wherever this project keeps
 such things. Until then it is unverifiable by anyone reading the repo, including
 a reviewer who might reasonably ask.
 
-> **Reworded 2026-08-25, still open.** The About page read "This port is made
+> **Reworded 2026-08-25, ~~still open~~.** The About page read "This port is made
 > with Michael Johnson's approval." On the owner's instruction it now reads that
 > we are grateful to him for allowing us to port his Fortran code — a narrower
 > claim, and one that stops a reader inferring the author has looked at the
@@ -907,9 +972,12 @@ a reviewer who might reasonably ask.
 > instead is a status note under the version line: *This is a preliminary
 > version, still under review.*
 >
-> **The rewording is not a close.** It rests on the same single report, now made
+> ~~**The rewording is not a close.** It rests on the same single report, now made
 > twice by the same person, and the artifact §1 asks for still does not exist.
-> Detail in `docs/reference-code.md`, "Permission for the port".
+> Detail in `docs/reference-code.md`, "Permission for the port".~~
+>
+> **Overtaken 2026-08-25 (`b01c483`):** later that day the email was found and
+> §1 closed; see the CLOSED note at the top of this section.
 
 ⚠ **Do not treat the Webster outcome as a template for this one.** They are
 different in kind: the Webster claim was about *data facts* a publisher owns,
@@ -1008,6 +1076,10 @@ Zero figures across 17,306 words of documentation. Two earn their place:
 > figure settles is the *method* question this item raised — it is generated
 > from the code path it describes, at page load, with its numbers counted from
 > the run rather than typed into the caption. Build the other two the same way.
+>
+> **Overtaken 2026-09-11 (`871d64f`):** `src/ProblemFigure.tsx` was replaced by
+> `src/LeadFigure.tsx`, ewe #9013 at the Webster 1991 settings. Its numbers are
+> still counted from a live run.
 
 ## 6. `docs/validation-status.md` has a damaged tail
 
@@ -1030,9 +1102,12 @@ not-verified heading. Partially repaired; still wants restructuring into
 - `src/core/presets.test.ts` still says "21 pulses were generated" for
   `sim_gnrh_thx_fast`; the generator makes **22**, and the `< 21` bound rests on
   the old denominator.
-- `public/llms.txt` claims "ten variance models"; there are **seven**.
-- `index.html` has no `<meta name="description">` and no `og:description`, so
-  social cards render captionless. No favicon anywhere either (404).
+- ~~`public/llms.txt` claims "ten variance models"; there are **seven**.~~
+  **Overtaken 2026-08-12 (`effafa0`):** it now says seven.
+- ~~`index.html` has no `<meta name="description">` and no `og:description`, so
+  social cards render captionless.~~ **Corrected 2026-09-12:** both have been
+  present since 2026-08-10 (`222794d`), a day before this line was written.
+  Still true: no favicon anywhere (404).
 - `data/digitized/webster1991_pulses.csv` lacks the `# DIGITIZED FROM A
   PUBLISHED FIGURE` banner its eight siblings carry.
 
@@ -1065,9 +1140,12 @@ identical.
   committed and not cached, so no reviewer can check the protocol figures, the
   printed CLUSTER settings, the assay sensitivities, or the one sentence quoted
   from it verbatim in `tools/make_synthetic.py`.
-- **Extend the Fortran oracle beyond `gnrh`.** Only that one wave has been
+- **Extend the Fortran oracle beyond `gnrh`.** ~~Only that one wave has been
   diffed against CLUST5, at two settings, against a 15-run 5-wave matrix for
-  Igor — and the published presets now route users onto the Fortran path.
+  Igor — and the published presets now route users onto the Fortran path.~~
+  **Overtaken 2026-08-22 (`41cafee`):** three waves at seven symmetric settings
+  now match. The value-only waves and the Fortran's estimated error models are
+  still unscored (`todo-now.md` §0).
 
 ---
 
@@ -1129,6 +1207,9 @@ identical.
   96% sensitivity is invariant to the fitted constants; 99% precision is not,
   and runs 45–100% across defensible floors. Quote the LH arm if quoting one
   number: its floor is the paper's own published assay sensitivity.
+  **Overtaken 2026-08-19 (`0f26e17`):** on the print-scan reading the scorer
+  reports 97% sensitivity and 100% precision (re-run 2026-09-12). The swept
+  ranges are in `data/digitized/README.md`, "What scoring against it showed".
 - **The digitized records' error column is reconstructed, not measured**, and
   the app draws it as error bars that leave in exported figures. That statement
   rides in the file header, the export credit, the dataset note and the About

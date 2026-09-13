@@ -181,11 +181,13 @@ approval, not merely on the argument that algorithms are uncopyrightable.
 > here, not published.** If the About page ever needs to state it, that is a new
 > instruction and not something to infer from this paragraph.
 >
-> **This does not close `next-steps.md` §1**, and it is worth being precise
+> ~~**This does not close `next-steps.md` §1**, and it is worth being precise
 > about why. §1 asks for a dated record of the grant *from the grantor* — who
 > granted what, when, for what scope. What exists is still a second-hand report,
 > now made twice (2026-08-10 and 2026-08-25) by the same person. Two datings of
-> one report are not an artifact. What *is* new is the second sentence: until
+> one report are not an artifact.~~ **Overtaken 2026-08-25 (`b01c483`):** later
+> that day the email was found, and §1 closed; the primary record is described
+> at the top of this section. What *is* new is the second sentence: until
 > today the repo had never recorded whether he had seen the thing built from his
 > code, and the About page had a wording that a reader could take as endorsement.
 
@@ -228,6 +230,10 @@ group's work** (Vanacker/Moenter/DeFazio, doi 10.1210/en.2017-00382), not
 Johnson's distribution — its terms are not stated anywhere here. Keeping both
 out of the repository is the conservative reading; confirm the scope with the
 owners before making this repository public.
+
+**Note 2026-09-12:** the repository is public (`syncytium2/no_peak`). The scope
+of Johnson's approval for the port is recorded in "Permission for the port"
+above, from the primary record found on 2026-08-25.
 
 Note the distinction that makes this port legitimate: the **algorithm** is
 published (Veldhuis & Johnson 1986) and algorithms are not copyrightable. A

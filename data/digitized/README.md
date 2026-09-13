@@ -172,6 +172,17 @@ CLUSTER's own 1991 calls, and so a cross-implementation consistency check.
 
 ## How much to trust the numbers
 
+> **Note, 2026-09-12: the geometry in this section (400 dpi, the ±14 px box, the
+> 10.9 and 13.1 px pitches, per-panel tick fits, 2.99 ± 0.01) describes the PDF
+> reader, `tools/digitize_webster1991.py`, retired on 2026-08-19.** The committed
+> values now come from `tools/digitize_webster_print.py`, which reads the
+> library's print scan. It takes each panel's vertical scale from its box height,
+> uses the labelled ticks only to fix one shared box-top value per hormone, and
+> ignores the minor ticks; it keeps pulse rings by whether the ink around them
+> belongs to the trace, not by size. Its pixel figures have not been
+> re-measured here; see "The re-extraction, and what it changed" in
+> [`docs/figure-data-permissions.md`](../../docs/figure-data-permissions.md).
+
 These are approximate. They carry the width of a printed line and the resolution
 of a 400 dpi scan, and they should not be treated as the laboratory's own values.
 For pulse *detection* that hardly matters — the pulses generally sit well clear
@@ -251,15 +262,20 @@ smallest in the set.
 reports its window widths and t-scores but not what it supplied as the
 per-sample measurement error. A reader who has only the paper must estimate it
 from the data, and at those same published settings the answer then ranges from
-none at all to 171 detections depending only on which estimator is chosen:
+none at all to 116 detections depending only on which estimator is chosen:
 
 | Error model | matched of 70 | false positives |
 | --- | --- | --- |
 | Local SD | 0 | 0 |
-| SQRT | 8 | 0 |
-| Global SD | 12 | 1 |
-| Local SE | 28 | 36 |
-| Global SE | 70 | 101 |
+| SQRT | 7 | 0 |
+| Global SD | 10 | 2 |
+| Local SE | 26 | 14 |
+| Global SE | 70 | 46 |
+
+Re-run 2026-09-12. The counts moved with the 2026-08-19 print-scan
+re-extraction (`0f26e17`). This table was first written on 2026-08-11 against
+the first PDF reading, which gave 8/0, 12/1, 28/36 and 70/101 for the last four
+rows.
 
 So a paper can report every detection parameter it was asked to report and still
 not be reproducible. That is a concrete argument for treating the error model as

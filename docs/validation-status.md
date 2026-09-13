@@ -3,7 +3,7 @@
 Honest accounting of what has and has not been checked, so the claim in the
 README and on the site can be matched against reality.
 
-_Last updated: 2026-08-12 (v0.2.0)._ Open work is in
+_Last updated: 2026-09-12 (v0.3.0)._ Open work is in
 [`docs/next-steps.md`](next-steps.md).
 
 > **How the 2026-08-12 findings below were settled, because the next reader gets
@@ -81,7 +81,8 @@ _Last updated: 2026-08-12 (v0.2.0)._ Open work is in
   Oracle CSVs live in `data/oracle_igor/` (gitignored — they contain real data).
 - **The `fortran` variant is validated against the original Fortran.**
   `CLUST5.MPF` v6.01 was compiled with gfortran and run on `gnrh`; its output
-  is committed under `data/oracle/` and checked by `src/core/oracle.test.ts`.
+  is kept in the gitignored `data/oracle/` (private store) and checked by
+  `src/core/oracle.test.ts`.
   At the documented defaults (nNadir 2, nPeak 2, t 2/2, user error wave) the
   port reproduces the Fortran **exactly**: all 96 up flags, all 96 down flags,
   the full 96-point pulse array, and all 17 peaks including position, width,
@@ -306,10 +307,15 @@ then depends entirely on which estimator they pick:
 | Error model | matched of 70 | false positives |
 | --- | --- | --- |
 | Local SD | 0 | 0 |
-| SQRT | 8 | 0 |
-| Global SD | 12 | 1 |
-| Local SE | 28 | 36 |
-| Global SE | 70 | 101 |
+| SQRT | 7 | 0 |
+| Global SD | 10 | 2 |
+| Local SE | 26 | 14 |
+| Global SE | 70 | 46 |
+
+Re-run 2026-09-12 with `tools/score_webster1991.ts`. The counts moved with the
+2026-08-19 print-scan re-extraction (`0f26e17`); the table first written here
+on 2026-08-11 read 8/0, 12/1, 28/36 and 70/101 for the last four rows. The
+maximum is now 116 detections.
 
 From nothing at all to a flood, on one record, from one choice the paper never
 states. So a study can report every detection parameter it is conventionally
@@ -318,6 +324,14 @@ asked for and still not be reproducible.
 This project already advised reporting the error model alongside the other five
 parameters. It now has a measurement behind that advice instead of a principle,
 and the About page says so on that basis.
+
+> **Note, 2026-09-12: the pixel geometry in the next paragraph (400 dpi, the
+> ±14 px box, the 10.9 px pitch) describes the PDF reader retired on
+> 2026-08-19.** The committed values now come from
+> `tools/digitize_webster_print.py`, which reads the library's print scan, takes
+> each panel's scale from its box height, and keeps pulse rings by whether the
+> surrounding ink belongs to the trace. Its pixel figures have not been
+> re-measured; see `data/digitized/README.md`, "How much to trust the numbers".
 
 Two further caveats. Both fitted floors are about 9 px on a 400 dpi scan — the
 same order as the digitization uncertainty itself — so "the assay error the
@@ -397,6 +411,8 @@ Consequences applied:
   the much later Igor package.
 - `hasScaleDependence()` drives an in-app warning whenever the Igor variant is
   combined with windows narrow enough for this to bite.
+  **Overtaken 2026-08-22 (`41cafee`):** the warning now fires whenever the Igor
+  variant is selected, at any window width.
 - `src/core/scale-invariance.test.ts` pins both behaviors, so neither can
   regress silently.
 
@@ -896,14 +912,21 @@ Fixed since: the density-matched corpus is now reproducible
 
 ## What is not verified
 
-- **No numerical diff against Igor.** The Igor experiment in `data/` is input
+- ~~**No numerical diff against Igor.** The Igor experiment in `data/` is input
   only — it is literally named "just data.pxp" and contains no `pulse`, `ups`,
-  `downs`, `Mscore`, or `err` output waves. There is no stored answer key.
+  `downs`, `Mscore`, or `err` output waves. There is no stored answer key.~~
+  **Overtaken 2026-08-10 (`5c6dfb8`):** all 15 runs of the Igor matrix were
+  diffed point by point and 75/75 checks pass; the answer key is kept in the
+  gitignored `data/oracle_igor/`. See "What is verified" above.
 - **No expert-annotated pulses.** No human-validated peak list exists for any
   dataset here, so "correct" currently means "matches the algorithm as read",
   not "matches what an endocrinologist would mark".
-- **Only `gnrh` has been diffed against the Fortran**, at two parameter
-  settings. The other ten datasets have not.
+- ~~**Only `gnrh` has been diffed against the Fortran**, at two parameter
+  settings. The other ten datasets have not.~~
+  **Overtaken 2026-08-22 (`41cafee`):** three waves at seven symmetric window
+  settings now match CLUST5 point for point. The value-only waves and the
+  Fortran's own estimated error models are still unscored; see "What is
+  verified" above.
 - **Only `gnrh`, `man3` and `null1` were covered by the Igor matrix**, plus
   `set1` and `LHInfused` at defaults. Not every dataset at every setting.
 - `tools/igor/no_peak_validate.ipf` — run `np_ValidateAll()`, pick a folder,
@@ -911,8 +934,9 @@ Fixed since: the density-matched corpus is now reproducible
   else does.
 - `src/core/igor-oracle.test.ts` — auto-discovers `data/oracle_igor/*.csv`,
   reads each file's parameters from its own header, and diffs the error array,
-  up/down flags, pulse array, and t-score trace. Currently reports one skipped
-  test so the gap stays visible instead of passing silently.
+  up/down flags, pulse array, and t-score trace. Without `data/oracle_igor/`
+  (a fresh clone) it reports one skipped test, so the gap stays visible instead
+  of passing silently; with the private store present it runs every file.
 - `docs/igor-validation.md` — the walkthrough, the settings table, and what to
   do when something disagrees.
 
@@ -946,8 +970,9 @@ Gotchas the script handles, recorded because each cost time:
 ### 3. Run the murderboard over the docs and the About page — DONE (2026-08-10)
 
 `syncytium2/murderboard` is now vendored (`docs/doc_review_process.md`,
-`tools/murderboard_*.sh`, `.claude/skills/murderboard/SKILL.md`, stamped
-@ b2b2ba2; freshness gate reports current). Run records are in `docs/reviews/`.
+`tools/murderboard_*.sh`, `.claude/skills/murderboard/SKILL.md`; each vendored
+file carries its upstream stamp in its own header, and the session-start banner
+reports freshness). Run records are in `docs/reviews/`.
 The figure and all five documents have been reviewed. The About page was
 kind of deliverable that harness exists for. Vendor it and run it over
 `src/About.tsx`, `docs/deep-learning-handoff.md`, and this file.

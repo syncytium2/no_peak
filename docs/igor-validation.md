@@ -98,6 +98,10 @@ Names matter, and two of them are awkward:
 | `LHInfusedC1(RD)` | `LHInfusedC2(STDEV)` | 61 | parentheses in the name |
 | `man2`–`man6`, `null1`, `wave0`, `wave1` | — | 16–145 | value only |
 
+**Note, 2026-09-12:** `gnrh` is no longer the app's default dataset. Since
+2026-09-11 the app opens on `w91_gnrh_thx_9013` at the Webster 1991 preset
+(`src/opening.ts`).
+
 The exporter duplicates the two parenthesised pairs to clean names
 (`np_set1`, `np_set1_sd`, `np_lhinf`, `np_lhinf_sd`) before running, because
 liberal names are a needless source of trouble.
@@ -127,6 +131,11 @@ question the Fortran work left open, and the error-model code.
 | O | LHInfused | 2 | 2 | 2 | 2 | 0 | Error Wave | — | 0 | Second real series with a genuine error wave. |
 
 `zero` is 0 everywhere; only row M turns termination on.
+
+**Note, 2026-09-12:** row A's "the defaults the app ships with" are now the
+generic two-point defaults (`DEFAULT_PARAMS`, still the command line's
+default). Since 2026-09-11 the app opens at the Webster 1991 preset instead
+(`src/opening.ts`).
 
 ## What C and D are really asking
 

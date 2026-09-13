@@ -1,7 +1,8 @@
 # Suppressing the digitized records, reversibly
 
 **Status: the switch is built and NOT thrown.** `data/digitized/` is committed,
-the eight records ship, the site is unchanged. Nothing in this file has been
+the eight records ship, and the live site serves them; since 2026-09-11 its
+landing figure reads this tree too. Nothing in this file has been
 done to the repository. It exists so that doing it is one commit rather than a
 day's work, and so that the decision can be made on its merits rather than on
 what it costs to execute.
@@ -22,7 +23,7 @@ re-extraction, and what it changed".
 
 **So there is currently nothing to suppress on rights grounds, and this switch
 should not be thrown.** It is kept because it is built, tested and free to
-carry: the loader tolerates a missing `data/digitized/`, and five test files
+carry: the loader tolerates a missing `data/digitized/`, and six test files
 skip cleanly without it. If the tree ever has to come down — a fresh rights
 question, or a re-extraction in flight — the runbook below still works, and
 reversing it is one command. **Do not read it as a plan.**
@@ -37,7 +38,7 @@ Three changes, all landed 2026-08-19, all no-ops while the tree is present:
   are dropped from `SAMPLES` by the `flatMap` at the bottom of the file. The
   group headings derive from `SAMPLES`, so they disappear with it.
 - **[`src/testing/haveDigitized.ts`](../src/testing/haveDigitized.ts)** exports
-  `HAVE_DIGITIZED`, one `existsSync` check, in one place. Five test files import
+  `HAVE_DIGITIZED`, one `existsSync` check, in one place. Six test files import
   it: they skip loudly when the tree is gone, the same idiom
   [`src/core/oracle.test.ts`](../src/core/oracle.test.ts) already uses for the
   undistributed lab data.
@@ -83,7 +84,7 @@ canonical there** — edit it upstream and re-vendor, per
 ```sh
 git revert <the suppression commit>
 python3 tools/data_root.py --pull digitized   # only if the tree was moved to the store
-npm run build && npx vitest run               # expect: 218 tests, none skipped
+npm run build && npx vitest run               # expect: every test passes, none skipped
 ```
 
 Redeploy. That is the whole reversal: the mechanism above is symmetric, and the
