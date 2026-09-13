@@ -1,19 +1,18 @@
 # Real traces, digitized from published figures
 
-> ⚠ **Status, 2026-08-19 — these eight files need to be replaced, and the
-> replacement is now cleared.** University counsel says a derived table of values
-> *is* "any part of the Publications" under the subscription license, and **these
-> series were read off the licensed PDF**, which is the copy that license
-> reaches. The fix is to re-read them from the library's Document Delivery scan
-> of the bound volume — obtained outside the subscription, so the license does
-> not reach it — and to **retire these files rather than keep both sets**.
+> **Status, 2026-08-19 — resolved. All eight series were re-read from the print
+> scan, and nothing here derives from the licensed copy.** University counsel
+> answered that a derived table of values *is* "any part of the Publications"
+> under the subscription license, which reached the first reading, taken off the
+> publisher's PDF. The same day, every series was re-read from the University of
+> Michigan library's scan of the bound print volume, obtained outside the
+> subscription, and the PDF-derived values were retired rather than kept
+> alongside (commit `0f26e17`). Each CSV's `# SOURCE` header says so. The live
+> site serves these values.
 >
-> **Nothing has been re-extracted or withdrawn yet**; that is the owner's call
-> and the work is not trivial. Until it happens, treat everything here as
-> provisional. Read
-> [`docs/figure-data-permissions.md`](../../docs/figure-data-permissions.md) —
-> "Counsel answered, and it goes the other way", then "Answer 4 was retracted" —
-> before acting on anything in this file.
+> The full record is in
+> [`docs/figure-data-permissions.md`](../../docs/figure-data-permissions.md),
+> under "The re-extraction, and what it changed".
 
 > **Not to be confused with [`data/synthetic/`](../synthetic/README.md).** The
 > simulated GnRH records there were built to this very paper's protocol, so they
@@ -55,9 +54,10 @@ copyright (*Feist*); digitizing figures is routine and Cochrane-recommended
 practice, precedented in peer-reviewed data papers; and no publisher has ever
 been recorded objecting to it. ~~The **contractual question remains open and
 untested**, which that document says at length rather than glossing.~~ **It was
-tested on 2026-08-19 and it came back against us**; see the banner at the top of
-this file. The *Feist* and precedent arguments in that document are untouched —
-they are about copyright, and the answer that landed is about contract.
+tested on 2026-08-19 and came back against the PDF reading**, which is why the
+series were re-read from print; see the status at the top of this file. The
+*Feist* and precedent arguments in that document are untouched — they are about
+copyright, and the answer that landed is about contract.
 
 ~~Two requests are open as of 2026-08-13~~ — the journal's publisher, and the
 University of Michigan library on whether the institutional license already
@@ -68,20 +68,13 @@ of 2026-08-19: it does not cover it.** The publisher has still not replied.
 the live record**: dates, what was asked, what came back. Record outcomes there
 rather than here.
 
-⚠ **This file's own standing instruction was "withdraw the data if either
-answers no", and one of them has now answered no.** The instruction was written
-before there was an answer to weigh, and it turns out to offer the wrong two
-choices: **the answer that landed does not call for withdrawal so much as for
-replacement.** These particular files are reached by the license because of
-where they were read from; the same eight series read off the library's scan of
-the bound volume are not. So the live options are re-extract and retire these,
-or withdraw and let [`data/synthetic/`](../synthetic/README.md) carry the
-validation alone — not "leave or pull".
-
-**It is the owner's call and it has not been made.** Written down here so that
-nobody discovers the trigger was hit and quietly does neither thing.
-`docs/digitized-suppression.md` carries a built, unthrown switch if these ever
-need to come down while a re-extraction is in flight.
+**This file's standing instruction was "withdraw the data if either answers
+no", and the library request came back no.** The answer called for replacement, not
+withdrawal: the license reached the old files because of where they were read
+from, and it does not reach the same series read off the library's scan of the
+bound volume. **The replacement was made on 2026-08-19**, so the trigger was hit
+and acted on. `docs/digitized-suppression.md` still carries a built, unthrown
+switch, kept in case these records ever have to come down for some new reason.
 
 ### Reproducing the scoring in the app
 

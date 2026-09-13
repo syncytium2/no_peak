@@ -555,8 +555,9 @@ pg/min, re-fitted by the sweep `validation-status.md` specifies; and scoring
 improved to **68 of 70 published pulses with no false positives**, now
 independent of the matching slack. 218 tests pass.
 
-⚠ **The live site still serves the old values.** `dist/` deliberately still
-matches what is deployed; a redeploy is the owner's call.
+~~⚠ **The live site still serves the old values.** `dist/` deliberately still
+matches what is deployed; a redeploy is the owner's call.~~ **Overtaken: the
+site has since been redeployed**, most recently on 2026-09-11 from `871d64f`.
 
 **Buying or borrowing a physical copy is moot** — the scan sufficed. For the
 record it was also not easy: AbeBooks has no listing, and the specialist

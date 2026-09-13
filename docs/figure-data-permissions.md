@@ -13,8 +13,10 @@
 > and now **refuses to write**. See "The re-extraction, and what it changed"
 > below for what moved in the numbers.
 >
-> ⚠ **The site still serves the old values until it is redeployed.** The repo
-> and the bundle are updated; `dist/` deliberately still matches what is live.
+> ~~⚠ **The site still serves the old values until it is redeployed.** The repo
+> and the bundle are updated; `dist/` deliberately still matches what is live.~~
+> **Overtaken: the site has since been redeployed**, most recently on 2026-09-11
+> from `871d64f`, and its `llms.txt` names the print scan as the source.
 >
 > **Superseded, 2026-08-19, first — "counsel answered, and it goes against the
 > reading this file was built on."** Half right for about three hours. The
