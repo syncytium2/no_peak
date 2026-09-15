@@ -6,7 +6,7 @@ Port of the CLUSTER pulse-detection algorithm (Michael L. Johnson / Veldhuis-Joh
 CLUSTER analysis for hormone pulsatility) to a client-side web app, validated
 against existing datasets.
 
-**Everything runs in the browser — no backend, uploaded data never leaves the
+**Everything runs in the browser — no backend, data you load never leaves the
 user's machine.** Figures are publication-grade SVG (vector) with 4× PNG export.
 
 ## App

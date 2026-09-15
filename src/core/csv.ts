@@ -1,4 +1,4 @@
-// CSV/TSV parsing for uploaded time series, and CSV serialization of results.
+// CSV/TSV parsing for loaded time series, and CSV serialization of results.
 // Accepted layouts (header row optional, auto-detected):
 //   1 column:  value            (times generated from a sampling interval)
 //   2 columns: time, value

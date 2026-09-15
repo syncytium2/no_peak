@@ -49,7 +49,7 @@ export function About({ onOpenApp }: { onOpenApp: () => void }) {
         page is the contact form at the bottom, which sends only what you type into it.
       </p>
 
-      <h2 id="prepare">Preparing a file to upload</h2>
+      <h2 id="prepare">Preparing a file to load</h2>
       <p>
         The quickest way to see the expected shape is to open the example:{" "}
         <button className="linkish" onClick={() => downloadText(TEMPLATE_CSV, TEMPLATE_NAME)}>
@@ -186,7 +186,7 @@ export function About({ onOpenApp }: { onOpenApp: () => void }) {
       <p>
         Selecting files stops scaling somewhere around fifty records. The same algorithm runs from
         a command line, over a whole directory, writing exactly the per-record table described
-        above — so a study is one command rather than an afternoon of uploads. It is the same
+        above — so a study is one command rather than an afternoon of loading files. It is the same
         code, not a reimplementation: the batch tool calls the function behind the{" "}
         <strong>Per-record CSV</strong> button, and the test suite checks the two against each
         other on records with published pulse counts.
@@ -201,7 +201,7 @@ export function About({ onOpenApp }: { onOpenApp: () => void }) {
         <li>
           <strong>Every row must be numeric.</strong> There is no support for blanks, gaps, or
           missing-value markers like <code>NA</code>, <code>ND</code>, or <code>-</code>; loading
-          stops with the offending line number. Interpolate or trim before uploading, and say which
+          stops with the offending line number. Interpolate or trim before loading, and say which
           you did in your methods.
         </li>
         <li>

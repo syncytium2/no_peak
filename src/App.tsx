@@ -321,7 +321,7 @@ export function App() {
           </span>
         </h1>
         <p className="privacy">
-          Runs entirely in your browser. Uploaded data is processed on your machine and never sent
+          Runs entirely in your browser. Data you load is processed on your machine and never sent
           anywhere. <a href="#about">About &amp; references</a>
         </p>
       </header>
