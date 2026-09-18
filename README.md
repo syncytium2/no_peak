@@ -201,7 +201,8 @@ Port fidelity notes:
   significant digits is clamped to one decimal. Exports keep full precision.
 
 Source material copied from `gitlab.com/um-mip/coding-project`
-(local: `~/Documents/coding-projectx`).
+(since 2026-09-18: `github.com/syncytium2/coding-project`, private;
+local: `~/Documents/coding-projectx`).
 
 ## Command line — batch processing without the browser
 

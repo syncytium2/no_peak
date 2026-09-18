@@ -267,8 +267,9 @@ not from this distribution. Recorded so nobody spends another hour on it.
 
 ## Provenance, for the record
 
-Source material came from `gitlab.com/um-mip/coding-project` (local working
-copy: `~/Documents/coding-project`). The About page credits Veldhuis and
+Source material came from `gitlab.com/um-mip/coding-project` (since 2026-09-18:
+`github.com/syncytium2/coding-project`, private; local working copy:
+`~/Documents/coding-project`). The About page credits Veldhuis and
 Johnson for the algorithm and cites Vanacker et al. 2017 for the Igor
 implementation; describing and citing the work is fine, redistributing the
 source is not.
