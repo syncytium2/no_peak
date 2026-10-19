@@ -18,6 +18,9 @@ export function About({ onOpenApp }: { onOpenApp: () => void }) {
   const figureShown = opening().real;
   return (
     <div className="about">
+      <p className="home">
+        <a href="https://tonydefazio.com/">← tonydefazio.com</a>
+      </p>
       <p className="opennow">
         <button className="primary" onClick={onOpenApp}>
           Open the app →
@@ -783,6 +786,9 @@ export function About({ onOpenApp }: { onOpenApp: () => void }) {
         <button className="primary" onClick={onOpenApp}>
           Open the app →
         </button>
+      </p>
+      <p>
+        <a href="https://tonydefazio.com/">← tonydefazio.com</a>
       </p>
     </div>
   );

@@ -310,6 +310,10 @@ export function App() {
 
   return (
     <div className="page">
+      {/* The way back to the parent site, the same on every tonydefazio.com destination. */}
+      <p className="home">
+        <a href="https://tonydefazio.com/">← tonydefazio.com</a>
+      </p>
       <header>
         <h1>
           no_peak<span className="tagline"> — CLUSTER pulse detection</span>
@@ -1133,6 +1137,9 @@ export function App() {
         <p>
           v{VERSION} · built {BUILT} · first commit {BORN} ·{" "}
           <a href="#about">contact</a>
+        </p>
+        <p>
+          <a href="https://tonydefazio.com/">← tonydefazio.com</a>
         </p>
       </footer>
     </div>
