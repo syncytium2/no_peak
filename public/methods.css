@@ -77,6 +77,10 @@ body {
   text-decoration: underline;
 }
 
+.backlink-next {
+  margin-left: 1.2rem;
+}
+
 .masthead {
   border-bottom: 2px solid var(--rule);
   padding-bottom: 1.5rem;

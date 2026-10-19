@@ -33,6 +33,20 @@ body {
   padding: 24px 20px 48px;
 }
 
+.home {
+  margin: 0 0 10px;
+  font-size: 13px;
+}
+
+.home a {
+  color: var(--accent);
+  text-decoration: none;
+}
+
+.home a:hover {
+  text-decoration: underline;
+}
+
 header h1 {
   font-size: 24px;
   margin: 0;
@@ -911,6 +925,7 @@ footer a,
 
 body.dos footer a,
 body.dos .privacy a,
+body.dos .home a,
 body.dos .about a {
   color: var(--ink);
 }
